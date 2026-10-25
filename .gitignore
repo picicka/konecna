@@ -1,0 +1,8 @@
+.DS_Store
+*.log
+/node_modules
+/dist
+/art/out
+/tests/shots
+/.idea
+/.vscode

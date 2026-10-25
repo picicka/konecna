@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+    <meta name="theme-color" content="#050806">
+    <title>Konečná. Nevystupovat.</title>
+    <meta name="description" content="Postapokalyptické pixel-artové RPG po Praze. Kurýrka, zásilka z Hlaváku na Hrad a město, které už nikdo nepozná.">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Konečná. Nevystupovat.">
+    <meta property="og:description" content="Postapokalyptické pixel-artové RPG po Praze.">
+    <meta property="og:image" content="images/cs_city.png">
+    <meta property="og:locale" content="cs_CZ">
+    <!-- Pixelová písma: Press Start 2P na nadpisy, VT323 (terminál) na text. Bunny Fonts bez sledování. -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link rel="stylesheet" href="https://fonts.bunny.net/css?family=press-start-2p:400|vt323:400">
+    <style>
+        /* Jedno místo pro layout: plátno 1280 × 720 centruje CSS, Phaser ho jen škáluje (FIT, bez vlastního centrování). */
+        html, body { margin: 0; height: 100%; background: #050806; color: #9fe8b0; overflow: hidden; font-family: 'VT323', ui-monospace, monospace; }
+        [data-konecna] { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; touch-action: none; }
+        [data-konecna] canvas { display: block; image-rendering: pixelated; image-rendering: crisp-edges; }
+        [data-fontload] { position: absolute; left: -9999px; top: 0; font-family: 'Press Start 2P'; }
+        [data-fontload] span { font-family: 'VT323'; }
+    </style>
+    <script type="module" src="/src/main.js"></script>
+</head>
+<body>
+    <div data-konecna aria-label="Konečná. Nevystupovat."></div>
+    <div data-fontload aria-hidden="true">Konečná <span>Nevystupovat</span></div>
+</body>
+</html>

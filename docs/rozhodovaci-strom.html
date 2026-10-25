@@ -1,0 +1,25 @@
+<!DOCTYPE html><html lang="cs"><head><meta charset="utf-8"><title>KONEČNÁ – rozhodovací strom</title>
+<style>
+body{font-family:ui-sans-serif,system-ui,sans-serif;max-width:900px;margin:2rem auto;padding:0 1rem;line-height:1.45;color:#1c1917}
+h1{font-size:1.6rem}h2{font-size:1.25rem;margin-top:2.5rem;border-top:2px solid #d6d3d1;padding-top:1rem}h3{font-size:1.05rem;margin-top:1.6rem}h4{font-size:.95rem;margin:1rem 0 .3rem}
+a.n{font-family:ui-monospace,monospace;background:#1c1917;color:#fff;border-radius:4px;padding:0 .35em;text-decoration:none;font-size:.85em;margin-right:.3em}
+ul.say{background:#f5f5f4;border-left:4px solid #a8a29e;padding:.5rem 1rem .5rem 2rem;margin:.4rem 0}ul.say li{margin:.15rem 0}
+ol.choices{list-style:none;padding-left:0}ol.choices>li{margin:.5rem 0;padding:.5rem .75rem;border:1px solid #d6d3d1;border-radius:6px}
+.fx{color:#b91c1c;font-size:.9em}.req{color:#1d4ed8;font-size:.85em}.reply{color:#44403c;font-style:italic;margin-top:.25rem}
+p.rule{background:#fef3c7;border-left:4px solid #f59e0b;padding:.4rem .75rem}p.where{color:#57534e;font-size:.9em}
+</style></head><body>
+<h1>KONEČNÁ. Nevystupovat. – rozhodovací strom</h1>
+<p class="rule">Každý bod má číslo. Volby jsou X.Y.Z, repliky postav jsou v šedých blocích, účinky červeně, podmínky na atribut modře. Volby, které v dané chvíli nejdou zvolit (chybí věc, úkol nezačal, slabý atribut), se ve hře vůbec nezobrazí.</p>
+<h2 id="1"><a class="n" href="#1">1</a> Úvod (filmeček)</h2>
+<h4 id="1.1"><a class="n" href="#1.1">1.1</a> Snímek cs_city</h4>
+<ul class="say"><li>Praha. Rok po tom, co se stalo.</li><li>Vltava teče jinudy, Nuselák je na dva kusy a na Hradě se svítí, ale nikdo neví, kdo tam je.</li></ul>
+<h4 id="1.2"><a class="n" href="#1.2">1.2</a> Snímek cs_metro</h4>
+<ul class="say"><li>V metru jezdí jediná souprava. Řídí se ručně a staví, kde chce řidič.</li><li>„Konečná. Nevystupovat.“</li><li>Vystoupíte.</li></ul>
+<h2 id="2"><a class="n" href="#2">2</a> Konce</h2>
+<ol class="choices">
+<li id="2.1"><a class="n" href="#2.1">2.1</a> <b>Všechno je na prodej</b> <span class="fx">→ nejvyšší důvěra: trziste</span><div class="reply">Zásilka změnila majitele. Hlavák má nový stánek a vy slevu.</div></li>
+<li id="2.2"><a class="n" href="#2.2">2.2</a> <b>Řád</b> <span class="fx">→ nejvyšší důvěra: metro</span><div class="reply">Souprava zase staví podle jízdního řádu. Na Hradě se přestalo svítit.</div></li>
+<li id="2.3"><a class="n" href="#2.3">2.3</a> <b>Po vodě</b> <span class="fx">→ nejvyšší důvěra: lodkari</span><div class="reply">Z loďky je vidět zlomený Nuselák. Vyšehrad svítí. Praha je najednou docela malá.</div></li>
+<li id="2.4"><a class="n" href="#2.4">2.4</a> <b>Konečná</b> <span class="fx">→ prohra v boji; nabídka návratu na poslední místo</span><div class="reply">Praha po pádu si vás nechala. Někdo si vezme boty, někdo zásilku.</div></li>
+</ol>
+</body></html>

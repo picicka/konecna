@@ -1,0 +1,24 @@
+{
+    "name": "konecna",
+    "private": true,
+    "type": "module",
+    "description": "Konečná. Nevystupovat. Postapokalyptické pixel-artové RPG po Praze v Phaseru 3.",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview --port 4173 --strictPort",
+        "art": "node ${PXL:-$HOME/.claude/skills/pxl-pixel-art/bin/pxl.js} build art/main.px.js --out art/out --no-preview && mkdir -p public/images && cp art/out/atlas.png art/out/atlas.json public/images/ && cp art/out/scenes/cs_*.png public/images/ && node -e \"require('fs').writeFileSync('art/version.json', JSON.stringify({ version: Date.now().toString(36) }) + '\\n')\"",
+        "art:watch": "node ${PXL:-$HOME/.claude/skills/pxl-pixel-art/bin/pxl.js} serve art/main.px.js --out art/out",
+        "test": "vite build && node tests/run.mjs",
+        "mapa": "node scripts/mapa.mjs",
+        "tree": "node scripts/tree.mjs > docs/rozhodovaci-strom.html"
+    },
+    "dependencies": {
+        "phaser": "^3.90.0",
+        "spessasynth_lib": "^4.3.14"
+    },
+    "devDependencies": {
+        "playwright": "^1.64.1",
+        "vite": "^8.0.0"
+    }
+}
