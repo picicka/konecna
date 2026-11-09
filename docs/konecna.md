@@ -34,7 +34,16 @@ Příčina je jedna, konkrétní a lidská: něco, co někdo v Praze udělal n
 
 ## Místa
 
-Ne celá Praha, ale řetěz míst spojených cestou. Mezi nimi generované ulice, které jdou projít, ale nemusí být věrné dům po domu.
+Ne celá Praha, ale řetěz míst. Přechody mezi mapami nemusí navazovat: místo generovaných ulic mezi nimi může být přestup, který hrdinku přenese úplně jinam, a každý přestup je sám o sobě scéna k poznání. Generované ulice z OSM zůstávají tam, kde dává smysl se projít (uvnitř místa, okolí landmarku), ne jako povinný spoj.
+
+Přestupy (návrhy, každé místo má aspoň jeden):
+
+- Schodiště do metra a jediná ručně řízená souprava: řidič staví, kde chce, hrdinka vystoupí jinde, než čekala.
+- Loďka loďkařů po zatopeném Starém Městě a po Vltavě, která teče jinudy; z vody je vidět zlomený Nuselák.
+- Lano přes rozlomený Nuselák, eskalátor, který jede jen jedním směrem, nákladní výtah v paláci.
+- Něco bizarního a konkrétního: tramvaj tažená koňmi po magistrále, lanovka na Petřín s jedinou kabinou, Pendolino na kolečkách.
+
+Přestup je stav a scéna (filmeček nebo krátká mini‑hra), ne jen přechod mezi mapami. Může stát jízdenky, může patřit frakci (metro = řád, loďky = chaos) a může být podmíněný atributem nebo questem.
 
 1. Hlavák a Sherwood (start, tržiště, první quest).
 2. Václavák (převzatý a zvětšený, bez vánočních stánků).
@@ -47,7 +56,7 @@ Každé místo: jeden hlavní quest, dva vedlejší, jedna věc k poznání, je
 
 ## Jak se staví svět
 
-- Ulice, půdorysy a výšky domů z OpenStreetMap (export přes Overpass, uložit do repa jako data, ne volat za běhu).
+- Ulice, půdorysy a výšky domů z OpenStreetMap (export přes Overpass, uložený v repu v data/osm, ne volání za běhu). Převod na mřížku dělá scripts/osm.mjs: 7,5 m na dlaždici, osa a podle hlavního průčelí místa (Hlavák: a = jih, b = západ, Fantova budova míří do Sherwoodu), vozovky podle typu ulice, chodníky vedle vozovek, parky i jako relace, koleje. Zem (silnice, chodníky, cestičky v parku, přechody, koleje, tramvaj) se ale nekreslí z dlaždic: art/ground.px.js ji maluje po pixelech z vektorů OSM ve skutečné šířce a tvaru, mřížka zůstává jen pro průchodnost (poučení z izomapy: z dlaždic po 7,5 m park nikdy nevypadal jako park). Stromy, lampy a lavičky stojí podle OSM. Půdorysy se rozkládají na kvádry (w ≤ 4, dpt ≤ 3), drobné stavby se vynechají. Každá kombinace rozměrů a stylu je jeden sprite ve čtyřech atlasech domů. Výšky domů nejsou z pater v OSM (skoro všude „5“), ale z laserového skenování ČÚZK (DMP 1G, CC BY 4.0; scripts/vysky.py podle izomapy Adama Klatovského): římsa z mediánu a 90. percentilu střechy nad okolním terénem, přízemí 4,5 m, patro 3,8 m, 1–7 pater nad přízemím. Dům má jednu převládající výšku, vlastní dostane jen křídlo o víc než 5 m jinde. Plochá střecha jen podle roof:shape z OSM nebo u opravdu rovné střechy, pražské mansardy s plochým vrškem zůstávají mansardami. Krytina střech (tašky, hnědé tašky, měděnka, břidlice a tmavý eternit, šedý plech, světlá lepenka) je z ortofota ČÚZK: scripts/strechy.py vezme medián barvy uvnitř půdorysu zmenšeného o 1,5 m bez nejtmavší a nejsvětlejší pětiny a zařadí ho podle odstínu a sytosti (letní snímek Prahy má tašky vybledlé, sytost jen 0,2–0,35). Zdroje dat (OpenStreetMap ODbL, ČÚZK DMP 1G a ortofoto CC BY 4.0) obě licence vyžadují uvést: plné znění je dole na titulní obrazovce (TITLE.credits), zkratka „© OpenStreetMap, ČÚZK“ pod minimapou (HUD.mapCredit). Při přidání dalšího zdroje dat (třeba ortofota) se doplní obojí.
 - Generátor z půdorysu postaví blok: výška podle dat, sloh podle čtvrti a roku (secese na Vinohradech a Novém Městě, baroko na Malé Straně, panel na Jižáku), rohové domy s okny v boku, ostatní slepé štíty, střechy podle slohu.
 - Landmarky ručně v pxl, podle fotek z Wikimedia Commons jako u Václaváku: Hrad, katedrála, Karlův most, Orloj, Týn, Tančící dům, Žižkovská věž, Nuselák, Hlavák.
 - Poškození jako vrstva nad generátorem: zřícené rohy, díry, voda, popel, požáry, úlomky. Parametr „míra zkázy“ podle místa.
@@ -57,7 +66,7 @@ Každé místo: jeden hlavní quest, dva vedlejší, jedna věc k poznání, je
 
 - Tahový, na vlastní obrazovce (střet na mapě přepne do bojové scény). Pět až osm střetů za hru, každý v příběhu, většinu lze obejít dialogem.
 - Nepřátelé: lidé z frakcí (loďkaři, stráž Hradu, překupníci, lidé z metra) a pražská zvěř (nutrie z Vltavy, holubi, psi ze Sherwoodu, kanci). Nic nadpřirozeného.
-- Hrdinka má životy a tři atributy, které platí v boji i v dialozích: Síla (útok, páčení dveří), Huba (útěk z boje, smlouvání, získání útržku), Postřeh (úhyb, nalezení věci, poznání lži). Dialogové volby mají vedle podmínky na stav i podmínku na atribut.
+- Hrdinka má životy a tři vlastnosti s obrázkem, které platí v boji i v dialozích: Ruka (rvačka, páčení, šplhání; v boji úder na životy), Ústa (přemlouvání, smlouvání, zastrašení; v boji útok na vůli), Oko (všímavost, míření, najít cestu; v boji uhnout a vrátit ránu). Dialogové volby mají vedle podmínky na stav i podmínku na atribut.
 - Levelování: bod do atributu za quest i boj, 2–3 úrovně za hru. Zbraň je předmět v inventáři (hasičák, tyč z tramvaje) a mění sílu útoku. Nepřítel má životy a jednu zvláštnost (pes kouše dvakrát, stráž blokuje). Životy léčí jídlo a checkpoint.
 - Smrt je jeden z konců s vlastním epilogem. Autosave při příchodu na každé z šesti míst; po epilogu smrti nabídka „zpátky na poslední místo“ nebo „od začátku“.
 - Boj deterministický přes seed, aby jím Playwright prošel.
@@ -78,9 +87,9 @@ Každé místo: jeden hlavní quest, dva vedlejší, jedna věc k poznání, je
 ## Plán
 
 0. Skelet: git init, samostatný Vite + Phaser (phaser, vite, spessasynth_lib, playwright), GitHub Pages. Z Benefitu zkopírovat a upravit pxl paletu, iso.js, ui.js, sound.js, state.js, scény boot/title/hud/cutscene/ending a skripty pro strom a mapu; square.js a texty nebrat. Pravidla z .ai/rules přepsat do CLAUDE.md, harness z ~/tmp/pw-vaclavak přesunout do repa jako tests/.
-1. Týdenní prototyp: první dva dny ověření rozlišení (jeden dům, jedna křižovatka ručně), pak OSM pro Nové Město, generátor postaví bloky, procházka z Hlaváku na Václavák a dál na Staromák bez questů. Cíl: aby to vypadalo.
+1. Týdenní prototyp: ověření rozlišení (hotovo 25. 10.), OSM pro okolí Hlaváku a generátor bloků (hotovo 25. 10.: data/hlavak.json, 64 × 44 dlaždic, 242 kvádrů, snímky v docs/mapa), pak Fantova budova a Sherwood ručně jako landmark, jeden přestup (schodiště do metra, souprava) na Václavák bez questů. Cíl: aby to vypadalo a aby přestup fungoval jako scéna.
 2. Jedno místo kompletně: Hlavák s tržištěm, tři questy, inventář, atributy, autosave, první bojová scéna (např. psi ze Sherwoodu) včetně epilogu smrti. Bojový systém se ladí na jednom místě, než se množí.
-3. Řetěz míst a hlavní linka.
+3. Řetěz míst a hlavní linka. Stav 8. 11. 2026: Hlavák se dá dohrát (dopis výpravčímu, zakázka od Fanty, hodiny, psi ze Sherwoodu bojem, dírou v plotě nebo lahví pro Robina, odjezd soupravou s otázkou „Co vezete?“), přestup metrem oběma směry, Václavák z OSM se zatopenou spodní polovinou, Národním muzeem a hlavní linkou po Kuřačku na molu (evidence, rozhlas s nutrií, pravý kůň, revizor). Tahový boj (psi, nutrie). Loďka na Staromák zatím čeká na díl do motoru.
 4. Testování na kolezích. Zatím interní hra pro radost; jestli půjde dál (partneři, veřejnost), se rozhodne až tady.
 
 ## Rozhodnuto 25. 10. 2026
@@ -97,10 +106,10 @@ Každé místo: jeden hlavní quest, dva vedlejší, jedna věc k poznání, je
 
 ## Otevřené otázky
 
-- Jméno a historka hrdinky.
-- Konkrétní příčina katastrofy (co přesně se stalo pod Hradem) a konkrétní zásilka; první verzi navrhnou texty, vybere se v připomínkách.
 - Balanc levelování: kolik bodů za quest a za boj, aby 2–3 úrovně vyšly na hodinu.
 - Jestli atributy ovlivní i dostupnost mini‑her, nebo jen dialogy a boj.
+- Jak velký má být každý „přestup“ jako scéna (filmeček vs. mini‑hra), zvlášť Trabant.
+- Jméno hrdinky se nedává: je to Pošťačka. Příčina, zásilka, postavy, linky a zastavení jsou v docs/pribeh.md.
 
 ## Co nás potrápilo u Václaváku (a co z toho plyne)
 

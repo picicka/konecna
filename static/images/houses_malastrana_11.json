@@ -1,0 +1,474 @@
+{
+ "frames": {
+  "hp11_malastrana_4_1_5mta_yellownb": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 320,
+    "h": 532
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 320,
+    "h": 532
+   },
+   "sourceSize": {
+    "w": 320,
+    "h": 532
+   }
+  },
+  "hp11_malastrana_3_1_1pta_creamcf": {
+   "frame": {
+    "x": 321,
+    "y": 0,
+    "w": 256,
+    "h": 300
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 300
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 300
+   }
+  },
+  "hp11_malastrana_1_3_1pta_creamcb": {
+   "frame": {
+    "x": 578,
+    "y": 0,
+    "w": 256,
+    "h": 316
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 316
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 316
+   }
+  },
+  "hp11_malastrana_1_1_1pta_ochrecf": {
+   "frame": {
+    "x": 835,
+    "y": 0,
+    "w": 128,
+    "h": 236
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 236
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 236
+   }
+  },
+  "hp11_malastrana_1_3_1pta_ochrenb": {
+   "frame": {
+    "x": 964,
+    "y": 0,
+    "w": 256,
+    "h": 316
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 316
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 316
+   }
+  },
+  "hp11_malastrana_1_1_3pta_greynb": {
+   "frame": {
+    "x": 0,
+    "y": 533,
+    "w": 128,
+    "h": 324
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 324
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 324
+   }
+  },
+  "hp11_malastrana_1_1_2pta_ochrecf": {
+   "frame": {
+    "x": 129,
+    "y": 533,
+    "w": 128,
+    "h": 280
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 280
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 280
+   }
+  },
+  "hp11_malastrana_1_1_3pta_greynf": {
+   "frame": {
+    "x": 258,
+    "y": 533,
+    "w": 128,
+    "h": 324
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 324
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 324
+   }
+  },
+  "hp11_malastrana_3_2_3pta_creamnb": {
+   "frame": {
+    "x": 387,
+    "y": 533,
+    "w": 320,
+    "h": 428
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 320,
+    "h": 428
+   },
+   "sourceSize": {
+    "w": 320,
+    "h": 428
+   }
+  },
+  "hp11_malastrana_1_1_1pta_salmoncb": {
+   "frame": {
+    "x": 708,
+    "y": 533,
+    "w": 128,
+    "h": 236
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 236
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 236
+   }
+  },
+  "hp11_malastrana_4_1_1ppl_greynb": {
+   "frame": {
+    "x": 0,
+    "y": 962,
+    "w": 320,
+    "h": 332
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 320,
+    "h": 332
+   },
+   "sourceSize": {
+    "w": 320,
+    "h": 332
+   }
+  },
+  "hp11_malastrana_2_1_4p_creamnb": {
+   "frame": {
+    "x": 321,
+    "y": 962,
+    "w": 192,
+    "h": 400
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 400
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 400
+   }
+  },
+  "hp11_malastrana_2_1_4p_greencb": {
+   "frame": {
+    "x": 514,
+    "y": 962,
+    "w": 192,
+    "h": 400
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 400
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 400
+   }
+  },
+  "hp11_malastrana_4_2_3p_creamnf": {
+   "frame": {
+    "x": 707,
+    "y": 962,
+    "w": 384,
+    "h": 460
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 384,
+    "h": 460
+   },
+   "sourceSize": {
+    "w": 384,
+    "h": 460
+   }
+  },
+  "hp11_malastrana_1_1_4p_creamnb": {
+   "frame": {
+    "x": 1092,
+    "y": 962,
+    "w": 128,
+    "h": 368
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 368
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 368
+   }
+  },
+  "hp11_malastrana_4_1_4p_greennb": {
+   "frame": {
+    "x": 0,
+    "y": 1423,
+    "w": 320,
+    "h": 464
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 320,
+    "h": 464
+   },
+   "sourceSize": {
+    "w": 320,
+    "h": 464
+   }
+  },
+  "hp11_malastrana_2_1_3p_greencf": {
+   "frame": {
+    "x": 321,
+    "y": 1423,
+    "w": 192,
+    "h": 356
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 356
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 356
+   }
+  },
+  "hp11_malastrana_1_3_3p_creamnf": {
+   "frame": {
+    "x": 514,
+    "y": 1423,
+    "w": 256,
+    "h": 404
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 404
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 404
+   }
+  },
+  "hp11_malastrana_1_1_2p_greynf": {
+   "frame": {
+    "x": 771,
+    "y": 1423,
+    "w": 128,
+    "h": 280
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 280
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 280
+   }
+  },
+  "hp11_malastrana_1_2_3p_greencb": {
+   "frame": {
+    "x": 900,
+    "y": 1423,
+    "w": 192,
+    "h": 364
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 364
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 364
+   }
+  },
+  "hp11_malastrana_1_3_5p_ochrecf": {
+   "frame": {
+    "x": 0,
+    "y": 1888,
+    "w": 256,
+    "h": 492
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 492
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 492
+   }
+  },
+  "hp11_malastrana_3_1_5p_ochrenf_t16R8": {
+   "frame": {
+    "x": 257,
+    "y": 1888,
+    "w": 256,
+    "h": 476
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 476
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 476
+   }
+  },
+  "hp11_malastrana_2_2_3p_greennb": {
+   "frame": {
+    "x": 514,
+    "y": 1888,
+    "w": 256,
+    "h": 396
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 396
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 396
+   }
+  }
+ },
+ "meta": {
+  "app": "pxl",
+  "image": "houses_malastrana_11.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1220,
+   "h": 2380
+  },
+  "scale": "1"
+ }
+}

@@ -56,3 +56,12 @@ export const pick = (variants, a, b, salt = 0) => variants[Math.floor(hash(a, b,
 // Řazení podle hloubky: jednotné pravidlo od začátku (na Václaváku byly výjimky po jednom nejčastější zdroj chyb).
 // Hloubka objektu je y jeho kotvy (spodní roh půdorysu) plus případný posun; vše na jedné dlaždici má stejný základ.
 export const depthOf = (a, b, lift = 0) => toScreen(a, b).y + TH / 2 + lift;
+
+// Hloubka kvádru (dům) s půdorysem a0..a0+w−1 × b0..b0+dpt−1: minimum z hloubek předního rohu levé stěny (a0, b0)
+// a předního rohu fasády (a1, b1). Pak je všechno před oběma viditelnými stěnami vykreslené před domem a všechno za
+// zadními stěnami za ním; dlaždice vedle domu (stejná řada, +a) jsou dvojznačné a řeší je průhlednost domu nad hrdinkou.
+export const boxDepth = (a0, b0, w, dpt) => Math.min(depthOf(a0, b0), depthOf(a0 + w - 1, b0 + dpt - 1)) - 1;
+
+// Kde stojí postava nebo rekvizita na dlaždici: kousek pod středem kosočtverce (počátek spritu dole uprostřed).
+export const FOOT = 10;
+export const foot = (a, b) => { const p = toScreen(a, b); return { x: p.x, y: p.y + FOOT }; };

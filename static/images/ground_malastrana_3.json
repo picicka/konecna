@@ -1,0 +1,154 @@
+{
+ "frames": {
+  "gr_malastrana_2_3": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "sourceSize": {
+    "w": 1016,
+    "h": 1016
+   }
+  },
+  "gr_malastrana_3_3": {
+   "frame": {
+    "x": 1017,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "sourceSize": {
+    "w": 1016,
+    "h": 1016
+   }
+  },
+  "gr_malastrana_4_3": {
+   "frame": {
+    "x": 2034,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "sourceSize": {
+    "w": 1016,
+    "h": 1016
+   }
+  },
+  "gr_malastrana_5_3": {
+   "frame": {
+    "x": 0,
+    "y": 1017,
+    "w": 1016,
+    "h": 1016
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "sourceSize": {
+    "w": 1016,
+    "h": 1016
+   }
+  },
+  "gr_malastrana_6_3": {
+   "frame": {
+    "x": 1017,
+    "y": 1017,
+    "w": 1016,
+    "h": 1016
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "sourceSize": {
+    "w": 1016,
+    "h": 1016
+   }
+  },
+  "gr_malastrana_3_4": {
+   "frame": {
+    "x": 2034,
+    "y": 1017,
+    "w": 1016,
+    "h": 1016
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "sourceSize": {
+    "w": 1016,
+    "h": 1016
+   }
+  },
+  "gr_malastrana_4_4": {
+   "frame": {
+    "x": 0,
+    "y": 2034,
+    "w": 1016,
+    "h": 1016
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "sourceSize": {
+    "w": 1016,
+    "h": 1016
+   }
+  }
+ },
+ "meta": {
+  "app": "pxl",
+  "image": "ground_malastrana_3.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 3050,
+   "h": 3050
+  },
+  "scale": "1"
+ }
+}

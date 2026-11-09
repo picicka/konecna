@@ -26,26 +26,38 @@ await page.waitForFunction(() => window.konecna.scene.isActive('cutscene'));
 await run(() => window.konecna.scene.getScene('cutscene').finish());
 await page.waitForFunction(() => window.konecna.scene.isActive('world') && window.konecna.scene.isActive('hud'));
 await page.waitForTimeout(400);
-await run(() => { const w = window.konecna.scene.getScene('world'); w.cameras.main.stopFollow(); window.konecna.scene.sleep('hud'); });
 
-// [klíč, popis, a, b] – úseky zkušebního plácku; se skutečnými místy se seznam přepíše.
-const shots = [
-    ['M1', 'Začátek plácku: tráva, chodník, ulice, hrdinka', 4, 6],
-    ['M2', 'Střed: mozaika a voda vpravo dole', 12, 7],
-    ['M3', 'Konec plácku', 20, 7],
-];
+// Každé místo zvlášť: Hlavák bez předpony (Z*, M*), další místa s předponou podle prvního písmene (Václavák VZ*, VM*).
+// [klíč, popis, a, b]: zastavení místa (kamera na postavu) a pak mřížka přes celou mapu.
 const list = [];
-for (const [key, caption, a, b] of shots) {
-    await run((a, b) => { const w = window.konecna.scene.getScene('world'); const c = w.center({ a, b }); w.cameras.main.centerOn(c.x, c.y); }, a, b);
+// Předpony: Hlavák bez, Václavák V, Staromák S, most K (Karlův), Malá Strana MS, Hrad H.
+const PREFIX = { hlavak: '', vaclavak: 'V', staromak: 'S', most: 'K', malastrana: 'MS', hrad: 'H' };
+for (const place of Object.keys(PREFIX)) {
+    const prefix = PREFIX[place];
+    await run((p) => { const g = window.konecna; g.registry.get('state').place = p; g.scene.stop('hud'); g.scene.start('world'); }, place);
+    await page.waitForFunction((p) => { const w = window.konecna.scene.getScene('world'); return window.konecna.scene.isActive('world') && w.map?.place === p && w.player; }, place, { timeout: 60000 });
+    await page.waitForTimeout(600);
+    await run(() => { const w = window.konecna.scene.getScene('world'); w.cameras.main.stopFollow(); window.konecna.scene.sleep('hud'); });
+    const shots = await run(() => {
+        const w = window.konecna.scene.getScene('world');
+        const items = Object.values(w.stops).map((s, i) => [`Z${i + 1}`, `Zastavení ${s.id}: ${s.npc.key} na ${s.npc.a},${s.npc.b}`, s.npc.a, s.npc.b]);
+        [0.2, 0.5, 0.8].forEach((fa, i) => [0.3, 0.7].forEach((fb, j) => items.push([`M${i * 2 + j + 1}`, `Úsek a ${Math.round(fa * w.map.len)}, b ${Math.round(fb * w.map.wid)}`, Math.round(fa * w.map.len), Math.round(fb * w.map.wid)])));
+        return items;
+    });
+    const placeList = [];
+    for (const [key, caption, a, b] of shots) {
+        await run((a, b) => { const w = window.konecna.scene.getScene('world'); w.cameras.main.setZoom(1); const c = w.center({ a, b }); w.cameras.main.centerOn(c.x, c.y); }, a, b);
+        await page.waitForTimeout(300);
+        await page.screenshot({ path: `${OUT}/${prefix}${key}.png` });
+        placeList.push({ key: `${prefix}${key}`, caption, place });
+    }
+    await run(() => { const w = window.konecna.scene.getScene('world'); w.cameras.main.setZoom(Math.min(1280 / w.bounds.w, 720 / w.bounds.h) * 0.98); const c = w.center({ a: (w.map.len - 1) / 2, b: (w.map.wid - 1) / 2 }); w.cameras.main.centerOn(c.x, c.y); });
     await page.waitForTimeout(300);
-    await page.screenshot({ path: `${OUT}/${key}.png` });
-    list.push({ key, caption });
+    await page.screenshot({ path: `${OUT}/${prefix}M0.png` });
+    list.push({ key: `${prefix}M0`, caption: 'Celé místo z výšky (zmenšeno)', place }, ...placeList);
 }
-await run(() => { const w = window.konecna.scene.getScene('world'); w.cameras.main.setZoom(0.5); const c = w.center({ a: 12, b: 7 }); w.cameras.main.centerOn(c.x, c.y); });
-await page.waitForTimeout(300);
-await page.screenshot({ path: `${OUT}/M0.png` });
-list.unshift({ key: 'M0', caption: 'Celý plácek z výšky (zmenšeno)' });
 fs.writeFileSync(`${OUT}/list.json`, JSON.stringify(list, null, 2));
+await import('./mapa-html.mjs');
 console.log('done', list.length);
 await browser.close();
 server?.kill();

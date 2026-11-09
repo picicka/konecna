@@ -1,0 +1,94 @@
+{
+ "frames": {
+  "lm_viaduct_4": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 640,
+    "h": 552
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 640,
+    "h": 552
+   },
+   "sourceSize": {
+    "w": 640,
+    "h": 552
+   }
+  },
+  "lm_viaduct_5": {
+   "frame": {
+    "x": 641,
+    "y": 0,
+    "w": 704,
+    "h": 584
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 704,
+    "h": 584
+   },
+   "sourceSize": {
+    "w": 704,
+    "h": 584
+   }
+  },
+  "lm_viaduct_5b": {
+   "frame": {
+    "x": 0,
+    "y": 585,
+    "w": 704,
+    "h": 584
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 704,
+    "h": 584
+   },
+   "sourceSize": {
+    "w": 704,
+    "h": 584
+   }
+  },
+  "lm_viaduct_6": {
+   "frame": {
+    "x": 705,
+    "y": 585,
+    "w": 768,
+    "h": 616
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 768,
+    "h": 616
+   },
+   "sourceSize": {
+    "w": 768,
+    "h": 616
+   }
+  }
+ },
+ "meta": {
+  "app": "pxl",
+  "image": "landmarks4.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1473,
+   "h": 1201
+  },
+  "scale": "1"
+ }
+}

@@ -1,0 +1,174 @@
+{
+ "frames": {
+  "gr_vaclavak_6_2": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "sourceSize": {
+    "w": 1016,
+    "h": 1016
+   }
+  },
+  "gr_vaclavak_7_2": {
+   "frame": {
+    "x": 1017,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "sourceSize": {
+    "w": 1016,
+    "h": 1016
+   }
+  },
+  "gr_vaclavak_8_2": {
+   "frame": {
+    "x": 2034,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "sourceSize": {
+    "w": 1016,
+    "h": 1016
+   }
+  },
+  "gr_vaclavak_0_3": {
+   "frame": {
+    "x": 0,
+    "y": 1017,
+    "w": 1016,
+    "h": 1016
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "sourceSize": {
+    "w": 1016,
+    "h": 1016
+   }
+  },
+  "gr_vaclavak_1_3": {
+   "frame": {
+    "x": 1017,
+    "y": 1017,
+    "w": 1016,
+    "h": 1016
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "sourceSize": {
+    "w": 1016,
+    "h": 1016
+   }
+  },
+  "gr_vaclavak_2_3": {
+   "frame": {
+    "x": 2034,
+    "y": 1017,
+    "w": 1016,
+    "h": 1016
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "sourceSize": {
+    "w": 1016,
+    "h": 1016
+   }
+  },
+  "gr_vaclavak_3_3": {
+   "frame": {
+    "x": 0,
+    "y": 2034,
+    "w": 1016,
+    "h": 1016
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "sourceSize": {
+    "w": 1016,
+    "h": 1016
+   }
+  },
+  "gr_vaclavak_4_3": {
+   "frame": {
+    "x": 1017,
+    "y": 2034,
+    "w": 1016,
+    "h": 1016
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "sourceSize": {
+    "w": 1016,
+    "h": 1016
+   }
+  }
+ },
+ "meta": {
+  "app": "pxl",
+  "image": "ground_vaclavak_2.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 3050,
+   "h": 3050
+  },
+  "scale": "1"
+ }
+}

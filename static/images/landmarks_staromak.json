@@ -1,0 +1,104 @@
+{
+ "frames": {
+  "hus": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 310,
+    "h": 300
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 310,
+    "h": 300
+   },
+   "sourceSize": {
+    "w": 310,
+    "h": 300
+   }
+  },
+  "orloj_0": {
+   "frame": {
+    "x": 311,
+    "y": 0,
+    "w": 264,
+    "h": 304
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 264,
+    "h": 304
+   },
+   "sourceSize": {
+    "w": 264,
+    "h": 304
+   },
+   "duration": 500
+  },
+  "orloj_1": {
+   "frame": {
+    "x": 0,
+    "y": 305,
+    "w": 264,
+    "h": 304
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 264,
+    "h": 304
+   },
+   "sourceSize": {
+    "w": 264,
+    "h": 304
+   },
+   "duration": 500
+  },
+  "vez_mostecka": {
+   "frame": {
+    "x": 265,
+    "y": 305,
+    "w": 280,
+    "h": 440
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 280,
+    "h": 440
+   },
+   "sourceSize": {
+    "w": 280,
+    "h": 440
+   }
+  }
+ },
+ "meta": {
+  "app": "pxl",
+  "image": "landmarks_staromak.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 575,
+   "h": 745
+  },
+  "scale": "1",
+  "frameTags": [
+   {
+    "name": "orloj",
+    "from": 1,
+    "to": 2,
+    "direction": "forward"
+   }
+  ]
+ }
+}

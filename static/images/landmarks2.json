@@ -1,0 +1,134 @@
+{
+ "frames": {
+  "lm_hall_a": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 704,
+    "h": 584
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 704,
+    "h": 584
+   },
+   "sourceSize": {
+    "w": 704,
+    "h": 584
+   }
+  },
+  "lm_hall_entrance": {
+   "frame": {
+    "x": 705,
+    "y": 0,
+    "w": 704,
+    "h": 584
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 704,
+    "h": 584
+   },
+   "sourceSize": {
+    "w": 704,
+    "h": 584
+   }
+  },
+  "lm_hall_broken": {
+   "frame": {
+    "x": 1410,
+    "y": 0,
+    "w": 704,
+    "h": 584
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 704,
+    "h": 584
+   },
+   "sourceSize": {
+    "w": 704,
+    "h": 584
+   }
+  },
+  "lm_hall_b": {
+   "frame": {
+    "x": 0,
+    "y": 585,
+    "w": 704,
+    "h": 584
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 704,
+    "h": 584
+   },
+   "sourceSize": {
+    "w": 704,
+    "h": 584
+   }
+  },
+  "lm_hall_c": {
+   "frame": {
+    "x": 705,
+    "y": 585,
+    "w": 640,
+    "h": 552
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 640,
+    "h": 552
+   },
+   "sourceSize": {
+    "w": 640,
+    "h": 552
+   }
+  },
+  "lm_stair_tower": {
+   "frame": {
+    "x": 1346,
+    "y": 585,
+    "w": 128,
+    "h": 310
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 310
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 310
+   }
+  }
+ },
+ "meta": {
+  "app": "pxl",
+  "image": "landmarks2.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 2114,
+   "h": 1169
+  },
+  "scale": "1"
+ }
+}

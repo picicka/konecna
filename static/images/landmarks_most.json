@@ -1,0 +1,54 @@
+{
+ "frames": {
+  "lm_vez_stare": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 384,
+    "h": 752
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 384,
+    "h": 752
+   },
+   "sourceSize": {
+    "w": 384,
+    "h": 752
+   }
+  },
+  "lm_veze_male": {
+   "frame": {
+    "x": 385,
+    "y": 0,
+    "w": 512,
+    "h": 626
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 512,
+    "h": 626
+   },
+   "sourceSize": {
+    "w": 512,
+    "h": 626
+   }
+  }
+ },
+ "meta": {
+  "app": "pxl",
+  "image": "landmarks_most.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 897,
+   "h": 752
+  },
+  "scale": "1"
+ }
+}

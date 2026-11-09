@@ -1,18 +1,397 @@
 [
   {
     "key": "M0",
-    "caption": "Celý plácek z výšky (zmenšeno)"
+    "caption": "Celé místo z výšky (zmenšeno)",
+    "place": "hlavak"
+  },
+  {
+    "key": "Z1",
+    "caption": "Zastavení metro: strojvedouci na 36,21",
+    "place": "hlavak"
+  },
+  {
+    "key": "Z2",
+    "caption": "Zastavení trziste: fanta na 39,15",
+    "place": "hlavak"
+  },
+  {
+    "key": "Z3",
+    "caption": "Zastavení trafika: trafikantka na 39,29",
+    "place": "hlavak"
+  },
+  {
+    "key": "Z4",
+    "caption": "Zastavení ohniste: robin na 48,34",
+    "place": "hlavak"
+  },
+  {
+    "key": "Z5",
+    "caption": "Zastavení psi: dog na 27,31",
+    "place": "hlavak"
+  },
+  {
+    "key": "Z6",
+    "caption": "Zastavení nastupiste: vypravci na 48,4",
+    "place": "hlavak"
   },
   {
     "key": "M1",
-    "caption": "Začátek plácku: tráva, chodník, ulice, hrdinka"
+    "caption": "Úsek a 16, b 13",
+    "place": "hlavak"
   },
   {
     "key": "M2",
-    "caption": "Střed: mozaika a voda vpravo dole"
+    "caption": "Úsek a 16, b 31",
+    "place": "hlavak"
   },
   {
     "key": "M3",
-    "caption": "Konec plácku"
+    "caption": "Úsek a 41, b 13",
+    "place": "hlavak"
+  },
+  {
+    "key": "M4",
+    "caption": "Úsek a 41, b 31",
+    "place": "hlavak"
+  },
+  {
+    "key": "M5",
+    "caption": "Úsek a 66, b 13",
+    "place": "hlavak"
+  },
+  {
+    "key": "M6",
+    "caption": "Úsek a 66, b 31",
+    "place": "hlavak"
+  },
+  {
+    "key": "VM0",
+    "caption": "Celé místo z výšky (zmenšeno)",
+    "place": "vaclavak"
+  },
+  {
+    "key": "VZ1",
+    "caption": "Zastavení vylez: vylez na 108,11",
+    "place": "vaclavak"
+  },
+  {
+    "key": "VZ2",
+    "caption": "Zastavení dispecerka: dispecerka na 102,10",
+    "place": "vaclavak"
+  },
+  {
+    "key": "VZ3",
+    "caption": "Zastavení vaclav: vaclav na 100,13",
+    "place": "vaclavak"
+  },
+  {
+    "key": "VZ4",
+    "caption": "Zastavení reproduktor: reproduktor na 53,8",
+    "place": "vaclavak"
+  },
+  {
+    "key": "VZ5",
+    "caption": "Zastavení revizor: revizor na 50,11",
+    "place": "vaclavak"
+  },
+  {
+    "key": "VZ6",
+    "caption": "Zastavení kuracka: kuracka na 18,12",
+    "place": "vaclavak"
+  },
+  {
+    "key": "VM1",
+    "caption": "Úsek a 26, b 10",
+    "place": "vaclavak"
+  },
+  {
+    "key": "VM2",
+    "caption": "Úsek a 26, b 22",
+    "place": "vaclavak"
+  },
+  {
+    "key": "VM3",
+    "caption": "Úsek a 66, b 10",
+    "place": "vaclavak"
+  },
+  {
+    "key": "VM4",
+    "caption": "Úsek a 66, b 22",
+    "place": "vaclavak"
+  },
+  {
+    "key": "VM5",
+    "caption": "Úsek a 106, b 10",
+    "place": "vaclavak"
+  },
+  {
+    "key": "VM6",
+    "caption": "Úsek a 106, b 22",
+    "place": "vaclavak"
+  },
+  {
+    "key": "SM0",
+    "caption": "Celé místo z výšky (zmenšeno)",
+    "place": "staromak"
+  },
+  {
+    "key": "SZ1",
+    "caption": "Zastavení tyn: kuracka na 32,16",
+    "place": "staromak"
+  },
+  {
+    "key": "SZ2",
+    "caption": "Zastavení admiral: admiral na 22,13",
+    "place": "staromak"
+  },
+  {
+    "key": "SZ3",
+    "caption": "Zastavení orlojnik: orlojnik na 21,25",
+    "place": "staromak"
+  },
+  {
+    "key": "SZ4",
+    "caption": "Zastavení vyloha: vyloha na 9,3",
+    "place": "staromak"
+  },
+  {
+    "key": "SZ5",
+    "caption": "Zastavení lovec: lovec na 8,5",
+    "place": "staromak"
+  },
+  {
+    "key": "SZ6",
+    "caption": "Zastavení potapecka: potapecka na 4,11",
+    "place": "staromak"
+  },
+  {
+    "key": "SZ7",
+    "caption": "Zastavení karlova: ostrov_lodka na 7,24",
+    "place": "staromak"
+  },
+  {
+    "key": "SM1",
+    "caption": "Úsek a 9, b 8",
+    "place": "staromak"
+  },
+  {
+    "key": "SM2",
+    "caption": "Úsek a 9, b 20",
+    "place": "staromak"
+  },
+  {
+    "key": "SM3",
+    "caption": "Úsek a 23, b 8",
+    "place": "staromak"
+  },
+  {
+    "key": "SM4",
+    "caption": "Úsek a 23, b 20",
+    "place": "staromak"
+  },
+  {
+    "key": "SM5",
+    "caption": "Úsek a 36, b 8",
+    "place": "staromak"
+  },
+  {
+    "key": "SM6",
+    "caption": "Úsek a 36, b 20",
+    "place": "staromak"
+  },
+  {
+    "key": "KM0",
+    "caption": "Celé místo z výšky (zmenšeno)",
+    "place": "most"
+  },
+  {
+    "key": "KZ1",
+    "caption": "Zastavení pilar: pilar na 8,37",
+    "place": "most"
+  },
+  {
+    "key": "KZ2",
+    "caption": "Zastavení netere: netere na 27,32",
+    "place": "most"
+  },
+  {
+    "key": "KZ3",
+    "caption": "Zastavení hlidac: hlidac na 33,32",
+    "place": "most"
+  },
+  {
+    "key": "KZ4",
+    "caption": "Zastavení kanci: kanec na 58,8",
+    "place": "most"
+  },
+  {
+    "key": "KZ5",
+    "caption": "Zastavení mlynar: mlynar na 67,18",
+    "place": "most"
+  },
+  {
+    "key": "KZ6",
+    "caption": "Zastavení mostecka: metro_totem na 74,23",
+    "place": "most"
+  },
+  {
+    "key": "KM1",
+    "caption": "Úsek a 17, b 12",
+    "place": "most"
+  },
+  {
+    "key": "KM2",
+    "caption": "Úsek a 17, b 28",
+    "place": "most"
+  },
+  {
+    "key": "KM3",
+    "caption": "Úsek a 42, b 12",
+    "place": "most"
+  },
+  {
+    "key": "KM4",
+    "caption": "Úsek a 42, b 28",
+    "place": "most"
+  },
+  {
+    "key": "KM5",
+    "caption": "Úsek a 67, b 12",
+    "place": "most"
+  },
+  {
+    "key": "KM6",
+    "caption": "Úsek a 67, b 28",
+    "place": "most"
+  },
+  {
+    "key": "MSM0",
+    "caption": "Celé místo z výšky (zmenšeno)",
+    "place": "malastrana"
+  },
+  {
+    "key": "MSZ1",
+    "caption": "Zastavení mostecka_zpet: metro_totem na 4,15",
+    "place": "malastrana"
+  },
+  {
+    "key": "MSZ2",
+    "caption": "Zastavení pani: pani na 56,33",
+    "place": "malastrana"
+  },
+  {
+    "key": "MSZ3",
+    "caption": "Zastavení velvyslanec: velvyslanec na 55,6",
+    "place": "malastrana"
+  },
+  {
+    "key": "MSZ4",
+    "caption": "Zastavení trabant: trabant na 60,7",
+    "place": "malastrana"
+  },
+  {
+    "key": "MSZ5",
+    "caption": "Zastavení straz: straz na 65,39",
+    "place": "malastrana"
+  },
+  {
+    "key": "MSZ6",
+    "caption": "Zastavení kastelan: kastelan na 62,37",
+    "place": "malastrana"
+  },
+  {
+    "key": "MSZ7",
+    "caption": "Zastavení schody: holub na 44,53",
+    "place": "malastrana"
+  },
+  {
+    "key": "MSM1",
+    "caption": "Úsek a 14, b 18",
+    "place": "malastrana"
+  },
+  {
+    "key": "MSM2",
+    "caption": "Úsek a 14, b 42",
+    "place": "malastrana"
+  },
+  {
+    "key": "MSM3",
+    "caption": "Úsek a 35, b 18",
+    "place": "malastrana"
+  },
+  {
+    "key": "MSM4",
+    "caption": "Úsek a 35, b 42",
+    "place": "malastrana"
+  },
+  {
+    "key": "MSM5",
+    "caption": "Úsek a 56, b 18",
+    "place": "malastrana"
+  },
+  {
+    "key": "MSM6",
+    "caption": "Úsek a 56, b 42",
+    "place": "malastrana"
+  },
+  {
+    "key": "HM0",
+    "caption": "Celé místo z výšky (zmenšeno)",
+    "place": "hrad"
+  },
+  {
+    "key": "HZ1",
+    "caption": "Zastavení pruvodkyne: pruvodkyne na 11,17",
+    "place": "hrad"
+  },
+  {
+    "key": "HZ2",
+    "caption": "Zastavení ochranka: ochranka na 20,20",
+    "place": "hrad"
+  },
+  {
+    "key": "HZ3",
+    "caption": "Zastavení reditel: reditel na 23,22",
+    "place": "hrad"
+  },
+  {
+    "key": "HZ4",
+    "caption": "Zastavení ctecka: ctecka na 21,22",
+    "place": "hrad"
+  },
+  {
+    "key": "HZ5",
+    "caption": "Zastavení zlata: kastelan na 53,9",
+    "place": "hrad"
+  },
+  {
+    "key": "HM1",
+    "caption": "Úsek a 15, b 11",
+    "place": "hrad"
+  },
+  {
+    "key": "HM2",
+    "caption": "Úsek a 15, b 25",
+    "place": "hrad"
+  },
+  {
+    "key": "HM3",
+    "caption": "Úsek a 38, b 11",
+    "place": "hrad"
+  },
+  {
+    "key": "HM4",
+    "caption": "Úsek a 38, b 25",
+    "place": "hrad"
+  },
+  {
+    "key": "HM5",
+    "caption": "Úsek a 61, b 11",
+    "place": "hrad"
+  },
+  {
+    "key": "HM6",
+    "caption": "Úsek a 61, b 25",
+    "place": "hrad"
   }
 ]

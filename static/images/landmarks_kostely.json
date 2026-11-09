@@ -1,0 +1,54 @@
+{
+ "frames": {
+  "lm_mikulas_ms": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 1024,
+    "h": 832
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 1024,
+    "h": 832
+   },
+   "sourceSize": {
+    "w": 1024,
+    "h": 832
+   }
+  },
+  "lm_jiri": {
+   "frame": {
+    "x": 1025,
+    "y": 0,
+    "w": 768,
+    "h": 744
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 768,
+    "h": 744
+   },
+   "sourceSize": {
+    "w": 768,
+    "h": 744
+   }
+  }
+ },
+ "meta": {
+  "app": "pxl",
+  "image": "landmarks_kostely.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1793,
+   "h": 832
+  },
+  "scale": "1"
+ }
+}

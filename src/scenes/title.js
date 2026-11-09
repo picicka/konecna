@@ -20,6 +20,7 @@ export class TitleScene extends Phaser.Scene {
         head(this, WIDTH / 2, 222, TITLE.name, { fontSize: '64px', color: '#ece9df' }).setOrigin(0.5, 0.5);
         this.add.rectangle(WIDTH / 2, 282, 700, 6, 0xb3261e);
         body(this, WIDTH / 2, 330, TITLE.subtitle, { fontSize: '40px', color: CRT.amber }).setOrigin(0.5, 0.5);
+        body(this, WIDTH / 2, HEIGHT - 18, TITLE.credits, { fontSize: '20px', color: CRT.dim }).setOrigin(0.5, 0.5);
         scanlines(this);
         const sound = this.registry.get('sound');
         const hum = () => { if (this.scene.isActive()) sound.neon(true); };

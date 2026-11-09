@@ -7,11 +7,15 @@
         "dev": "vite",
         "build": "vite build",
         "preview": "vite preview --port 4173 --strictPort",
-        "art": "node ${PXL:-$HOME/.claude/skills/pxl-pixel-art/bin/pxl.js} build art/main.px.js --out art/out --no-preview && mkdir -p public/images && cp art/out/atlas.png art/out/atlas.json public/images/ && cp art/out/scenes/cs_*.png public/images/ && node -e \"require('fs').writeFileSync('art/version.json', JSON.stringify({ version: Date.now().toString(36) }) + '\\n')\"",
+        "art": "node ${PXL:-$HOME/.claude/skills/pxl-pixel-art/bin/pxl.js} build art/main.px.js --out art/out --no-preview && mkdir -p static/images && cp art/out/atlas.png art/out/atlas.json art/out/landmarks*.png art/out/landmarks*.json art/out/houses_*.png art/out/houses_*.json art/out/ground_*.png art/out/ground_*.json static/images/ && cp art/out/scenes/cs_*.png static/images/ && node -e \"require('fs').writeFileSync('art/version.json', JSON.stringify({ version: Date.now().toString(36) }) + '\\n')\"",
         "art:watch": "node ${PXL:-$HOME/.claude/skills/pxl-pixel-art/bin/pxl.js} serve art/main.px.js --out art/out",
         "test": "vite build && node tests/run.mjs",
         "mapa": "node scripts/mapa.mjs",
-        "tree": "node scripts/tree.mjs > docs/rozhodovaci-strom.html"
+        "vysky": "test -x .venv/bin/python || (python3.14 -m venv .venv && .venv/bin/pip install -q \"laspy[lazrs]\" numpy pyproj); .venv/bin/python scripts/vysky.py hlavak --stahnout && .venv/bin/python scripts/vysky.py vaclavak --stahnout && .venv/bin/python scripts/vysky.py staromak --stahnout && .venv/bin/python scripts/vysky.py most --stahnout && .venv/bin/python scripts/vysky.py malastrana --stahnout && .venv/bin/python scripts/vysky.py hrad --stahnout",
+        "strechy": "test -x .venv/bin/python || (python3.14 -m venv .venv && .venv/bin/pip install -q \"laspy[lazrs]\" numpy pyproj pillow); .venv/bin/python scripts/strechy.py hlavak && .venv/bin/python scripts/strechy.py vaclavak && .venv/bin/python scripts/strechy.py staromak && .venv/bin/python scripts/strechy.py most && .venv/bin/python scripts/strechy.py malastrana && .venv/bin/python scripts/strechy.py hrad",
+        "osm": "node scripts/osm.mjs hlavak && node scripts/osm.mjs vaclavak && node scripts/osm.mjs staromak && node scripts/osm.mjs most && node scripts/osm.mjs malastrana && node scripts/osm.mjs hrad && npm run art",
+        "tree": "node scripts/tree.mjs > docs/rozhodovaci-strom.html",
+        "postavy": "vite build && node scripts/postavy.mjs"
     },
     "dependencies": {
         "phaser": "^3.90.0",

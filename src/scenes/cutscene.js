@@ -13,7 +13,7 @@ export class CutsceneScene extends Phaser.Scene {
     }
 
     init(data) {
-        this.shots = CUTSCENES[data.key] ?? [];
+        this.shots = data.shots ?? CUTSCENES[data.key] ?? [];
         this.onDone = data.onDone;
         this.shotIndex = 0;
         this.lineIndex = 0;

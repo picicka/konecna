@@ -1,0 +1,34 @@
+{
+ "frames": {
+  "lm_tyn": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 832,
+    "h": 1016
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 832,
+    "h": 1016
+   },
+   "sourceSize": {
+    "w": 832,
+    "h": 1016
+   }
+  }
+ },
+ "meta": {
+  "app": "pxl",
+  "image": "landmarks_sm_tyn.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 832,
+   "h": 1016
+  },
+  "scale": "1"
+ }
+}

@@ -56,6 +56,20 @@ export const button = (scene, x, y, width, height, label, onPress, options = {})
     }).setOrigin(0, 0.5);
     if (options.center) caption.setX(0).setOrigin(0.5, 0.5).setAlign('center');
     container.add([box, caption]);
+    // Ikona vlastnosti (Ruka, Ústa, Oko) vpravo na tlačítku, vedle ní požadovaná úroveň: volba, která na vlastnosti stojí.
+    if (options.icon) {
+        const icon = scene.add.image(width / 2 - 12, 0, 'atlas', options.icon).setOrigin(1, 0.5).setScale(2);
+        container.add(icon);
+        let badgeW = 0;
+        if (options.badge !== undefined) {
+            const badge = scene.add.text(width / 2 - 50, 0, String(options.badge), {
+                fontFamily: FONT_BODY, fontSize: `${options.fontSize ?? SIZE_BODY}px`, color: options.disabled ? CRT.red : CRT.amber, resolution: 1,
+            }).setOrigin(1, 0.5);
+            container.add(badge);
+            badgeW = badge.width + 12;
+        }
+        caption.setWordWrapWidth(width - 28 - 44 - Math.max(badgeW, options.badge !== undefined ? 36 : 0));
+    }
     container.setSize(width, height);
     container.box = box;
     container.caption = caption;
@@ -109,10 +123,10 @@ export const ensureWalk = (scene, key, frames = 4) => {
 };
 
 // Vypínač zvuku; stav drží sound.js v localStorage.
-export const soundButton = (scene, x, y, depth = 50) => {
+export const soundButton = (scene, x, y, depth = 50, width = 160) => {
     const sound = scene.registry.get('sound');
     const label = () => (sound.enabled ? 'ZVUK: ANO' : 'ZVUK: NE');
-    const control = button(scene, x, y, 160, 36, label(), () => {
+    const control = button(scene, x, y, width, 36, label(), () => {
         sound.unlock();
         sound.toggle();
         control.caption.setText(label());

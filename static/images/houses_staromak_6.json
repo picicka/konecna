@@ -1,0 +1,454 @@
+{
+ "frames": {
+  "hp6_staromak_2_1_6mta_greynf": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 512
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 512
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 512
+   }
+  },
+  "hp6_staromak_2_2_5mta_greynf": {
+   "frame": {
+    "x": 193,
+    "y": 0,
+    "w": 256,
+    "h": 500
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 500
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 500
+   }
+  },
+  "hp6_staromak_1_3_4pta_greynf": {
+   "frame": {
+    "x": 450,
+    "y": 0,
+    "w": 256,
+    "h": 448
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 448
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 448
+   }
+  },
+  "hp6_staromak_2_1_1pta_greynf": {
+   "frame": {
+    "x": 707,
+    "y": 0,
+    "w": 192,
+    "h": 268
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 268
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 268
+   }
+  },
+  "hp6_staromak_3_1_2pta_greynf": {
+   "frame": {
+    "x": 900,
+    "y": 0,
+    "w": 256,
+    "h": 344
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 344
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 344
+   }
+  },
+  "hp6_staromak_3_1_4fpl_greynf": {
+   "frame": {
+    "x": 0,
+    "y": 513,
+    "w": 256,
+    "h": 400
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 400
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 400
+   }
+  },
+  "hp6_staromak_4_2_5mpl_greynf": {
+   "frame": {
+    "x": 257,
+    "y": 513,
+    "w": 384,
+    "h": 564
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 384,
+    "h": 564
+   },
+   "sourceSize": {
+    "w": 384,
+    "h": 564
+   }
+  },
+  "hp6_staromak_2_2_1pta_greynf": {
+   "frame": {
+    "x": 642,
+    "y": 513,
+    "w": 256,
+    "h": 308
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 308
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 308
+   }
+  },
+  "hp6_staromak_3_2_4pta_greynf": {
+   "frame": {
+    "x": 899,
+    "y": 513,
+    "w": 320,
+    "h": 472
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 320,
+    "h": 472
+   },
+   "sourceSize": {
+    "w": 320,
+    "h": 472
+   }
+  },
+  "hp6_staromak_2_2_5msv_greynf": {
+   "frame": {
+    "x": 1220,
+    "y": 513,
+    "w": 256,
+    "h": 500
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 500
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 500
+   }
+  },
+  "hp6_staromak_1_3_6msv_greynf": {
+   "frame": {
+    "x": 0,
+    "y": 1078,
+    "w": 256,
+    "h": 544
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 544
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 544
+   }
+  },
+  "hp6_staromak_2_2_5mpl_greynf": {
+   "frame": {
+    "x": 257,
+    "y": 1078,
+    "w": 256,
+    "h": 500
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 500
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 500
+   }
+  },
+  "hp6_staromak_2_1_5ppl_greynf": {
+   "frame": {
+    "x": 514,
+    "y": 1078,
+    "w": 192,
+    "h": 444
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 444
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 444
+   }
+  },
+  "hp6_staromak_3_2_2pta_greynf": {
+   "frame": {
+    "x": 707,
+    "y": 1078,
+    "w": 320,
+    "h": 384
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 320,
+    "h": 384
+   },
+   "sourceSize": {
+    "w": 320,
+    "h": 384
+   }
+  },
+  "hp6_staromak_3_1_1pta_greynf": {
+   "frame": {
+    "x": 1028,
+    "y": 1078,
+    "w": 256,
+    "h": 300
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 300
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 300
+   }
+  },
+  "hp6_staromak_3_1_6msv_greynf": {
+   "frame": {
+    "x": 0,
+    "y": 1623,
+    "w": 256,
+    "h": 544
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 544
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 544
+   }
+  },
+  "hp6_staromak_2_1_3p_greynf": {
+   "frame": {
+    "x": 257,
+    "y": 1623,
+    "w": 192,
+    "h": 356
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 356
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 356
+   }
+  },
+  "hp6_staromak_4_1_4p_greynf": {
+   "frame": {
+    "x": 450,
+    "y": 1623,
+    "w": 320,
+    "h": 464
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 320,
+    "h": 464
+   },
+   "sourceSize": {
+    "w": 320,
+    "h": 464
+   }
+  },
+  "hp6_staromak_3_1_5p_greynf": {
+   "frame": {
+    "x": 771,
+    "y": 1623,
+    "w": 256,
+    "h": 476
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 476
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 476
+   }
+  },
+  "hp6_staromak_1_2_2p_greynf": {
+   "frame": {
+    "x": 1028,
+    "y": 1623,
+    "w": 192,
+    "h": 320
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 320
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 320
+   }
+  },
+  "hp6_staromak_3_1_3p_greynf": {
+   "frame": {
+    "x": 0,
+    "y": 2168,
+    "w": 256,
+    "h": 388
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 388
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 388
+   }
+  },
+  "hp6_staromak_1_2_1p_greynf": {
+   "frame": {
+    "x": 257,
+    "y": 2168,
+    "w": 192,
+    "h": 276
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 276
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 276
+   }
+  }
+ },
+ "meta": {
+  "app": "pxl",
+  "image": "houses_staromak_6.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1476,
+   "h": 2556
+  },
+  "scale": "1"
+ }
+}

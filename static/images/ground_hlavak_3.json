@@ -1,0 +1,34 @@
+{
+ "frames": {
+  "gr_hlavak_2_4": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "sourceSize": {
+    "w": 1016,
+    "h": 1016
+   }
+  }
+ },
+ "meta": {
+  "app": "pxl",
+  "image": "ground_hlavak_3.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1016,
+   "h": 1016
+  },
+  "scale": "1"
+ }
+}

@@ -1,0 +1,74 @@
+{
+ "frames": {
+  "lm_shed_gable": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 640,
+    "h": 548
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 640,
+    "h": 548
+   },
+   "sourceSize": {
+    "w": 640,
+    "h": 548
+   }
+  },
+  "lm_shed_a": {
+   "frame": {
+    "x": 641,
+    "y": 0,
+    "w": 640,
+    "h": 548
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 640,
+    "h": 548
+   },
+   "sourceSize": {
+    "w": 640,
+    "h": 548
+   }
+  },
+  "lm_shed_b": {
+   "frame": {
+    "x": 0,
+    "y": 549,
+    "w": 640,
+    "h": 548
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 640,
+    "h": 548
+   },
+   "sourceSize": {
+    "w": 640,
+    "h": 548
+   }
+  }
+ },
+ "meta": {
+  "app": "pxl",
+  "image": "landmarks3.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1281,
+   "h": 1097
+  },
+  "scale": "1"
+ }
+}

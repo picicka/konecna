@@ -1,0 +1,34 @@
+{
+ "frames": {
+  "lm_radnice": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 832,
+    "h": 1076
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 832,
+    "h": 1076
+   },
+   "sourceSize": {
+    "w": 832,
+    "h": 1076
+   }
+  }
+ },
+ "meta": {
+  "app": "pxl",
+  "image": "landmarks_sm_radnice.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 832,
+   "h": 1076
+  },
+  "scale": "1"
+ }
+}
