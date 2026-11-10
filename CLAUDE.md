@@ -98,6 +98,7 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
   po účinku volby (`WorldScene.refreshStops`), takže je vidět, co se stalo. Brány (`gates`) jsou dlaždice zavřené,
   dokud neplatí podmínka.
 - Přestup hledá filmeček `cesta_<odkud>_<kam>` (loďka, pěšky), jinak `metro_<kam>`; příchod je `arrivals[odkud]` místa.
+- Co se stalo, nikdo neví: v textech žádný „pád“, jen opisy („ten den“, „od té doby“, „předtím“, 14:37) a pojmenování skupin (Metro „mimořádná událost“, Loďkaři „velká voda“, Tržiště „krach“). Příčina se skládá z útržků, viz `docs/pribeh.md`.
 - Konec spouští účinek `ending` (`trziste`, `lodkari`, nebo `hrad` = spočítat ze stavu v `resolveEnding`, `src/state.js`).
   `EndingScene` pustí snímky konce (`ENDINGS[konec].shots`) a epilog `EPILOG` (snímek za každé místo, kde hráčka
   něco změnila), pak závěrečnou obrazovku. Průchod `npm test` hraje celou hru až ke konci Řád.

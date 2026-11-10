@@ -6,6 +6,8 @@ v rozhodovacím stromu. Tón: cynismus na situace, ne na lidi. Vykání hráčc
 
 ## Páteř
 
+**Co se stalo, nikdo neví.** Ve hře se neříká „pád“ ani nic jiného s názvem. Lidi to obcházejí: „ten den“, „tenkrát“, „od té doby“, „předtím“, „než se to stalo“. Pevný bod jsou hodiny: všechno se zastavilo ve 14:37. Každá skupina tomu říká po svém: Metro „mimořádná událost“, Loďkaři „velká voda“, Tržiště „krach“. Příčinu skládá hráčka z útržků a celá se řekne až na Hradě.
+
 - **Příčina.** Kanál Dunaj–Odra–Labe se po letech řečí opravdu začal kopat a dostal „pražskou větev“: splavnění Vltavy
   a nový kanál přes Letnou. Zároveň se pod Hradem razilo metro E (Hrad – Letná). Štít narazil na čerstvě napuštěný kanál,
   který na výkresech metra nebyl, protože byl na jiném ministerstvu. Voda šla do tunelu, tunel pod Staré Město, Vltava
@@ -21,7 +23,7 @@ v rozhodovacím stromu. Tón: cynismus na situace, ne na lidi. Vykání hráčc
 
 ## Hrdinka
 
-Pošťačka. Bez jména, všichni jí říkají podle uniformy. Před pádem roznášela na Jindřišské, po pádu roznáší dál,
+Pošťačka. Bez jména, všichni jí říkají podle uniformy. Předtím roznášela na Jindřišské a roznáší dál,
 protože jí nikdo neřekl, že nemá. Uniforma projde všude: lidi věří poště víc než státu, hlavně teď, když není ani jedno,
 a všichni se jí ptají, kdy přijde důchod. Taška přes rameno, v ní zásilka a dopisy, které nikdo nečeká. Tři atributy:
 Ruka, Ústa, Oko.
@@ -58,8 +60,8 @@ a nádražní hodiny, které stojí na 14:37.
 
 ### Hlavní linka
 
-1. Pošťačka vystoupí z metra se starým dopisem v tašce, nedoručeným od pádu. Adresát: výpravčí, Hlavní nádraží. Je to
-   jeho výpověď z ČD, datovaná den před pádem. „Výpověď. Tak to jsem rád, že pošta jede.“ Tutoriál doručení.
+1. Pošťačka vystoupí z metra se starým dopisem v tašce, nedoručeným od toho dne. Adresát: výpravčí, Hlavní nádraží. Je to
+   jeho výpověď z ČD, datovaná den předtím. „Výpověď. Tak to jsem rád, že pošta jede.“ Tutoriál doručení.
 2. Fanta se doslechne, že v Sherwoodu chodí uniforma, a pozve ji na tržiště. Nabídka: donést krabičku na Hrad,
    20 jízdenek hned, 200 při předání. „Pošťačku nikdo nezastaví. Všichni čekají na důchod.“ Co je v krabičce, neřekne.
 3. Odjezd metrem: potřebuje jízdenku (koupit, nebo z vedlejšího úkolu) a projít otázkou strojvedoucího „Co vezete?“
@@ -77,7 +79,7 @@ a nádražní hodiny, které stojí na 14:37.
 
 Mřížka je natočená podél Wilsonovy (osa a 205°, b 295°). Hlavák je vícepatrový: nádraží s kolejemi vlevo (b 0–10),
 Fantova budova b 11–14 na podnoži o patro výš (přízemí ve výšce magistrály, na štítu přeškrtnuté HLAVNÍ a sprejem FANTOVO NÁDRAŽÍ), před ní brutalistní odbavovací hala z let 1972–1979 s magistrálou na střeše (b 15–20, magistrála pokračuje ve stejné výšce po estakádě přes celou mapu), plácek před halou se třemi prosklenými schodišťovými věžemi s kupolí, kterými se vyjde na magistrálu (b 21–27); na magistrále jsou vraky aut a autobusů a propadlina, Sherwood b 28–38. Na severu (a 0–17) mapa sahá přes tramvajovou trať podél severního okraje Vrchlického sadů se zastávkou Hlavní nádraží (dva vraky T3 na zastávce, třetí na kusé koleji u východního okraje parku); blok za tratí je vybombardovaný na přízemí. Hala: prosklená
-stěna, za ní červené stropy s odhalenými rozvody, souvislý betonový pás stropní desky, kovové portály; po pádu jsou
+stěna, za ní červené stropy s odhalenými rozvody, souvislý betonový pás stropní desky, kovové portály; teď jsou
 na magistrále vraky a v jednom místě je vozovka propadlá do haly. Zdroj pravdy je `src/places/hlavak.js`, snímky
 `docs/mapa/Z*.png`.
 
@@ -258,7 +260,7 @@ a nikdo tam nic nepřestavěl.
 ## Místo 5: Malá Strana a Nerudovka
 
 Mapa z OSM přijde. Věc k poznání: Malá Strana je suchá a nikdo ji nepřestavěl, což je po třech zatopených místech samo
-o sobě k poznání. Nad Nerudovkou stojí Hradní stráž v plné parádě a nikoho nepouští, od pádu bez střídání: v poledne
+o sobě k poznání. Nad Nerudovkou stojí Hradní stráž v plné parádě a nikoho nepouští, celý rok bez střídání: v poledne
 si vymění místa mezi sebou. Ze zahrady německého velvyslanectví vylezl Trabant na nohách, Černého Quo vadis, a od té
 doby bloudí Malou Stranou, hledá, kdo mu dá benzín, a nadává na svého autora. Černý je podle Trabanta idiot: postavil
 ho na nohy a nedal mu volant, a tohle má být umění.
@@ -268,7 +270,7 @@ ho na nohy a nedal mu volant, a tohle má být umění.
 - **Stráž**, dva kluci v uniformě u brány Ke Hradu. Rozkaz zní nikoho nepouštět a nikdo ho neodvolal, protože není
   kdo. Salutují čemukoli s diplomatickou značkou.
 - **Paní z Nerudovky**, postava, která se pamatuje. Osmdesát let v domě U Dvou slunců, pamatuje tři povodně a říká,
-  že Hrad je zavřený podruhé a stráž jsou ti samí kluci. Viděla, co jelo nahoru noc před pádem.
+  že Hrad je zavřený podruhé a stráž jsou ti samí kluci. Viděla, co jelo nahoru tu noc předtím.
 - **Kastelán**, chodí z Hradu dolů nakupovat: sochy, jídlo, umění. Jediný, kdo bránou projde oběma směry. Tržiště
   s ním obchoduje, ví o něm Fantova neteř.
 - **Velvyslanec bez země**, sedí na velvyslanectví, odkud se nikdo neozývá, a dál vydává víza. Za jízdenky nebo
@@ -281,7 +283,7 @@ ho na nohy a nedal mu volant, a tohle má být umění.
 
 1. Z Mostecké na Malostranské náměstí. Pokud odmítla neteř, čekají vymahači: boj, nebo Ústa a zaplatit jim z toho,
    co ušetřila.
-2. Nerudovkou nahoru k bráně. Stráž odmítne. Čtvrtý útržek od paní z Nerudovky: noc před pádem jela nahoru kolona
+2. Nerudovkou nahoru k bráně. Stráž odmítne. Čtvrtý útržek od paní z Nerudovky: tu noc předtím jela nahoru kolona
    aut Kanceláře kanálu a ráno se Hrad zavřel. Hráčka ví, kdo je uvnitř, i když ne jménem.
 3. Tři cesty dovnitř, podle toho, komu věřila. Metro: propustka úřední osoby, pokud se nechala zapsat u dispečerky.
    Tržiště: Kastelán ji vezme nahoru jako zásilku, pokud zásilku ještě má a neteř o ní poslala zprávu. Nikomu: Trabant.
@@ -292,7 +294,7 @@ ho na nohy a nedal mu volant, a tohle má být umění.
 
 ### Vedlejší úkoly
 
-- **Střídání stráže** (stráž): od pádu nejedli nic, co by nebylo z automatu. Donést jídlo od velvyslance nebo
+- **Střídání stráže** (stráž): celý rok nejedli nic, co by nebylo z automatu. Donést jídlo od velvyslance nebo
   z tržiště. Odměna: řeknou, kdy chodí Kastelán, a jeden z nich na minutu nevidí, což je cesta pro Oko
   po Zámeckých schodech.
 - **Quo vadis** (Trabant): najít ho (je slyšet, nevidět), sehnat směs, nenechat se kopnout. Odměna je přestup sám,
@@ -331,7 +333,7 @@ a některé úkoly se bez návratu nedají dokončit:
 ## Místo 6: Hrad
 
 Mapa: spíš ručně skládaný landmark než generátor. Věc k poznání: na Hradě se svítí, jediné světlo v Praze kromě
-žárovky na Kampě. Uvnitř není vláda, je tam Kancelář kanálu: nastěhovala se na Hrad noc před pádem, protože odtamtud
+žárovky na Kampě. Uvnitř není vláda, je tam Kancelář kanálu: nastěhovala se na Hrad tu noc předtím, protože odtamtud
 je na vodu nejlíp vidět. Na třetím nádvoří stojí stavební buňka metra E s jedinou čtečkou záznamníku štítu. Ve Zlaté
 uličce jsou v domečcích uskladněné sochy z Karlova mostu, každá s cenovkou, kterou nikdo nezaplatí.
 
@@ -340,7 +342,7 @@ uličce jsou v domečcích uskladněné sochy z Karlova mostu, každá s ceno
 - **Ředitel Kanceláře kanálu**, ten, kdo nařídil razit dál. Ne zlý, jen přesvědčený. Kanál je dílo století a voda
   ve Starém Městě je přechodná fáze. Exprezidenta cituje líp než Admirál, protože ho znal osobně. Má generátor,
   ochranku a plán na druhou větev.
-- **Průvodkyně**, postava, která se pamatuje. Od pádu provází zavřeným Hradem nikoho, v jedenáct a ve dvě. Pošťačku
+- **Průvodkyně**, postava, která se pamatuje. Celý rok provází zavřeným Hradem nikoho, v jedenáct a ve dvě. Pošťačku
   vezme jako první skupinu po roce: „Vlevo katedrála, vpravo konec světa, dotazy až na závěr.“
 - **Ochranka kanálu**, dva muži v reflexních vestách Kanceláře. Poslední lidský boj, nebo Ústa: jsou placení
   v jízdenkách a rok nedostali výplatu.
@@ -368,7 +370,7 @@ uličce jsou v domečcích uskladněné sochy z Karlova mostu, každá s ceno
 
 ### Vedlejší úkol, jediný
 
-- **Dotazy na závěr** (průvodkyně): odpovědět na tři otázky o Praze po pádu, na které hráčka zná odpověď jen z toho,
+- **Dotazy na závěr** (průvodkyně): odpovědět na tři otázky o tom, jak to v Praze chodí teď, na které hráčka zná odpověď jen z toho,
   co cestou viděla (Orloj, kůň, Nepomucký). Odměna: průvodkyně otevře vyhlídku a hra ukáže nové koryto celé,
   od Hlaváku po Vyšehrad, jako poslední obrázek před koncem.
 
@@ -394,7 +396,7 @@ a text, ne mapa.
 1. Kuřačka na vodě: „největší vodní dílo od Zemana“.
 2. Potápěčka: voda přišla ze západu tunelem, který na mapě metra není.
 3. Most: sochy kupuje Hrad, někdo nahoře má na všechno.
-4. Paní z Nerudovky: kolona Kanceláře kanálu noc před pádem, ráno zavřený Hrad.
+4. Paní z Nerudovky: kolona Kanceláře kanálu tu noc předtím, ráno zavřený Hrad.
 5. Průvodkyně: štít stál dva dny, geologové psali, ředitel podepsal.
 
 ## Boje (5–8 za hru, většinu jde obejít)

@@ -22,7 +22,7 @@ Samostatný projekt vedle Benefit: postapokalyptická pixel‑artová adventura 
 
 Větší než meteorit do muzea a hlavně konkrétní: každé místo má jednu změnu, kterou Pražák pozná na první pohled. Návrhy:
 
-- Vltava po pádu teče jinudy, Staré Město je zatopené po první patro, po Pařížské se jezdí na loďkách.
+- Vltava teče jinudy, Staré Město je zatopené po první patro, po Pařížské se jezdí na loďkách.
 - Nuselský most je rozlomený, na Pankrác se chodí po laně.
 - Žižkovská věž leží přes Ohradu jako spadlá anténa, miminka utekla.
 - Hlavák funguje jako tržiště, ve Fantově budově se obchoduje, Sherwood je skutečný les.

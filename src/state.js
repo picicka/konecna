@@ -85,7 +85,7 @@ export const resolveEnding = (state, key) => {
     return trustedFaction(state) === 'metro' ? 'metro_bez' : 'trziste';
 };
 
-// Konec podle důvěry; při shodě vyhrává tržiště (obchod je výchozí stav Prahy po pádu).
+// Konec podle důvěry; při shodě vyhrává tržiště (obchod je výchozí stav Prahy).
 export const trustedFaction = (state) => Object.entries(state.trust).sort((p, q) => q[1] - p[1])[0][0];
 
 export const save = (state) => {

@@ -78,7 +78,7 @@ export const HLAVAK = {
         { from: { a: 34, b: 21, L: 0 }, to: { a: 34, b: 10, L: 0 } },
         { from: { a: 41, b: 15, L: 1 }, to: { a: 41, b: 10, L: 0 }, door: 'fanta' },
     ],
-    // Druhy stromů pro stromy z OSM a dosázené v parku (víc holých, je po pádu); keře, harampádí a boudy podle pravidel.
+    // Druhy stromů pro stromy z OSM a dosázené v parku (víc holých, rok bez údržby); keře, harampádí a boudy podle pravidel.
     props: { trees: ['tree_bare', 'tree_a', 'tree_bare', 'tree_c', 'tree_bare', 'tree_a'],
         // harampádí: suť, sudy, pneumatiky na chodnících, dvorech a v parku, boudy z plechu na hlíně v parku
         bush: 0.12, bushes: ['bush_a', 'bush_b', 'bush_c'],

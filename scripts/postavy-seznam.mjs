@@ -4,7 +4,7 @@
 const SWAP = 'Vlastní kresba sadou art/lide.px.js (3/4 pohled, čtyři snímky v klidu) a portrét 56 × 56; první verze k připomínkám.';
 export const ROSTER = [
     { place: 'vsude', sprite: 'hero', face: 'face_hero', name: 'Pošťačka', faction: 'hrdinka',
-        about: 'Bez jména, všichni jí říkají podle uniformy. Před pádem roznášela na Jindřišské, po pádu roznáší dál, protože jí nikdo neřekl, že nemá.',
+        about: 'Bez jména, všichni jí říkají podle uniformy. Předtím roznášela na Jindřišské a roznáší dál, protože jí nikdo neřekl, že nemá.',
         look: 'Modrá poštovní uniforma vybledlá do šeda, kabát po kolena, kožená taška přes rameno, dlouhé tmavé vlasy po ramena, pevné boty. Unavená, ne hrdinská.',
         now: 'Vlastní kresba sadou art/lide.px.js, čtyři snímky chůze, portrét 56 × 56; první verze k připomínkám.' },
     // —— Hlavák ——
@@ -76,7 +76,7 @@ export const ROSTER = [
         about: 'Čekají na Malostranském náměstí, pokud pošťačka odmítla Fantovu neteř. Jediný lidský boj, kterému se nejde vyhnout jinak než Hubou.',
         look: 'Dva chlapi v teplákovkách a koženkových bundách, řetězy, baseballka s Fantovou cenovkou.', now: SWAP },
     { place: 'malastrana', sprite: 'pani', face: 'face_pani', dialog: 'pani', name: 'Paní z Nerudovky', faction: 'postava, která se pamatuje',
-        about: 'Osmdesát let v domě U Dvou slunců, pamatuje tři povodně. Viděla, co jelo nahoru noc před pádem.',
+        about: 'Osmdesát let v domě U Dvou slunců, pamatuje tři povodně. Viděla, co jelo nahoru tu noc předtím.',
         look: 'Drobná stará paní v zástěře a šátku, hůlka, košík, ostrý pohled.', now: SWAP },
     { place: 'malastrana', sprite: 'velvyslanec', face: 'face_velvyslanec', dialog: 'velvyslanec', faction: 'neutrální',
         about: 'Sedí na velvyslanectví, odkud se nikdo neozývá, a dál vydává víza. Za zprávy z domova vydá propustku s razítkem.',
@@ -95,7 +95,7 @@ export const ROSTER = [
         look: 'Hejno vypasených pražských holubů, jeden kulhá a je nejagresivnější.', now: 'Zástupný sprite.' },
     // —— Hrad ——
     { place: 'hrad', sprite: 'pruvodkyne', face: 'face_pruvodkyne', dialog: 'pruvodkyne', faction: 'postava, která se pamatuje',
-        about: 'Od pádu provází zavřeným Hradem nikoho, v jedenáct a ve dvě. Pošťačku vezme jako první skupinu po roce.',
+        about: 'Celý rok provází zavřeným Hradem nikoho, v jedenáct a ve dvě. Pošťačku vezme jako první skupinu po roce.',
         look: 'Žena v tmavomodrém kostýmku průvodkyně, deštník zdvižený nad hlavou, jmenovka, neochvějný úsměv.', now: SWAP },
     { place: 'hrad', sprite: 'ochranka', face: 'face_ochranka', dialog: 'ochranka', name: 'Ochranka kanálu', faction: 'Kancelář kanálu · boj',
         about: 'Dva muži v reflexních vestách Kanceláře kanálu. Placení v jízdenkách, rok nedostali výplatu.',

@@ -344,7 +344,7 @@ export class HudScene extends Phaser.Scene {
         this.quests = container;
     }
 
-    // Tvorba postavy na začátku hry: velká pošťačka a tři volby, kým byla před pádem; vybraná vlastnost +1.
+    // Tvorba postavy na začátku hry: velká pošťačka a tři volby, kým byla, než se to stalo; vybraná vlastnost +1.
     // Jde přes panel a tlačítka dialogu, takže funguje klávesami 1–3 a svět mezitím stojí.
     createHero() {
         return new Promise((resolve) => {

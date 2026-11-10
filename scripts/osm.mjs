@@ -138,7 +138,7 @@ const ROAD_KIND = { footway: 'f', path: 'f', steps: 'f', pedestrian: 'f', cyclew
 ways.filter((w) => w.tags.highway && ROAD_WIDTH[w.tags.highway] && !underground(w.tags)).forEach((w) => stroke(polygon(w), ROAD_WIDTH[w.tags.highway], ROAD_KIND[w.tags.highway] ?? 'r'));
 // Mosty se skutečnou šířkou (Karlův most): pás dlažby přes koryto.
 (place.bridges ?? []).forEach((br) => ways.filter((w) => w.tags.name === br.name && w.tags.bridge === 'yes').forEach((w) => stroke(polygon(w), br.width + 1, 'p')));
-// Nádražní haly a zastřešení nástupišť: po pádu z nich zbyly jen železné oblouky, takže se negenerují jako domy.
+// Nádražní haly a zastřešení nástupišť: po tom, co se stalo, z nich zbyly jen železné oblouky, takže se negenerují jako domy.
 // Pod nimi zůstávají koleje (t), zbytek je nástupiště (n). Oblouky kreslí WorldScene z data.halls.
 const isHall = (w) => w.tags.building === 'roof' || (w.tags.building === 'train_station' && !(place.skip ?? []).includes(w.tags.name));
 const halls = [];

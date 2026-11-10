@@ -50,7 +50,7 @@ try {
     await cutsceneThrough();
     await waitScene('world');
     await waitScene('hud');
-    // Tvorba postavy: kým byla před pádem, Oko +1 (klávesa 3).
+    // Tvorba postavy: kým byla, než se to stalo, Oko +1 (klávesa 3).
     await page.waitForFunction(() => window.konecna.scene.getScene('hud').panel, null, { timeout: 10000 });
     await page.waitForTimeout(300);
     await shot('02b-tvorba');
