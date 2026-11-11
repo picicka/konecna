@@ -102,7 +102,8 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
 - Konec spouští účinek `ending` (`trziste`, `lodkari`, nebo `hrad` = spočítat ze stavu v `resolveEnding`, `src/state.js`).
   `EndingScene` pustí snímky konce (`ENDINGS[konec].shots`) a epilog `EPILOG` (snímek za každé místo, kde hráčka
   něco změnila), pak závěrečnou obrazovku. Průchod `npm test` hraje celou hru až ke konci Řád.
-- Po každé změně dialogů `npm run tree` a průchod `npm test`, který hraje hlavní linku cestou bez boje a jeden boj.
+- `npm run slepe` (`scripts/slepe.mjs`) hledá slepé uličky bez průchodu hrou: náhodná hráčka utrácí jízdenky a prohrává zkoušky, řešitel po každém kroku zkouší dohrát ke konci. Vypíše podezřelé stavy (s příčinou, třeba chybí jízdenky) a volby, které nepadly ani jednou.
+- Po každé změně dialogů `npm run tree` a průchod `npm test`, který hraje hlavní linku cestou bez boje a jeden boj.
 - Grafika místa (díly země a domy) se nahrává až při vstupu na místo (`WorldScene.preload`), grafika ostatních míst se
   uvolní. Listy domů `houses_<místo>_<n>` mají kolem 24 spritů, počet je v `data/<místo>.json` (`houseSheets`).
 

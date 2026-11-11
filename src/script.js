@@ -373,6 +373,7 @@ export const DIALOGS = {
             jizdenka: { say: ['Jízdenku.'], choices: [
                 { id: 'platim', label: 'Tady je jízdenka.', if: { tickets: 1 }, else: 'Chce to aspoň jednu jízdenku.', do: { tickets: -1 }, next: 'naklad' },
                 { id: 'jizdni_rad', label: 'Vím, kdy doopravdy jedete. Ve 14:37.', if: { flag: 'jizdni_rad' }, else: 'Čas odjezdu zná jen výpravčí, až mu půjdou hodiny.', reply: ['…To vám řekl výpravčí. Dobře. Kdo zná jízdní řád, jezdí zadarmo. Předpisy.'], next: 'naklad' },
+                { id: 'odpracovat', label: 'Nemám. Můžu si jízdu odpracovat?', if: { poor: 1, noFlag: 'jizdni_rad' }, else: 'Jen bez jízdenky.', reply: ['Odpracovat. Dobře. V tunelu mi zase vypadla pojistka. Vy budete svítit, já měnit. Kdo svítí, jede.', 'Tady je baterka. Nemiřte mi s ní do očí.'], next: 'naklad' },
                 { id: 'nemam', label: 'Nemám.', if: { poor: 1, noFlag: 'jizdni_rad' }, else: 'Jen bez jízdenky.', reply: ['Bez jízdenky nejezdí nikdo. Ani pošta. Trafikantka v parku vám poradí, Fanta zaplatí.'], end: true },
             ] },
             naklad: { say: ['A co vezete? Pravdu.'], choices: [
@@ -596,6 +597,7 @@ export const DIALOGS = {
                 { id: 'hak', label: 'Hák je venku.', if: { flag: 'hak_venku', quest: { hak: 'nest' } }, else: 'Až bude hák z výlohy venku.', do: { quest: { hak: 'done' }, give: ['falesna', 'kabat'], xp: 2 },
                     reply: ['Můj hák! Vy jste poklad. Tady, za odměnu.', 'Kabát, originál. Nepromokavý, mokřejší už nebude. A tahle krabička: vylovil jsem ji v butiku s elektronikou a vypadá jako ta vaše. Kdyby ji po vás někdo chtěl, dejte mu tuhle. Pozná to, až ji otevře.'] },
                 { id: 'kolo', label: 'Máte ozubené kolo? Pro Orlojníka. (3 jízdenky)', if: { tickets: 3, noItem: 'kolo', quest: { apostolove: 'nest' } }, else: 'Kolo má smysl kupovat pro Orlojníka a za tři jízdenky.', do: { tickets: -3, give: 'kolo' }, reply: ['Z hodinek z butiku, švýcarské. Hodinky jsou mokré, kolečko suché. Vodotěsné, to je ten luxus.'] },
+                { id: 'kolo_hak', label: 'Nemáte ozubené kolo? Pro Orlojníka. Za ten hák.', if: { noItem: 'kolo', quest: { hak: 'done', apostolove: 'nest' } }, else: 'Kolo za hák dá lovec, až mu ho vrátíte, a jen pro Orlojníka.', do: { give: 'kolo' }, reply: ['Za hák? Za hák bych vám dal i ty hodinky, jenže jsou mokré. Tady je kolečko, švýcarské, suché.'] },
                 { id: 'krabicka', label: 'Ta krabička… vypadá jako moje.', if: { item: 'zasilka' }, else: 'Jen se zásilkou v tašce.', once: true, reply: ['Vidím. Kdo nosí takovou krabičku v poštovní tašce, nenosí ji jen tak. Moje je prázdná. Prázdné věci jsou nejbezpečnější, kvůli nim nikdo nezabíjí.'] },
             ] },
         } },

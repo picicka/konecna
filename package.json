@@ -15,6 +15,7 @@
         "strechy": "test -x .venv/bin/python || (python3.14 -m venv .venv && .venv/bin/pip install -q \"laspy[lazrs]\" numpy pyproj pillow); .venv/bin/python scripts/strechy.py hlavak && .venv/bin/python scripts/strechy.py vaclavak && .venv/bin/python scripts/strechy.py staromak && .venv/bin/python scripts/strechy.py most && .venv/bin/python scripts/strechy.py malastrana && .venv/bin/python scripts/strechy.py hrad",
         "osm": "node scripts/osm.mjs hlavak && node scripts/osm.mjs vaclavak && node scripts/osm.mjs staromak && node scripts/osm.mjs most && node scripts/osm.mjs malastrana && node scripts/osm.mjs hrad && npm run art",
         "tree": "node scripts/tree.mjs > docs/rozhodovaci-strom.html",
+        "slepe": "node scripts/slepe.mjs 1500",
         "postavy": "vite build && node scripts/postavy.mjs"
     },
     "dependencies": {
