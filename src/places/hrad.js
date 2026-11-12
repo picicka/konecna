@@ -1,5 +1,5 @@
 // Hrad: ručně určené prvky nad mapou z OSM (data/hrad.json). Osa a na východ od Matyášovy brány (a ≈ 2) přes druhé
-// a třetí nádvoří, Jiřské náměstí, ke Zlaté uličce (53,8) a vyhlídce Na Opyši (71,23). Katedrála je landmark
+// a třetí nádvoří, Jiřské náměstí, ke Zlaté uličce (53,8) a vyhlídce Na Opyši (73,17) na konci rampy nad svahem. Katedrála je landmark
 // (půdorys L a 12–28, b 13–19). Jediné osvětlené místo v Praze. Příběh a postavy: docs/pribeh.md, místo 6.
 export const HRAD = {
     start: { a: 2, b: 18 },
@@ -13,7 +13,9 @@ export const HRAD = {
         reditel: { npc: { key: 'reditel', a: 23, b: 22 }, approach: { a: 23, b: 21 }, props: [{ key: 'generator', a: 25, b: 21, anim: true }, { key: 'obelisk', a: 24, b: 19 }] },
         ctecka: { npc: { key: 'ctecka', a: 21, b: 22 }, approach: { a: 22, b: 22 }, props: [{ key: 'bunka', a: 21, b: 24 }, { key: 'reflektor', a: 19, b: 23 }] },
         zlata: { npc: { key: 'podstavec_c', a: 53, b: 9 }, approach: { a: 53, b: 8 }, props: [] },
-        vyhlidka: { npc: { key: 'bench', a: 72, b: 23 }, approach: { a: 71, b: 23 }, props: [], hideIf: { noFlag: 'vyhlidka_otevrena' } },
+        vyhlidka: { npc: { key: 'bench', a: 73, b: 17 }, approach: { a: 73, b: 16 }, props: [], hideIf: { noFlag: 'vyhlidka_otevrena' } },
     },
+    // kuriozity na svahu pod Hradem (art/kuriozity.px.js, WorldScene.placeOddities)
+    oddities: [{ on: 'k', keys: ['metronom', 'golem'] }],
     props: { trees: ['tree_a', 'tree_c'], bush: 0.04, bushes: ['bush_a', 'bush_b'], junk: 0.01, junkKeys: ['barrel'], shack: 0 },
 };

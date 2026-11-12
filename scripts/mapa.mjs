@@ -30,8 +30,8 @@ await page.waitForTimeout(400);
 // Každé místo zvlášť: Hlavák bez předpony (Z*, M*), další místa s předponou podle prvního písmene (Václavák VZ*, VM*).
 // [klíč, popis, a, b]: zastavení místa (kamera na postavu) a pak mřížka přes celou mapu.
 const list = [];
-// Předpony: Hlavák bez, Václavák V, Staromák S, most K (Karlův), Malá Strana MS, Hrad H.
-const PREFIX = { hlavak: '', vaclavak: 'V', staromak: 'S', most: 'K', malastrana: 'MS', hrad: 'H' };
+// Předpony: Hlavák bez, Václavák V, Nuselák N, Staromák S, most K (Karlův), Malá Strana MS, Hrad H.
+const PREFIX = { hlavak: '', vaclavak: 'V', nuselak: 'N', staromak: 'S', most: 'K', malastrana: 'MS', hrad: 'H' };
 for (const place of Object.keys(PREFIX)) {
     const prefix = PREFIX[place];
     await run((p) => { const g = window.konecna; g.registry.get('state').place = p; g.scene.stop('hud'); g.scene.start('world'); }, place);

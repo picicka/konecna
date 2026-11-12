@@ -80,7 +80,7 @@
     "h": 356
    }
   },
-  "hp2_hrad_4_1_5p_greencf": {
+  "hp2_hrad_4_1_5p_greencf_t23L8": {
    "frame": {
     "x": 772,
     "y": 0,
@@ -100,29 +100,29 @@
     "h": 508
    }
   },
-  "hp2_hrad_1_1_5p_greencf": {
+  "hp2_hrad_4_1_5p_greynf": {
    "frame": {
     "x": 0,
     "y": 509,
-    "w": 128,
-    "h": 412
+    "w": 320,
+    "h": 508
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 128,
-    "h": 412
+    "w": 320,
+    "h": 508
    },
    "sourceSize": {
-    "w": 128,
-    "h": 412
+    "w": 320,
+    "h": 508
    }
   },
-  "hp2_hrad_2_1_5p_greencf": {
+  "hp2_hrad_2_1_5p_greynf": {
    "frame": {
-    "x": 129,
+    "x": 321,
     "y": 509,
     "w": 192,
     "h": 444
@@ -140,29 +140,29 @@
     "h": 444
    }
   },
-  "hp2_hrad_2_1_3p_ochrenf": {
+  "hp2_hrad_3_1_3p_ochrenf": {
    "frame": {
-    "x": 322,
+    "x": 514,
     "y": 509,
-    "w": 192,
-    "h": 356
+    "w": 256,
+    "h": 388
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 192,
-    "h": 356
+    "w": 256,
+    "h": 388
    },
    "sourceSize": {
-    "w": 192,
-    "h": 356
+    "w": 256,
+    "h": 388
    }
   },
-  "hp2_hrad_3_1_5p_ochrecf": {
+  "hp2_hrad_3_1_5p_ochrenf_t12R8": {
    "frame": {
-    "x": 515,
+    "x": 771,
     "y": 509,
     "w": 256,
     "h": 476
@@ -180,12 +180,12 @@
     "h": 476
    }
   },
-  "hp2_hrad_1_2_3p_greencf": {
+  "hp2_hrad_1_2_5p_ochrecf_t21R8": {
    "frame": {
-    "x": 772,
+    "x": 1028,
     "y": 509,
     "w": 192,
-    "h": 364
+    "h": 452
    },
    "rotated": false,
    "trimmed": false,
@@ -193,19 +193,19 @@
     "x": 0,
     "y": 0,
     "w": 192,
-    "h": 364
+    "h": 452
    },
    "sourceSize": {
     "w": 192,
-    "h": 364
+    "h": 452
    }
   },
-  "hp2_hrad_1_2_3p_greennb": {
+  "hp2_hrad_2_1_3p_greennf": {
    "frame": {
     "x": 0,
-    "y": 986,
+    "y": 1018,
     "w": 192,
-    "h": 364
+    "h": 356
    },
    "rotated": false,
    "trimmed": false,
@@ -213,39 +213,19 @@
     "x": 0,
     "y": 0,
     "w": 192,
-    "h": 364
+    "h": 356
    },
    "sourceSize": {
     "w": 192,
-    "h": 364
+    "h": 356
    }
   },
-  "hp2_hrad_1_3_4p_greencf": {
+  "hp2_hrad_1_1_3p_greynf_t22R16": {
    "frame": {
     "x": 193,
-    "y": 986,
-    "w": 256,
-    "h": 448
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 256,
-    "h": 448
-   },
-   "sourceSize": {
-    "w": 256,
-    "h": 448
-   }
-  },
-  "hp2_hrad_1_1_4p_creamnf": {
-   "frame": {
-    "x": 450,
-    "y": 986,
+    "y": 1018,
     "w": 128,
-    "h": 368
+    "h": 324
    },
    "rotated": false,
    "trimmed": false,
@@ -253,17 +233,57 @@
     "x": 0,
     "y": 0,
     "w": 128,
-    "h": 368
+    "h": 324
    },
    "sourceSize": {
     "w": 128,
-    "h": 368
+    "h": 324
    }
   },
-  "hp2_hrad_1_1_4p_greynf": {
+  "hp2_hrad_4_1_4p_creamnf": {
    "frame": {
-    "x": 579,
-    "y": 986,
+    "x": 322,
+    "y": 1018,
+    "w": 320,
+    "h": 464
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 320,
+    "h": 464
+   },
+   "sourceSize": {
+    "w": 320,
+    "h": 464
+   }
+  },
+  "hp2_hrad_2_1_4p_greynf_t18R8": {
+   "frame": {
+    "x": 643,
+    "y": 1018,
+    "w": 192,
+    "h": 400
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 400
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 400
+   }
+  },
+  "hp2_hrad_1_1_4p_greynf_t23R16": {
+   "frame": {
+    "x": 836,
+    "y": 1018,
     "w": 128,
     "h": 368
    },
@@ -280,10 +300,10 @@
     "h": 368
    }
   },
-  "hp2_hrad_2_1_4p_ochrenf": {
+  "hp2_hrad_2_1_4p_ochrenb": {
    "frame": {
-    "x": 708,
-    "y": 986,
+    "x": 0,
+    "y": 1483,
     "w": 192,
     "h": 400
    },
@@ -302,8 +322,8 @@
   },
   "hp2_hrad_3_1_3p_greennf": {
    "frame": {
-    "x": 0,
-    "y": 1435,
+    "x": 193,
+    "y": 1483,
     "w": 256,
     "h": 388
    },
@@ -322,8 +342,8 @@
   },
   "hp2_hrad_2_3_4p_greynf": {
    "frame": {
-    "x": 257,
-    "y": 1435,
+    "x": 450,
+    "y": 1483,
     "w": 320,
     "h": 480
    },
@@ -342,8 +362,8 @@
   },
   "hp2_hrad_2_1_3p_greynf": {
    "frame": {
-    "x": 578,
-    "y": 1435,
+    "x": 771,
+    "y": 1483,
     "w": 192,
     "h": 356
    },
@@ -366,8 +386,8 @@
   "image": "houses_hrad_2.png",
   "format": "RGBA8888",
   "size": {
-   "w": 1092,
-   "h": 1915
+   "w": 1220,
+   "h": 1963
   },
   "scale": "1"
  }

@@ -1,12 +1,41 @@
 <!doctype html><html lang="cs"><head><meta charset="utf-8"><title>Konečná – dokumentace pro ladění</title><style>body { background: #0b0f0c; color: #cfd8c4; font: 16px/1.45 system-ui, sans-serif; max-width: 1340px; margin: 2rem auto; padding: 0 1rem; }
 h1, h2 { color: #e8b04a; } h2 { border-bottom: 1px solid #2a3a2c; padding-bottom: .3rem; margin-top: 2.5rem; } a { color: #e8b04a; }
 figure { margin: 1rem 0 2rem; } img { max-width: 100%; image-rendering: pixelated; border: 1px solid #2a3a2c; }
-figcaption { color: #8a9a86; } figcaption b { color: #e8b04a; margin-right: .4rem; } nav a { margin-right: 1rem; } li { margin: .6rem 0; font-size: 1.1rem; }</style></head><body>
+figcaption { color: #8a9a86; } figcaption b { color: #e8b04a; margin-right: .4rem; } nav a { margin-right: 1rem; } li { margin: .6rem 0; font-size: 1.1rem; }
+table { border-collapse: collapse; } td, th { border: 1px solid #2a3a2c; padding: .35rem .7rem; text-align: left; } th { color: #e8b04a; } code { color: #e8b04a; }</style></head><body>
 <h1>Konečná. Nevystupovat. – dokumentace pro ladění</h1>
 <ul>
-<li><a href="mapa.html">Mapy</a>: snímky všech šesti míst (celek, zastavení s postavami, úseky)</li>
-<li><a href="postavy.html">Postavy</a>: každá postava s číslem, spritem, portrétem, rolí a tím, jak má vypadat</li>
-<li><a href="rozhodovaci-strom.html">Texty a rozhodovací strom</a>: úvod, dialogy všech míst s volbami a podmínkami, boje, konce a epilog</li>
+<li><a href="mapa.html">Mapy</a>: snímky všech sedmi míst (celek, zastavení s postavami, úseky)</li>
+<li><a href="postavy.html">Postavy</a>: každá postava s číslem, spritem, portrétem, rolí a tím, jak má vypadat</li>
+<li><a href="rozhodovaci-strom.html">Texty a rozhodovací strom</a>: úvod, dialogy všech míst s volbami a podmínkami, boje, konce a epilog</li>
 </ul>
-<p>Příběhová bible je v <code>docs/pribeh.md</code>, návrh hry v <code>docs/konecna.md</code>, otevřené věci v <code>docs/todo.md</code>.</p>
+<h2 id="skoky">Rychlé skoky do hry</h2>
+<p>Odkaz spustí hru rovnou na místě, bez titulku, úvodu a tvorby postavy. Stav hry (vlajky, předměty, úkoly, důvěra)
+je takový, jaký má průchod <code>npm test</code> při příchodu na místo, takže postavy mluví jako při hraní. Zapisuje ho průchod
+do <code>src/skoky.json</code>; po změně příběhu stačí <code>npm test</code> a <code>npm run build</code>.</p>
+<table><tr><th>Místo</th><th>konecna.test</th><th>GitHub Pages</th><th>Nesmrtelná, 50 jízdenek</th></tr>
+<tr><td>Hlavák a Sherwood</td><td><a href="http://konecna.test/?misto=hlavak">konecna.test</a></td><td><a href="https://picicka.github.io/konecna/?misto=hlavak">picicka.github.io/konecna</a></td><td><a href="http://konecna.test/?misto=hlavak&amp;buh&amp;jizdenky=50">konecna.test</a></td></tr>
+<tr><td>Václavák</td><td><a href="http://konecna.test/?misto=vaclavak">konecna.test</a></td><td><a href="https://picicka.github.io/konecna/?misto=vaclavak">picicka.github.io/konecna</a></td><td><a href="http://konecna.test/?misto=vaclavak&amp;buh&amp;jizdenky=50">konecna.test</a></td></tr>
+<tr><td>Nuselák</td><td><a href="http://konecna.test/?misto=nuselak">konecna.test</a></td><td><a href="https://picicka.github.io/konecna/?misto=nuselak">picicka.github.io/konecna</a></td><td><a href="http://konecna.test/?misto=nuselak&amp;buh&amp;jizdenky=50">konecna.test</a></td></tr>
+<tr><td>Staromák</td><td><a href="http://konecna.test/?misto=staromak">konecna.test</a></td><td><a href="https://picicka.github.io/konecna/?misto=staromak">picicka.github.io/konecna</a></td><td><a href="http://konecna.test/?misto=staromak&amp;buh&amp;jizdenky=50">konecna.test</a></td></tr>
+<tr><td>Karlův most a Kampa</td><td><a href="http://konecna.test/?misto=most">konecna.test</a></td><td><a href="https://picicka.github.io/konecna/?misto=most">picicka.github.io/konecna</a></td><td><a href="http://konecna.test/?misto=most&amp;buh&amp;jizdenky=50">konecna.test</a></td></tr>
+<tr><td>Malá Strana</td><td><a href="http://konecna.test/?misto=malastrana">konecna.test</a></td><td><a href="https://picicka.github.io/konecna/?misto=malastrana">picicka.github.io/konecna</a></td><td><a href="http://konecna.test/?misto=malastrana&amp;buh&amp;jizdenky=50">konecna.test</a></td></tr>
+<tr><td>Hrad</td><td><a href="http://konecna.test/?misto=hrad">konecna.test</a></td><td><a href="https://picicka.github.io/konecna/?misto=hrad">picicka.github.io/konecna</a></td><td><a href="http://konecna.test/?misto=hrad&amp;buh&amp;jizdenky=50">konecna.test</a></td></tr>
+</table>
+<p>U zastavení:</p>
+<ul>
+<li>Hlavák, nástupiště u výpravčího: <a href="http://konecna.test/?misto=hlavak&amp;a=49&amp;b=4">konecna.test</a> · <a href="https://picicka.github.io/konecna/?misto=hlavak&amp;a=49&amp;b=4">picicka.github.io/konecna</a></li>
+<li>Václavák, molo u Kuřačky: <a href="http://konecna.test/?misto=vaclavak&amp;a=19&amp;b=12">konecna.test</a> · <a href="https://picicka.github.io/konecna/?misto=vaclavak&amp;a=19&amp;b=12">picicka.github.io/konecna</a></li>
+<li>Nuselák, lanař u zlomu: <a href="http://konecna.test/?misto=nuselak&amp;a=42&amp;b=18">konecna.test</a> · <a href="https://picicka.github.io/konecna/?misto=nuselak&amp;a=42&amp;b=18">picicka.github.io/konecna</a></li>
+<li>Nuselák, jižní konec u soupravy: <a href="http://konecna.test/?misto=nuselak&amp;a=51&amp;b=19">konecna.test</a> · <a href="https://picicka.github.io/konecna/?misto=nuselak&amp;a=51&amp;b=19">picicka.github.io/konecna</a></li>
+</ul>
+<h3>Parametry adresy</h3>
+<table>
+<tr><td><code>?misto=hrad</code></td><td>místo: <code>hlavak</code>, <code>vaclavak</code>, <code>nuselak</code>, <code>staromak</code>, <code>most</code>, <code>malastrana</code>, <code>hrad</code></td></tr>
+<tr><td><code>&amp;a=43&amp;b=19</code></td><td>dlaždice (souřadnice jako v mapách a v <code>src/places/&lt;místo&gt;.js</code>), jinak dlaždice příchodu</td></tr>
+<tr><td><code>&amp;jizdenky=99</code></td><td>přidá jízdenky</td></tr>
+<tr><td><code>&amp;buh</code></td><td>v boji neubude poslední život, zkoušky vlastností vždy vyjdou</td></tr>
+<tr><td><code>?ladeni</code> / <code>?ladeni=0</code></td><td>zapne / vypne panel skoků na klávese <b>F2</b> (pamatuje se v prohlížeči; se skokem z adresy a v <code>npm run dev</code> je zapnutý sám). Číslo 1–7 nebo klepnutí skočí na místo, Esc zavře.</td></tr>
+</table>
+<p>Příběhová bible je v <code>docs/pribeh.md</code>, návrh hry v <code>docs/konecna.md</code>, otevřené věci v <code>docs/todo.md</code>.</p>
 </body></html>

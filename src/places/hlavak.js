@@ -36,7 +36,7 @@ export const HLAVAK = {
     canopies: { outside: [25, 56], until: 68, mastEvery: 4 },
     ribs: [0, 5].flatMap((b0) => [26, 30, 34, 38, 42, 46, 50, 54].map((a) => ({ key: 'rib_7', a, b0, span: 7 }))),
     stops: {
-        metro: { npc: { key: 'strojvedouci', a: 36, b: 21 }, approach: { a: 36, b: 22 }, props: [{ key: 'metro_totem', a: 32, b: 22 }] },
+        metro: { npc: { key: 'strojvedouci', a: 36, b: 21 }, approach: { a: 36, b: 22 }, props: [{ key: 'metro_totem_c', a: 32, b: 22 }] },
         // Fanta stojí nahoře na magistrále před vchodem do své budovy (úroveň 1, k němu se jde po věži nebo po rampě).
         trziste: { npc: { key: 'fanta', a: 39, b: 15, L: 1 }, approach: { a: 39, b: 16, L: 1 }, props: [] },
         trafika: { npc: { key: 'trafikantka', a: 39, b: 29 }, approach: { a: 39, b: 30 }, props: [{ key: 'kiosk', a: 38, b: 29 }] },

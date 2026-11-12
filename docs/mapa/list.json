@@ -130,6 +130,81 @@
     "place": "vaclavak"
   },
   {
+    "key": "NM0",
+    "caption": "Celé místo z výšky (zmenšeno)",
+    "place": "nuselak"
+  },
+  {
+    "key": "NZ1",
+    "caption": "Zastavení kuracka_nusle: kuracka na 22,25",
+    "place": "nuselak"
+  },
+  {
+    "key": "NZ2",
+    "caption": "Zastavení policista: policista na 3,43",
+    "place": "nuselak"
+  },
+  {
+    "key": "NZ3",
+    "caption": "Zastavení lanar: lanar na 43,18",
+    "place": "nuselak"
+  },
+  {
+    "key": "NZ4",
+    "caption": "Zastavení kladka: racek na 50,19",
+    "place": "nuselak"
+  },
+  {
+    "key": "NZ5",
+    "caption": "Zastavení souprava: bedny na 52,17",
+    "place": "nuselak"
+  },
+  {
+    "key": "NZ6",
+    "caption": "Zastavení kote: kote na 50,17",
+    "place": "nuselak"
+  },
+  {
+    "key": "NZ7",
+    "caption": "Zastavení kormidelnik: kormidelnik na 67,24",
+    "place": "nuselak"
+  },
+  {
+    "key": "NZ8",
+    "caption": "Zastavení vysehrad: metro_totem_c na 86,22",
+    "place": "nuselak"
+  },
+  {
+    "key": "NM1",
+    "caption": "Úsek a 22, b 14",
+    "place": "nuselak"
+  },
+  {
+    "key": "NM2",
+    "caption": "Úsek a 22, b 34",
+    "place": "nuselak"
+  },
+  {
+    "key": "NM3",
+    "caption": "Úsek a 54, b 14",
+    "place": "nuselak"
+  },
+  {
+    "key": "NM4",
+    "caption": "Úsek a 54, b 34",
+    "place": "nuselak"
+  },
+  {
+    "key": "NM5",
+    "caption": "Úsek a 86, b 14",
+    "place": "nuselak"
+  },
+  {
+    "key": "NM6",
+    "caption": "Úsek a 86, b 34",
+    "place": "nuselak"
+  },
+  {
     "key": "SM0",
     "caption": "Celé místo z výšky (zmenšeno)",
     "place": "staromak"
@@ -231,7 +306,7 @@
   },
   {
     "key": "KZ6",
-    "caption": "Zastavení mostecka: metro_totem na 74,23",
+    "caption": "Zastavení mostecka: lamp na 74,23",
     "place": "most"
   },
   {
@@ -271,7 +346,7 @@
   },
   {
     "key": "MSZ1",
-    "caption": "Zastavení mostecka_zpet: metro_totem na 4,15",
+    "caption": "Zastavení mostecka_zpet: lamp na 4,15",
     "place": "malastrana"
   },
   {
@@ -361,7 +436,7 @@
   },
   {
     "key": "HZ5",
-    "caption": "Zastavení zlata: kastelan na 53,9",
+    "caption": "Zastavení zlata: podstavec_c na 53,9",
     "place": "hrad"
   },
   {

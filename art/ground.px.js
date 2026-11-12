@@ -5,10 +5,10 @@
 // Textury se počítají ze souřadnic ve světě (metry na zemi), ne z dílu, takže na švech nic neskočí.
 // Materiál: hlína (výchozí), suchá tráva, mlat, dlažba, mozaika, kostky, asfalt, štěrk, nástupiště, prkna, dvůr, schody,
 // zebra. Šum jen u zrnitých materiálů (asfalt, štěrk, hlína, mlat), dlažba a mozaika mají kostky a spáry.
-const GM = { none: 0, dirt: 1, grass: 2, mlat: 3, paving: 4, mosaic: 5, sett: 6, asphalt: 7, ballast: 8, platform: 9, boards: 10, yard: 11, steps: 12, zebra: 13, water: 14, pier: 15, mud: 16 }
-// Pořadí materiálů z dlaždic mřížky (osm.mjs posílá index do 'tznxbLwmh').
-const TILE_MAT = [GM.ballast, GM.ballast, GM.platform, GM.boards, GM.yard, GM.yard, GM.water, GM.pier, GM.mud]
-const LOCKED = new Set([GM.ballast, GM.platform, GM.boards, GM.yard, GM.water, GM.pier, GM.mud])
+const GM = { none: 0, dirt: 1, grass: 2, mlat: 3, paving: 4, mosaic: 5, sett: 6, asphalt: 7, ballast: 8, platform: 9, boards: 10, yard: 11, steps: 12, zebra: 13, water: 14, pier: 15, mud: 16, scree: 17 }
+// Pořadí materiálů z dlaždic mřížky (osm.mjs posílá index do 'tznxbLwmhk').
+const TILE_MAT = [GM.ballast, GM.ballast, GM.platform, GM.boards, GM.yard, GM.yard, GM.water, GM.pier, GM.mud, GM.scree]
+const LOCKED = new Set([GM.ballast, GM.platform, GM.boards, GM.yard, GM.water, GM.pier, GM.mud, GM.scree])
 const SOFT = new Set([GM.dirt, GM.grass, GM.mlat])
 const HARD = new Set([GM.asphalt, GM.sett, GM.zebra])
 const WALK = new Set([GM.paving, GM.mosaic, GM.steps])
@@ -192,6 +192,20 @@ function groundMap(place, D) {
         if (n > 0.7) k = r < 0.4 ? "X" : "Z"
         else if (n2 > 0.84) k = "K"
         if (r2 > 0.992) k = r < 0.5 ? "x" : "U"
+      } else if (m === GM.scree) {
+        // svah pod Hradem (k): hlína a suť sjetá z kopce. Velké skvrny tmavší hlíny a světlejší sutě, jemné jazyky
+        // po spádu (podél b), řídké kameny se světlou horní a tmavou spodní hranou, sem tam cihla a suchý trs.
+        const n = vn(am, bm, 6, 332), fall = vn(am * 2, bm * 0.5, 2, 331)
+        k = n < 0.38 ? (r < 0.6 ? "3" : "e") : n > 0.66 ? (r < 0.5 ? "x" : r < 0.8 ? "e" : "v") : r < 0.55 ? "e" : r < 0.85 ? "3" : "x"
+        if (fall < 0.22 && r2 < 0.6) k = "3"
+        const su = am / 1.1, sv = bm / 1.1, cu = Math.floor(su), cv = Math.floor(sv), st = ih(cu, cv, 333)
+        if (st < 0.16) {
+          const du = su - cu - 0.5, dv = sv - cv - 0.5, rr = 0.14 + ih(cu, cv, 334) * 0.16
+          const d = Math.hypot(du, dv)
+          if (d < rr) k = dv < -rr * 0.35 ? "v" : dv > rr * 0.4 ? "A" : st < 0.03 ? "r" : "x"
+          else if (d < rr + 0.08 && dv > 0) k = "A"
+        }
+        if (r2 > 0.993) k = r < 0.5 ? "R" : "g"
       } else if (m === GM.boards) {
         const u = am / 0.32, fu = u - Math.floor(u)
         k = fu < 0.15 ? "k" : ih(Math.floor(u), 0, 81) < 0.5 ? "h" : "H"

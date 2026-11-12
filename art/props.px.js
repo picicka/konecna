@@ -51,25 +51,6 @@ anim("barrel_fire", { w: 40, h: 72, frames: 4, fps: 8 }, (c) => {
   c.px(18 + Math.round(Math.sin(k) * 3), 34 - h - 4, "f")
 }, glow("fF", { r: 10, strength: 0.6 }))
 
-// Vstup do metra v parku: zábradlí kolem otvoru se schody (otvor podél osy a), sloupek s cedulí M linky C (červená).
-sprite("metro_entrance", { w: 148, h: 150 }, (c) => {
-  // otvor: kosodélník podél a, schody jako čáry napříč, světlejší u vrchu
-  const P = (u, w) => [20 + u + w, 120 - u / 2 + w / 2]
-  c.poly([...P(0, 0), ...P(96, 0), ...P(96, 24), ...P(0, 24)], "k")
-  for (let u = 8; u < 96; u += 8) { const [x0, y0] = P(u, 0), [x1, y1] = P(u, 24); c.line(x0, y0, x1, y1, u < 40 ? "a" : "A") }
-  // betonové obrubníky
-  c.poly([...P(0, -4), ...P(96, -4), ...P(96, 0), ...P(0, 0)], "q"); c.poly([...P(0, 24), ...P(96, 24), ...P(96, 28), ...P(0, 28)], "p")
-  // zábradlí: trubka a sloupky po obou stranách
-  ;[-4, 26].forEach((w) => {
-    const [x0, y0] = P(0, w), [x1, y1] = P(96, w)
-    c.line(x0, y0 - 22, x1, y1 - 22, "m", 2)
-    for (let u = 0; u <= 96; u += 24) { const [x, y] = P(u, w); c.line(x, y, x, y - 22, "M", 2) }
-  })
-  // sloupek s cedulí
-  c.rect(14, 40, 4, 92, "S")
-  c.rect(4, 14, 26, 28, "W"); c.rect(5, 15, 24, 26, "V")
-  c.poly([9, 36, 9, 20, 17, 30, 25, 20, 25, 36, 21, 36, 21, 28, 17, 33, 13, 28, 13, 36], "W")
-})
 
 // Trafika: zelený kiosek (1 dlaždice), okénko s jízdenkami, cedule TRAFIKA, stříška.
 sprite("kiosk", { w: 132, h: 150 }, (c) => {
@@ -273,19 +254,66 @@ sprite("shack", { w: 136, h: 120 }, (c) => {
   c.poly([...top(10, 10), ...top(30, 10), ...top(30, 26), ...top(10, 26)], "M")
 })
 
-// Sloupek se značením metra před vchodem (pohled zepředu): černý čtverec s logem M (šipka dolů), pod ním čtverec linky C.
+// Čtverec linky metra: barva linky (A zelená, B žlutá, C červená), černé bezpatkové písmeno. x, y levý horní roh, S strana.
+const METRO_LINES = { A: "E", B: "f", C: "7" }
+function metroLine(c, x, y, S, line) {
+  const bg = METRO_LINES[line]
+  c.rect(x, y, S, S, bg)
+  const P = (pts) => pts.flatMap(([u, v]) => [x + u * S, y + v * S])
+  if (line === "A") {
+    c.poly(P([[0.5, 0.14], [0.84, 0.86], [0.66, 0.86], [0.59, 0.68], [0.41, 0.68], [0.34, 0.86], [0.16, 0.86]]), "k")
+    c.poly(P([[0.5, 0.38], [0.56, 0.54], [0.44, 0.54]]), bg)
+  } else if (line === "B") {
+    c.poly(P([[0.28, 0.16], [0.62, 0.16], [0.74, 0.28], [0.74, 0.42], [0.66, 0.5], [0.76, 0.6], [0.76, 0.74], [0.64, 0.86], [0.28, 0.86]]), "k")
+    c.rect(x + Math.round(0.44 * S), y + Math.round(0.3 * S), Math.round(0.16 * S), Math.round(0.12 * S), bg)
+    c.rect(x + Math.round(0.44 * S), y + Math.round(0.58 * S), Math.round(0.18 * S), Math.round(0.14 * S), bg)
+  } else {
+    // C jako tlustý kruhový oblouk otevřený doprava
+    const cx = x + S / 2, cy = y + S / 2, R = Math.round(S * 0.37)
+    c.circ(cx, cy, R, "k"); c.circ(cx, cy, Math.round(R * 0.55), bg); c.rect(cx + Math.round(R * 0.27), cy - Math.round(R * 0.36), R, Math.round(R * 0.82), bg)
+  }
+}
+
+// Sloupek se značením metra před vchodem (pohled zepředu): černý čtverec s logem M (šipka dolů), pod ním čtverce linek
+// stanice (Hlavní nádraží C, Staroměstská A).
 const MA = [[0.27, 0.12], [0.40, 0.12], [0.50, 0.25], [0.60, 0.12], [0.73, 0.12], [0.73, 0.40], [0.87, 0.40], [0.87, 0.48], [0.50, 0.90], [0.13, 0.48], [0.13, 0.40], [0.27, 0.40]]
 const MH = [[0.34, 0.20], [0.39, 0.20], [0.50, 0.34], [0.61, 0.20], [0.66, 0.20], [0.66, 0.47], [0.77, 0.47], [0.50, 0.78], [0.23, 0.47], [0.34, 0.47]]
-sprite("metro_totem", { w: 40, h: 150 }, (c) => {
-  const S = 30, x0 = 5, y0 = 4
-  c.ellipse(20, 146, 10, 3, "A"); c.rect(18, 70, 4, 78, "S"); c.rect(18, 70, 1, 78, "s")
-  c.rect(x0 - 1, y0 - 1, S + 2, S * 2 + 4, "m")
-  c.rect(x0, y0, S, S, "k")
-  c.poly(MA.flatMap(([x, y]) => [x0 + x * S, y0 + y * S]), "W"); c.poly(MH.flatMap(([x, y]) => [x0 + x * S, y0 + y * S]), "k")
-  c.rect(x0, y0 + S + 2, S, S, "7")
-  // C jako tlustý kruhový oblouk otevřený doprava (písmo značek linek je bezpatkové, kulaté)
-  const cx = x0 + S / 2, cy = y0 + S + 2 + S / 2
-  c.circ(cx, cy, 11, "k"); c.circ(cx, cy, 6, "7"); c.rect(cx + 3, cy - 4, 10, 9, "7")
-  // rez a nálepky
-  c.rect(x0 + 2, y0 + S * 2, 8, 2, "U"); c.rect(x0 + 20, y0 + 6, 4, 3, "U")
+function metroLogo(c, x, y, S) {
+  c.rect(x, y, S, S, "k")
+  c.poly(MA.flatMap(([u, v]) => [x + u * S, y + v * S]), "W"); c.poly(MH.flatMap(([u, v]) => [x + u * S, y + v * S]), "k")
+}
+function metroTotem(name, lines) {
+  sprite(name, { w: 40, h: 150 }, (c) => {
+    const S = 30, x0 = 5, y0 = 4
+    c.ellipse(20, 146, 10, 3, "A"); c.rect(18, 70, 4, 78, "S"); c.rect(18, 70, 1, 78, "s")
+    c.rect(x0 - 1, y0 - 1, S + 2, S * 2 + 4, "m")
+    metroLogo(c, x0, y0, S)
+    metroLine(c, x0, y0 + S + 2, S, lines[0])
+    // rez a nálepky
+    c.rect(x0 + 2, y0 + S * 2, 8, 2, "U"); c.rect(x0 + 20, y0 + 6, 4, 3, "U")
+  })
+}
+metroTotem("metro_totem_c", ["C"])
+metroTotem("metro_totem_a", ["A"])
+
+// Vstup do stanice Muzeum: zábradlí kolem otvoru se schody (otvor podél osy a), sloupek s logem metra a linkami A a C.
+sprite("metro_entrance", { w: 148, h: 150 }, (c) => {
+  // otvor: kosodélník podél a, schody jako čáry napříč, světlejší u vrchu
+  const P = (u, w) => [20 + u + w, 120 - u / 2 + w / 2]
+  c.poly([...P(0, 0), ...P(96, 0), ...P(96, 24), ...P(0, 24)], "k")
+  for (let u = 8; u < 96; u += 8) { const [x0, y0] = P(u, 0), [x1, y1] = P(u, 24); c.line(x0, y0, x1, y1, u < 40 ? "a" : "A") }
+  // betonové obrubníky
+  c.poly([...P(0, -4), ...P(96, -4), ...P(96, 0), ...P(0, 0)], "q"); c.poly([...P(0, 24), ...P(96, 24), ...P(96, 28), ...P(0, 28)], "p")
+  // zábradlí: trubka a sloupky po obou stranách
+  ;[-4, 26].forEach((w) => {
+    const [x0, y0] = P(0, w), [x1, y1] = P(96, w)
+    c.line(x0, y0 - 22, x1, y1 - 22, "m", 2)
+    for (let u = 0; u <= 96; u += 24) { const [x, y] = P(u, w); c.line(x, y, x, y - 22, "M", 2) }
+  })
+  // sloupek s cedulí: logo metra a pod ním čtverce linek A a C (Muzeum je přestupní stanice)
+  c.rect(14, 60, 4, 72, "S")
+  c.rect(3, 1, 26, 62, "m")
+  metroLogo(c, 4, 2, 24)
+  metroLine(c, 4, 27, 11, "A"); metroLine(c, 17, 27, 11, "C")
+  c.rect(4, 40, 24, 22, "k"); c.rect(6, 43, 20, 2, "W"); c.rect(6, 48, 14, 2, "w"); c.rect(6, 53, 17, 2, "w")
 })

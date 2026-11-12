@@ -20,12 +20,12 @@
     "h": 568
    }
   },
-  "hp1_vaclavak_4_1_5mpl_salmonnf": {
+  "hp1_vaclavak_4_1_7msv_yellownf_t23L48": {
    "frame": {
     "x": 321,
     "y": 0,
     "w": 320,
-    "h": 532
+    "h": 620
    },
    "rotated": false,
    "trimmed": false,
@@ -33,36 +33,16 @@
     "x": 0,
     "y": 0,
     "w": 320,
-    "h": 532
+    "h": 620
    },
    "sourceSize": {
     "w": 320,
-    "h": 532
+    "h": 620
    }
   },
-  "hp1_vaclavak_1_2_5mta_greynf": {
+  "hp1_vaclavak_3_2_5msv_greynf": {
    "frame": {
     "x": 642,
-    "y": 0,
-    "w": 192,
-    "h": 468
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 192,
-    "h": 468
-   },
-   "sourceSize": {
-    "w": 192,
-    "h": 468
-   }
-  },
-  "hp1_vaclavak_3_2_5mpl_greynf": {
-   "frame": {
-    "x": 835,
     "y": 0,
     "w": 320,
     "h": 532
@@ -82,90 +62,30 @@
   },
   "hp1_vaclavak_2_1_5mta_greynf": {
    "frame": {
+    "x": 963,
+    "y": 0,
+    "w": 192,
+    "h": 468
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 468
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 468
+   }
+  },
+  "hp1_vaclavak_2_2_6mpl_greynf": {
+   "frame": {
     "x": 1156,
     "y": 0,
-    "w": 192,
-    "h": 468
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 192,
-    "h": 468
-   },
-   "sourceSize": {
-    "w": 192,
-    "h": 468
-   }
-  },
-  "hp1_vaclavak_4_1_1ppl_greynf": {
-   "frame": {
-    "x": 0,
-    "y": 569,
-    "w": 320,
-    "h": 332
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 320,
-    "h": 332
-   },
-   "sourceSize": {
-    "w": 320,
-    "h": 332
-   }
-  },
-  "hp1_vaclavak_1_1_6mpl_greynf": {
-   "frame": {
-    "x": 321,
-    "y": 569,
-    "w": 128,
-    "h": 480
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 128,
-    "h": 480
-   },
-   "sourceSize": {
-    "w": 128,
-    "h": 480
-   }
-  },
-  "hp1_vaclavak_1_1_6msv_greynf": {
-   "frame": {
-    "x": 450,
-    "y": 569,
-    "w": 128,
-    "h": 480
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 128,
-    "h": 480
-   },
-   "sourceSize": {
-    "w": 128,
-    "h": 480
-   }
-  },
-  "hp1_vaclavak_2_2_5fsv_greynf": {
-   "frame": {
-    "x": 579,
-    "y": 569,
     "w": 256,
-    "h": 444
+    "h": 544
    },
    "rotated": false,
    "trimmed": false,
@@ -173,17 +93,57 @@
     "x": 0,
     "y": 0,
     "w": 256,
-    "h": 444
+    "h": 544
    },
    "sourceSize": {
     "w": 256,
-    "h": 444
+    "h": 544
    }
   },
-  "hp1_vaclavak_2_3_6msv_greynf": {
+  "hp1_vaclavak_1_1_6mpl_greynf_t23R8": {
    "frame": {
-    "x": 836,
-    "y": 569,
+    "x": 0,
+    "y": 621,
+    "w": 128,
+    "h": 480
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 480
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 480
+   }
+  },
+  "hp1_vaclavak_3_1_7mpl_greynf_t6R8": {
+   "frame": {
+    "x": 129,
+    "y": 621,
+    "w": 256,
+    "h": 588
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 588
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 588
+   }
+  },
+  "hp1_vaclavak_2_3_6msv_greynf_t18L8": {
+   "frame": {
+    "x": 386,
+    "y": 621,
     "w": 320,
     "h": 576
    },
@@ -202,8 +162,8 @@
   },
   "hp1_vaclavak_1_3_1pta_greynf": {
    "frame": {
-    "x": 0,
-    "y": 1146,
+    "x": 707,
+    "y": 621,
     "w": 256,
     "h": 316
    },
@@ -220,52 +180,12 @@
     "h": 316
    }
   },
-  "hp1_vaclavak_1_2_3pta_greynf": {
+  "hp1_vaclavak_1_3_4pta_greynf": {
    "frame": {
-    "x": 257,
-    "y": 1146,
-    "w": 192,
-    "h": 364
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 192,
-    "h": 364
-   },
-   "sourceSize": {
-    "w": 192,
-    "h": 364
-   }
-  },
-  "hp1_vaclavak_2_1_2pta_greynf": {
-   "frame": {
-    "x": 450,
-    "y": 1146,
-    "w": 192,
-    "h": 312
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 192,
-    "h": 312
-   },
-   "sourceSize": {
-    "w": 192,
-    "h": 312
-   }
-  },
-  "hp1_vaclavak_3_1_7mta_greencb": {
-   "frame": {
-    "x": 643,
-    "y": 1146,
+    "x": 964,
+    "y": 621,
     "w": 256,
-    "h": 588
+    "h": 448
    },
    "rotated": false,
    "trimmed": false,
@@ -273,37 +193,57 @@
     "x": 0,
     "y": 0,
     "w": 256,
-    "h": 588
+    "h": 448
    },
    "sourceSize": {
     "w": 256,
-    "h": 588
+    "h": 448
    }
   },
-  "hp1_vaclavak_1_2_5mpl_greennf": {
+  "hp1_vaclavak_1_1_3pta_greynf_t25R8": {
    "frame": {
-    "x": 900,
-    "y": 1146,
-    "w": 192,
-    "h": 468
+    "x": 0,
+    "y": 1210,
+    "w": 128,
+    "h": 324
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 192,
-    "h": 468
+    "w": 128,
+    "h": 324
    },
    "sourceSize": {
-    "w": 192,
-    "h": 468
+    "w": 128,
+    "h": 324
+   }
+  },
+  "hp1_vaclavak_4_2_5mpl_greencf_t0R8": {
+   "frame": {
+    "x": 129,
+    "y": 1210,
+    "w": 384,
+    "h": 564
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 384,
+    "h": 564
+   },
+   "sourceSize": {
+    "w": 384,
+    "h": 564
    }
   },
   "hp1_vaclavak_1_1_4psv_greennb": {
    "frame": {
-    "x": 0,
-    "y": 1735,
+    "x": 514,
+    "y": 1210,
     "w": 128,
     "h": 368
    },
@@ -320,50 +260,50 @@
     "h": 368
    }
   },
-  "hp1_vaclavak_3_2_7mpl_ochrecf_t3R8": {
+  "hp1_vaclavak_3_1_7fpl_greynf_t16R8": {
    "frame": {
-    "x": 129,
-    "y": 1735,
-    "w": 320,
-    "h": 620
+    "x": 643,
+    "y": 1210,
+    "w": 256,
+    "h": 532
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 320,
-    "h": 620
+    "w": 256,
+    "h": 532
    },
    "sourceSize": {
-    "w": 320,
-    "h": 620
+    "w": 256,
+    "h": 532
    }
   },
-  "hp1_vaclavak_2_2_4ppl_greynf": {
+  "hp1_vaclavak_2_1_1psv_greynf": {
    "frame": {
-    "x": 450,
-    "y": 1735,
-    "w": 256,
-    "h": 440
+    "x": 900,
+    "y": 1210,
+    "w": 192,
+    "h": 268
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 256,
-    "h": 440
+    "w": 192,
+    "h": 268
    },
    "sourceSize": {
-    "w": 256,
-    "h": 440
+    "w": 192,
+    "h": 268
    }
   },
   "hp1_vaclavak_1_1_7mpl_greynf": {
    "frame": {
-    "x": 707,
-    "y": 1735,
+    "x": 0,
+    "y": 1775,
     "w": 128,
     "h": 524
    },
@@ -380,12 +320,12 @@
     "h": 524
    }
   },
-  "hp1_vaclavak_2_1_4ppl_greynf": {
+  "hp1_vaclavak_1_2_4ppl_greynb": {
    "frame": {
-    "x": 836,
-    "y": 1735,
+    "x": 129,
+    "y": 1775,
     "w": 192,
-    "h": 400
+    "h": 408
    },
    "rotated": false,
    "trimmed": false,
@@ -393,19 +333,19 @@
     "x": 0,
     "y": 0,
     "w": 192,
-    "h": 400
+    "h": 408
    },
    "sourceSize": {
     "w": 192,
-    "h": 400
+    "h": 408
    }
   },
-  "hp1_vaclavak_4_1_6mpl_greynf": {
+  "hp1_vaclavak_4_1_2pta_greynf": {
    "frame": {
-    "x": 0,
-    "y": 2356,
+    "x": 322,
+    "y": 1775,
     "w": 320,
-    "h": 576
+    "h": 376
    },
    "rotated": false,
    "trimmed": false,
@@ -413,37 +353,17 @@
     "x": 0,
     "y": 0,
     "w": 320,
-    "h": 576
+    "h": 376
    },
    "sourceSize": {
     "w": 320,
-    "h": 576
-   }
-  },
-  "hp1_vaclavak_3_1_2pta_greynf": {
-   "frame": {
-    "x": 321,
-    "y": 2356,
-    "w": 256,
-    "h": 344
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 256,
-    "h": 344
-   },
-   "sourceSize": {
-    "w": 256,
-    "h": 344
+    "h": 376
    }
   },
   "hp1_vaclavak_3_2_3ppl_greynf": {
    "frame": {
-    "x": 578,
-    "y": 2356,
+    "x": 643,
+    "y": 1775,
     "w": 320,
     "h": 428
    },
@@ -462,8 +382,8 @@
   },
   "hp1_vaclavak_3_1_6mpl_ochrenf": {
    "frame": {
-    "x": 899,
-    "y": 2356,
+    "x": 964,
+    "y": 1775,
     "w": 256,
     "h": 544
    },
@@ -486,8 +406,8 @@
   "image": "houses_vaclavak_1.png",
   "format": "RGBA8888",
   "size": {
-   "w": 1348,
-   "h": 2932
+   "w": 1412,
+   "h": 2319
   },
   "scale": "1"
  }

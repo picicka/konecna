@@ -10,8 +10,8 @@ export const STAROMAK = {
         { atlas: 'landmarks_sm_tyn', key: 'lm_tyn', a0: 34, w: 7, b0: 7, dpt: 6 },
         { atlas: 'landmarks_sm_radnice', key: 'lm_radnice', a0: 12, w: 9, b0: 20, dpt: 4 },
         { atlas: 'landmarks_sm_namesti', key: 'lm_mikulas', a0: 7, w: 6, b0: 7, dpt: 4 },
-        { atlas: 'landmarks_sm_namesti', key: 'lm_kinsky', a0: 27, w: 8, b0: 0, dpt: 5 },
-        { atlas: 'landmarks_sm_namesti', key: 'lm_zvon', a0: 29, w: 4, b0: 5, dpt: 4 },
+        { atlas: 'landmarks_sm_namesti', key: 'lm_kinsky', a0: 25, w: 8, b0: 2, dpt: 6 },
+        { atlas: 'landmarks_sm_namesti', key: 'lm_zvon', a0: 28, w: 4, b0: 8, dpt: 3 },
     ],
     stops: {
         tyn: { npc: { key: 'kuracka', a: 32, b: 16 }, approach: { a: 33, b: 16 }, props: [{ key: 'lodka', a: 35, b: 17 }] },
@@ -21,8 +21,10 @@ export const STAROMAK = {
         vyloha: { npc: { key: 'vyloha', a: 9, b: 3 }, approach: { a: 8, b: 3 }, props: [] },
         lovec: { npc: { key: 'lovec', a: 8, b: 5 }, approach: { a: 9, b: 5 }, props: [{ key: 'lovec_hak', a: 7, b: 5 }] },
         // potápěčka u ústí Kaprovy, odkud se potápí do Staroměstské
-        potapecka: { npc: { key: 'potapecka', a: 4, b: 11 }, approach: { a: 5, b: 11 }, props: [{ key: 'metro_totem', a: 4, b: 12 }] },
+        potapecka: { npc: { key: 'potapecka', a: 4, b: 11 }, approach: { a: 5, b: 11 }, props: [{ key: 'metro_totem_a', a: 4, b: 12 }] },
         karlova: { npc: { key: 'ostrov_lodka', a: 7, b: 24 }, approach: { a: 8, b: 24 }, props: [] },
     },
+    // kuriozity ve vodě na náměstí (art/kuriozity.px.js, WorldScene.placeOddities)
+    oddities: [{ on: 'w', keys: ['mlok_maly_1', 'labut', 'mlok_maly_2'] }],
     props: { trees: ['tree_bare'], bush: 0, bushes: ['bush_a'], junk: 0.02, junkKeys: ['barrel', 'tires'], shack: 0 },
 };

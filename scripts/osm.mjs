@@ -12,12 +12,24 @@ const STYLES = ['ochre', 'grey', 'green', 'salmon', 'cream', 'yellow'];
 
 const name = process.argv[2] ?? 'hlavak';
 // Tagy na domech: řádky „- „text““ ze sekce Tagy na domech v docs/todo.md (až po další nadpis druhé úrovně).
+// POLICE: indexy tagů z podsekce Policajti a koťátka; ty mají přednost (polovina tagů ve městě).
+const POLICE = new Set();
 const TAGS = (() => {
     const md = fs.readFileSync(path.join(ROOT, 'docs/todo.md'), 'utf8');
     const start = md.indexOf('## Tagy na domech');
     if (start < 0) return [];
     const end = md.indexOf('\n## ', start + 5);
-    return md.slice(start, end < 0 ? undefined : end).split('\n').filter((l) => /^\s*-\s/.test(l)).map((l) => l.replace(/^\s*-\s*/, '').replace(/[„“"]/g, '').trim()).filter(Boolean);
+    const out = [];
+    let police = false;
+    md.slice(start, end < 0 ? undefined : end).split('\n').forEach((l) => {
+        if (/^###\s/.test(l)) police = /policajt/i.test(l);
+        if (!/^\s*-\s/.test(l)) return;
+        const t = l.replace(/^\s*-\s*/, '').replace(/[„“"]/g, '').trim();
+        if (!t) return;
+        if (police) POLICE.add(out.length);
+        out.push(t);
+    });
+    return out;
 })();
 const TAG_COLORS = ['E', '7', 'y', 'l', 'W'];
 const place = PLACES[name];
@@ -137,7 +149,11 @@ const ROAD_WIDTH = { motorway: 4, trunk: 4, primary: 3, secondary: 2.4, tertiary
 const ROAD_KIND = { footway: 'f', path: 'f', steps: 'f', pedestrian: 'f', cycleway: 'f', service: 'p', living_street: 'p' };
 ways.filter((w) => w.tags.highway && ROAD_WIDTH[w.tags.highway] && !underground(w.tags)).forEach((w) => stroke(polygon(w), ROAD_WIDTH[w.tags.highway], ROAD_KIND[w.tags.highway] ?? 'r'));
 // Mosty se skutečnou šířkou (Karlův most): pás dlažby přes koryto.
-(place.bridges ?? []).forEach((br) => ways.filter((w) => w.tags.name === br.name && w.tags.bridge === 'yes').forEach((w) => stroke(polygon(w), br.width + 1, 'p')));
+// deck: rovná mostovka v řádcích b0–b1 (Karlův most: oblouky a pilíře k ní kreslí WorldScene, viz src/places/most.js).
+(place.bridges ?? []).forEach((br) => {
+    if (br.deck) { for (let a = br.deck.a0; a <= br.deck.a1; a++) for (let b = br.deck.b0; b <= br.deck.b1; b++) set(a, b, 'p'); return; }
+    ways.filter((w) => w.tags.name === br.name && w.tags.bridge === 'yes').forEach((w) => stroke(polygon(w), br.width + 1, 'p'));
+});
 // Nádražní haly a zastřešení nástupišť: po tom, co se stalo, z nich zbyly jen železné oblouky, takže se negenerují jako domy.
 // Pod nimi zůstávají koleje (t), zbytek je nástupiště (n). Oblouky kreslí WorldScene z data.halls.
 const isHall = (w) => w.tags.building === 'roof' || (w.tags.building === 'train_station' && !(place.skip ?? []).includes(w.tags.name));
@@ -236,12 +252,69 @@ if (place.flood) {
         const coreList = [...core].map((k) => k.split(',').map(Number));
         for (let a = 0; a < place.len; a++) for (let b = 0; b < place.wid; b++) if (grid[a][b] === 'b' && !coreList.some(([ca, cb]) => Math.max(Math.abs(ca - a), Math.abs(cb - b)) <= place.flood.frame)) { grid[a][b] = 'w'; owner[a][b] = null; }
     }
-    const near = (a, b, d) => { for (let da = -d; da <= d; da++) for (let db = -d; db <= d; db++) if (inside(a + da, b + db) && grid[a + da][b + db] === 'b') return true; return false; };
+    // lávky vedou podél domů i landmarků (Kinský, Týn, radnice), jinak by průčelí landmarku přerušilo cestu kolem náměstí
+    const near = (a, b, d) => { for (let da = -d; da <= d; da++) for (let db = -d; db <= d; db++) if (inside(a + da, b + db) && 'bL'.includes(grid[a + da][b + db])) return true; return false; };
     for (let a = 0; a < place.len; a++) for (let b = 0; b < place.wid; b++) if (grid[a][b] !== 'b' && grid[a][b] !== 'L') { grid[a][b] = near(a, b, place.flood.boardwalk) ? 'm' : 'w'; owner[a][b] = null; }
     (place.flood.islands ?? []).forEach((o) => { for (let a = Math.floor(o.a - o.r); a <= Math.ceil(o.a + o.r); a++) for (let b = Math.floor(o.b - o.r); b <= Math.ceil(o.b + o.r); b++) if (inside(a, b) && grid[a][b] !== 'b' && Math.hypot(a - o.a, b - o.b) <= o.r) grid[a][b] = 'p'; });
     (place.flood.piers ?? []).forEach((q) => { for (let a = q.a0; a <= q.a1; a++) for (let b = q.b0; b <= q.b1; b++) if (inside(a, b) && grid[a][b] !== 'b') grid[a][b] = 'm'; });
 }
 if (place.pier) for (let a = place.pier.a0; a <= place.pier.a1; a++) for (let b = place.pier.b0; b <= place.pier.b1; b++) { grid[a][b] = 'm'; owner[a][b] = null; }
+
+// slope (Hrad): co leží pod hradním ostrohem (terén z laseru ČÚZK pod `below` m n. m., data/teren-<místo>.json), je
+// svah se sutí (k, neprůchozí); domy a landmarky zůstávají. Cesty v `keep` (Jiřská dolů na Opyš) a obdélníky `terraces`
+// zůstávají průchozí. `levels` jsou pásy výšky po `step` metrech: kde svah spadne o pás, staví WorldScene terasu.
+let levels = null;
+if (place.slope) {
+    const ter = JSON.parse(fs.readFileSync(path.join(ROOT, `data/teren-${name}.json`), 'utf8'));
+    const elev = (a, b) => ter.base + ter.rows[a][b] / 10;
+    const keep = Array.from({ length: place.len }, () => Array(place.wid).fill(false));
+    const names = new Set(place.slope.keep ?? []);
+    ways.filter((w) => w.tags.highway && names.has(w.tags.name)).forEach((w) => {
+        const pts = polygon(w);
+        for (let k = 1; k < pts.length; k++) {
+            const p = pts[k - 1], q = pts[k], steps = Math.max(1, Math.ceil(Math.hypot(q.a - p.a, q.b - p.b) * 2));
+            for (let t = 0; t <= steps; t++) { const ta = Math.floor(p.a + ((q.a - p.a) * t) / steps), tb = Math.floor(p.b + ((q.b - p.b) * t) / steps); if (inside(ta, tb)) keep[ta][tb] = true; }
+        }
+    });
+    (place.slope.terraces ?? []).forEach((r) => { for (let a = r.a0; a <= r.a1; a++) for (let b = r.b0; b <= r.b1; b++) if (inside(a, b)) keep[a][b] = true; });
+    // mostovky (deck) zůstávají, ať pod nimi leží cokoli; jejich mezera (gap, zlomený most) je voda
+    const decks = (place.bridges ?? []).filter((br) => br.deck);
+    const onDeck = (a, b) => decks.some(({ deck: d }) => a >= d.a0 && a <= d.a1 && b >= d.b0 && b <= d.b1);
+    // lake (Nuselák): pod hladinou `level` m n. m. je voda; domy, jejichž zem je víc než `sink` m pod hladinou, jsou
+    // pod vodou celé (zmizí), výš stojí ve vodě po přízemí
+    const lake = place.slope.lake;
+    let n = 0;
+    for (let a = 0; a < place.len; a++) for (let b = 0; b < place.wid; b++) {
+        if (keep[a][b] || onDeck(a, b) || grid[a][b] === 'L') continue;
+        const e = elev(a, b);
+        if (grid[a][b] === 'b') { if (lake && e < lake.level - (lake.sink ?? 6)) { grid[a][b] = 'w'; owner[a][b] = null; } continue; }
+        if (lake && e < lake.level) { grid[a][b] = 'w'; owner[a][b] = null; continue; }
+        if (e >= place.slope.below) continue;
+        grid[a][b] = 'k'; owner[a][b] = null; n++;
+    }
+    // mola (landings): dřevěná lávka z kopce k hladině, kudy se chodí k loďce
+    (place.slope.landings ?? []).forEach((r) => { for (let a = r.a0; a <= r.a1; a++) for (let b = r.b0; b <= r.b1; b++) if (inside(a, b) && !'bL'.includes(grid[a][b])) { grid[a][b] = 'm'; owner[a][b] = null; } });
+    decks.forEach(({ deck: d, gap }) => {
+        for (let a = d.a0; a <= d.a1; a++) for (let b = d.b0; b <= d.b1; b++) if (inside(a, b)) { grid[a][b] = gap && a >= gap.a0 && a <= gap.a1 ? 'w' : 'p'; owner[a][b] = null; }
+    });
+    // ostrůvky cest a trávy uvnitř svahu, kam se ze startu nedojde, se zasypou taky (startů může být víc: Nuselák má
+    // dva břehy oddělené zlomem mostu)
+    const open = (a, b) => inside(a, b) && !'wtbLzhk'.includes(grid[a][b]);
+    const seen = new Set(), q = [].concat(place.slope.from).map((f) => [f.a, f.b]);
+    while (q.length) { const [a, b] = q.pop(), k = a * place.wid + b; if (!open(a, b) || seen.has(k)) continue; seen.add(k); q.push([a + 1, b], [a - 1, b], [a, b + 1], [a, b - 1]); }
+    for (let changed = true; changed;) {
+        changed = false;
+        for (let a = 0; a < place.len; a++) for (let b = 0; b < place.wid; b++) {
+            if (!open(a, b) || seen.has(a * place.wid + b)) continue;
+            const nb = [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(([da, db]) => inside(a + da, b + db)).map(([da, db]) => grid[a + da][b + db]);
+            if (nb.includes('k')) { grid[a][b] = 'k'; owner[a][b] = null; n++; changed = true; }
+            else if (lake && nb.includes('w')) { grid[a][b] = 'w'; owner[a][b] = null; changed = true; }
+        }
+    }
+    const step = place.slope.step ?? 6;
+    levels = grid.map((row, a) => row.map((c, b) => (c === 'k' ? String.fromCharCode(48 + Math.max(0, Math.min(9, Math.floor((elev(a, b) - ter.base) / step)))) : ' ')).join(''));
+    console.log(`${name}: svah ${n} dlaždic pod ${place.slope.below} m`);
+}
 
 // Chodníky: nezastavěné dlaždice vedle vozovky.
 for (let a = 0; a < place.len; a++) for (let b = 0; b < place.wid; b++) {
@@ -307,13 +380,17 @@ buildings.forEach((w) => {
         // tag: kandidát je každý dům s fasádou do ulice (ne dům uvnitř bloku), výběr deterministicky podle polohy;
         // jestli tag dostane, rozhodne až viditelnost fasády (tagSpot níž)
         const roll = ((a0 * 73856093) ^ (b0 * 19349663)) >>> 0;
-        const tagIndex = TAGS.length && ((front && wdt >= 2) || (corner && dpt >= 2)) && roll % 5 < 4 ? (roll >>> 3) % TAGS.length : -1;
+        // fasáda pro tag: čelo nebo bok do čehokoli volného (ulice, park, voda, lávky), ne do jiného domu
+        const open = (a, b) => inside(a, b) && !'bL'.includes(grid[a][b]);
+        const tagFront = Array.from({ length: wdt }, (_, i) => open(a0 + i, b0 + dpt)).some(Boolean);
+        const tagSide = Array.from({ length: dpt }, (_, i) => open(a0 - 1, b0 + i)).some(Boolean);
+        const tagIndex = TAGS.length && (tagFront || tagSide) && roll % 5 < 4 ? (roll >>> 3) % TAGS.length : -1;
         // Římsa kvádru z jeho vlastních vzorků mřížky (aspoň čtvrtina bodů), jinak z měření celé budovy.
         const samples = roofSamples(a0, b0, wdt, dpt);
         const own = samples.length >= wdt * dpt * 4;
         const eave = own ? eaveOf(pct(samples, 0.5), pct(samples, 0.9)) : measured ? eaveOf(measured[3], measured[4]) : null;
         const relief = own ? pct(samples, 0.9) - pct(samples, 0.5) : null;
-        boxes.push({ a0, b0, wdt, dpt, corner, back, front, tagIndex, eave, relief });
+        boxes.push({ a0, b0, wdt, dpt, corner, back, front, tagFront, tagSide, tagIndex, eave, relief });
     });
     // Dům má jednu výšku: převládající počet pater přes plochu kvádrů. Vlastní výšku si nechá jen kvádr, jehož římsa
     // je od převládající o víc než 5 m jinde (jiné křídlo, dvorní přístavek). Bez laseru building:levels z OSM.
@@ -323,7 +400,7 @@ buildings.forEach((w) => {
     const mainBoxes = boxes.filter((x) => x.eave !== null && Math.abs(floorsOf(x.eave) - main) <= 1);
     const mainEave = mainBoxes.length ? mainBoxes.map((x) => x.eave).sort((p, q) => p - q)[Math.floor(mainBoxes.length / 2)] : null;
     const mainRelief = measured ? measured[4] - measured[3] : null;
-    boxes.forEach(({ a0, b0, wdt, dpt, corner, back, front, tagIndex, eave, relief }) => {
+    boxes.forEach(({ a0, b0, wdt, dpt, corner, back, front, tagFront, tagSide, tagIndex, eave, relief }) => {
         const wing = eave !== null && mainEave !== null && Math.abs(eave - mainEave) > 5;
         const low = a0 < (place.lowRows ?? 0);
         const floors = low ? 1 : wing ? floorsOf(eave) : main ?? osmFloors;
@@ -334,7 +411,7 @@ buildings.forEach((w) => {
         const inner = !front && !back && !corner;
         const look = inner ? 'grey' : style;
         const cover = inner && cover0 ? { tasky: 'tasky', hneda: 'tasky', tmava: 'plech', plech: 'plech', svetla: 'svetla', med: 'svetla' }[cover0] : cover0;
-        pending.push({ a0, b0, wdt, dpt, floors, roof, cover, look, corner, back, front, tagIndex, style, eave: eave === null ? null : Math.round((wing ? eave : mainEave) * 10) / 10, name: w.tags.name ?? null, osm: w.id });
+        pending.push({ a0, b0, wdt, dpt, floors, roof, cover, look, corner, back, front, tagFront, tagSide, tagIndex, style, eave: eave === null ? null : Math.round((wing ? eave : mainEave) * 10) / 10, name: w.tags.name ?? null, osm: w.id });
     });
 });
 
@@ -434,7 +511,23 @@ function offsetLine(pts, d) {
 const trams = ways.filter((w) => w.tags.railway === 'tram' && !underground(w.tags) && !elevated(w.tags)).map(polygon).filter(near);
 Z = 1.5;
 // mimo vozovku leží tramvajová trať na betonových panelech (pás 3 m jen přes hlínu, trávu a mlat), kolejnice se žlábkem
-trams.forEach((pts) => { lines.push({ k: 'tram', p: flat(pts) }); band('paving', pts, 3, { on: ['dirt', 'grass', 'mlat'] }); });
+// pod hladinou (jezero Nuseláku) se koleje nekreslí: čára se rozdělí na suché úseky po půl dlaždice
+const dryRuns = (pts) => {
+    const wet = (q) => { const a = Math.round(q.a), b = Math.round(q.b); return Boolean(place.slope?.lake) && grid[a]?.[b] === 'w'; };
+    const runs = [];
+    let run = [];
+    pts.forEach((q, i) => {
+        const prev = pts[i - 1];
+        const steps = prev ? Math.max(1, Math.ceil(Math.hypot(q.a - prev.a, q.b - prev.b) * 2)) : 1;
+        for (let k = prev ? 1 : 0; k <= (prev ? steps : 0); k++) {
+            const t = prev ? k / steps : 0, c = prev ? { a: prev.a + (q.a - prev.a) * t, b: prev.b + (q.b - prev.b) * t } : q;
+            if (wet(c)) { if (run.length > 1) runs.push(run); run = []; } else run.push(c);
+        }
+    });
+    if (run.length > 1) runs.push(run);
+    return runs;
+};
+trams.forEach((pts) => dryRuns(pts).forEach((run) => { lines.push({ k: 'tram', p: flat(run) }); band('paving', run, 3, { on: ['dirt', 'grass', 'mlat'] }); }));
 // nástupní ostrůvky zastávek (railway=platform, public_transport=platform jako čára nebo plocha): betonové desky
 Z = 1.6;
 ways.filter((w) => (w.tags.railway === 'platform' || w.tags.public_transport === 'platform') && !underground(w.tags) && !elevated(w.tags)).forEach((w) => {
@@ -445,9 +538,21 @@ if (place.station) {
     const st = place.station;
     [...st.pattern].forEach((ch, i) => { if (ch === 't') lines.push({ k: 'rail', p: flat([{ a: -0.5, b: st.b0 + i }, { a: place.len - 0.5, b: st.b0 + i }]) }); });
 }
+// Asfaltová mostovka (Nuselák, surface: 'asphalt'): přes cokoli pod mostem (park, ulice v údolí) vozovka s chodníky
+// po krajích a přerušovanou čarou uprostřed, zlom (gap) vynechaný.
+Z = 6;
+(place.bridges ?? []).filter((br) => br.deck && br.surface === 'asphalt').forEach(({ deck: d, gap }) => {
+    const spans = gap ? [[d.a0, gap.a0 - 1], [gap.a1 + 1, d.a1]] : [[d.a0, d.a1]];
+    spans.forEach(([a0, a1]) => {
+        const rect = (b0, b1) => [{ a: a0 - 0.5, b: b0 - 0.5 }, { a: a1 + 0.5, b: b0 - 0.5 }, { a: a1 + 0.5, b: b1 + 0.5 }, { a: a0 - 0.5, b: b1 + 0.5 }];
+        area('paving', rect(d.b0, d.b1));
+        area('asphalt', [{ a: a0 - 0.5, b: d.b0 }, { a: a1 + 0.5, b: d.b0 }, { a: a1 + 0.5, b: d.b1 }, { a: a0 - 0.5, b: d.b1 }]);
+        lines.push({ k: 'dash', p: flat([{ a: a0 - 0.5, b: (d.b0 + d.b1) / 2 }, { a: a1 + 0.5, b: (d.b0 + d.b1) / 2 }]) });
+    });
+});
 // Kolejiště, nástupiště, přechody přes koleje, půdorysy domů a landmarků jsou z mřížky (dlaždice), kreslí se jako první.
 const tiles = [];
-for (let a = 0; a < place.len; a++) for (let b = 0; b < place.wid; b++) { const c = grid[a][b]; if ('tznxbLwmh'.includes(c)) tiles.push(a, b, 'tznxbLwmh'.indexOf(c)); }
+for (let a = 0; a < place.len; a++) for (let b = 0; b < place.wid; b++) { const c = grid[a][b]; if ('tznxbLwmhk'.includes(c)) tiles.push(a, b, 'tznxbLwmhk'.indexOf(c)); }
 
 // ---------- Rekvizity na skutečných místech ----------
 // Stromy, lampy a lavičky z OSM; park se dosází stromy (Vrchlického sady jsou hustě zarostlé), aby rozestup byl aspoň
@@ -523,14 +628,19 @@ const tagSpot = (h, face) => {
 // Čelo má přednost, bok nárožního domu jen když čelo nejde (nebo dům čelo do ulice nemá).
 const pickTag = (h) => {
     if (h.tagIndex < 0) return null;
-    const r = h.front && h.wdt >= 2 ? tagSpot(h, 'R') : -1;
-    const l = r < 0 && h.corner && h.dpt >= 2 ? tagSpot(h, 'L') : -1;
+    const r = h.tagFront ? tagSpot(h, 'R') : -1;
+    const l = r < 0 && h.tagSide ? tagSpot(h, 'L') : -1;
     if (r < 0 && l < 0) return null;
     const face = r >= 0 ? 'R' : 'L';
     // jen tagy, které se na fasádu vejdou nejvýš do tří řádků písmem 2 (9 px na znak, okraje 16 px)
     const chars = Math.floor((64 * (face === 'R' ? h.wdt : h.dpt) - 16) / 9) * 3 - 4;
     const fit = TAGS.map((t, i) => i).filter((i) => TAGS[i].length <= chars);
-    return fit.length ? { v: face === 'R' ? r : l, face, index: fit[h.tagIndex % fit.length] } : null;
+    // polovina tagů o policajtech a koťátkách (když se nějaký vejde)
+    const cops = fit.filter((i) => POLICE.has(i));
+    let hh = Math.imul(h.a0 + 1, 2654435761) ^ Math.imul(h.b0 + 7, 40503) ^ Math.imul(h.wdt * 31 + h.dpt, 97);
+    hh = (Math.imul(hh ^ (hh >>> 15), 2246822519) ^ (hh >>> 13)) >>> 0;
+    const pool = cops.length && hh % 2 === 0 ? cops : fit;
+    return pool.length ? { v: face === 'R' ? r : l, face, index: pool[(hh >>> 1) % pool.length] } : null;
 };
 pending.forEach((h) => {
     const spot = pickTag(h);
@@ -548,7 +658,7 @@ console.log(`${name}: tagy na ${[...seeds.values()].filter((x) => x.tagIndex >= 
 const HOUSE_SHEETS = Math.max(1, Math.ceil(seeds.size / 24));
 const spriteKey = (body) => `hp${bodies.get(body) % HOUSE_SHEETS}_${name}_${body}`;
 houses.forEach((h) => { h.key = spriteKey(h.key); });
-const out = { place: name, houseSheets: HOUSE_SHEETS, tile: TILE, len: place.len, wid: place.wid, center: place.center, bearing: place.bearing, ground: grid.map((row) => row.join('')), houses, landmarks, halls, props };
+const out = { place: name, houseSheets: HOUSE_SHEETS, tile: TILE, len: place.len, wid: place.wid, center: place.center, bearing: place.bearing, ground: grid.map((row) => row.join('')), ...(levels ? { levels } : {}), houses, landmarks, halls, props };
 fs.writeFileSync(path.join(ROOT, `data/${name}.json`), JSON.stringify(out));
 const px = [`// Vygenerováno skriptem scripts/osm.mjs ${name}: unikátní kombinace domů pro mapu data/${name}.json. Neupravovat ručně.`];
 seeds.forEach(({ seed: s, w, dpt, floors, roof, cover, style, corner, back, tagIndex, tagV, tagFace }, body) => {

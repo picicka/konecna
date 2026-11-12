@@ -48,7 +48,7 @@ await browser.close();
 server?.kill();
 
 const esc = (text) => String(text ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const PLACE_NAMES = { hlavak: 'Hlavák a Sherwood', vaclavak: 'Václavák', staromak: 'Staromák', most: 'Karlův most a Kampa', malastrana: 'Malá Strana', hrad: 'Hrad', vsude: 'Celou hru' };
+const PLACE_NAMES = { hlavak: 'Hlavák a Sherwood', vaclavak: 'Václavák', nuselak: 'Nuselák', staromak: 'Staromák', most: 'Karlův most a Kampa', malastrana: 'Malá Strana', hrad: 'Hrad', vsude: 'Celou hru' };
 const out = [];
 let n = 0;
 let place = null;

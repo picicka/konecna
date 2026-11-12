@@ -5,20 +5,22 @@ import staromak from '../data/staromak.json';
 import most from '../data/most.json';
 import malastrana from '../data/malastrana.json';
 import hrad from '../data/hrad.json';
+import nuselak from '../data/nuselak.json';
 import { HLAVAK } from './places/hlavak';
 import { VACLAVAK } from './places/vaclavak';
 import { STAROMAK } from './places/staromak';
 import { MOST } from './places/most';
 import { MALASTRANA } from './places/malastrana';
 import { HRAD } from './places/hrad';
+import { NUSELAK } from './places/nuselak';
 
 // Mapy míst z dat (scripts/osm.mjs → data/<místo>.json): mřížka znaků a seznam domů. Tady se znaky překládají na
 // dlaždice atlasu: r vozovka, p chodník (obrubník na hranách k vozovce), g tráva, t koleje, w voda, b půdorys domu,
 // f pěšina (mlat v parku), n nástupiště, x přechod přes koleje, m molo, z štěrk, L půdorys landmarku, . vnitroblok. Dlaždice vedle domů i voda jsou neprůchozí; půdorysy blokuje WorldScene při umístění domů.
-export const PLACES = { hlavak, vaclavak, staromak, most, malastrana, hrad };
+export const PLACES = { hlavak, vaclavak, nuselak, staromak, most, malastrana, hrad };
 // Střed soupravy tramvaje na zemi v plátně spritu tram_t3_<úhel> (art/tram.px.js TRAM_OX/TRAM_OY, +1 px obrys).
 export const TRAM_ORIGIN = { x: 181, y: 171 };
-export const PLACE_DEFS = { hlavak: HLAVAK, vaclavak: VACLAVAK, staromak: STAROMAK, most: MOST, malastrana: MALASTRANA, hrad: HRAD };
+export const PLACE_DEFS = { hlavak: HLAVAK, vaclavak: VACLAVAK, nuselak: NUSELAK, staromak: STAROMAK, most: MOST, malastrana: MALASTRANA, hrad: HRAD };
 
 export const groundTile = (map, a, b) => {
     const at = (x, y) => (x >= 0 && x < map.len && y >= 0 && y < map.wid ? map.ground[x][y] : ' ');
@@ -39,7 +41,7 @@ export const groundTile = (map, a, b) => {
     return ISO.pick(['t_dirt', 't_dirt2', 't_dirt3', 't_rubble'], a, b, 4);
 };
 
-export const walkable = (map, a, b) => a >= 0 && a < map.len && b >= 0 && b < map.wid && !'wtbLzh'.includes(map.ground[a][b]);
+export const walkable = (map, a, b) => a >= 0 && a < map.len && b >= 0 && b < map.wid && !'wtbLzhk'.includes(map.ground[a][b]);
 
 // Start: první chodník u středu mapy, aby hrdinka nezačala v domě ani ve vodě.
 export const startTile = (map) => {

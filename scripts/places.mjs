@@ -22,9 +22,14 @@ export const PLACES = {
             { key: 'mikulas', a0: 7, a1: 12, b0: 7, b1: 10 },
             { key: 'radnice', a0: 12, a1: 20, b0: 20, b1: 23 },
             { key: 'tyn', a0: 34, a1: 40, b0: 7, b1: 12 },
-            { key: 'kinsky', a0: 27, a1: 34, b0: 0, b1: 4 },
-            { key: 'zvon', a0: 29, a1: 32, b0: 5, b1: 8 },
+            // východní strana podle OSM: Kinský s průčelím do náměstí na a 25 (b 2–7), za ním k jihu U Kamenného zvonu
+            // ustoupený k Týnské škole (průčelí na a 28, b 8–10)
+            { key: 'kinsky', a0: 25, a1: 32, b0: 2, b1: 7 },
+            { key: 'zvon', a0: 28, a1: 31, b0: 8, b1: 10 },
         ],
+        // vpravo od Orloje (k +a) je náměstí: jižní řada domů (U Čápů, U Zlatého jednorožce, U Lazara, U Kamenného stolu)
+        // stojí v OSM šikmo a v mřížce vylezla schodovitě do náměstí; tady je ustoupená za čáru věže radnice
+        clear: [{ a0: 20, a1: 24, b0: 19, b1: 24 }, { a0: 25, a1: 30, b0: 19, b1: 22 }],
         flood: { boardwalk: 1, frame: 6, islands: [{ a: 22, b: 11, r: 2.6 }],
             piers: [{ a0: 24, a1: 28, b0: 11, b1: 11 }, { a0: 2, a1: 19, b0: 11, b1: 11 }, { a0: 20, a1: 20, b0: 13, b1: 19 }] } },
     // Karlův most a Kampa: osa a na západ (272°) po mostě od Staroměstské věže (a ≈ 9) k Malostranské (a ≈ 56), b na sever.
@@ -33,17 +38,39 @@ export const PLACES = {
         skip: ['Staroměstská mostecká věž', 'Malostranská mostecká věž', 'Juditina věž', 'svatý František z Assisi'],
         // půdorysy Malostranských mosteckých věží jsou L (c), průjezdy branami obou věží (řádek b 33) zůstávají dlažbou
         clear: [{ a0: 76, a1: 78, b0: 31, b1: 32, c: 'L' }, { a0: 76, a1: 78, b0: 34, b1: 35, c: 'L' }, { a0: 9, a1: 11, b0: 33, b1: 33 }, { a0: 76, a1: 78, b0: 33, b1: 33 }], multipolygons: true, center: [50.0862, 14.4100], bearing: 284, len: 84, wid: 40, origin: [44, 26], dry: { wet: ['Čertovka'] },
-        // most je v OSM čára šířky pěší zóny; tady má skutečnou šířku 10 m (dlažba p přes bahno)
-        bridges: [{ name: 'Karlův most', width: 1.6 }] },
+        // mostovka: rovný pás b 32–33 od Staroměstské věže k Malostranským (skutečně 10 m, mírně do oblouku; tady 15 m
+        // a rovně, aby oblouky a pilíře šly skládat z dílů po dlaždicích)
+        bridges: [{ name: 'Karlův most', deck: { a0: 8, a1: 76, b0: 32, b1: 33 } }] },
     // Malá Strana: osa a na západ (270°) od Malostranského náměstí (a ≈ 9) Nerudovkou k bráně Ke Hradu (a ≈ 64),
     // b na sever; velvyslanectví v Thunovském/Lobkovickém paláci dole (b ≈ 5), Zámecké schody nahoru k 47,57.
     malastrana: { frame: { streets: ['Malostranské náměstí', 'Nerudova', 'Ke Hradu', 'Zámecké schody', 'Vlašská', 'Tržiště', 'Thunovská', 'Sněmovní', 'Jánský vršek', 'Mostecká', 'Hradčanské náměstí'], width: 2.5 },
         skip: ['svatý Mikuláš'], multipolygons: true, center: [50.0886, 14.4005], bearing: 270, len: 70, wid: 60, origin: [38, 30] },
+    // Nuselák: osa a na jih (180°) po Nuselském mostě od Karlova (a ≈ 0, Muzeum Policie) přes zatopené údolí Botiče
+    // k Vyšehradu (Palác kultury, hotel Forum, stanice Vyšehrad); b na západ. Údolí je pod vodou (water: terén pod
+    // `level` m n. m.), svahy nad ní jsou suť (slope), mostovka je rovný pás (bridges.deck), uprostřed zlomená (gap).
+    nuselak: { multipolygons: true, center: [50.06535, 14.42955], bearing: 180, len: 108, wid: 48, origin: [56, 28],
+        // mostovka b 17–20 od Karlova (a 15) k Pankráci (a 79), uprostřed prostředního pole zlom a 44–49
+        bridges: [{ name: 'Nuselský most', surface: 'asphalt', deck: { a0: 15, a1: 79, b0: 17, b1: 20 }, gap: { a0: 44, a1: 49 } }],
+        // údolí Botiče: pod 212 m jezero, do 224 m svah; mola na obou březích (k loďce Kuřačky a kormidelníka)
+        slope: { below: 224, step: 6, from: [{ a: 2, b: 19 }, { a: 100, b: 18 }], lake: { level: 212, sink: 13 },
+            landings: [{ a0: 12, a1: 21, b0: 25, b1: 25 }, { a0: 68, a1: 78, b0: 24, b1: 24 }] },
+        // landmarky (ručně kreslené, art/lm-nusle.px.js): Muzeum Policie u Karlova, Palác kultury, hotel Forum
+        skip: ['Kongresové centrum Praha', 'Grand Hotel Prague Towers'],
+        // plácek před vchodem do Muzea Policie (průčelí k +b), jinak ho obestaví domy z OSM
+        clear: [{ a0: 0, a1: 10, b0: 43, b1: 47 }, { a0: 9, a1: 10, b0: 36, b1: 42 }],
+        boxes: [
+            { key: 'muzeum_policie', a0: 2, a1: 8, b0: 34, b1: 42 },
+            { key: 'kcp', a0: 94, a1: 107, b0: 28, b1: 45 },
+            { key: 'forum', a0: 90, a1: 96, b0: 0, b1: 8 },
+        ] },
     // Hrad: osa a na východ (75°) od Matyášovy brány (a ≈ 2) přes nádvoří ke katedrále (20,15), Jiřské náměstí,
-    // Zlatá ulička (53,8) a vyhlídka Na Opyši (71,23). Katedrála je landmark (skip).
+    // Zlatá ulička (53,8) a vyhlídka Na Opyši (73,17). Katedrála je landmark (skip).
     hrad: { multipolygons: true, center: [50.0908, 14.4010], bearing: 75, len: 76, wid: 36, origin: [24, 18],
         skip: ['Katedrála svatého Víta, Václava a Vojtěcha', 'Katedrála sv. Víta, Václava a Vojtěcha', 'Bazilika svatého Jiří'],
-        frame: { streets: ['1. nádvoří', '2. nádvoří', '3. nádvoří', '4. nádvoří', 'náměstí U Svatého Jiří', 'Jiřská', 'Vikářská', 'Zlatá ulička u Daliborky', 'Hradčanské náměstí', 'Na Opyši', 'Pražský hrad'], width: 3 } },
+        frame: { streets: ['1. nádvoří', '2. nádvoří', '3. nádvoří', '4. nádvoří', 'náměstí U Svatého Jiří', 'Jiřská', 'Vikářská', 'Zlatá ulička u Daliborky', 'Hradčanské náměstí', 'Na Opyši', 'Pražský hrad'], width: 3 },
+        // Svah: Hrad stojí na ostrohu (250–258 m), Jelení příkop na severu i zahrady k Malé Straně na jihu jsou pod 240 m
+        // (laser ČÚZK, data/teren-hrad.json, scripts/teren.py). Jiřská a Na Opyši vedou dolů k vyhlídce (terraces).
+        slope: { below: 240, step: 12, from: { a: 2, b: 18 }, keep: ['Jiřská', 'Na Opyši', 'Staré zámecké schody'], terraces: [{ a0: 68, a1: 75, b0: 13, b1: 17 }] } },
     // osa a podél Wilsonovy (205°), b = 295°: průčelí Fantovy budovy míří do Sherwoodu (+b), bloky jsou srovnané s mřížkou.
     // Mapa sahá na sever až za tramvajovou trať podél severního okraje Vrchlického sadů (zastávka Hlavní nádraží, a 3–6).
     // skip: budovy nahrazené ručně kresleným landmarkem (data.landmarks, půdorys L).

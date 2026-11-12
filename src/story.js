@@ -1,6 +1,7 @@
 // Vykladač dialogů z src/script.js (DIALOGS): podmínky, účinky, paměť vyčerpaných voleb a návaznost uzlů.
 // Texty sem nepatří; tady je jen logika. WorldScene volá runDialog(world, id) při rozhovoru se zastavením.
 import { DIALOGS, ITEMS, QUESTS, HUD, BATTLES, CHECK, ATTRIBUTE_NAMES, ATTRIBUTE_ICONS, ATTRIBUTE_INFO, FACTIONS, SHOP, BAG, tickets as ticketWord } from './script';
+import { DEBUG } from './debug';
 import { ATTRIBUTES, hasItem, addItem, removeItem, gainXp, resolveEnding, attr as attrOf, maxHp, addSupply } from './state';
 
 const list = (value) => (value === undefined ? [] : [].concat(value));
@@ -81,8 +82,10 @@ const changeTrust = (state, key, n) => {
 // Nová úroveň: bod do vlastnosti podle volby hráčky (Ruka, Ústa, Oko), u každé obrázek a k čemu je.
 const levelUp = async (world, levelled) => {
     for (let i = 0; i < levelled; i++) {
-        const pick = await world.hud.choose(`${HUD.levelUp} ${world.state.level - levelled + i + 1}`, HUD.levelPrompt, ATTRIBUTES.map((a) => ({ label: `${ATTRIBUTE_NAMES[a]} ${world.state.attributes[a]} → ${world.state.attributes[a] + 1}: ${ATTRIBUTE_INFO[a]}`, icon: ATTRIBUTE_ICONS[a] })));
+        // čísla i s výbavou, jako na liště (Oko 5 → 6, ne holé 4 → 5)
+        const pick = await world.hud.choose(`${HUD.levelUp} ${world.state.level - levelled + i + 1}`, HUD.levelPrompt, ATTRIBUTES.map((a) => ({ label: `${ATTRIBUTE_NAMES[a]} ${attrOf(world.state, a)} → ${attrOf(world.state, a) + 1}: ${ATTRIBUTE_INFO[a]}`, icon: ATTRIBUTE_ICONS[a] })));
         world.state.attributes[ATTRIBUTES[pick]] += 1;
+        world.hud.refresh();
     }
 };
 
@@ -94,12 +97,13 @@ export const checkOf = (id, choice) => {
     const [a, n] = Object.entries(choice.if?.attr ?? {})[0] ?? [];
     return a ? { a, n } : null;
 };
-// Šance, že zkouška vyjde: o bod víc než požadavek jistě, na požadavek 70 %, o bod méně 35 %, jinak se volba neukáže.
+// Šance, že zkouška vyjde (CHECK.chance): o bod méně než požadavek 25 %, na požadavek 50 %, o bod víc 75 %, o dva a víc
+// jistě; o dva a víc pod požadavkem se volba neukáže.
 export const chanceOf = (state, id, choice) => {
     const c = checkOf(id, choice);
     if (!c) return 1;
     const diff = attrOf(state, c.a) - c.n;
-    return diff >= 1 ? 1 : CHECK.chance[diff] ?? 0;
+    return CHECK.chance[diff] ?? (diff > 0 ? 1 : 0);
 };
 // Hod pro zkoušku: ze semínka hry, volby a hodnoty vlastnosti, takže opakování na stejné úrovni dopadne stejně.
 const rollFor = (state, key, value) => {
@@ -208,6 +212,8 @@ async function converse(world, id, dialog, speaker, face) {
             if (!node.next) break;
             nodeId = node.next; continue;
         }
+        // Po volbě, která v uzlu nic nenechala (kotě je v tašce), se rozhovor zavře: otázka by mluvila o tom, co už neplatí.
+        if (!fresh && !choices.length) break;
         // Při návratu do uzlu po volbě zazní jen poslední replika (otázka), ne celý úvod znovu.
         const intro = fresh ? lines.slice(0, -1) : [];
         if (intro.length) await hud.say(speaker, intro, face);
@@ -218,7 +224,7 @@ async function converse(world, id, dialog, speaker, face) {
         if (choice.shop) { await shop(world, id, speaker, face); last = nodeId; continue; }
         // zkouška vlastnosti: nepovedený pokus stojí (CHECK.cost nebo fail), volba zmizí do další úrovně té vlastnosti
         const check = checkOf(id, choice);
-        if (check && rollFor(state, failKey(id, choice), attrOf(state, check.a)) >= chanceOf(state, id, choice)) {
+        if (check && !DEBUG.god && rollFor(state, failKey(id, choice), attrOf(state, check.a)) >= chanceOf(state, id, choice)) {
             state.failed = { ...state.failed, [failKey(id, choice)]: attrOf(state, check.a) };
             const cost = choice.fail ?? (check.a === 'usta' && dialog.faction && FACTIONS.list[dialog.faction]?.perks ? { trust: { [dialog.faction]: -1 } } : CHECK.cost[check.a]);
             const r = apply(world, cost);
@@ -228,9 +234,13 @@ async function converse(world, id, dialog, speaker, face) {
             continue;
         }
         if (choice.once) state.asked[id] = [...(state.asked[id] ?? []), choice.id];
-        const { fight, travel, ending, ...now } = choice.do ?? {};
+        const { fight, travel, ending, film, rope, ...now } = choice.do ?? {};
         const r = apply(world, now);
         world.refreshStops?.(); // co se vyřešilo, se přehraje hned (psi odběhnou, zatímco Robin mluví)
+        // filmeček nad světem (vyhlídka): po něm rozhovor pokračuje odpovědí
+        if (film) { hud.hideCard?.(); await world.film(film); hud.showCard?.(id); }
+        // přechod po laně (Nuselák): rozhovor se zavře, hrdinka přeručkuje na druhou stranu zlomu
+        if (rope) { if (choice.reply) await hud.say(speaker, choice.reply, face); notify(world, r.notes); return { rope }; }
         if (choice.reply) await hud.say(speaker, choice.reply, face);
         notify(world, r.notes);
         if (r.levelled) await levelUp(world, r.levelled);

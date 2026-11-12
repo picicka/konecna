@@ -47,10 +47,11 @@ Přestup je stav a scéna (filmeček nebo krátká mini‑hra), ne jen přechod
 
 1. Hlavák a Sherwood (start, tržiště, první quest).
 2. Václavák (převzatý a zvětšený, bez vánočních stánků).
-3. Staromák s Orlojem a zatopenými uličkami.
-4. Karlův most a Kampa.
-5. Malá Strana a Nerudovka.
-6. Hrad (cíl). Vyšehrad je jen epilog loďkařského konce: hrdinka nastoupí na Kampě na loďku, z vody vidí zlomený Nuselák, Vyšehrad je obrázek a text, ne procházená mapa. Žižkovská věž leží na horizontu z Hlaváku.
+3. Nuselák: zatopené údolí, most zlomený uprostřed, přes zlom po laně; Muzeum Policie, Palác kultury, hotel Forum, lachtani a racci.
+4. Staromák s Orlojem a zatopenými uličkami.
+5. Karlův most a Kampa.
+6. Malá Strana a Nerudovka.
+7. Hrad (cíl). Vyšehrad je jen epilog loďkařského konce: flotila se nalodí v Nuslích pod zlomeným mostem a odjede kolem skály, Vyšehrad je obrázek a text, ne procházená mapa. Žižkovská věž leží na horizontu z Hlaváku.
 
 Každé místo: jeden hlavní quest, dva vedlejší, jedna věc k poznání, jedna postava, která se pamatuje.
 

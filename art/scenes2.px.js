@@ -363,6 +363,88 @@ scene("cs_vysehrad", { w: 640, h: 360 }, (c) => {
   c.hline(80, 264, 150, "J"); c.line(236, 252, 360, 274, "J"); c.line(222, 260, 330, 300, "Z")
 }, glow("fF", { r: 10, strength: 0.6 }))
 
+// 6b. Vyhlídka Na Opyši v noci: dole hradní zídka a střechy Malé Strany, suché koryto s Karlovým mostem, nové koryto
+// Vltavy přes Staré Město, Týn, vlevo na obzoru ležící Žižkovská věž, vpravo zlomený Nuselák s lanem přes mezeru
+// (na Pankrác se chodí po laně) a pod ním Vyšehrad s ohni loďkařů.
+scene("cs_opys", { w: 640, h: 360 }, (c) => {
+  c.rect(0, 0, 640, 360, "N")
+  c.grad(0, 0, 640, 170, "Nnb", "v", 0.5)
+  c.noise(0, 0, 640, 120, "W", 0.01, 7)
+  // obzor: Žižkov vlevo, pláň Pankráce vpravo
+  c.poly([0, 150, 90, 136, 200, 142, 260, 150, 260, 170, 0, 170], "n")
+  c.poly([360, 150, 420, 144, 640, 140, 640, 176, 360, 176], "n")
+  c.line(70, 112, 140, 146, "k", 5); c.rect(132, 140, 16, 8, "k"); c.rect(84, 120, 10, 6, "k")
+  // Nuselák: betonový nosník na lichoběžníkových pilířích přes údolí, uprostřed zlomený; konce visí dolů, přes mezeru lano
+  c.poly([300, 176, 640, 176, 640, 196, 300, 196], "N")
+  c.rect(330, 146, 132, 5, "v"); c.hline(330, 146, 132, "w"); c.hline(330, 150, 132, "x")
+  c.poly([462, 146, 474, 152, 470, 158, 462, 151], "v")
+  c.poly([508, 160, 516, 150, 640, 146, 640, 151, 518, 155, 512, 166], "v"); c.line(516, 150, 640, 146, "w")
+  for (const x of [348, 396, 444, 560, 612]) c.poly([x - 6, 151, x + 6, 151, x + 3, 196, x - 3, 196], "x")
+  c.line(462, 151, 470, 166, "x"); c.line(508, 160, 502, 172, "x"); c.line(512, 164, 506, 178, "x")
+  for (let x = 468; x <= 512; x += 2) { const t = (x - 468) / 44; c.px(x, Math.round(152 + Math.sin(t * Math.PI) * 9 + t * 4), "w") }
+  // Vyšehrad pod koncem mostu: skála, hradby, dvě věže baziliky, ohně loďkařů dole
+  c.poly([540, 196, 556, 172, 600, 166, 640, 168, 640, 196], "k")
+  c.rect(588, 140, 6, 28, "k"); c.poly([587, 142, 591, 124, 595, 142], "k"); c.rect(606, 140, 6, 28, "k"); c.poly([605, 142, 609, 124, 613, 142], "k")
+  for (const x of [548, 566, 584, 604, 626]) { c.rect(x, 192, 2, 2, "f"); c.px(x, 195, "F") }
+  // Staré Město: střechy a věže, Týn se dvěma věžemi, nové koryto Vltavy mezi domy
+  c.rect(0, 176, 300, 30, "N")
+  for (let x = 0; x < 640; x += 22) c.rect(x, 188 + ((x * 11) % 14), 18, 30, "k")
+  for (const x of [196, 214]) { c.rect(x, 150, 8, 40, "k"); c.poly([x - 2, 152, x + 4, 128, x + 10, 152], "k"); c.px(x + 4, 140, "n") }
+  c.rect(140, 162, 12, 30, "k"); c.poly([138, 164, 146, 146, 154, 164], "k")
+  c.poly([0, 214, 120, 206, 260, 212, 400, 204, 520, 200, 640, 198, 640, 206, 520, 208, 400, 214, 260, 222, 120, 216, 0, 222], "X")
+  for (let i = 0; i < 18; i++) c.hline(20 + i * 34 + ((i * 7) % 11), 207 + ((i * 5) % 9), 6 + (i % 4) * 2, i % 3 ? "Z" : "J")
+  // suché koryto: hnědý pás bahna, přes něj Karlův most na obloucích, pod nimi tma
+  c.rect(0, 226, 640, 30, "H"); c.noise(0, 226, 640, 30, "K", 0.25, 9); for (let x = 0; x < 640; x += 46) c.hline(x + ((x * 3) % 17), 236 + ((x * 7) % 14), 18, "h")
+  c.rect(80, 228, 460, 6, "x"); c.hline(80, 227, 460, "v")
+  for (let k = 0; k < 9; k++) { const x0 = 84 + k * 51; c.rect(x0, 234, 8, 22, "x"); c.poly([x0 + 8, 256, x0 + 8, 240, x0 + 18, 234, x0 + 33, 234, x0 + 43, 240, x0 + 43, 256], "N") }
+  c.rect(60, 210, 20, 46, "k"); c.poly([58, 212, 70, 194, 82, 212], "k"); c.rect(540, 214, 16, 42, "k"); c.poly([538, 216, 548, 200, 558, 216], "k")
+  for (let x = 96; x < 540; x += 34) c.rect(x, 222, 3, 6, "k")
+  // Malá Strana: tmavé střechy pod Hradem, kupole svatého Mikuláše
+  c.rect(0, 256, 640, 60, "k")
+  for (let x = 0; x < 640; x += 30) c.poly([x, 270 - ((x * 7) % 12), x + 15, 256 - ((x * 7) % 12), x + 30, 270 - ((x * 7) % 12), x + 30, 300, x, 300], (x / 30) % 2 ? "N" : "k")
+  c.circ(400, 252, 16, "k"); c.rect(396, 222, 8, 16, "k"); c.rect(430, 236, 10, 30, "k"); c.poly([428, 238, 435, 214, 442, 238], "k")
+  // hradní zídka vpředu, světlo z Hradu na ní, lavička, na zídce plechový hrnek
+  c.rect(0, 316, 640, 44, "P"); c.hline(0, 316, 640, "q"); c.hline(0, 317, 640, "p"); c.hline(0, 322, 640, "k")
+  for (let y = 330; y < 360; y += 10) for (let x = ((y / 10) % 2) * 18; x < 640; x += 36) c.vline(x, y - 8, 8, "3")
+  c.rect(460, 300, 70, 6, "H"); c.rect(464, 306, 4, 12, "H"); c.rect(522, 306, 4, 12, "H"); c.hline(460, 300, 70, "h")
+  c.rect(120, 308, 8, 9, "x"); c.hline(120, 308, 8, "w"); c.rect(128, 310, 3, 4, "x")
+}, layer("hrad", { light: true, density: 0.4 }, ellipse(320, 360, 420, 60, "o")), glow("fF", { r: 10, strength: 0.7 }), glow("J", { r: 3, strength: 0.3 }))
+
+// 6c. Nusle: zatopené údolí Botiče za šera, nad ním Nuselský most zlomený uprostřed, oba konce visí k vodě, přes
+// mezeru lano. Vpravo na kopci Palác kultury a vysoký hotel Forum s hořícími okny, vlevo Karlov s kopulí. Na vodě
+// lachtani a z hladiny čouhají střechy nuselských domů, na troskách racci; vpředu příď loďky.
+scene("cs_nusle", { w: 640, h: 360 }, (c) => {
+  c.rect(0, 0, 640, 360, "N")
+  c.grad(0, 0, 640, 190, "nNbxu", "v", 0.55)
+  c.noise(0, 0, 640, 90, "W", 0.008, 17)
+  // svahy údolí: vlevo Karlov, vpravo Pankrác
+  c.poly([0, 120, 70, 112, 150, 130, 190, 200, 0, 200], "n"); c.poly([450, 200, 500, 120, 560, 104, 640, 100, 640, 200], "n")
+  c.rect(40, 92, 18, 26, "k"); c.poly([36, 94, 49, 76, 62, 94], "k"); c.rect(46, 70, 6, 8, "k"); c.rect(70, 104, 50, 16, "k")
+  // Palác kultury: nízký dlouhý blok, Forum: vysoká deska s okny, pár hoří
+  c.rect(480, 80, 130, 34, "k"); c.rect(500, 70, 70, 12, "k"); for (let x = 484; x < 606; x += 6) c.vline(x, 84, 26, "n")
+  c.rect(600, 10, 34, 94, "k"); for (let y = 14; y < 100; y += 4) for (let x = 603; x < 632; x += 4) if ((x * 7 + y * 3) % 11 === 0) c.px(x, y, "f"); else if ((x + y) % 3 === 0) c.px(x, y, "n")
+  c.rect(604, 4, 26, 6, "k")
+  // most: nosník na pilířích, uprostřed zlom; severní konec visí dolů, z jižního trčí souprava metra
+  c.rect(0, 92, 260, 10, "v"); c.hline(0, 92, 260, "w"); c.hline(0, 101, 260, "x")
+  c.poly([260, 92, 268, 96, 290, 176, 278, 180, 256, 102], "v"); c.line(262, 98, 284, 172, "x")
+  c.rect(360, 88, 280, 10, "v"); c.hline(360, 88, 280, "w"); c.hline(360, 97, 280, "x")
+  c.poly([340, 100, 364, 92, 364, 100, 346, 108], "V"); c.rect(342, 99, 6, 3, "W"); c.px(343, 103, "f")
+  for (const x of [70, 190, 450, 570]) c.poly([x - 9, x < 300 ? 102 : 98, x + 9, x < 300 ? 102 : 98, x + 5, 200, x - 5, 200], "x")
+  for (let x = 266; x <= 360; x += 2) { const t = (x - 266) / 94; c.px(x, Math.round(96 + Math.sin(t * Math.PI) * 16 - t * 6), "w") }
+  // voda: tmavé jezero, odlesky, střechy domů čouhají nad hladinu
+  c.rect(0, 200, 640, 160, "X"); c.hline(0, 200, 640, "Z")
+  for (let i = 0; i < 40; i++) c.hline((i * 97) % 620, 206 + (i * 13) % 150, 8 + (i % 5) * 4, i % 3 ? "Z" : "J")
+  for (const [x, w] of [[30, 60], [120, 46], [400, 70], [520, 50]]) { c.poly([x, 214, x + w / 2, 196, x + w, 214], "D"); c.line(x, 214, x + w / 2, 196, "d"); c.rect(x + w / 2 + 8, 192, 5, 10, "R"); c.hline(x - 4, 215, w + 8, "J") }
+  // lachtani: hlava a hřbet nad vodou
+  for (const [x, y] of [[220, 236], [300, 262], [470, 244]]) { c.ellipse(x, y, 12, 4, "H"); c.circ(x + 10, y - 6, 4, "H"); c.px(x + 12, y - 7, "k"); c.hline(x - 14, y + 4, 30, "J") }
+  // racci na střeše a ve vzduchu
+  for (const [x, y] of [[148, 192], [430, 194]]) { c.rect(x, y, 4, 3, "W"); c.px(x + 4, y, "o") }
+  for (const [x, y] of [[300, 60], [330, 48], [180, 70]]) { c.line(x - 5, y + 2, x, y, "W"); c.line(x, y, x + 5, y + 2, "W") }
+  // příď loďky vpředu, lucerna
+  c.poly([180, 360, 230, 300, 300, 290, 360, 300, 420, 360], "k"); c.poly([230, 300, 300, 290, 360, 300, 350, 306, 240, 306], "H")
+  c.rect(296, 270, 3, 22, "M"); c.rect(292, 262, 11, 9, "U"); c.rect(295, 264, 5, 5, "f")
+}, glow("fF", { r: 10, strength: 0.7 }), glow("J", { r: 3, strength: 0.3 }))
+
 // 7. Detail v buňce: čtečka s malou CRT obrazovkou a zelenými řádky, kabelem k ní připojený záznamník štítu.
 scene("cs_ctecka", { w: 640, h: 360 }, (c) => {
   // stěna buňky: plech se žebry, nástěnka s papíry

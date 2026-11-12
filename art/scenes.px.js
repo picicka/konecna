@@ -1,5 +1,5 @@
 // Obrázky k filmečkům 640 × 360 (plátno 1280 × 720 je zobrazí 2×). Noční Praha po pádu a nástupiště metra.
-// Silueta: Hradčany s katedrálou vlevo, Petřín, Národní muzeum, Žižkovská věž vpravo spadlá (leží přes Ohradu).
+// Silueta: Hradčany s katedrálou vlevo, Petřín, za ním zlomený Nuselák, Národní muzeum, Žižkovská věž vpravo spadlá (leží přes Ohradu).
 const skyline = (c) => {
   c.grad(0, 0, 640, 360, "Nn", "v", 0.6)
   c.noise(0, 0, 640, 200, "W", 0.015, 3)
@@ -7,6 +7,10 @@ const skyline = (c) => {
   c.rect(0, 184, 220, 60, "k"); c.rect(40, 160, 120, 28, "k"); c.rect(76, 120, 10, 48, "k"); c.rect(104, 120, 10, 48, "k"); c.rect(88, 140, 20, 28, "k")
   c.poly([76, 120, 81, 96, 86, 120], "k"); c.poly([104, 120, 109, 96, 114, 120], "k"); c.poly([88, 140, 98, 116, 108, 140], "k")
   c.rect(60, 172, 4, 4, "f"); c.rect(140, 170, 4, 4, "f")
+  // Nuselák v dálce za Petřínem a muzeem: nosník na pilířích, uprostřed zlomený, konce visí dolů
+  c.rect(300, 194, 86, 4, "a"); c.poly([386, 194, 392, 198, 388, 204, 386, 198], "a")
+  c.rect(410, 196, 120, 4, "a"); c.poly([410, 196, 404, 204, 402, 210, 408, 200], "a")
+  for (const x of [322, 362, 440, 500]) c.poly([x - 4, 198, x + 4, 198, x + 2, 244, x - 2, 244], "a")
   // Petřín s rozhlednou
   c.poly([180, 244, 280, 192, 380, 244], "k"); c.rect(276, 140, 4, 56, "k"); c.poly([268, 196, 278, 140, 288, 196], "k")
   // Národní muzeum uprostřed vpředu, kupole

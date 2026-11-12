@@ -121,15 +121,16 @@ a nikdo z metra neví, který je pravý.
 2. Dispečerka ji rozhlasem pozve do stanice. Chce zásilku zapsat do evidence. Nechat zapsat: metro se dozví, co to je,
    důvěra metra. Odmítnout (Ústa): důvěra tržiště, ale revizor dole ji hlídá víc.
 3. K vodě. Revizor pouští na molo jen s označenou jízdenkou a zapsaným nákladem. Buď má zápis z evidence, nebo mu
-   zaplatí, nebo projde po střechách (Oko, cestu ukáže Václav).
-4. Kuřačka ji vezme na Staromák. Cestou přes zatopenou Jindřišskou první útržek o kanálu: „Admirál říká, že to je
+   zaplatí, nebo proklouzne (Oko), nebo ho ukecá (Ústa).
+4. Kuřačka ji vezme do Nuslí, odkud ji na Staromák doveze kormidelník po Vltavě. Rovnou to nejde: na Můstku je
+   stavidlo, které drží Admirálova posádka a pouští jen loďkaře (rovnou až po setkání s Admirálem). Cestou přes zatopenou Jindřišskou první útržek o kanálu: „Admirál říká, že to je
    největší vodní dílo od Zemana. Já říkám, že to je hodně vody.“
 
 ### Vedlejší úkoly
 
 - **Pravý kůň** (Václav na směny): zjistit, kam se poděla socha. Stopa vede ke Kuřačce, která sochy nakládá po kusech.
-  Odměna: Václav sleze z podstavce a ukáže cestu po střechách kolem revizora. Záznam o loďkařích a sochách pro Karlův
-  most.
+  Odměna: tři jízdenky z přilby a rada, že kdo kupuje bronz po kusech, bydlí vysoko (Zlatá ulička na Hradě,
+  odpověď na otázku průvodkyně).
 - **Rozhlas** (dispečerka): vyměnit hlasitost ve zbývajícím reproduktoru u Jindřišské, aby bylo slyšet až k vodě. Boj
   nebo Ruka: na reproduktoru sedí nutrie. Odměna: dispečerka pošťačku ohlásí jako úřední osobu a revizor ji pustí
   bez placení.
@@ -148,6 +149,56 @@ Zdroj pravdy je `src/places/vaclavak.js`, dialogy v `DIALOGS` v `src/script.js
 | Konec mola u Můstku | Kuřačka 18,12 | 19,12 | loďka 17,13 |
 
 Přestup dál: loďka ze zatopeného Václaváku Jindřišskou a Panskou na Staromák, scéna s prvním útržkem o kanálu.
+
+## Místo 2½: Nuselák (mezi Václavákem a Staromákem)
+
+Kuřačka veze z Václaváku Ječnou ke Karlovu a dál nejede: Nuselské údolí je jezero a pod zlomeným mostem visí beton.
+Na Staromák se jede od jižního mola s kormidelníkem loďkařů, takže hrdinka musí přes Nuselák, a ten je uprostřed
+prostředního pole zlomený. Přes mezeru vede lano (Lanovka Fanta). Mapa z OSM a laseru ČÚZK: údolí Botiče pod 212 m
+je voda, svahy suť, mostovka b 17–20, zlom a 44–49 (`src/places/nuselak.js`, `scripts/places.mjs`).
+
+### Postavy
+
+- **Kuřačka** (loďkaři): vysadí u mola pod Karlovem, poví, že most praskl ve 14:37 a uvnitř zůstala souprava céčka.
+- **Strážmistr Kulhánek** (Muzeum Policie): poslední policista v Praze bez pravomocí. Dává pokuty, které nikdo
+  neplatí, v kapse nosí koťata. Útržek: tři dny předtím sepsal protokol o praskající troubě mostu, Kancelář kanálu
+  ho vrátila s razítkem VYŘÍZENO.
+- **Lanař** (tržiště): Lanovka Fanta, přes zlom dvě jízdenky, zpátky zadarmo.
+- **Kormidelník** (loďkaři): vozí z jižního mola na Staromák kolem Vyšehradu; u něj se nalodí flotila loďkařského konce.
+- **Mourek**: strážmistrovo kotě, utekl za racky až za zlom k uvízlé soupravě.
+
+### Hlavní linka
+
+1. Kuřačka vysadí u Karlova (úkol Loďka na Staromák: další krok Nusle, Přes zlom).
+2. Lanař: přes lano za dvě jízdenky, Rukou bez postroje, Okem (druhý postroj pod bednou), Ústy (pošta má přednost),
+   nebo odpracovat (bez dvou jízdenek). Přechod je animace: hrdinka ručkuje po laně nad vodou (`rope` u volby).
+3. Kormidelník na jižním molu: Na Staromák.
+
+### Vedlejší úkoly a útržky
+
+- **Mourek**: strážmistr pošle pro kotě za zlom; za kotě dá služební odznak (talisman, Ústa +1).
+- **Souprava metra C** v troubě mostu: služební kniha, poslední zápis „Dispečink hlásí, že trouba mostu pracuje. Pokyn
+  Kanceláře kanálu: provoz nezastavovat. 14.37 —“ (útržek).
+- Stanice Vyšehrad: eskalátor jede jen jedním směrem, dolů.
+
+### Loďkařský konec
+
+Pilař na Kampě veze flotilu do Nuslí (ne rovnou na Vyšehrad). Pod zlomeným mostem se hrdinka u kormidelníka nalodí
+a flotila odjíždí kolem skály na Vyšehrad (snímky konce a epilog jako dřív).
+
+### Zastavení
+
+| Zastavení | Poloha | Postava |
+|---|---|---|
+| Severní molo | pod Karlovem | Kuřačka |
+| Muzeum Policie | Karlov, vchod | strážmistr Kulhánek, vrak Tatry VB |
+| Zlom, sever | mostovka u lana | lanař |
+| Zlom, jih | sloupek lana, trouba se soupravou | racek (lano zpátky), souprava, Mourek |
+| Jižní molo | pod Palácem kultury | kormidelník |
+| Stanice Vyšehrad | jižní konec mostu | sloupek C |
+
+Ve vodě plavou lachtani (ze zatopené zoo), na mostovce a troskách sedí racci. Nad jižním koncem stojí Palác kultury
+a hotel Forum, nejvyšší budova ve hře.
 
 ## Místo 3: Staromák
 
@@ -224,7 +275,8 @@ se točí poprvé za sto let a Kampa je jediné místo v Praze, kde svítí ž
 1. Přístup z vody u Staroměstské věže. Pilař se zeptá, jestli pošťačka veze něco pro Admirála, a podle toho,
    co se stalo na Staromáku, buď mávne, nebo si ji zapamatuje.
 2. Na mostě Fantova neteř nabídne 300 jízdenek za zásilku na místě. „Strýc to prodal dvakrát a vy jste ta druhá.“
-   Prodat: důvěra tržiště, zásilka pryč, hra jde dál a Hrad bude jiný. Odmítnout: neteř pošle vzkaz, že pošťačka
+   Prodat: důvěra tržiště, zásilka pryč, hra jde dál a Hrad bude jiný (neteř i Kastelán poradí, že na Hrad se dá
+   jako turistka s propustkou od velvyslance). Odmítnout: neteř pošle vzkaz, že pošťačka
    nespolupracuje, a na Malé Straně ji bude někdo čekat.
 3. Třetí útržek: sochy kupuje Hrad. Někdo nahoře má na umění, takže někdo nahoře má na všechno. Od neteře za jízdenky,
    nebo od Pilaře za Ústa.
@@ -372,7 +424,15 @@ uličce jsou v domečcích uskladněné sochy z Karlova mostu, každá s ceno
 
 - **Dotazy na závěr** (průvodkyně): odpovědět na tři otázky o tom, jak to v Praze chodí teď, na které hráčka zná odpověď jen z toho,
   co cestou viděla (Orloj, kůň, Nepomucký). Odměna: průvodkyně otevře vyhlídku a hra ukáže nové koryto celé,
-  od Hlaváku po Vyšehrad, jako poslední obrázek před koncem.
+  od Hlaváku po Vyšehrad, jako poslední obrázek před koncem. Volba „Dívat se“ pustí panoráma `cs_opys`: suché koryto
+  s Karlovým mostem, nové koryto přes Staré Město, zlomený Nuselák s lanem přes mezeru (na Pankrác se chodí po laně),
+  Vyšehrad s ohni loďkařů a ležící Žižkovská věž.
+
+### Svah
+
+Hrad stojí na ostrohu. Jelení příkop za ním i zahrady k Malé Straně před ním jsou svah se sutí, kam se nedá chodit:
+z hrany visí rozpadlá opěrná zeď hradeb nad skálou, níž jsou zbořené terasy zahrad, balvany, kvádry a kusy
+balustrády. Dolů vede jen Jiřská a Na Opyši k vyhlídce na konci rampy.
 
 ### Zastavení
 
@@ -384,12 +444,12 @@ Zdroj pravdy (polohy postav, přístupy, rekvizity) je `src/places/hrad.js`, dia
 | Katedrála | třetí nádvoří, průčelí | průvodkyně |
 | Stavební buňka metra E | třetí nádvoří, u Obelisku | čtečka, ředitel, ochranka |
 | Zlatá ulička | sklad soch | Kastelán |
-| Vyhlídka | Na Opyši | průvodkyně, závěrečný obrázek |
+| Vyhlídka | Na Opyši, konec rampy nad svahem | průvodkyně, panoráma se zlomeným Nuselákem |
 
 ## Epilog: Vyšehrad
 
-Loďka, zlomený Nuselák shora, Vyšehradská skála se světly loďkařů, Admirálův proslov a titulek „Po vodě“. Obrázek
-a text, ne mapa.
+Flotila se nalodí v Nuslích (místo Nuselák) a odjíždí kolem skály: Vyšehradská skála se světly loďkařů, Admirálův
+proslov a titulek „Po vodě“. Vyšehrad sám je obrázek a text, ne mapa.
 
 ## Útržky příčiny (pořadí, v jakém je hráčka může posbírat)
 
@@ -398,6 +458,8 @@ a text, ne mapa.
 3. Most: sochy kupuje Hrad, někdo nahoře má na všechno.
 4. Paní z Nerudovky: kolona Kanceláře kanálu tu noc předtím, ráno zavřený Hrad.
 5. Průvodkyně: štít stál dva dny, geologové psali, ředitel podepsal.
+6. Strážmistr v Nuslích: protokol o praskající troubě mostu, Kancelář kanálu: VYŘÍZENO.
+7. Souprava metra C v Nuseláku: pokyn Kanceláře kanálu provoz nezastavovat, 14.37.
 
 ## Boje (5–8 za hru, většinu jde obejít)
 

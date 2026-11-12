@@ -1,0 +1,74 @@
+{
+ "hlavak": [
+  "f:fanta_met",
+  "f:jizdni_rad",
+  "f:met_strojvedouci",
+  "f:psi_ok",
+  "i:zasilka",
+  "q:zakazka",
+  "tickets"
+ ],
+ "vaclavak": [
+  "a:vaclav.info",
+  "f:met_dispecerka",
+  "f:met_kuracka",
+  "f:met_vaclav",
+  "f:molo",
+  "f:nusle_prijezd",
+  "f:nutrie_pryc",
+  "f:uredni_osoba",
+  "g:molo",
+  "i:vypis",
+  "q:kun",
+  "q:rozhlas",
+  "tickets"
+ ],
+ "nuselak": [
+  "f:flotila",
+  "f:lano_ok",
+  "f:met_kormidelnik",
+  "f:met_lanar",
+  "tickets"
+ ],
+ "staromak": [
+  "a:orlojnik.cas",
+  "a:potapecka.rad",
+  "f:admiral_hotovo",
+  "f:admiral_prevoz",
+  "f:admiral_videl",
+  "f:apostolove",
+  "f:hak_venku",
+  "f:met_admiral",
+  "f:met_lovec",
+  "f:met_orlojnik",
+  "f:met_potapecka",
+  "f:nutrie2_pryc",
+  "i:kolo",
+  "i:zasilka",
+  "q:apostolove",
+  "q:hak",
+  "tickets"
+ ],
+ "most": [],
+ "malastrana": [
+  "f:cesta_schody",
+  "f:holubi_pryc",
+  "f:met_kastelan",
+  "f:met_netere",
+  "f:met_straz",
+  "f:met_velvyslanec",
+  "f:trabant_najedeny",
+  "f:uredni_osoba",
+  "i:jidlo",
+  "i:propustka",
+  "i:vypis",
+  "i:zasilka",
+  "q:straz",
+  "t:metro",
+  "t:trziste"
+ ],
+ "hrad": [
+  "f:ochranka_pryc",
+  "i:zasilka"
+ ]
+}

@@ -8,6 +8,7 @@ import { STAROMAK } from '../src/places/staromak.js';
 import { MOST } from '../src/places/most.js';
 import { MALASTRANA } from '../src/places/malastrana.js';
 import { HRAD } from '../src/places/hrad.js';
+import { NUSELAK } from '../src/places/nuselak.js';
 
 const esc = (text) => String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const out = [];
@@ -34,7 +35,7 @@ ol.choices{list-style:none;padding-left:0}ol.choices>li{margin:.5rem 0;padding:.
 p.rule{background:#fef3c7;border-left:4px solid #f59e0b;padding:.4rem .75rem}p.where{color:#57534e;font-size:.9em}
 </style></head><body>`);
 out.push(`<h1>${esc(TITLE.name)}. ${esc(TITLE.subtitle)} – rozhodovací strom</h1>`);
-p('Každý bod má číslo. Volby jsou X.Y.Z, repliky postav jsou v šedých blocích, účinky červeně, podmínky modře. Volby, které v dané chvíli nejdou zvolit (chybí věc, úkol nezačal), se ve hře vůbec nezobrazí. Zkouška vlastnosti se ukáže, i když chybí jeden bod: o bod víc než požadavek vyjde vždy, na požadavek na 70 %, o bod méně na 35 %. Nepovedená stojí Ruka 2 životy, Oko 1 život, Ústa 1 bod důvěry skupiny postavy a znovu jde zkusit až s vyšší vlastností.', 'rule');
+p('Každý bod má číslo. Volby jsou X.Y.Z, repliky postav jsou v šedých blocích, účinky červeně, podmínky modře. Volby, které v dané chvíli nejdou zvolit (chybí věc, úkol nezačal), se ve hře vůbec nezobrazí. Zkouška vlastnosti se ukáže, i když chybí jeden bod: o bod méně než požadavek vyjde na 25 %, na požadavek na 50 %, o bod víc na 75 %, o dva a víc vždy. Nepovedená stojí Ruka 2 životy, Oko 1 život, Ústa 1 bod důvěry skupiny postavy a znovu jde zkusit až s vyšší vlastností.', 'rule');
 
 h(2, '1', 'Úvod (filmeček)');
 CUTSCENES.intro.forEach((shot, i) => { h(4, `1.${i + 1}`, `Snímek ${shot.image}`); lines(shot.lines); });
@@ -79,7 +80,7 @@ const effect = (f, win) => {
     if (f.ending) p.push(`KONEC: ${f.ending === 'hrad' ? 'podle stavu (přehraný a nabitý záznam Řád, vybitý nebo žádný Řád bez důkazu, jinak tržiště)' : ENDINGS[f.ending].title}`);
     return p.join(', ');
 };
-const places = [['3', 'Hlavák', HLAVAK], ['4', 'Václavák', VACLAVAK], ['5', 'Staromák', STAROMAK], ['6', 'Karlův most a Kampa', MOST], ['7', 'Malá Strana', MALASTRANA], ['8', 'Hrad', HRAD]];
+const places = [['3', 'Hlavák', HLAVAK], ['4', 'Václavák', VACLAVAK], ['5', 'Nuselák', NUSELAK], ['6', 'Staromák', STAROMAK], ['7', 'Karlův most a Kampa', MOST], ['8', 'Malá Strana', MALASTRANA], ['9', 'Hrad', HRAD]];
 places.forEach(([num, title, def]) => {
     h(2, num, title);
     Object.keys(def.stops).filter((id) => DIALOGS[id]).forEach((id, si) => {

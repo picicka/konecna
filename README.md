@@ -45,6 +45,13 @@ npm test           # sestavení a průchod celou hrou v Playwrightu (snímky v t
 
 Sestavená grafika je v repu (`static/images`), takže na hraní ani úpravy kódu není potřeba nic dalšího.
 
+### Skoky pro ladění
+
+`?misto=hrad` v adrese spustí hru rovnou na místě se stavem, jaký tam má průchod `npm test` (zapisuje ho do
+`src/skoky.json`). Dál jde přidat `&a=43&b=19` (dlaždice), `&jizdenky=99` a `&buh` (nesmrtelnost, zkoušky vždy
+vyjdou). Klávesa F2 otevře panel skoků na místa (zapíná se `?ladeni`, v `npm run dev` je zapnutý sám). Odkazy na
+všechna místa jsou v `docs/index.html`.
+
 ## Další příkazy
 
 | Příkaz | Co dělá |
@@ -52,7 +59,9 @@ Sestavená grafika je v repu (`static/images`), takže na hraní ani úpravy k�
 | `npm run art` | sestaví grafiku z `art/*.px.js` přes pxl (trvá kolem 10 minut) |
 | `npm run osm` | z exportů OSM v `data/osm` vytvoří mřížky míst, domy a zem, pak spustí `art` |
 | `npm run vysky` | stáhne laserové skenování ČÚZK a spočítá výšky domů (Python, `.venv`) |
+| `npm run teren` | z laserového skenování spočítá výšku terénu na Hradě (svah pod ostrohem) |
 | `npm run strechy` | z ortofota ČÚZK určí krytinu střech |
+| `npm run slepe` | dokáže úplným prohledáním stavů, že příběh nemá slepé uličky (asi půl minuty) |
 | `npm run tree` | rozhodovací strom dialogů do `docs/rozhodovaci-strom.html` |
 | `npm run mapa` | snímky map po úsecích do `docs/mapa` |
 | `npm run postavy` | přehled postav do `docs/postavy.html` |

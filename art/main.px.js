@@ -9,6 +9,7 @@ include("houses-staromak.px.js")
 include("houses-most.px.js")
 include("houses-malastrana.px.js")
 include("houses-hrad.px.js")
+include("houses-nuselak.px.js")
 include("chars.px.js")
 include("lide.px.js")
 include("lide-a.px.js")
@@ -26,6 +27,12 @@ include("lm-tyn.px.js")
 include("lm-radnice.px.js")
 include("lm-namesti.px.js")
 include("lm-most.px.js")
+include("most-oblouky.px.js")
+include("hrad-svah.px.js")
+include("kuriozity.px.js")
+include("nuselak-most.px.js")
+include("lm-nusle.px.js")
+include("nusle-postavy.px.js")
 include("lm-kostely.px.js")
 include("scenes2.px.js")
 // Zem míst z vektorů OSM: malíř a vygenerovaná data (díly gr_<místo>_<i>_<j>, listy ground_<místo>_<n> zakládá groundMap).
@@ -36,12 +43,15 @@ include("ground-staromak.px.js")
 include("ground-most.px.js")
 include("ground-malastrana.px.js")
 include("ground-hrad.px.js")
+include("ground-nuselak.px.js")
 
-sheet("atlas", ["t_*", "hero", "fanta", "vypravci", "robin", "strojvedouci", "trafikantka", "face_*", "ico_*", "tree_*", "lamp", "bench", "barrel_fire", "metro_entrance", "kiosk", "dog", "dog_lie", "hero_go", "hero_up", "hero_back", "station_clock", "car_wreck_*", "bus_wreck*", "loco_*", "coach_*", "wagon_*", "canopy", "catenary", "metro_totem", "door_fanta", "rubble_pile", "barrel", "tires", "shack", "bush_*", "decal_*", "tram_*", "vaclav", "dispecerka", "revizor", "kuracka", "reproduktor", "reproduktor_prazdny", "nutrie_breh", "lodka", "vylez", "nutrie",
+sheet("atlas", ["t_*", "hero", "fanta", "vypravci", "robin", "strojvedouci", "trafikantka", "face_*", "ico_*", "tree_*", "lamp", "bench", "barrel_fire", "metro_entrance", "kiosk", "dog", "dog_lie", "hero_go", "hero_up", "hero_back", "station_clock", "car_wreck_*", "bus_wreck*", "loco_*", "coach_*", "wagon_*", "canopy", "catenary", "metro_totem_*", "door_fanta", "rubble_pile", "barrel", "tires", "shack", "bush_*", "decal_*", "tram_*", "vaclav", "dispecerka", "revizor", "kuracka", "reproduktor", "reproduktor_prazdny", "nutrie_breh", "lodka", "vylez", "nutrie",
     // Staromák až Hrad: postavy (art/postavy.px.js), rekvizity a zvířata do boje (art/staromak.px.js, art/hrad.px.js)
     "admiral", "orlojnik", "potapecka", "lovec", "pilar", "netere", "hlidac", "mlynar", "vymahac", "pani", "velvyslanec", "straz", "kastelan", "pruvodkyne", "ochranka", "reditel",
     "lovec_hak", "vyloha", "ostrov_lodka", "podstavec_*", "bedny", "mlynske_kolo", "zarovka", "kanec",
-    "trabant", "budka_straz", "razitko_stul", "holub", "bunka", "generator", "obelisk", "ctecka", "reflektor", "ochranka_cedule"], { pad: 1 })
+    "trabant", "budka_straz", "razitko_stul", "holub", "bunka", "generator", "obelisk", "ctecka", "reflektor", "ochranka_cedule",
+    // Nuselák (art/nusle-postavy.px.js): postavy, hrdinka na laně, lachtani, racci, kotě, vrak Tatry VB
+    "policista", "policista_kote", "lanar", "kormidelnik", "hero_lano", "lachtan", "lachtan_lezi", "racek", "racek_let", "kote", "tatra_vb"], { pad: 1 })
 // Velké kusy (oblouky haly, Fantova budova) mají vlastní list.
 // Fantova budova a oblouky; hala pod magistrálou s rampami a věžemi má vlastní list (je dlouhá).
 sheet("landmarks", ["rib_*", "lm_fanta_*"], { pad: 1 })

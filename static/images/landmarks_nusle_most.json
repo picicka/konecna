@@ -1,0 +1,174 @@
+{
+ "frames": {
+  "ns_konec_sever": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 600,
+    "h": 480
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 600,
+    "h": 480
+   },
+   "sourceSize": {
+    "w": 600,
+    "h": 480
+   }
+  },
+  "ns_konec_jih": {
+   "frame": {
+    "x": 601,
+    "y": 0,
+    "w": 380,
+    "h": 320
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 380,
+    "h": 320
+   },
+   "sourceSize": {
+    "w": 380,
+    "h": 320
+   }
+  },
+  "ns_lano": {
+   "frame": {
+    "x": 982,
+    "y": 0,
+    "w": 508,
+    "h": 394
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 508,
+    "h": 394
+   },
+   "sourceSize": {
+    "w": 508,
+    "h": 394
+   }
+  },
+  "ns_predni": {
+   "frame": {
+    "x": 0,
+    "y": 481,
+    "w": 112,
+    "h": 172
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 172
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 172
+   }
+  },
+  "ns_predni2": {
+   "frame": {
+    "x": 113,
+    "y": 481,
+    "w": 112,
+    "h": 172
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 172
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 172
+   }
+  },
+  "ns_pilir": {
+   "frame": {
+    "x": 226,
+    "y": 481,
+    "w": 112,
+    "h": 484
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 484
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 484
+   }
+  },
+  "ns_zadni": {
+   "frame": {
+    "x": 0,
+    "y": 966,
+    "w": 84,
+    "h": 48
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 48
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 48
+   }
+  },
+  "ns_zadni2": {
+   "frame": {
+    "x": 85,
+    "y": 966,
+    "w": 84,
+    "h": 48
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 48
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 48
+   }
+  }
+ },
+ "meta": {
+  "app": "pxl",
+  "image": "landmarks_nusle_most.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1490,
+   "h": 1014
+  },
+  "scale": "1"
+ }
+}

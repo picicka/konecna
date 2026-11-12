@@ -18,6 +18,9 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
   `npm run postavy` mapa postav do `docs/postavy.html` (sprity z atlasu hry, seznam a popisy v `scripts/postavy-seznam.mjs`).
   Dokumentace pro ladění je součást hry: připomínky se dávají čísly („dům 11“, „volba 4.1.2“).
 - Skripty mapa a test si samy spustí `vite preview`; nad dev serverem `BASE=http://localhost:5173/`.
+- Skoky pro ladění (`src/debug.js` přepínače, `src/skok.js` skok): `?misto=<místo>` (a `&a=&b=`, `&jizdenky=`, `&buh`) spustí hru rovnou na místě se
+  stavem z průchodu; průchod ho při příchodu na každé místo zapisuje do `src/skoky.json` (po změně příběhu `npm test`
+  a `npm run build`). F2 otevře panel skoků (`?ladeni` / `?ladeni=0`, v dev zapnutý sám). Odkazy jsou v `docs/index.html`.
 
 ## Místa a mapy
 
@@ -40,7 +43,7 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
 - Ručně určené prvky místa (díly landmarku, oblouky hal, zastavení s postavami a přístupem, pravidla rozsevu stromů,
   lamp a laviček) jsou v `src/places/<místo>.js`; repliky zastavení v `STOPS` v `src/script.js`. Příběh, postavy
   a zastavení všech míst jsou v `docs/pribeh.md`.
-- Místa: Hlavák, Václavák, Staromák, Karlův most a Kampa (`most`), Malá Strana, Hrad. Volby v `PLACES`: `water`/`pier`
+- Místa: Hlavák, Václavák, Nuselák (`nuselak`), Staromák, Karlův most a Kampa (`most`), Malá Strana, Hrad. Volby v `PLACES`: `water`/`pier`
   (Václavák), `flood` (Staromák: lávky `m` podél domů do vzdálenosti `boardwalk`, jinak voda, `islands`, `piers`), `dry`
   (most: koryto Vltavy je bahno `h`, neprůchozí; toky v `dry.wet` zůstávají vodou), `bridges` (most ve skutečné šířce),
   `skip` (landmark místo domu), `frame` (z domů zůstane jen obrys vyjmenovaných ulic a náměstí, zbytek jsou
@@ -49,6 +52,10 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
 - Ikonické stavby každého místa jsou ručně kreslené landmarky podle fotek z Wikimedia Commons (jen předloha,
   neobkreslovat): `art/lm-*.px.js`, `art/katedrala.px.js`, listy `landmarks_*`. Brána, kterou se prochází (mostecké
   věže), má v `src/places/<místo>.js` `pass: <řádek b>` a v `PLACES` `clear` pro průjezd.
+- Karlův most (`bridge` v `src/places/most.js`, `WorldScene.buildBridge`, `art/most-oblouky.px.js`, list `landmarks_mostovka`): mostovka je rovný pás b 32–33 (`deck` v `PLACES.most.bridges`), koryto je jen namalované a hloubku (asi 13 m) dělají stěny visící od hrany dolů. Přední líc se skládá z dílů po dlaždicích (pilíř s ledolamem a prázdným podstavcem sochy, výseky oblouků po 3 nebo 4 dlaždicích, nad Kampou jen zábradlí), pilíře jsou podle obrysu mostu v OSM (ledolamy po 30 m). Nábřežní zdi se staví samy všude, kde břeh spadá do koryta k divákovi (+b, −a). Lampy z OSM se posadí na zábradlí, na Kampu se z mostu sejde jen po schodech (`stairs`).
+- Svah pod Hradem (`slope` v `PLACES.hrad`): `scripts/teren.py hrad` (`npm run teren`) spočítá z laseru ČÚZK (body terénu) výšku země po dlaždicích do `data/teren-hrad.json`; `osm.mjs` udělá z dlaždic pod `below` m n. m. suť `k` (neprůchozí), cesty v `keep` a obdélníky `terraces` zůstanou, ostrůvky, kam se ze startu nedojde, se zasypou. `levels` jsou pásy výšky po `step` m. `WorldScene.buildSlope` (`art/hrad-svah.px.js`, list `landmarks_svah`) pověsí z hrany k divákovi (+b, −a) opěrnou zeď nad skálou, uvnitř svahu terasy, kde terén klesne o pás, na odvrácené hrany nízkou zídku a po suti rozhází balvany a kvádry.
+- Nuselák (`src/places/nuselak.js`, `WorldScene.buildNusle`, `art/nuselak-most.px.js`, list `landmarks_nusle_most`; landmarky Palác kultury, hotel Forum a Muzeum Policie v `art/lm-nusle.px.js`, list `landmarks_nusle`): údolí je jezero (`slope.lake` v `PLACES.nuselak`: pod `level` m voda, domy hlouběji než `sink` pod hladinou zmizí), `landings` jsou mola k loďce, mostovka `bridges.deck` se zlomem `gap`. K divákovi visí betonová trouba a pilíře až k hladině, ze zlomu trčí souprava metra C. Účinek `rope: 'jih' | 'sever'` u volby převede hrdinku po laně přes zlom s animací (`WorldScene.ropeCross`, sprite `hero_lano`). Postavy, lachtani, racci a kotě jsou v `art/nusle-postavy.px.js`.
+- Kuriozity v prázdných plochách (`oddities` v `src/places/<místo>.js`, `WorldScene.placeOddities`, `art/kuriozity.px.js`, list `landmarks_kuriozity`): rozbité pražské věci a zvířata (kouřící mlok z Války s mloky, Stalinova hlava, ručička metronomu z Letné, Golem, Černého miminko, kůň z Lucerny, Kafkova hlava, šlapadlo labuť, vana s kaprem). Skupina má znaky mřížky `on` (volitelně `minB`) a seznam věcí; místo vybírá hash (stejné při každém hraní), celé okolí 3 × 3 musí být stejná plocha, rozestup 6 dlaždic, od zastavení a startu 4. Obří věci jsou zvětšené dvakrát (`ODDITY_SCALE`). Klepnutí na věc s hláškami (`ODDITY_LINES` a `ODDITY_GROUPS` v `src/script.js`, u věcí od Davida Černého nadávky na autora) ukáže bublinu, každé další klepnutí další hlášku.
 - Velké kusy grafiky mají vlastní listy: `landmarks` (Fantova budova `art/fanta.px.js`, oblouky), `houses0–3`.
 
 ## Příběh
@@ -61,8 +68,8 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
   v `art/chars.px.js`): na liště, v deníku, při nové úrovni a na volbě, která na vlastnosti stojí (ikona a požadovaná
   úroveň vpravo na tlačítku). Každá překážka má mít cestu přes Ruku, Ústa i Oko, nebo přes věc či úkol.
 - Zkoušky vlastností (`checkOf`/`chanceOf` v `src/story.js`, texty `CHECK`): volba s `if.attr`, nebo `check: 'usta'`
-  proti vlastnosti postavy z její karty (`stats` u DIALOGS), se ukáže už s bodem pod požadavkem. O bod víc vyjde vždy,
-  na požadavek na 70 %, o bod méně na 35 % (na tlačítku je šance). Hod je ze `state.seed`. Nepovedená zkouška stojí
+  proti vlastnosti postavy z její karty (`stats` u DIALOGS), se ukáže už s bodem pod požadavkem. O bod méně vyjde na 25 %,
+  na požadavek na 50 %, o bod víc na 75 %, o dva a víc vždy (`CHECK.chance`, na tlačítku je šance). Hod je ze `state.seed`. Nepovedená zkouška stojí
   (Ruka 2 životy, Oko 1, Ústa bod důvěry skupiny postavy, nebo `fail` u volby) a znovu jde až s vyšší vlastností (`state.failed`).
 - Výbava a zásoby (`ITEMS`): sloty zbraň, oděv, talisman (`state.equip`), věc dává `weapon`, `hp`, `bonus`. Nová věc
   se sama nasadí do prázdného slotu. Vlastnosti a životy se všude počítají i s výbavou (`attr`, `maxHp` v `src/state.js`).
@@ -95,14 +102,22 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
 - Zastavení může zmizet (`hideIf` v `src/places/<místo>.js`, vybledne), nebo po vyřešení změnit podobu (`after`: `if`,
   `npc`, `approach`, `props`). Nový sprite s `from` (`'npc'` nebo index rekvizity) dojde ze starého místa po dlaždicích,
   s `jump` seskočí obloukem (psi odběhnou k Robinovu ohni, nutrie seskočí z reproduktoru). Přechod se přehraje hned
-  po účinku volby (`WorldScene.refreshStops`), takže je vidět, co se stalo. Brány (`gates`) jsou dlaždice zavřené,
-  dokud neplatí podmínka.
+  po účinku volby (`WorldScene.refreshStops`), takže je vidět, co se stalo (minimapa se překreslí). Brány (`gates`) jsou dlaždice zavřené,
+  dokud neplatí podmínka. Rekvizita zastavení se `say` (klíč v `ODDITY_LINES`) není součástí rozhovoru, klepnutí na ni
+  ukáže bublinu (odehnaná nutrie). Klepnutí na portál vchodu podchodu (`tunnels`, `WorldScene.doorAt`) pošle hrdinku
+  dveřmi skrz; nad tím, na co jde klepnout, je kurzor ruky.
+- Účinek `film: '<klíč>'` u volby pustí filmeček `CUTSCENES[klíč]` nad světem (`WorldScene.film`) a rozhovor pak pokračuje odpovědí (vyhlídka Na Opyši: panoráma se zlomeným Nuselákem).
 - Přestup hledá filmeček `cesta_<odkud>_<kam>` (loďka, pěšky), jinak `metro_<kam>`; příchod je `arrivals[odkud]` místa.
 - Co se stalo, nikdo neví: v textech žádný „pád“, jen opisy („ten den“, „od té doby“, „předtím“, 14:37) a pojmenování skupin (Metro „mimořádná událost“, Loďkaři „velká voda“, Tržiště „krach“). Příčina se skládá z útržků, viz `docs/pribeh.md`.
 - Konec spouští účinek `ending` (`trziste`, `lodkari`, nebo `hrad` = spočítat ze stavu v `resolveEnding`, `src/state.js`).
   `EndingScene` pustí snímky konce (`ENDINGS[konec].shots`) a epilog `EPILOG` (snímek za každé místo, kde hráčka
   něco změnila), pak závěrečnou obrazovku. Průchod `npm test` hraje celou hru až ke konci Řád.
-- `npm run slepe` (`scripts/slepe.mjs`) hledá slepé uličky bez průchodu hrou: náhodná hráčka utrácí jízdenky a prohrává zkoušky, řešitel po každém kroku zkouší dohrát ke konci. Vypíše podezřelé stavy (s příčinou, třeba chybí jízdenky) a volby, které nepadly ani jednou.
+- `npm run slepe` (`scripts/slepe.mjs`) hledá slepé uličky úplným prohledáním stavů, ne vzorkováním. Pro každé místo dokáže, že
+  z každého stavu, ve kterém tam hrdinka může být, vede na pozdější místo nebo ke konci cesta bez zkoušky vlastnosti
+  (vlastnosti ve stavu nejsou: zkouška může vyjít i nevyjít, spoléhat se na ni nedá). Sleduje jen proměnné, na kterých
+  cesta stojí, a hledá si je sám zpřesňováním (pamatuje si je ve `scripts/slepe-sledovane.json`, `--znovu` hledá od nuly).
+  Nález vypíše s nejkratší cestou, jak se do něj dostat; `--misto <místo>` jedno místo, `-v` kola zpřesňování,
+  `--bez rozhovor.uzel.volba` vypne volbu na zkoušku. Vypíše i volby, které nejdou zvolit nikdy.
 - Po každé změně dialogů `npm run tree` a průchod `npm test`, který hraje hlavní linku cestou bez boje a jeden boj.
 - Grafika místa (díly země a domy) se nahrává až při vstupu na místo (`WorldScene.preload`), grafika ostatních míst se
   uvolní. Listy domů `houses_<místo>_<n>` mají kolem 24 spritů, počet je v `data/<místo>.json` (`houseSheets`).
@@ -113,6 +128,7 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
   čtverci; vedle čtverec linky v její barvě s černým písmenem (A zelená, B žlutá, C červená). Tvar loga je v konstantách
   `METRO_ARROW`/`METRO_HOLE` (`art/fanta.px.js`) a `MA`/`MH` (`art/props.px.js`, sloupek `metro_totem`), podle
   „Metro Prague logo.svg“ na Wikimedia Commons. Typografie metra je Rathouského Metron.
+- Linky stanic podle skutečnosti: Hlavní nádraží C, Muzeum A a C, Můstek A a B, Staroměstská A, Malostranská A (Hrad má fiktivní E). Čtverce linek kreslí `metroLine` v `art/props.px.js` (sloupky `metro_totem_<linka>`, vstup na Muzeu), na fasádě `metroSign` v `art/fanta.px.js`.
 - Výstup z metra je tam, kde je ve skutečnosti (na Hlaváku dveřmi odbavovací haly), ne vymyšlené schodiště do parku.
 
 ## Tagy na domech
@@ -147,7 +163,8 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
 - Všechny texty pro hráčku jsou v `src/script.js` s literálními pevnými mezerami (U+00A0); do scén se texty nepíšou.
   Hrdinka je žena: rod ve všech replikách o ní. Kontrola textů proti mapě a rodu je pravidelný krok.
 - Každá volba v dialogu má podmínku (stav, předmět, atribut) a text pro případ, že neplatí; nedostupné volby se skrývají,
-  ne šednou. Vyčerpané volby se pamatují v `state.asked`. Deník (Q) jde otevřít i uprostřed rozhovoru.
+  ne šednou. Vyčerpané volby se pamatují v `state.asked`. Když po volbě v uzlu žádná nezbude, rozhovor se zavře
+  (otázka by mluvila o tom, co už neplatí). Deník (Q) jde otevřít i uprostřed rozhovoru.
 - Po zavření dialogu `this.input.keyboard.resetKeys()`, jinak Enter z poslední repliky hned znovu spustí rozhovor.
 - Phaser drží instanci scény mezi restarty: všechno herní resetovat v `init`/`create`.
 - Konce se počítají z toho, co se skutečně stalo (stav), ne z poslední události. Stav předmětu a stav postavy jsou dvě věci.

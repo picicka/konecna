@@ -17,8 +17,25 @@ se dokreslí. Doplňovat sem.
 - „Policajti snědli koťátkům granule“
 - „Policajti koťátkům vypnuli wifi“
 - „Policajti nepustili koťátka do metra“
+- „ACAB = All Cats Are Beautiful“
+- „Policajti jsou koťátka“
+- „Koťátka > policajti“
+- „Free koťátka“
+- „Policajti, vraťte klubíčko“
+- „Mňau na policajty“
+- „Koťátka nemaj občanku“
+- „Policajt kotě nepohladí“
+- „Koťátka vědí“
+- „Policajti spí, koťátka bdí“
+- „Koťátka nepodepíšou“
+- „Kdo hlídá koťátka?“
+- „ACAB“
+- „Mňau“
+- „Fízl = kotě“
+- „Kotě > fízl“
+- „Kočky ví“
 
-### Praha po pádu
+### Praha potom
 
 - „Kde je můj důchod?“
 - „Pošta jede“

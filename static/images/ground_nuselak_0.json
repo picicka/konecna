@@ -1,0 +1,174 @@
+{
+ "frames": {
+  "gr_nuselak_4_0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "sourceSize": {
+    "w": 1016,
+    "h": 1016
+   }
+  },
+  "gr_nuselak_5_0": {
+   "frame": {
+    "x": 1017,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "sourceSize": {
+    "w": 1016,
+    "h": 1016
+   }
+  },
+  "gr_nuselak_6_0": {
+   "frame": {
+    "x": 2034,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "sourceSize": {
+    "w": 1016,
+    "h": 1016
+   }
+  },
+  "gr_nuselak_7_0": {
+   "frame": {
+    "x": 0,
+    "y": 1017,
+    "w": 1016,
+    "h": 1016
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "sourceSize": {
+    "w": 1016,
+    "h": 1016
+   }
+  },
+  "gr_nuselak_8_0": {
+   "frame": {
+    "x": 1017,
+    "y": 1017,
+    "w": 1016,
+    "h": 1016
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "sourceSize": {
+    "w": 1016,
+    "h": 1016
+   }
+  },
+  "gr_nuselak_2_1": {
+   "frame": {
+    "x": 2034,
+    "y": 1017,
+    "w": 1016,
+    "h": 1016
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "sourceSize": {
+    "w": 1016,
+    "h": 1016
+   }
+  },
+  "gr_nuselak_3_1": {
+   "frame": {
+    "x": 0,
+    "y": 2034,
+    "w": 1016,
+    "h": 1016
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "sourceSize": {
+    "w": 1016,
+    "h": 1016
+   }
+  },
+  "gr_nuselak_4_1": {
+   "frame": {
+    "x": 1017,
+    "y": 2034,
+    "w": 1016,
+    "h": 1016
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 1016,
+    "h": 1016
+   },
+   "sourceSize": {
+    "w": 1016,
+    "h": 1016
+   }
+  }
+ },
+ "meta": {
+  "app": "pxl",
+  "image": "ground_nuselak_0.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 3050,
+   "h": 3050
+  },
+  "scale": "1"
+ }
+}

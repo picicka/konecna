@@ -11,11 +11,18 @@ export const MOST = {
     ],
     stops: {
         pilar: { npc: { key: 'pilar', a: 8, b: 37 }, approach: { a: 9, b: 37 }, props: [{ key: 'bedny', a: 8, b: 36 }] },
-        netere: { npc: { key: 'netere', a: 27, b: 32 }, approach: { a: 26, b: 32 }, props: [{ key: 'podstavec_a', a: 24, b: 31 }, { key: 'bedny', a: 28, b: 31 }, { key: 'podstavec_b', a: 29, b: 33 }] },
-        hlidac: { npc: { key: 'hlidac', a: 33, b: 32 }, approach: { a: 32, b: 32 }, props: [{ key: 'podstavec_nepomuk', a: 34, b: 31 }, { key: 'podstavec_c', a: 38, b: 33 }] },
+        netere: { npc: { key: 'netere', a: 27, b: 32 }, approach: { a: 26, b: 32 }, props: [{ key: 'podstavec_a', a: 24, b: 32 }, { key: 'bedny', a: 28, b: 32 }, { key: 'podstavec_b', a: 29, b: 33 }] },
+        hlidac: { npc: { key: 'hlidac', a: 33, b: 32 }, approach: { a: 32, b: 32 }, props: [{ key: 'podstavec_nepomuk', a: 34, b: 32 }, { key: 'podstavec_c', a: 38, b: 33 }] },
         kanci: { npc: { key: 'kanec', a: 58, b: 8 }, approach: { a: 57, b: 8 }, props: [] },
         mlynar: { npc: { key: 'mlynar', a: 67, b: 18 }, approach: { a: 68, b: 18 }, props: [{ key: 'mlynske_kolo', a: 66, b: 17, anim: true }, { key: 'zarovka', a: 69, b: 19 }] },
         mostecka: { npc: { key: 'lamp', a: 74, b: 23 }, approach: { a: 73, b: 23 }, props: [] },
     },
+    // Most nad suchým korytem (WorldScene.buildBridge): mostovka b 32–33, díly od a0 po a1 (za Staroměstskou věží po
+    // Čertovku), pilíře podle obrysu mostu v OSM (ledolamy po 30 m, a 51 je břeh Kampy, a 64 v Čertovce), schody na Kampu
+    // (skutečné schodiště z mostu na Na Kampě). axis: osa mostu z OSM (mírně do oblouku) pro lampy na zábradlí.
+    bridge: { a0: 12, a1: 66, deck: [32, 33], piers: [10, 14, 18, 22, 27, 31, 35, 39, 43, 47, 51, 64], stairs: [{ a: 56, b: 31 }],
+        axis: [[8, 34], [11.3, 34], [22.7, 33.9], [47.5, 32.2], [53.3, 32.1], [57.8, 32.3], [67.9, 32.7], [73.7, 33.3]] },
+    // kuriozity v suchém korytě Vltavy (art/kuriozity.px.js, WorldScene.placeOddities)
+    oddities: [{ on: 'h', keys: ['mlok', 'stalin_hlava', 'labut', 'kapr_vana', 'mlok_maly_1', 'mlok_maly_2'] }],
     props: { trees: ['tree_a', 'tree_bare', 'tree_c'], bush: 0.05, bushes: ['bush_a', 'bush_b', 'bush_c'], junk: 0.03, junkKeys: ['rubble_pile', 'barrel', 'tires'], shack: 0 },
 };

@@ -1,0 +1,314 @@
+{
+ "frames": {
+  "km_pier": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 356
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 356
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 356
+   }
+  },
+  "km_arch_3_1": {
+   "frame": {
+    "x": 105,
+    "y": 0,
+    "w": 104,
+    "h": 356
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 356
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 356
+   }
+  },
+  "km_arch_3_2": {
+   "frame": {
+    "x": 210,
+    "y": 0,
+    "w": 104,
+    "h": 356
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 356
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 356
+   }
+  },
+  "km_arch_3_3": {
+   "frame": {
+    "x": 315,
+    "y": 0,
+    "w": 104,
+    "h": 356
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 356
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 356
+   }
+  },
+  "km_arch_4_1": {
+   "frame": {
+    "x": 0,
+    "y": 357,
+    "w": 104,
+    "h": 356
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 356
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 356
+   }
+  },
+  "km_arch_4_2": {
+   "frame": {
+    "x": 105,
+    "y": 357,
+    "w": 104,
+    "h": 356
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 356
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 356
+   }
+  },
+  "km_arch_4_3": {
+   "frame": {
+    "x": 210,
+    "y": 357,
+    "w": 104,
+    "h": 356
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 356
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 356
+   }
+  },
+  "km_arch_4_4": {
+   "frame": {
+    "x": 315,
+    "y": 357,
+    "w": 104,
+    "h": 356
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 356
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 356
+   }
+  },
+  "km_par": {
+   "frame": {
+    "x": 0,
+    "y": 714,
+    "w": 104,
+    "h": 356
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 356
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 356
+   }
+  },
+  "km_far": {
+   "frame": {
+    "x": 105,
+    "y": 714,
+    "w": 104,
+    "h": 140
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 140
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 140
+   }
+  },
+  "km_far_pier": {
+   "frame": {
+    "x": 210,
+    "y": 714,
+    "w": 104,
+    "h": 140
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 140
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 140
+   }
+  },
+  "km_quay_b": {
+   "frame": {
+    "x": 315,
+    "y": 714,
+    "w": 104,
+    "h": 290
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 290
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 290
+   }
+  },
+  "km_quay_b2": {
+   "frame": {
+    "x": 0,
+    "y": 1071,
+    "w": 104,
+    "h": 290
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 290
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 290
+   }
+  },
+  "km_quay_a": {
+   "frame": {
+    "x": 105,
+    "y": 1071,
+    "w": 104,
+    "h": 290
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 290
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 290
+   }
+  },
+  "km_quay_a2": {
+   "frame": {
+    "x": 210,
+    "y": 1071,
+    "w": 104,
+    "h": 290
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 290
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 290
+   }
+  }
+ },
+ "meta": {
+  "app": "pxl",
+  "image": "landmarks_mostovka.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 419,
+   "h": 1361
+  },
+  "scale": "1"
+ }
+}

@@ -24,40 +24,40 @@
    "frame": {
     "x": 641,
     "y": 0,
-    "w": 832,
-    "h": 716
+    "w": 896,
+    "h": 748
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 832,
-    "h": 716
+    "w": 896,
+    "h": 748
    },
    "sourceSize": {
-    "w": 832,
-    "h": 716
+    "w": 896,
+    "h": 748
    }
   },
   "lm_zvon": {
    "frame": {
     "x": 0,
-    "y": 717,
-    "w": 512,
-    "h": 576
+    "y": 749,
+    "w": 448,
+    "h": 544
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 512,
-    "h": 576
+    "w": 448,
+    "h": 544
    },
    "sourceSize": {
-    "w": 512,
-    "h": 576
+    "w": 448,
+    "h": 544
    }
   }
  },
@@ -66,7 +66,7 @@
   "image": "landmarks_sm_namesti.png",
   "format": "RGBA8888",
   "size": {
-   "w": 1473,
+   "w": 1537,
    "h": 1293
   },
   "scale": "1"

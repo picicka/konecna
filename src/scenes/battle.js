@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { DEBUG } from '../debug';
 import { BATTLES, BATTLE, ITEMS, ATTRIBUTE_ICONS } from '../script';
 import { head, body, panel, button, scanlines, CRT, WIDTH, HEIGHT } from '../ui';
 import { attr, maxHp, weaponOf, useSupply } from '../state';
@@ -163,7 +164,7 @@ export class BattleScene extends Phaser.Scene {
             }
             if (rand() < o.foe) {
                 const dmg = roll(this.def.attack);
-                this.state.hp = Math.max(0, this.state.hp - dmg);
+                this.state.hp = Math.max(DEBUG.god ? 1 : 0, this.state.hp - dmg);
                 this.say(i === 1 ? `${this.def.twice} −${dmg}` : `${this.def.hit} −${dmg}`);
                 this.shake(this.hero);
                 sound?.wrong();

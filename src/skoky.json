@@ -1,0 +1,691 @@
+{
+ "hlavak": {
+  "version": 4,
+  "place": "hlavak",
+  "hp": 10,
+  "hpMax": 10,
+  "level": 1,
+  "xp": 0,
+  "attributes": {
+   "ruka": 1,
+   "usta": 1,
+   "oko": 2
+  },
+  "tickets": 0,
+  "items": [
+   "dopis"
+  ],
+  "equip": {
+   "zbran": null,
+   "odev": null,
+   "talisman": null
+  },
+  "supplies": {},
+  "failed": {},
+  "quests": {
+   "vypoved": "nest"
+  },
+  "asked": {},
+  "flags": {
+   "created": true
+  },
+  "visited": {
+   "hlavak": true
+  },
+  "trust": {
+   "trziste": 0,
+   "metro": 0,
+   "lodkari": 0
+  },
+  "seed": 7
+ },
+ "vaclavak": {
+  "version": 4,
+  "place": "vaclavak",
+  "hp": 10,
+  "hpMax": 10,
+  "level": 2,
+  "xp": 9,
+  "attributes": {
+   "ruka": 1,
+   "usta": 1,
+   "oko": 3
+  },
+  "tickets": 9,
+  "items": [
+   "zasilka",
+   "placacka",
+   "bryle"
+  ],
+  "equip": {
+   "zbran": "placacka",
+   "odev": null,
+   "talisman": "bryle"
+  },
+  "supplies": {},
+  "failed": {},
+  "quests": {
+   "vypoved": "done",
+   "hodiny": "done",
+   "duchod": "nest",
+   "zakazka": "nest",
+   "psi": "done",
+   "odjezd": "done"
+  },
+  "asked": {
+   "trafika": [
+    "duchod"
+   ]
+  },
+  "flags": {
+   "created": true,
+   "met_vypravci": true,
+   "met_trafikantka": true,
+   "fanta_met": true,
+   "jizdni_rad": true,
+   "met_robin": true,
+   "psi_ok": true,
+   "robin_tajemstvi": true,
+   "met_strojvedouci": true,
+   "rekla_pravdu": true
+  },
+  "visited": {
+   "hlavak": true,
+   "vaclavak": true
+  },
+  "trust": {
+   "trziste": 1,
+   "metro": 1,
+   "lodkari": 0
+  },
+  "seed": 7,
+  "arrival": "hlavak"
+ },
+ "nuselak": {
+  "version": 4,
+  "place": "nuselak",
+  "hp": 10,
+  "hpMax": 10,
+  "level": 2,
+  "xp": 11,
+  "attributes": {
+   "ruka": 1,
+   "usta": 1,
+   "oko": 3
+  },
+  "tickets": 6,
+  "items": [
+   "zasilka",
+   "placacka",
+   "bryle",
+   "vypis"
+  ],
+  "equip": {
+   "zbran": "placacka",
+   "odev": null,
+   "talisman": "bryle"
+  },
+  "supplies": {},
+  "failed": {},
+  "quests": {
+   "vypoved": "done",
+   "hodiny": "done",
+   "duchod": "nest",
+   "zakazka": "nest",
+   "psi": "done",
+   "odjezd": "done",
+   "evidence": "done",
+   "molo": "done",
+   "lodka": "nest"
+  },
+  "asked": {
+   "trafika": [
+    "duchod"
+   ],
+   "kuracka": [
+    "voda"
+   ]
+  },
+  "flags": {
+   "created": true,
+   "met_vypravci": true,
+   "met_trafikantka": true,
+   "fanta_met": true,
+   "jizdni_rad": true,
+   "met_robin": true,
+   "psi_ok": true,
+   "robin_tajemstvi": true,
+   "met_strojvedouci": true,
+   "rekla_pravdu": true,
+   "met_dispecerka": true,
+   "zapsano": true,
+   "evidence_hotova": true,
+   "met_revizor": true,
+   "molo": true,
+   "met_kuracka": true,
+   "utrzek1": true,
+   "nutrie_pryc": true
+  },
+  "visited": {
+   "hlavak": true,
+   "vaclavak": true,
+   "nuselak": true
+  },
+  "trust": {
+   "trziste": 1,
+   "metro": 2,
+   "lodkari": 1
+  },
+  "seed": 7,
+  "arrival": "vaclavak"
+ },
+ "staromak": {
+  "version": 4,
+  "place": "staromak",
+  "hp": 10,
+  "hpMax": 10,
+  "level": 3,
+  "xp": 17,
+  "attributes": {
+   "ruka": 1,
+   "usta": 1,
+   "oko": 4
+  },
+  "tickets": 4,
+  "items": [
+   "zasilka",
+   "placacka",
+   "bryle",
+   "vypis",
+   "odznak"
+  ],
+  "equip": {
+   "zbran": "placacka",
+   "odev": null,
+   "talisman": "bryle"
+  },
+  "supplies": {},
+  "failed": {},
+  "quests": {
+   "vypoved": "done",
+   "hodiny": "done",
+   "duchod": "nest",
+   "zakazka": "nest",
+   "psi": "done",
+   "odjezd": "done",
+   "evidence": "done",
+   "molo": "done",
+   "lodka": "nusle",
+   "lano": "done",
+   "kote": "done"
+  },
+  "asked": {
+   "trafika": [
+    "duchod"
+   ],
+   "kuracka": [
+    "voda"
+   ],
+   "kuracka_nusle": [
+    "most"
+   ],
+   "policista": [
+    "most"
+   ],
+   "souprava": [
+    "kniha"
+   ]
+  },
+  "flags": {
+   "created": true,
+   "met_vypravci": true,
+   "met_trafikantka": true,
+   "fanta_met": true,
+   "jizdni_rad": true,
+   "met_robin": true,
+   "psi_ok": true,
+   "robin_tajemstvi": true,
+   "met_strojvedouci": true,
+   "rekla_pravdu": true,
+   "met_dispecerka": true,
+   "zapsano": true,
+   "evidence_hotova": true,
+   "met_revizor": true,
+   "molo": true,
+   "met_kuracka": true,
+   "utrzek1": true,
+   "nutrie_pryc": true,
+   "nusle_prijezd": true,
+   "met_policista": true,
+   "kote_zadano": true,
+   "utrzek6": true,
+   "met_lanar": true,
+   "lano_ok": true,
+   "utrzek7": true,
+   "kote_mam": true,
+   "met_kormidelnik": true
+  },
+  "visited": {
+   "hlavak": true,
+   "vaclavak": true,
+   "nuselak": true,
+   "staromak": true
+  },
+  "trust": {
+   "trziste": 2,
+   "metro": 2,
+   "lodkari": 1
+  },
+  "seed": 7,
+  "arrival": "nuselak"
+ },
+ "most": {
+  "version": 4,
+  "place": "most",
+  "hp": 10,
+  "hpMax": 10,
+  "level": 4,
+  "xp": 21,
+  "attributes": {
+   "ruka": 1,
+   "usta": 1,
+   "oko": 5
+  },
+  "tickets": 6,
+  "items": [
+   "zasilka",
+   "placacka",
+   "bryle",
+   "vypis",
+   "odznak"
+  ],
+  "equip": {
+   "zbran": "placacka",
+   "odev": null,
+   "talisman": "bryle"
+  },
+  "supplies": {},
+  "failed": {},
+  "quests": {
+   "vypoved": "done",
+   "hodiny": "done",
+   "duchod": "nest",
+   "zakazka": "nest",
+   "psi": "done",
+   "odjezd": "done",
+   "evidence": "done",
+   "molo": "done",
+   "lodka": "done",
+   "lano": "done",
+   "kote": "done",
+   "admiral": "odmitnuto",
+   "apostolove": "nest"
+  },
+  "asked": {
+   "trafika": [
+    "duchod"
+   ],
+   "kuracka": [
+    "voda"
+   ],
+   "kuracka_nusle": [
+    "most"
+   ],
+   "policista": [
+    "most"
+   ],
+   "souprava": [
+    "kniha"
+   ],
+   "potapecka": [
+    "odkud",
+    "vi",
+    "rad"
+   ],
+   "orlojnik": [
+    "klementinum"
+   ]
+  },
+  "flags": {
+   "created": true,
+   "met_vypravci": true,
+   "met_trafikantka": true,
+   "fanta_met": true,
+   "jizdni_rad": true,
+   "met_robin": true,
+   "psi_ok": true,
+   "robin_tajemstvi": true,
+   "met_strojvedouci": true,
+   "rekla_pravdu": true,
+   "met_dispecerka": true,
+   "zapsano": true,
+   "evidence_hotova": true,
+   "met_revizor": true,
+   "molo": true,
+   "met_kuracka": true,
+   "utrzek1": true,
+   "nutrie_pryc": true,
+   "nusle_prijezd": true,
+   "met_policista": true,
+   "kote_zadano": true,
+   "utrzek6": true,
+   "met_lanar": true,
+   "lano_ok": true,
+   "utrzek7": true,
+   "kote_mam": true,
+   "met_kormidelnik": true,
+   "staromak_prijezd": true,
+   "met_potapecka": true,
+   "utrzek2": true,
+   "met_admiral": true,
+   "admiral_videl": true,
+   "admiral_hotovo": true,
+   "admiral_odmitla": true,
+   "met_orlojnik": true,
+   "klementinum": true
+  },
+  "visited": {
+   "hlavak": true,
+   "vaclavak": true,
+   "nuselak": true,
+   "staromak": true,
+   "most": true
+  },
+  "trust": {
+   "trziste": 3,
+   "metro": 3,
+   "lodkari": 0
+  },
+  "seed": 7,
+  "arrival": "staromak"
+ },
+ "malastrana": {
+  "version": 4,
+  "place": "malastrana",
+  "hp": 10,
+  "hpMax": 10,
+  "level": 4,
+  "xp": 28,
+  "attributes": {
+   "ruka": 1,
+   "usta": 1,
+   "oko": 5
+  },
+  "tickets": 2,
+  "items": [
+   "zasilka",
+   "placacka",
+   "bryle",
+   "vypis",
+   "odznak",
+   "smes"
+  ],
+  "equip": {
+   "zbran": "placacka",
+   "odev": null,
+   "talisman": "bryle"
+  },
+  "supplies": {},
+  "failed": {},
+  "quests": {
+   "vypoved": "done",
+   "hodiny": "done",
+   "duchod": "nest",
+   "zakazka": "nest",
+   "psi": "done",
+   "odjezd": "done",
+   "evidence": "done",
+   "molo": "done",
+   "lodka": "done",
+   "lano": "done",
+   "kote": "done",
+   "admiral": "odmitnuto",
+   "apostolove": "nest",
+   "netere": "odmitnuto",
+   "desticka": "nest",
+   "proud": "done"
+  },
+  "asked": {
+   "trafika": [
+    "duchod"
+   ],
+   "kuracka": [
+    "voda"
+   ],
+   "kuracka_nusle": [
+    "most"
+   ],
+   "policista": [
+    "most"
+   ],
+   "souprava": [
+    "kniha"
+   ],
+   "potapecka": [
+    "odkud",
+    "vi",
+    "rad"
+   ],
+   "orlojnik": [
+    "klementinum"
+   ],
+   "hlidac": [
+    "proc"
+   ]
+  },
+  "flags": {
+   "created": true,
+   "met_vypravci": true,
+   "met_trafikantka": true,
+   "fanta_met": true,
+   "jizdni_rad": true,
+   "met_robin": true,
+   "psi_ok": true,
+   "robin_tajemstvi": true,
+   "met_strojvedouci": true,
+   "rekla_pravdu": true,
+   "met_dispecerka": true,
+   "zapsano": true,
+   "evidence_hotova": true,
+   "met_revizor": true,
+   "molo": true,
+   "met_kuracka": true,
+   "utrzek1": true,
+   "nutrie_pryc": true,
+   "nusle_prijezd": true,
+   "met_policista": true,
+   "kote_zadano": true,
+   "utrzek6": true,
+   "met_lanar": true,
+   "lano_ok": true,
+   "utrzek7": true,
+   "kote_mam": true,
+   "met_kormidelnik": true,
+   "staromak_prijezd": true,
+   "met_potapecka": true,
+   "utrzek2": true,
+   "met_admiral": true,
+   "admiral_videl": true,
+   "admiral_hotovo": true,
+   "admiral_odmitla": true,
+   "met_orlojnik": true,
+   "klementinum": true,
+   "met_pilar": true,
+   "met_netere": true,
+   "netere_hotovo": true,
+   "odmitla_netere": true,
+   "met_hlidac": true,
+   "kanci_ok": true,
+   "met_mlynar": true,
+   "zarovka": true,
+   "nabito": true
+  },
+  "visited": {
+   "hlavak": true,
+   "vaclavak": true,
+   "nuselak": true,
+   "staromak": true,
+   "most": true,
+   "malastrana": true
+  },
+  "trust": {
+   "trziste": 3,
+   "metro": 4,
+   "lodkari": 0
+  },
+  "seed": 7,
+  "arrival": "most"
+ },
+ "hrad": {
+  "version": 4,
+  "place": "hrad",
+  "hp": 10,
+  "hpMax": 10,
+  "level": 5,
+  "xp": 31,
+  "attributes": {
+   "ruka": 1,
+   "usta": 1,
+   "oko": 6
+  },
+  "tickets": 2,
+  "items": [
+   "zasilka",
+   "placacka",
+   "bryle",
+   "vypis",
+   "odznak",
+   "smes",
+   "propustka"
+  ],
+  "equip": {
+   "zbran": "placacka",
+   "odev": null,
+   "talisman": "bryle"
+  },
+  "supplies": {},
+  "failed": {},
+  "quests": {
+   "vypoved": "done",
+   "hodiny": "done",
+   "duchod": "nest",
+   "zakazka": "nest",
+   "psi": "done",
+   "odjezd": "done",
+   "evidence": "done",
+   "molo": "done",
+   "lodka": "done",
+   "lano": "done",
+   "kote": "done",
+   "admiral": "odmitnuto",
+   "apostolove": "nest",
+   "netere": "odmitnuto",
+   "desticka": "nest",
+   "proud": "done",
+   "straz": "nest"
+  },
+  "asked": {
+   "trafika": [
+    "duchod"
+   ],
+   "kuracka": [
+    "voda"
+   ],
+   "kuracka_nusle": [
+    "most"
+   ],
+   "policista": [
+    "most"
+   ],
+   "souprava": [
+    "kniha"
+   ],
+   "potapecka": [
+    "odkud",
+    "vi",
+    "rad"
+   ],
+   "orlojnik": [
+    "klementinum"
+   ],
+   "hlidac": [
+    "proc"
+   ],
+   "pani": [
+    "noc"
+   ],
+   "straz": [
+    "hlad"
+   ]
+  },
+  "flags": {
+   "created": true,
+   "met_vypravci": true,
+   "met_trafikantka": true,
+   "fanta_met": true,
+   "jizdni_rad": true,
+   "met_robin": true,
+   "psi_ok": true,
+   "robin_tajemstvi": true,
+   "met_strojvedouci": true,
+   "rekla_pravdu": true,
+   "met_dispecerka": true,
+   "zapsano": true,
+   "evidence_hotova": true,
+   "met_revizor": true,
+   "molo": true,
+   "met_kuracka": true,
+   "utrzek1": true,
+   "nutrie_pryc": true,
+   "nusle_prijezd": true,
+   "met_policista": true,
+   "kote_zadano": true,
+   "utrzek6": true,
+   "met_lanar": true,
+   "lano_ok": true,
+   "utrzek7": true,
+   "kote_mam": true,
+   "met_kormidelnik": true,
+   "staromak_prijezd": true,
+   "met_potapecka": true,
+   "utrzek2": true,
+   "met_admiral": true,
+   "admiral_videl": true,
+   "admiral_hotovo": true,
+   "admiral_odmitla": true,
+   "met_orlojnik": true,
+   "klementinum": true,
+   "met_pilar": true,
+   "met_netere": true,
+   "netere_hotovo": true,
+   "odmitla_netere": true,
+   "met_hlidac": true,
+   "kanci_ok": true,
+   "met_mlynar": true,
+   "zarovka": true,
+   "nabito": true,
+   "met_pani": true,
+   "utrzek4": true,
+   "met_velvyslanec": true,
+   "met_straz": true,
+   "met_kastelan": true,
+   "kastelanem": true
+  },
+  "visited": {
+   "hlavak": true,
+   "vaclavak": true,
+   "nuselak": true,
+   "staromak": true,
+   "most": true,
+   "malastrana": true,
+   "hrad": true
+  },
+  "trust": {
+   "trziste": 4,
+   "metro": 4,
+   "lodkari": 0
+  },
+  "seed": 7,
+  "arrival": "malastrana"
+ }
+}

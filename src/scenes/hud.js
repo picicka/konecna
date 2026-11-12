@@ -1,7 +1,9 @@
 import Phaser from 'phaser';
-import { HUD, QUEST, BAG, CARD, CREATE, DIALOGS, ITEMS, ATTRIBUTE_NAMES, ATTRIBUTE_ICONS, ATTRIBUTE_INFO, FACTIONS, tickets } from '../script';
+import { LADENI, HUD, QUEST, BAG, CARD, CREATE, DIALOGS, ITEMS, ATTRIBUTE_NAMES, ATTRIBUTE_ICONS, ATTRIBUTE_INFO, FACTIONS, tickets } from '../script';
 import { journal, factions, trustLevel, itemStats } from '../story';
 import { ATTRIBUTES, XP_LEVELS, attr, maxHp, equipItem, useSupply } from '../state';
+import { DEBUG } from '../debug';
+import { JUMP_PLACES, jump } from '../skok';
 
 const MAP_KEY = 'konecna.map';
 const CARD_W = 312;
@@ -39,6 +41,7 @@ export class HudScene extends Phaser.Scene {
 
         this.panel = null;
         this.quests = null;
+        this.jumps = null;
         this.card = null;
         this.buttons = [];
         this.focus = -1;
@@ -73,7 +76,7 @@ export class HudScene extends Phaser.Scene {
         if (this.textures.exists(key)) this.textures.remove(key);
         const canvas = this.textures.createCanvas(key, w, h);
         const ctx = canvas.getContext();
-        const COLORS = { m: '#5a4630', x: '#5a4630', z: '#3e3328', r: '#2c2a26', p: '#58544a', g: '#5a5236', f: '#7e7152', t: '#4a3a2a', n: '#4e4b45', b: '#1a1816', L: '#3b352b', w: '#24394a', h: '#3a3024', '.': '#4a4436' };
+        const COLORS = { m: '#5a4630', x: '#5a4630', z: '#3e3328', r: '#2c2a26', p: '#58544a', g: '#5a5236', f: '#7e7152', t: '#4a3a2a', n: '#4e4b45', b: '#1a1816', L: '#3b352b', w: '#24394a', h: '#3a3024', k: '#2e2a24', '.': '#4a4436' };
         const toMini = (a, b) => ({ x: ox + (a + b) * S, y: oy + (b - a) * (S / 2) });
         for (let a = map.len - 1; a >= 0; a--) for (let b = 0; b < map.wid; b++) {
             const c = map.ground[a][b];
@@ -103,10 +106,15 @@ export class HudScene extends Phaser.Scene {
             wsc.goTo({ a, b, L: wsc.walkable(a, b, 0) ? 0 : 1 });
         });
         this.miniStops = this.add.graphics().setDepth(12);
-        Object.values(world.stops ?? {}).forEach((stop) => {
-            const { x, y } = toMini(stop.npc.a, stop.npc.b);
-            this.miniStops.fillStyle(0xffc33d, 1).fillRect(px + 8 + x + 1, py + 30 + y - 1, 3, 3);
-        });
+        // zastavení se překreslí po každé změně (psi odběhnou k ohni, kotě zmizí do tašky)
+        this.drawMiniStops = () => {
+            this.miniStops.clear();
+            Object.values(this.scene.get('world').stops ?? {}).forEach((stop) => {
+                const { x, y } = toMini(stop.npc.a, stop.npc.b);
+                this.miniStops.fillStyle(0xffc33d, 1).fillRect(px + 8 + x + 1, py + 30 + y - 1, 3, 3);
+            });
+        };
+        this.drawMiniStops();
         this.miniPlayer = this.add.graphics().setDepth(13);
         parts.push(this.miniStops, this.miniPlayer);
         this.miniParts = parts;
@@ -230,6 +238,22 @@ export class HudScene extends Phaser.Scene {
     // Deník: jedna obrazovka pro všechno. Vlevo velká pošťačka, kolem ní výbava ve slotech, pod ní životy, úroveň
     // a vlastnosti; vpravo záložky Taška (výbava v tašce, zásoby, věci), Úkoly a Kdo vám věří. Q otevře úkoly, T tašku,
     // šipky doleva a doprava přepínají záložky, Esc nebo stejná klávesa zavře.
+    // Ladění: panel skoků na místa (F2, jen se zapnutým laděním, src/debug.js). Klepnutí postaví místo znovu se stavem
+    // z průchodu npm test.
+    toggleJumps() {
+        if (this.jumps) { this.jumps.destroy(); this.jumps = null; return; }
+        const w = 520, h = 172 + JUMP_PLACES.length * 52, x = (WIDTH - w) / 2, y = (HEIGHT - h) / 2;
+        const parts = [panel(this, x, y, w, h)];
+        parts.push(head(this, x + 24, y + 22, LADENI.title, { color: CRT.amber }));
+        parts.push(body(this, x + 24, y + 50, `${LADENI.hint}${DEBUG.god ? `\n${LADENI.god}` : ''}`, { fontSize: '22px', color: CRT.dim, wordWrap: { width: w - 48 } }));
+        JUMP_PLACES.forEach((place, i) => {
+            const label = HUD.places[place] ?? place;
+            parts.push(button(this, WIDTH / 2, y + 128 + i * 52, w - 48, 44, label, () => { this.jumps?.destroy(); this.jumps = null; jump(this.game, place); }, { index: i + 1, fontSize: 24, primary: place === this.state.place }));
+        });
+        parts.push(button(this, WIDTH / 2, y + h - 30, w - 48, 40, LADENI.close, () => this.toggleJumps(), { center: true, fontSize: 22 }));
+        this.jumps = this.add.container(0, 0, parts).setDepth(60);
+    }
+
     toggleQuests() { this.toggleJournal('quests'); }
 
     toggleBag() { this.toggleJournal('bag'); }
@@ -402,7 +426,7 @@ export class HudScene extends Phaser.Scene {
             const theirs = dialog.stats[a], mine = attr(this.state, a), diff = mine - theirs;
             c.add(this.add.image(x + 16, ry + 16, 'atlas', ATTRIBUTE_ICONS[a]).setScale(2).setOrigin(0, 0.5));
             c.add(body(this, x + 54, ry, String(theirs), { fontSize: '28px', color: CRT.bright }));
-            c.add(body(this, x + 80, ry + 3, `${CARD.you} ${mine} · ${CARD.odds(diff)}`, { fontSize: '22px', color: diff >= 1 ? CRT.accent : diff >= -1 ? CRT.amber : CRT.red }));
+            c.add(body(this, x + 80, ry + 3, `${CARD.you} ${mine} · ${CARD.odds(diff)}`, { fontSize: '22px', color: diff >= 2 ? CRT.accent : diff >= -1 ? CRT.amber : CRT.red }));
             c.add(body(this, x + 54, ry + 27, CARD.use[a], { fontSize: '18px', color: CRT.dim }));
         });
         c.add(about);
@@ -423,6 +447,13 @@ export class HudScene extends Phaser.Scene {
 
     onKey(event) {
         const key = event.key.toLowerCase();
+        if (DEBUG.on && event.key === 'F2') { event.preventDefault?.(); this.toggleJumps(); return; }
+        if (this.jumps) {
+            if (event.key === 'Escape') this.toggleJumps();
+            const place = /^[1-9]$/.test(event.key) && JUMP_PLACES[Number(event.key) - 1];
+            if (place) { this.toggleJumps(); jump(this.game, place); }
+            return;
+        }
         if (key === 'm') { this.toggleMap(); return; }
         if (key === 't' || key === 'i') { this.toggleBag(); return; }
         if (key === 'q') { this.toggleQuests(); return; }

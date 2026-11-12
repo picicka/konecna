@@ -234,7 +234,9 @@ function namKinsky(name, o) {
     const rng = c.rng(o.seed ?? 1)
     const K = namKit(c, ox, oy, rng), { p, poly, FLa, FRd, quad, box, arch, streaks, flood, statue, r } = K
     const Fw = FLa(back), Fs = FRd(0)
-    const ris = [[22, 108], [212, 298]]
+    // průčelí navrženo na 5 dlaždic (320 bodů); delší průčelí má rizality uprostřed a v nárožích okna navíc
+    const S0 = Math.max(0, (lenL - 320) / 2)
+    const ris = [[22 + S0, 108 + S0], [212 + S0, 298 + S0]]
 
     // hlavní hmota (bez vršku, ten kryje střecha)
     box(back, lenR, 0, lenL, 0, hC, SL, SR)
@@ -280,7 +282,7 @@ function namKinsky(name, o) {
     }
     const isRis = (u) => ris.some(([a, b]) => u > a - 4 && u < b + 4)
     // okna průčelí mezi rizality a v nárožích (ve vlastní rovině back)
-    for (const u of [128, 168, 302]) if (u + 14 < lenL) { win(Fw, u, 96, 138, 14); win(Fw, u, 164, 192, 14) }
+    for (const u of [128 + S0, 168 + S0, 302 + S0, ...(S0 >= 24 ? [S0 - 20, lenL - S0 + 4] : [])]) if (u + 14 < lenL) { win(Fw, u, 96, 138, 14); win(Fw, u, 164, 192, 14) }
     // boční stěna FR: řada oken
     for (let a = back + 22; a < lenR - 20; a += 40) { win(Fs, a, 96, 138, 14, true); win(Fs, a, 164, 192, 14, true) }
 
@@ -310,14 +312,14 @@ function namKinsky(name, o) {
 
     // balkon v prvním patře mezi rizality (na sloupech) a atika se sochami
     const Fb = FLa(back - 8)
-    quad(Fb, 108, 212, 76, 82, ST)
-    for (let u = 110; u < 210; u += 5) quad(Fb, u, u + 2, 82, 94, "W")
-    quad(Fb, 108, 212, 94, 97, ST)
-    ;[116, 160, 204].forEach((u) => quad(FLa(back - 4), u, u + 5, 0, 76, "W"))
-    quad(Fw, 108, 212, hC + 12, hC + 16, ST)
-    for (let u = 110; u < 210; u += 6) quad(Fw, u, u + 3, hC + 16, hC + 26, "W")
-    quad(Fw, 108, 212, hC + 26, hC + 30, ST)
-    ;[116, 140, 160, 182, 204].forEach((u, i) => { const [x, y] = Fw(u, hC + 30); statue(x, y, "x", "P", i === 3) })
+    quad(Fb, 108 + S0, 212 + S0, 76, 82, ST)
+    for (let u = 110 + S0; u < 210 + S0; u += 5) quad(Fb, u, u + 2, 82, 94, "W")
+    quad(Fb, 108 + S0, 212 + S0, 94, 97, ST)
+    ;[116, 160, 204].forEach((u) => quad(FLa(back - 4), u + S0, u + S0 + 5, 0, 76, "W"))
+    quad(Fw, 108 + S0, 212 + S0, hC + 12, hC + 16, ST)
+    for (let u = 110 + S0; u < 210 + S0; u += 6) quad(Fw, u, u + 3, hC + 16, hC + 26, "W")
+    quad(Fw, 108 + S0, 212 + S0, hC + 26, hC + 30, ST)
+    ;[116, 140, 160, 182, 204].map((u) => u + S0).forEach((u, i) => { const [x, y] = Fw(u, hC + 30); statue(x, y, "x", "P", i === 3) })
 
     // bláto po první patro a čára hladiny, pak dveře
     flood(Fw, 0, lenL, "3", "4", "0wW8")
@@ -441,7 +443,7 @@ function namZvon(name, o) {
 }
 
 namMikulas("lm_mikulas", { w: 6, dpt: 4, seed: 11 })
-namKinsky("lm_kinsky", { w: 8, dpt: 5, seed: 12 })
-namZvon("lm_zvon", { w: 4, dpt: 4, seed: 13 })
+namKinsky("lm_kinsky", { w: 8, dpt: 6, seed: 12 })
+namZvon("lm_zvon", { w: 4, dpt: 3, seed: 13 })
 
 sheet("landmarks_sm_namesti", ["lm_mikulas", "lm_kinsky", "lm_zvon"], { pad: 1 })
