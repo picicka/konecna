@@ -8,6 +8,7 @@ import { WorldScene } from './scenes/world';
 import { HudScene } from './scenes/hud';
 import { EndingScene } from './scenes/ending';
 import { BattleScene } from './scenes/battle';
+import { DEBUG } from './debug';
 
 // Konečná. Nevystupovat.: samostatná stránka s hrou v Phaseru 3, pixel art 1280 × 720 bodů zobrazený 1:1, na menších displejích
 // zmenšený bez vyhlazení. Boot načte atlas (pxl, art/) → titulek → úvodní filmeček → svět (WorldScene) s lištou a dialogy
@@ -28,6 +29,17 @@ const start = () => {
         input: { activePointers: 2 },
         scene: [BootScene, TitleScene, CutsceneScene, WorldScene, HudScene, BattleScene, EndingScene],
     });
+
+    // Zrychlený čas (?rychle, src/debug.js): krok hry dostane násobený čas, takže chůze, animace a časovače všech scén
+    // běží rychleji; tweeny měří čas samy, mají vlastní násobek (Phaser ho při startu scény vrací na 1).
+    if (DEBUG.speed > 1) {
+        const step = game.step.bind(game);
+        game.step = (time, delta) => step(time, delta * DEBUG.speed);
+        game.events.once('ready', () => game.scene.scenes.forEach((scene) => {
+            scene.tweens.timeScale = DEBUG.speed;
+            scene.events.on('start', () => { scene.tweens.timeScale = DEBUG.speed; });
+        }));
+    }
 
     // Instance hry je na window kvůli ladění a Playwright průchodům (scény jdou řídit z konzole).
     window.konecna = game;

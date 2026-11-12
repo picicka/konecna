@@ -1,6 +1,6 @@
 {
  "frames": {
-  "hp0_staromak_2_2_2pta_greynf_t23R8": {
+  "hp0_staromak_2_2_2pta_greynf_t18R8": {
    "frame": {
     "x": 0,
     "y": 0,
@@ -20,7 +20,7 @@
     "h": 352
    }
   },
-  "hp0_staromak_1_1_3pta_greynf_t23R8": {
+  "hp0_staromak_1_1_3pta_greynf_t20R8": {
    "frame": {
     "x": 257,
     "y": 0,
@@ -120,7 +120,7 @@
     "h": 356
    }
   },
-  "hp0_staromak_2_1_3ppl_greynf_t21L40": {
+  "hp0_staromak_2_1_3ppl_greynf_t22L40": {
    "frame": {
     "x": 193,
     "y": 437,
@@ -220,7 +220,7 @@
     "h": 508
    }
   },
-  "hp0_staromak_2_2_5ppl_greynf_t18R8": {
+  "hp0_staromak_2_2_5ppl_greynf_t15R8": {
    "frame": {
     "x": 321,
     "y": 938,
@@ -260,7 +260,7 @@
     "h": 476
    }
   },
-  "hp0_staromak_2_1_2pta_greynf_t14R8": {
+  "hp0_staromak_2_1_2pta_greynf_t8R8": {
    "frame": {
     "x": 835,
     "y": 938,
@@ -300,7 +300,7 @@
     "h": 364
    }
   },
-  "hp0_staromak_1_1_4pta_greynf_t21R8": {
+  "hp0_staromak_1_1_4pta_greynf_t20R8": {
    "frame": {
     "x": 0,
     "y": 1447,
@@ -340,7 +340,7 @@
     "h": 400
    }
   },
-  "hp0_staromak_2_1_4p_greynf_t21L8": {
+  "hp0_staromak_2_1_4p_greynf_t22L8": {
    "frame": {
     "x": 322,
     "y": 1447,
@@ -360,7 +360,7 @@
     "h": 400
    }
   },
-  "hp0_staromak_3_1_4p_greynf_t4R8": {
+  "hp0_staromak_3_1_4p_greynf_t12R8": {
    "frame": {
     "x": 515,
     "y": 1447,

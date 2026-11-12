@@ -80,7 +80,7 @@
     "h": 356
    }
   },
-  "hp2_hrad_4_1_5p_greencf_t23L8": {
+  "hp2_hrad_4_1_5p_greencf_t20L8": {
    "frame": {
     "x": 772,
     "y": 0,
@@ -160,7 +160,7 @@
     "h": 388
    }
   },
-  "hp2_hrad_3_1_5p_ochrenf_t12R8": {
+  "hp2_hrad_3_1_5p_ochrenf_t18R8": {
    "frame": {
     "x": 771,
     "y": 509,
@@ -180,7 +180,7 @@
     "h": 476
    }
   },
-  "hp2_hrad_1_2_5p_ochrecf_t21R8": {
+  "hp2_hrad_1_2_5p_ochrecf_t22R8": {
    "frame": {
     "x": 1028,
     "y": 509,
@@ -220,7 +220,7 @@
     "h": 356
    }
   },
-  "hp2_hrad_1_1_3p_greynf_t22R16": {
+  "hp2_hrad_1_1_3p_greynf_t20R16": {
    "frame": {
     "x": 193,
     "y": 1018,
@@ -280,7 +280,7 @@
     "h": 400
    }
   },
-  "hp2_hrad_1_1_4p_greynf_t23R16": {
+  "hp2_hrad_1_1_4p_greynf_t21R16": {
    "frame": {
     "x": 836,
     "y": 1018,

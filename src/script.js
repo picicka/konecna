@@ -8,7 +8,7 @@ export const TITLE = {
     loading: 'NAČÍTÁM PRAHU…',
     start: 'Vystoupit',
     resume: 'Pokračovat z posledního místa',
-    hint: 'Klepnutím nebo šipkami chodíte, Enter potvrdí, čísla vybírají. Q deník, T taška, M mapa.',
+    hint: 'Klepnutím, šipkami nebo WASD chodíte, Enter potvrdí, čísla vybírají. Q deník, T taška, M mapa.',
     // Zdroje dat mapy: licence OpenStreetMap (ODbL) i ČÚZK (CC BY 4.0) vyžadují uvedení.
     credits: 'Mapa: © přispěvatelé OpenStreetMap (ODbL) · výšky domů a střechy: © ČÚZK, DMP 1G a ortofoto (CC BY 4.0)',
 };

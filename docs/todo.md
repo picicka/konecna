@@ -31,7 +31,6 @@ se dokreslí. Doplňovat sem.
 - „Kdo hlídá koťátka?“
 - „ACAB“
 - „Mňau“
-- „Fízl = kotě“
 - „Kotě > fízl“
 - „Kočky ví“
 
@@ -42,11 +41,10 @@ se dokreslí. Doplňovat sem.
 - „Zeman měl pravdu, voda teče“
 - „Kanál = konec“
 - „Metro E nikdy“
-- „Fanta nic nevrací“
 - „Robin byl tady“
 - „Sherwood vládne“
 - „Konečná. Nevystupovat.“
-- „Hrad ví“
+- „Pískej konec“
 
 ## Další
 

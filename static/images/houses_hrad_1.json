@@ -60,7 +60,7 @@
     "h": 236
    }
   },
-  "hp1_hrad_2_2_1pta_greycf_t13R8": {
+  "hp1_hrad_2_2_1pta_greycf_t7R8": {
    "frame": {
     "x": 579,
     "y": 0,
@@ -80,7 +80,7 @@
     "h": 308
    }
   },
-  "hp1_hrad_4_1_5p_greennf_t19L8": {
+  "hp1_hrad_4_1_5p_greennf_t21L8": {
    "frame": {
     "x": 836,
     "y": 0,
@@ -120,7 +120,7 @@
     "h": 508
    }
   },
-  "hp1_hrad_1_1_5p_greynf_t23R8": {
+  "hp1_hrad_1_1_5p_greynf_t19R8": {
    "frame": {
     "x": 321,
     "y": 509,
@@ -140,7 +140,7 @@
     "h": 412
    }
   },
-  "hp1_hrad_2_1_5p_greynf_t20R8": {
+  "hp1_hrad_2_1_5p_greynf_t16R8": {
    "frame": {
     "x": 450,
     "y": 509,
@@ -180,7 +180,7 @@
     "h": 356
    }
   },
-  "hp1_hrad_3_1_5p_ochrecf_t21L8": {
+  "hp1_hrad_3_1_5p_ochrecf_t20L8": {
    "frame": {
     "x": 836,
     "y": 509,
@@ -220,7 +220,7 @@
     "h": 364
    }
   },
-  "hp1_hrad_1_2_3p_greennb_t23R16": {
+  "hp1_hrad_1_2_3p_greennb_t22R16": {
    "frame": {
     "x": 193,
     "y": 1018,
@@ -320,7 +320,7 @@
     "h": 368
    }
   },
-  "hp1_hrad_1_1_4p_greynf_t21R8": {
+  "hp1_hrad_1_1_4p_greynf_t20R8": {
    "frame": {
     "x": 129,
     "y": 1467,
@@ -340,7 +340,7 @@
     "h": 368
    }
   },
-  "hp1_hrad_3_1_4p_greynf_t23L48": {
+  "hp1_hrad_3_1_4p_greynf_t19L48": {
    "frame": {
     "x": 258,
     "y": 1467,

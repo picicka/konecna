@@ -22,7 +22,7 @@ Hra běží v prohlížeči (Phaser 3, Vite), je to čistě statický web bez s
 
 | Klávesa | Co dělá |
 | --- | --- |
-| šipky nebo klik myší | chůze |
+| šipky, WASD nebo klik myší | chůze (kurzor ukáže, kam se dojde, s kým jde mluvit a kam ne) |
 | Enter, mezerník | další replika, potvrzení volby |
 | 1–9, šipky nahoru a dolů | výběr volby v rozhovoru |
 | Q | deník (úkoly) |
@@ -41,6 +41,7 @@ npm install
 npm run dev        # vývojový server na http://localhost:5173
 npm run build      # sestavení do public/
 npm test           # sestavení a průchod celou hrou v Playwrightu (snímky v tests/shots)
+npm test -- --misto most   # jen jedno místo (asi půl minuty); --pomalu hraje skutečnou rychlostí
 ```
 
 Sestavená grafika je v repu (`static/images`), takže na hraní ani úpravy kódu není potřeba nic dalšího.

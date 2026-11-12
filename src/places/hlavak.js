@@ -36,7 +36,7 @@ export const HLAVAK = {
     canopies: { outside: [25, 56], until: 68, mastEvery: 4 },
     ribs: [0, 5].flatMap((b0) => [26, 30, 34, 38, 42, 46, 50, 54].map((a) => ({ key: 'rib_7', a, b0, span: 7 }))),
     stops: {
-        metro: { npc: { key: 'strojvedouci', a: 36, b: 21 }, approach: { a: 36, b: 22 }, props: [{ key: 'metro_totem_c', a: 32, b: 22 }] },
+        metro: { npc: { key: 'strojvedouci', a: 36, b: 21 }, approach: { a: 36, b: 22 }, props: [{ key: 'metro_totem_c', a: 30, b: 22 }] },
         // Fanta stojí nahoře na magistrále před vchodem do své budovy (úroveň 1, k němu se jde po věži nebo po rampě).
         trziste: { npc: { key: 'fanta', a: 39, b: 15, L: 1 }, approach: { a: 39, b: 16, L: 1 }, props: [] },
         trafika: { npc: { key: 'trafikantka', a: 39, b: 29 }, approach: { a: 39, b: 30 }, props: [{ key: 'kiosk', a: 38, b: 29 }] },
@@ -74,6 +74,9 @@ export const HLAVAK = {
     // budovy. Hrdinka ve dveřích zmizí a objeví se na nástupišti.
     // Animované dveře: door_fanta v portálu střední haly Fantovy budovy (díl a0 38, u 206 od jeho začátku, fasáda za b 14).
     doors: { fanta: { key: 'door_fanta', a0: 38, b: 14, u: 206, depthAt: { a: 38, b: 13, lift: 9 } } },
+    // světlo z otevřené odbavovací haly padá na plácek před vchodem a z pootevřených dveří Fantovy budovy na vozovku
+    // magistrály (WorldScene.placeLights), obojí láká na nástupiště
+    lights: [{ a: 34, b: 21, scale: 1.3 }, { a: 41, b: 15, L: 1, scale: 1 }],
     tunnels: [
         { from: { a: 34, b: 21, L: 0 }, to: { a: 34, b: 10, L: 0 } },
         { from: { a: 41, b: 15, L: 1 }, to: { a: 41, b: 10, L: 0 }, door: 'fanta' },
@@ -82,5 +85,5 @@ export const HLAVAK = {
     props: { trees: ['tree_bare', 'tree_a', 'tree_bare', 'tree_c', 'tree_bare', 'tree_a'],
         // harampádí: suť, sudy, pneumatiky na chodnících, dvorech a v parku, boudy z plechu na hlíně v parku
         bush: 0.12, bushes: ['bush_a', 'bush_b', 'bush_c'],
-        junk: 0.05, junkKeys: ['rubble_pile', 'barrel', 'tires', 'rubble_pile', 'barrel'], shack: 0.015 },
+        fire: 0.003, junk: 0.05, junkKeys: ['rubble_pile', 'barrel', 'tires', 'rubble_pile', 'barrel'], shack: 0.015 },
 };

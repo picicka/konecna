@@ -11,6 +11,7 @@ include("houses-malastrana.px.js")
 include("houses-hrad.px.js")
 include("houses-nuselak.px.js")
 include("chars.px.js")
+include("kurzory.px.js")
 include("lide.px.js")
 include("lide-a.px.js")
 include("lide-b.px.js")
@@ -45,7 +46,7 @@ include("ground-malastrana.px.js")
 include("ground-hrad.px.js")
 include("ground-nuselak.px.js")
 
-sheet("atlas", ["t_*", "hero", "fanta", "vypravci", "robin", "strojvedouci", "trafikantka", "face_*", "ico_*", "tree_*", "lamp", "bench", "barrel_fire", "metro_entrance", "kiosk", "dog", "dog_lie", "hero_go", "hero_up", "hero_back", "station_clock", "car_wreck_*", "bus_wreck*", "loco_*", "coach_*", "wagon_*", "canopy", "catenary", "metro_totem_*", "door_fanta", "rubble_pile", "barrel", "tires", "shack", "bush_*", "decal_*", "tram_*", "vaclav", "dispecerka", "revizor", "kuracka", "reproduktor", "reproduktor_prazdny", "nutrie_breh", "lodka", "vylez", "nutrie",
+sheet("atlas", ["t_*", "hero", "fanta", "vypravci", "robin", "strojvedouci", "trafikantka", "face_*", "ico_*", "kurzor_*", "tree_*", "lamp", "bench", "barrel_fire", "metro_entrance", "kiosk", "dog", "dog_lie", "hero_go", "hero_up", "hero_back", "station_clock", "car_wreck_*", "bus_wreck*", "loco_*", "coach_*", "wagon_*", "canopy", "catenary", "metro_totem_*", "door_fanta", "rubble_pile", "barrel", "tires", "shack", "bush_*", "decal_*", "tram_*", "vaclav", "dispecerka", "revizor", "kuracka", "reproduktor", "reproduktor_prazdny", "nutrie_breh", "lodka", "vylez", "nutrie",
     // Staromák až Hrad: postavy (art/postavy.px.js), rekvizity a zvířata do boje (art/staromak.px.js, art/hrad.px.js)
     "admiral", "orlojnik", "potapecka", "lovec", "pilar", "netere", "hlidac", "mlynar", "vymahac", "pani", "velvyslanec", "straz", "kastelan", "pruvodkyne", "ochranka", "reditel",
     "lovec_hak", "vyloha", "ostrov_lodka", "podstavec_*", "bedny", "mlynske_kolo", "zarovka", "kanec",

@@ -28,5 +28,5 @@ export const VACLAVAK = {
     oddities: [{ on: 'w', keys: ['mlok_maly_2', 'labut'] }, { on: 'p', minB: 19, keys: ['kun_lucerna', 'kafka', 'miminko'] }],
     props: { trees: ['tree_a', 'tree_bare', 'tree_c', 'tree_a'],
         bush: 0.06, bushes: ['bush_a', 'bush_b', 'bush_c'],
-        junk: 0.04, junkKeys: ['rubble_pile', 'barrel', 'tires', 'rubble_pile'], shack: 0 },
+        fire: 0.004, junk: 0.04, junkKeys: ['rubble_pile', 'barrel', 'tires', 'rubble_pile'], shack: 0 },
 };

@@ -204,10 +204,24 @@ function hallSeg(name, o) {
     if (o.entrance) {
       const du = Math.floor(lenR / 2) - 48
       P(Fq(FR, du - 8, du + 104, 0, 70), "m"); P(Fq(FR, du - 4, du + 100, 0, 66), "W")
-      P(Fq(FR, du, du + 96, 0, 60), "k"); for (let k = 0; k < 4; k++) P(Fq(FR, du + 2 + k * 24, du + 22 + k * 24, 2, 56), k % 2 ? "n" : "L")
+      P(Fq(FR, du, du + 96, 0, 60), "k")
+      // dveře dokořán: prostřední křídla chybí, krajní jsou odražená ke stěně (jedno visí nakřivo); uvnitř hala svítí,
+      // od prahu dozadu teplé světlo (oheň uvnitř), aby bylo vidět, že se tudy jde dál na nástupiště
+      P(Fq(FR, du + 20, du + 76, 0, 58), "U"); P(Fq(FR, du + 20, du + 76, 0, 44), "u")
+      P(Fq(FR, du + 26, du + 70, 0, 34), "o"); P(Fq(FR, du + 34, du + 62, 0, 22), "y"); P(Fq(FR, du + 42, du + 54, 0, 12), "f")
+      P(Fq(FR, du + 20, du + 76, 46, 58), "K"); for (let u = du + 24; u < du + 76; u += 10) P(Fq(FR, u, u + 2, 44, 58), "k")
+      P(Fq(FR, du + 20, du + 76, 0, 3), "q")
+      // křídla odražená ke stěně: levé celé, pravé vylomené (spodní pant drží, horní roh vyklopený ven)
+      P(Fq(FR, du + 2, du + 18, 2, 56), "n"); P(Fq(FR, du + 2, du + 4, 2, 56), "m")
+      P([...FR(du + 78, 2), ...FR(du + 94, 2), ...FR(du + 90, 50), ...FR(du + 76, 54)], "n"); P([...FR(du + 78, 2), ...FR(du + 80, 2), ...FR(du + 78, 54), ...FR(du + 76, 54)], "m")
       P(Fq(FR, du - 8, du + 104, 62, 66), "y")
-      // nad vchodem značení metra (výstup z metra je touto halou)
-      metroSign(c, ox, oy, du + 10, 70, 18)
+      // nad vchodem smaltovaná cedule ČD „K vlakům“ s vlakem, značení metra stranou vlevo (výstup z metra je touto halou)
+      P(Fq(FR, du - 2, du + 98, 68, 88), "W"); P(Fq(FR, du, du + 96, 70, 86), "b")
+      wallText(c, FR, ox, oy, du + 4, 73, "K VLAKŮM", "W", { sc: 2, outline: null })
+      // piktogram vlaku: skříň s okny, kola na koleji
+      P(Fq(FR, du + 72, du + 92, 75, 84), "W"); for (let u = du + 74; u < du + 90; u += 5) P(Fq(FR, u, u + 3, 79, 82), "b")
+      P(Fq(FR, du + 74, du + 77, 73, 75), "W"); P(Fq(FR, du + 87, du + 90, 73, 75), "W"); P(Fq(FR, du + 70, du + 94, 71, 72), "W")
+      metroSign(c, ox, oy, du - 54, 40, 18)
     }
     }
     // stropní deska: souvislý betonový pás se svislým žebrováním, spodní hrana ve stínu
@@ -217,7 +231,8 @@ function hallSeg(name, o) {
     for (let i = 0; i < lenR / 10; i++) { const u = 2 + Math.floor(rng() * (lenR - 4)), n = 10 + Math.floor(rng() * 50); const [x, y] = Fs(FR(u, HALL_H), ox, oy); c.vline(x, y, n, rng() < 0.4 ? "U" : "x") }
     const tags = ["SHERWOOD", "KANAL", "FANTA", "NEVYSTUPOVAT", "DPP", "ROBIN"]
     for (let i = 0; i < 2; i++) { const u = 16 + Math.floor(rng() * (lenR - 150)); const col = ["E", "7", "y", "l"][Math.floor(rng() * 4)]; const word = tags[Math.floor(rng() * tags.length)]; wallText(c, FR, ox, oy, u, HALL_H + 6, word, col, { sc: 2 }) }
-    if (!o.viaduct) for (let i = 0; i < 3; i++) { const u = Math.floor(rng() * (lenR / 32)) * 32 + 3; P(Fq(FR, u, u + 29, 2, 42), "H"); for (let v = 6; v < 42; v += 9) P(Fq(FR, u, u + 29, v, v + 2), "h") }
+    const door = Math.floor(lenR / 2) - 48 // zatlučené tabule ne přes vchod (dveře jsou dokořán)
+    if (!o.viaduct) for (let i = 0; i < 3; i++) { const u = Math.floor(rng() * (lenR / 32)) * 32 + 3; if (o.entrance && u + 29 > door - 8 && u < door + 104) continue; P(Fq(FR, u, u + 29, 2, 42), "H"); for (let v = 6; v < 42; v += 9) P(Fq(FR, u, u + 29, v, v + 2), "h") }
     c.clip(Fs(Fq(FR, 0, lenR, 0, 16), ox, oy), () => c.noise(0, 0, W, Hc, "x", 0.35, 83, "*"))
     // vozovka magistrály na střeše
     const top = [...FR(0, DECK), ...FR(lenR, DECK), lenR - lenL, -lenR / 2 - lenL / 2 - DECK, ...FL(lenL, DECK)]
@@ -401,6 +416,13 @@ anim("door_fanta", { w: 44, h: 72, frames: 4, fps: 8 }, (c) => {
     P(Fq(FR, 4, 2 + leaf - 2, 6, 20), "h"); P(Fq(FR, 4, 2 + leaf - 2, 24, 40), "h")
     P(Fq(FR, 36 - leaf, 32, 6, 20), "h"); P(Fq(FR, 36 - leaf, 32, 24, 40), "h")
   }
-  // světlo zevnitř (nástupiště) prosvítá škvírou
-  if (open > 0) { P(Fq(FR, 2 + leaf, 34 - leaf, 2, 44), "k"); P(Fq(FR, 2 + leaf, 34 - leaf, 2, 6), "P") } // uvnitř tma, na prahu světlejší dlažba
+  // světlo zevnitř (schodiště na nástupiště, oheň dole) prosvítá škvírou: teplá záře, u prahu nejsvětlejší
+  if (open > 0) {
+    P(Fq(FR, 2 + leaf, 34 - leaf, 2, 44), "U"); P(Fq(FR, 2 + leaf, 34 - leaf, 2, 30), "u")
+    P(Fq(FR, 2 + leaf, 34 - leaf, 2, 16), "o"); P(Fq(FR, Math.max(2 + leaf, 10), Math.min(34 - leaf, 26), 2, 8), "y")
+    P(Fq(FR, 2 + leaf, 34 - leaf, 2, 4), "W")
+  }
+  // nad dveřmi smaltovaná cedulka ČD „K vlakům“ (jako nad vchodem do odbavovací haly)
+  P(Fq(FR, 0, 36, 50, 62), "W"); P(Fq(FR, 1, 35, 51, 61), "b")
+  wallText(c, FR, ox, oy, 3, 54, "K VLAKŮM", "W", { sc: 1, outline: null })
 })

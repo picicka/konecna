@@ -7,6 +7,8 @@
 //   &a=43&b=19            na konkrétní dlaždici
 //   &jizdenky=99          přidá jízdenky
 //   &buh                  nesmrtelnost v boji a zkoušky vlastností vždy vyjdou
+//   ?rychle / ?rychle=8   čas hry běží rychleji (bez čísla pětkrát): chůze, animace, časovače; logika se nemění.
+//                         Používá ho průchod npm test, jde i samostatně bez ?misto.
 //   ?ladeni / ?ladeni=0   zapne / vypne panel skoků na klávese F2 (pamatuje se v prohlížeči; s ?misto je zapnutý sám)
 
 const KEY = 'konecna.ladeni';
@@ -23,4 +25,5 @@ export const DEBUG = {
     tile: num('a') !== null && num('b') !== null ? { a: num('a'), b: num('b'), L: num('L') ?? 0 } : null,
     tickets: num('jizdenky') ?? 0,
     god: params.has('buh'),
+    speed: params.has('rychle') ? Math.max(1, Math.min(20, num('rychle') || 5)) : 1,
 };

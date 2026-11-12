@@ -1,6 +1,6 @@
 {
  "frames": {
-  "hp0_nuselak_1_2_2p_greynf_t21R8": {
+  "hp0_nuselak_1_2_2p_greynf_t22R8": {
    "frame": {
     "x": 0,
     "y": 0,
@@ -40,7 +40,7 @@
     "h": 280
    }
   },
-  "hp0_nuselak_2_1_3p_greynf_t20L8": {
+  "hp0_nuselak_2_1_3p_greynf_t21L8": {
    "frame": {
     "x": 322,
     "y": 0,
@@ -60,7 +60,7 @@
     "h": 356
    }
   },
-  "hp0_nuselak_1_1_3p_greynf_t25R8": {
+  "hp0_nuselak_1_1_3p_greynf_t20R8": {
    "frame": {
     "x": 515,
     "y": 0,
@@ -80,7 +80,7 @@
     "h": 324
    }
   },
-  "hp0_nuselak_3_1_1p_greynf_t33L8": {
+  "hp0_nuselak_3_1_1p_greynf_t20L8": {
    "frame": {
     "x": 0,
     "y": 357,
@@ -100,7 +100,7 @@
     "h": 300
    }
   },
-  "hp0_nuselak_2_2_1p_greennf_t33R8": {
+  "hp0_nuselak_2_2_1p_greennf_t31R8": {
    "frame": {
     "x": 257,
     "y": 357,
@@ -120,7 +120,7 @@
     "h": 308
    }
   },
-  "hp0_nuselak_1_1_1p_greennf_t23R8": {
+  "hp0_nuselak_1_1_1p_greennf_t22R8": {
    "frame": {
     "x": 514,
     "y": 357,

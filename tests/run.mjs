@@ -6,11 +6,19 @@ import path from 'node:path';
 // Automatický průchod hrou v headless Chromiu nad sestavenou verzí (vite preview): titulek, filmeček, svět, chůze, deník.
 // Spouští npm test (vite build && node tests/run.mjs). Snímky jdou do tests/shots, chyby z konzole se vypíšou na konci.
 // Hra je na window.konecna, scény jdou řídit z konzole; průchod neklepe naslepo, čeká na stav scény.
+// Čas hry běží zrychleně (?rychle, src/debug.js), logika je stejná; --pomalu hraje skutečnou rychlostí (snímky
+// animací po cestě pak sedí). --misto <místo> zahraje jen jedno místo: začne skokem se stavem ze src/skoky.json
+// (Hlavák od titulku) a skončí příchodem na další místo, na Hradě koncem. npm test -- --misto most
+const ARGS = process.argv.slice(2);
+const ONLY = ARGS.includes('--misto') ? ARGS[ARGS.indexOf('--misto') + 1] : null;
+const ORDER = ['hlavak', 'vaclavak', 'nuselak', 'staromak', 'most', 'malastrana', 'hrad'];
+if (ONLY && !ORDER.includes(ONLY)) { console.log(`neznámé místo ${ONLY}, na výběr: ${ORDER.join(', ')}`); process.exit(1); }
+const FAST = ARGS.includes('--pomalu') ? '' : 'rychle';
 const ROOT = path.resolve(new URL('.', import.meta.url).pathname, '..');
 const PORT = 4173;
 const BASE = process.env.BASE ?? `http://localhost:${PORT}/`;
 const OUT = process.env.OUT ?? path.join(ROOT, 'tests/shots');
-fs.rmSync(OUT, { recursive: true, force: true });
+if (!ONLY) fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
 
 let server = null;
@@ -42,9 +50,69 @@ const cutsceneThrough = async () => { await waitScene('cutscene'); await page.wa
 const skoky = {};
 const remember = async (place) => { skoky[place] = { ...JSON.parse(await state()), seed: 7 }; };
 
+// Hraje se místo? (celý průchod všechna, s --misto jen to jedno)
+const plays = (place) => !ONLY || ONLY === place;
+const DONE = Symbol('hotovo');
+
 let failed = false;
 try {
-    await page.goto(BASE);
+    // Příběh: hlavní linka Hlaváku cestou bez boje (dopis, Fanta, hodinky, lahev pro Robina), odjezd soupravou
+    // na Václavák, tam evidence, revizor a molo ke Kuřačce. Volby se vybírají číslem podle textu tlačítka; když volba
+    // v seznamu chybí, vybere se poslední (Odejít, u nové úrovně Oko).
+    const labels = () => run(() => (window.konecna.scene.getScene('hud').buttons ?? []).map((b) => b.caption.text));
+    const panelOpen = () => run(() => Boolean(window.konecna.scene.getScene('hud').panel) || window.konecna.scene.isActive('battle'));
+    const cards = {};
+    const converse = async (id, picks, shotName) => {
+        await run((s) => window.konecna.scene.getScene('world').goToStop(s), id);
+        await page.waitForFunction(() => window.konecna.scene.getScene('hud').panel, null, { timeout: 90000 });
+        if (shotName) { await page.waitForTimeout(200); await shot(shotName); }
+        cards[id] = await run(() => Boolean(window.konecna.scene.getScene('hud').card));
+        const queue = [...picks];
+        for (let i = 0; i < 80; i++) {
+            if (!(await panelOpen())) { await page.waitForTimeout(300); if (!(await panelOpen())) break; continue; }
+            const list = await labels();
+            if (!list.length) { await page.waitForTimeout(150); continue; }
+            if (list.length === 1) await page.keyboard.press('Enter');
+            else {
+                let idx = queue.length ? list.findIndex((l) => l.replace(/\u00a0/g, ' ').includes(queue[0])) : -1;
+                if (idx >= 0) queue.shift(); else idx = list.length - 1;
+                await page.keyboard.press(String(idx + 1));
+            }
+            await page.waitForTimeout(220);
+        }
+        if (queue.length) throw new Error(`v rozhovoru ${id} chyběla volba: ${queue.join(', ')}`);
+        console.log('talked', id, picks.join(' | '));
+    };
+    const st = async () => JSON.parse(await state());
+    // Dál po vodě a pěšky až ke konci Řád: Staromák (Admirála odmítne, po střechách Klementina), most (neteř odmítne,
+    // mlynář nabije zásilku), Malá Strana (Kastelán vezme nahoru), Hrad (ochranka pustí s Kastelánem, čtečka přehraje).
+    const arrive = async (place, name) => {
+        await cutsceneThrough();
+        await page.waitForFunction((p) => window.konecna.scene.isActive('world') && window.konecna.registry.get('state').place === p && window.konecna.scene.getScene('world').player, place, { timeout: 90000 });
+        await page.waitForTimeout(800);
+        await shot(name);
+        const problems = await run(() => window.konecna.scene.getScene('world').problems);
+        if (problems.length) throw new Error(`zastavení (${place}): ${problems.join('; ')}`);
+        console.log(place, 'start', JSON.stringify(await tile()));
+        await remember(place);
+        // s --misto končí průchod příchodem na další místo
+        if (ONLY && ONLY !== place) throw DONE;
+    };
+    // Začátek místa při --misto: skok se stavem z příchodu (src/skoky.json), jinak se pokračuje z předchozího místa.
+    const enter = async (place) => {
+        if (!plays(place)) return false;
+        if (!ONLY) return true;
+        await page.goto(`${BASE}?misto=${place}${FAST && `&${FAST}`}`);
+        await page.waitForFunction((p) => { const w = window.konecna?.scene.getScene('world'); return window.konecna?.scene.isActive('world') && w.player && w.state.place === p; }, place, { timeout: 60000 });
+        await page.waitForTimeout(500);
+        const problems = await run(() => window.konecna.scene.getScene('world').problems);
+        if (problems.length) throw new Error(`zastavení (${place}): ${problems.join('; ')}`);
+        console.log(place, 'skok', JSON.stringify(await tile()));
+        return true;
+    };
+
+  if (plays('hlavak')) {
+    await page.goto(`${BASE}${FAST && `?${FAST}`}`);
     await waitScene('title');
     await page.waitForFunction(() => window.konecna.scene.getScene('title').ready, null, { timeout: 15000 });
     await page.waitForTimeout(800);
@@ -213,34 +281,6 @@ try {
     const choice = await run(() => window.__choice);
     if (choice !== 1) throw new Error(`volba vrátila ${choice}, čekáno 1`);
 
-    // Příběh: hlavní linka Hlaváku cestou bez boje (dopis, Fanta, hodinky, lahev pro Robina), odjezd soupravou
-    // na Václavák, tam evidence, revizor a molo ke Kuřačce. Volby se vybírají číslem podle textu tlačítka; když volba
-    // v seznamu chybí, vybere se poslední (Odejít, u nové úrovně Oko).
-    const labels = () => run(() => (window.konecna.scene.getScene('hud').buttons ?? []).map((b) => b.caption.text));
-    const panelOpen = () => run(() => Boolean(window.konecna.scene.getScene('hud').panel) || window.konecna.scene.isActive('battle'));
-    const cards = {};
-    const converse = async (id, picks, shotName) => {
-        await run((s) => window.konecna.scene.getScene('world').goToStop(s), id);
-        await page.waitForFunction(() => window.konecna.scene.getScene('hud').panel, null, { timeout: 90000 });
-        if (shotName) { await page.waitForTimeout(200); await shot(shotName); }
-        cards[id] = await run(() => Boolean(window.konecna.scene.getScene('hud').card));
-        const queue = [...picks];
-        for (let i = 0; i < 80; i++) {
-            if (!(await panelOpen())) { await page.waitForTimeout(300); if (!(await panelOpen())) break; continue; }
-            const list = await labels();
-            if (!list.length) { await page.waitForTimeout(150); continue; }
-            if (list.length === 1) await page.keyboard.press('Enter');
-            else {
-                let idx = queue.length ? list.findIndex((l) => l.replace(/\u00a0/g, ' ').includes(queue[0])) : -1;
-                if (idx >= 0) queue.shift(); else idx = list.length - 1;
-                await page.keyboard.press(String(idx + 1));
-            }
-            await page.waitForTimeout(220);
-        }
-        if (queue.length) throw new Error(`v rozhovoru ${id} chyběla volba: ${queue.join(', ')}`);
-        console.log('talked', id, picks.join(' | '));
-    };
-    const st = async () => JSON.parse(await state());
     // Zkoušky vlastností jsou ze semínka hry; pevné semínko, ať průchod dopadne pokaždé stejně.
     await run(() => { window.konecna.registry.get('state').seed = 7; });
     await converse('nastupiste', ['Nesu vám dopis'], '08-stop-nastupiste');
@@ -296,15 +336,9 @@ try {
     await shot('08-psi-u-robina');
     await shot('09-journal-hlavak');
     await converse('metro', ['Chci jet dál', 'Vím, kdy doopravdy', 'Krabičku od pana Fanty'], '08-stop-metro');
-    await cutsceneThrough();
-    await page.waitForFunction(() => window.konecna.scene.isActive('world') && window.konecna.registry.get('state').place === 'vaclavak' && window.konecna.scene.getScene('world').player, null, { timeout: 60000 });
-    await page.waitForTimeout(800);
-    await shot('10-vaclavak');
-    const vstart = await tile();
-    console.log('vaclavak start', JSON.stringify(vstart));
-    await remember('vaclavak');
-    const vproblems = await run(() => window.konecna.scene.getScene('world').problems);
-    if (vproblems.length) throw new Error(`zastavení na Václaváku: ${vproblems.join('; ')}`);
+    await arrive('vaclavak', '10-vaclavak');
+  }
+  if (await enter('vaclavak')) {
     // Bez povolení revizora na molo cesta nevede.
     const closed = await run(() => { const w = window.konecna.scene.getScene('world'); return w.findPath(w.tile, w.stops.kuracka.approach).length; });
     if (closed) throw new Error('molo má být bez povolení zavřené');
@@ -331,22 +365,12 @@ try {
     if (nut.speaker !== 'reproduktor_prazdny' || !nut.nutrie?.startsWith('nutrie_breh')) throw new Error(`nutrie má sedět u vody: ${JSON.stringify(nut)}`);
     await run(() => { const w = window.konecna.scene.getScene('world'); w.cameras.main.startFollow(w.player, true, 0.12, 0.12); });
 
-    // Dál po vodě a pěšky až ke konci Řád: Staromák (Admirála odmítne, po střechách Klementina), most (neteř odmítne,
-    // mlynář nabije zásilku), Malá Strana (Kastelán vezme nahoru), Hrad (ochranka pustí s Kastelánem, čtečka přehraje).
-    const arrive = async (place, name) => {
-        await cutsceneThrough();
-        await page.waitForFunction((p) => window.konecna.scene.isActive('world') && window.konecna.registry.get('state').place === p && window.konecna.scene.getScene('world').player, place, { timeout: 90000 });
-        await page.waitForTimeout(800);
-        await shot(name);
-        const problems = await run(() => window.konecna.scene.getScene('world').problems);
-        if (problems.length) throw new Error(`zastavení (${place}): ${problems.join('; ')}`);
-        console.log(place, 'start', JSON.stringify(await tile()));
-        await remember(place);
-    };
     await converse('kuracka', ['Vezmete mě na Staromák']);
+    await arrive('nuselak', '13-nuselak');
+  }
+  if (await enter('nuselak')) {
     // Nuselák: Kuřačka vysadí u Karlova, strážmistr pošle pro kotě, přes zlom po laně (animace), souprava, kotě,
     // zpátky po laně k muzeu a znovu přes zlom, kormidelník doveze na Staromák.
-    await arrive('nuselak', '13-nuselak');
     await converse('kuracka_nusle', ['Co se stalo s mostem'], '13-stop-kuracka-nusle');
     await converse('policista', ['Proč máte v kapse', 'Co se stalo s mostem'], '13-stop-policista');
     const crossed = async (a) => page.waitForFunction((x) => { const w = window.konecna.scene.getScene('world'); return w.tile.a === x && !w.busy; }, a, { timeout: 30000 });
@@ -364,12 +388,16 @@ try {
     await crossed(50);
     await converse('kormidelnik', ['Na Staromák'], '13-stop-kormidelnik');
     await arrive('staromak', '13-staromak');
+  }
+  if (await enter('staromak')) {
     await converse('tyn', [], '14-stop-tyn');
     await converse('potapecka', ['Odkud přišla', 'Dispečerka mi', 'Máte pro mě'], '14-stop-potapecka');
     await converse('admiral', ['Nesu poštu', 'Listovní tajemství'], '14-stop-admiral');
     await converse('orlojnik', ['Jak se dostanu po střechách'], '14-stop-orlojnik');
     await converse('karlova', ['Po střechách']);
     await arrive('most', '15-most');
+  }
+  if (await enter('most')) {
     await converse('pilar', ['Ne. Nesu', 'Co prodáváte', 'Benzínová směs'], '16-stop-pilar');
     await converse('netere', ['Kolik dáte', 'Nesu to na Hrad'], '16-stop-netere');
     await converse('hlidac', ['Proč tu zůstal'], '16-stop-hlidac');
@@ -379,6 +407,8 @@ try {
     if (!s3.flags.nabito || !s3.items.includes('zasilka') || !s3.flags.odmitla_netere) throw new Error(`most: ${JSON.stringify({ flags: s3.flags, items: s3.items })}`);
     await converse('mostecka', ['Jít na Malou Stranu']);
     await arrive('malastrana', '17-malastrana');
+  }
+  if (await enter('malastrana')) {
     const thugs = await run(() => Boolean(window.konecna.scene.getScene('world').stops.vymahaci));
     if (!thugs) throw new Error('po odmítnutí neteře mají čekat vymahači');
     await converse('pani', ['Co se stalo tu noc'], '18-stop-pani');
@@ -386,6 +416,8 @@ try {
     await converse('straz', ['Nemáte hlad'], '18-stop-straz');
     await converse('kastelan', ['Vezmete mě nahoru'], '18-stop-kastelan');
     await arrive('hrad', '19-hrad');
+  }
+  if (await enter('hrad')) {
     await converse('pruvodkyne', ['Co je v té buňce', 'Kdy přijde důchod'], '20-stop-pruvodkyne');
     await converse('ochranka', ['Jdu s Kastelánem'], '20-stop-ochranka');
     await converse('reditel', ['Podepsal jste'], '20-stop-reditel');
@@ -411,9 +443,10 @@ try {
     await page.waitForTimeout(500);
     await shot('07-death');
     console.log('final', await state());
-
+  }
+  if (!ONLY) {
     // Ladění: skok z adresy rovnou na místo a dlaždici, panel skoků na F2 (src/debug.js).
-    await page.goto(`${BASE}?misto=nuselak&a=50&b=19&jizdenky=5`);
+    await page.goto(`${BASE}?misto=nuselak&a=50&b=19&jizdenky=5${FAST && `&${FAST}`}`);
     await page.waitForFunction(() => { const w = window.konecna?.scene.getScene('world'); return window.konecna.scene.isActive('world') && w.player && w.state.place === 'nuselak'; }, null, { timeout: 60000 });
     const jumped = await run(() => { const w = window.konecna.scene.getScene('world'); return { ...w.tile, created: w.state.flags.created }; });
     console.log('skok', JSON.stringify(jumped));
@@ -425,13 +458,16 @@ try {
     await page.keyboard.press('7');
     await page.waitForFunction(() => { const w = window.konecna.scene.getScene('world'); return window.konecna.scene.isActive('world') && w.player && w.state.place === 'hrad'; }, null, { timeout: 60000 });
     console.log('skok F2 hrad');
+  }
 } catch (e) {
-    failed = true;
-    console.log('FAILED', e.message);
-    await shot('99-failure');
+    if (e !== DONE) {
+        failed = true;
+        console.log('FAILED', e.message);
+        await shot('99-failure');
+    }
 }
 console.log(logs.length ? logs.join('\n') : 'no browser errors');
-if (!failed) {
+if (!failed && !ONLY) {
     const file = path.join(ROOT, 'src/skoky.json'), text = `${JSON.stringify(skoky, null, 1)}\n`;
     if (!fs.existsSync(file) || fs.readFileSync(file, 'utf8') !== text) { fs.writeFileSync(file, text); console.log('src/skoky.json zapsán (skoky z ladění), sestavit znovu: npm run build'); }
 }

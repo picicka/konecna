@@ -7,8 +7,11 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
 ## Jak se s projektem pracuje
 
 - `npm run dev` dev server, `npm run build` build do `public/` (Herd ho servíruje jako konecna.test, GitHub Pages ho
-  nasazuje), `npm test` = build + Playwright průchod (`tests/run.mjs`, snímky v `tests/shots`). Průchod je první kontrola
-  po každé změně, ne ruční klikání. Zdroj je ve `src/` včetně `index.html`, `public/` je jen výstup a necommituje se.
+  nasazuje), `npm test` = build + Playwright průchod (`tests/run.mjs`, snímky v `tests/shots`). Průchod se nepouští
+  sám po každé změně: po úpravě se nabídne (jedno místo, nebo celý) a pustí se až na pokyn. Celý trvá asi 4 minuty,
+  `npm test -- --misto <místo>` zahraje jen jedno místo (asi půl minuty, začíná skokem se stavem ze `src/skoky.json`
+  a končí příchodem na další místo). Čas hry v něm běží zrychleně (`?rychle` v adrese, `src/debug.js`), `--pomalu` hraje
+  skutečnou rychlostí. Drobnou změnu stačí ověřit cíleným snímkem (`scripts/snimek.mjs`). Zdroj je ve `src/` včetně `index.html`, `public/` je jen výstup a necommituje se.
 - `npm run art` sestaví grafiku přes pxl (`art/*.px.js` → `art/out` → `static/images/atlas.png|json`, `houses0–3`,
   `cs_*.png`) a zapíše `art/version.json`; BootScene ji dává do adres jako `?v=`, jinak prohlížeč drží starý atlas.
   Výstup ve `static/images` se commituje (GitHub Pages pxl nemá). Nový sprite = přidat do `sheet()` v `art/main.px.js`. Do scén se neskládají emoji
@@ -118,7 +121,8 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
   cesta stojí, a hledá si je sám zpřesňováním (pamatuje si je ve `scripts/slepe-sledovane.json`, `--znovu` hledá od nuly).
   Nález vypíše s nejkratší cestou, jak se do něj dostat; `--misto <místo>` jedno místo, `-v` kola zpřesňování,
   `--bez rozhovor.uzel.volba` vypne volbu na zkoušku. Vypíše i volby, které nejdou zvolit nikdy.
-- Po každé změně dialogů `npm run tree` a průchod `npm test`, který hraje hlavní linku cestou bez boje a jeden boj.
+- Po každé změně dialogů `npm run tree`; průchod `npm test` (hlavní linka cestou bez boje a jeden boj) nabídnout
+  a pustit na pokyn, pro změnu na jednom místě stačí `npm test -- --misto <místo>`.
 - Grafika místa (díly země a domy) se nahrává až při vstupu na místo (`WorldScene.preload`), grafika ostatních míst se
   uvolní. Listy domů `houses_<místo>_<n>` mají kolem 24 spritů, počet je v `data/<místo>.json` (`houseSheets`).
 
@@ -149,6 +153,9 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
   místo trávníků, suť, sudy, pneumatiky, plechové boudy.
 - Domy: špína s příčinou (odstřik od země, šmouhy pod římsou a parapety, rezavé stékance), plevel na římsách, zatlučená
   a vybitá okna, graffiti na betonu. Domy vrhají stín k +b (`WorldScene.drawShadows`).
+- Světlo: sudy s ohněm (`barrel_fire`, rozsev `fire` v `props` místa) mají pixelovou kaluž světla s ditheringem
+  (`WorldScene.placeLights`), další světla jsou v `lights` místa (světlo z otevřené odbavovací haly na Hlaváku láká
+  na nástupiště); domy mají kontaktní stín u paty a tmavší spodek fasády (`drawShadows`).
 - Nic čistého a pastelového; když nová grafika vypadá hezky a uklizeně, je špatně.
 
 ## Pravidla kódu
@@ -159,6 +166,9 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
 - Isometrie 2:1, dlaždice 128 × 64: konstanty jen v `src/iso.js` (TW/TH) a `art/tiles.px.js`. Kdyby se po ověření
   přešlo na 96 × 48, mění se jen tam. Souřadnice a podél (doprava nahoru), b napříč (doprava dolů).
 - Hloubka vždy přes `ISO.depthOf(a, b, lift)`, žádné výjimky po jednom. Domy před ulicí zprůhlední, když zakryjí hrdinku.
+- Kurzor ve světě podle toho, co je pod ním (`WorldScene.hover`, sprity `kurzor_*` v `art/kurzory.px.js`): šipka a na zemi
+  kosočtverec dlaždice (`kurzor_dlazdice`, jako šestiúhelník ve Falloutu) kam hrdinka dojde, křížek a červený kosočtverec
+  kam ne, bublina u postavy, oko u věci s hláškou, dveře u vchodu. Chůze klepnutím, šipkami i WASD.
 - Každý interaktivní objekt má přístupovou dlaždici (`approach`) a při startu se kontroluje, že je průchozí.
 - Všechny texty pro hráčku jsou v `src/script.js` s literálními pevnými mezerami (U+00A0); do scén se texty nepíšou.
   Hrdinka je žena: rod ve všech replikách o ní. Kontrola textů proti mapě a rodu je pravidelný krok.

@@ -100,7 +100,7 @@
     "h": 436
    }
   },
-  "hp0_hlavak_2_2_3pta_salmonnb_t32R8": {
+  "hp0_hlavak_2_2_3pta_salmonnb_t10R8": {
    "frame": {
     "x": 0,
     "y": 545,
@@ -160,7 +160,7 @@
     "h": 420
    }
   },
-  "hp0_hlavak_2_2_4pta_salmoncb_t20L8": {
+  "hp0_hlavak_2_2_4pta_salmoncb_t18L8": {
    "frame": {
     "x": 899,
     "y": 545,
@@ -380,7 +380,7 @@
     "h": 512
    }
   },
-  "hp0_hlavak_1_3_2pta_yellowcb_t15L8": {
+  "hp0_hlavak_1_3_2pta_yellowcb_t4L8": {
    "frame": {
     "x": 1028,
     "y": 1531,
