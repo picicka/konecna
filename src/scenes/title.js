@@ -1,10 +1,11 @@
 import Phaser from 'phaser';
-import { TITLE } from '../script';
-import { head, body, button, scanlines, soundButton, CRT, WIDTH, HEIGHT } from '../ui';
-import { createState, load, clearSave } from '../state';
+import { TITLE, ABOUT } from '../script';
+import { head, body, button, scanlines, soundButton, aboutPanel, CRT, WIDTH, HEIGHT } from '../ui';
+import { createState, loadPosition, clearSave } from '../state';
 
 // Titulní obrazovka: tmavá Praha z úvodního filmečku, nad ní nápis KONEČNÁ jako cedule na nástupišti a podtitul.
-// Start spustí úvodní filmeček a pak svět; když je uložená pozice, nabídne i pokračování z posledního místa.
+// Start spustí úvodní filmeček a pak svět; když je uložená pozice, nabídne i pokračování přesně tam, kde hráčka
+// skončila (průběžné uložení, src/state.js). Zdroje dat a autoři jsou pod tlačítkem i (ABOUT).
 const BUTTON_DELAY = 1200;
 
 export class TitleScene extends Phaser.Scene {
@@ -20,7 +21,6 @@ export class TitleScene extends Phaser.Scene {
         head(this, WIDTH / 2, 222, TITLE.name, { fontSize: '64px', color: '#ece9df' }).setOrigin(0.5, 0.5);
         this.add.rectangle(WIDTH / 2, 282, 700, 6, 0xb3261e);
         body(this, WIDTH / 2, 330, TITLE.subtitle, { fontSize: '40px', color: CRT.amber }).setOrigin(0.5, 0.5);
-        body(this, WIDTH / 2, HEIGHT - 18, TITLE.credits, { fontSize: '20px', color: CRT.dim }).setOrigin(0.5, 0.5);
         scanlines(this);
         const sound = this.registry.get('sound');
         const hum = () => { if (this.scene.isActive()) sound.neon(true); };
@@ -28,10 +28,13 @@ export class TitleScene extends Phaser.Scene {
         this.game.events.on('sound-unlocked', hum);
         this.events.once('shutdown', () => { this.game.events.off('sound-unlocked', hum); sound.neon(false); });
         soundButton(this, WIDTH - 100, 36);
+        // (i) O hře: zdroje dat, kdo hru dělá a jak se ukládá
+        button(this, WIDTH - 210, 36, 44, 36, ABOUT.button, () => { this.about ??= aboutPanel(this, ABOUT, () => { this.about = null; }); }, { fontSize: 22, center: true }).setDepth(50);
+        this.input.keyboard.on('keydown-ESC', () => this.about?.close());
 
         this.ready = false;
         this.time.delayedCall(BUTTON_DELAY, () => {
-            const saved = load();
+            const saved = loadPosition();
             const start = button(this, WIDTH / 2, 470, 480, 52, TITLE.start, () => this.start(), { primary: true, center: true, fontSize: 32 }).setAlpha(0);
             const controls = [start];
             if (saved) controls.push(button(this, WIDTH / 2, 536, 480, 44, TITLE.resume, () => this.resume(saved), { center: true, fontSize: 26 }).setAlpha(0));
@@ -40,8 +43,8 @@ export class TitleScene extends Phaser.Scene {
             this.tweens.add({ targets: [...controls, cursor], alpha: 1, duration: 600 });
             this.tweens.add({ targets: cursor, alpha: 0, duration: 500, yoyo: true, repeat: -1, delay: 600 });
             this.ready = true;
-            this.input.keyboard.on('keydown-ENTER', () => start.press());
-            this.input.keyboard.on('keydown-SPACE', () => start.press());
+            this.input.keyboard.on('keydown-ENTER', () => (this.about ? this.about.close() : start.press()));
+            this.input.keyboard.on('keydown-SPACE', () => (this.about ? this.about.close() : start.press()));
         });
     }
 

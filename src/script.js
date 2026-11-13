@@ -7,10 +7,26 @@ export const TITLE = {
     subtitle: 'Nevystupovat.',
     loading: 'NAČÍTÁM PRAHU…',
     start: 'Vystoupit',
-    resume: 'Pokračovat z posledního místa',
+    resume: 'Pokračovat, kde jsem skončila',
     hint: 'Klepnutím, šipkami nebo WASD chodíte, Enter potvrdí, čísla vybírají. Q deník, T taška, M mapa.',
-    // Zdroje dat mapy: licence OpenStreetMap (ODbL) i ČÚZK (CC BY 4.0) vyžadují uvedení.
-    credits: 'Mapa: © přispěvatelé OpenStreetMap (ODbL) · výšky domů a střechy: © ČÚZK, DMP 1G a ortofoto (CC BY 4.0)',
+};
+
+// Okno O hře (tlačítko i na titulní obrazovce a na liště): zdroje dat mapy (licence OpenStreetMap ODbL i ČÚZK CC BY 4.0
+// vyžadují uvedení), kdo hru dělá a jak se ukládá. Každý nový zdroj dat se uvádí tady.
+export const ABOUT = {
+    button: 'i',
+    title: 'O HŘE',
+    close: 'Zavřít',
+    lines: [
+        'Konečná. Nevystupovat. Postapokalyptické RPG po Praze, rok poté. Pošťačka nese poslední zásilku z Hlaváku na Hrad.',
+        'Autor: picicka. Zdrojový kód: github.com/picicka/konecna.',
+        'Mapová data: přispěvatelé OpenStreetMap, licence ODbL.',
+        'Výšky domů, terén a střechy: ČÚZK, laserové skenování (DMP 1G) a ortofoto, licence CC BY 4.0.',
+        'Značení metra podle Jiřího Rathouského. Stavby jsou kreslené podle fotek z Wikimedia Commons, jen jako předloha.',
+        'Běží na Phaseru 3. Grafika je nakreslená kódem v pxl, zvuk se skládá v prohlížeči.',
+        'Hra se ukládá sama do tohoto prohlížeče, i s místem, kde stojíte. „Vystoupit“ na úvodní obrazovce začne znovu a uložení smaže.',
+        'Postavy a události jsou smyšlené. Co se stalo ve 14:37, neví nikdo.',
+    ],
 };
 
 // Ladění (src/debug.js): panel skoků na místa, klávesa L.
@@ -33,7 +49,6 @@ export const HUD = {
     level: 'ÚROVEŇ',
     hero: 'POŠŤAČKA',
     places: { hlavak: 'HLAVÁK', vaclavak: 'VÁCLAVÁK', nuselak: 'NUSELÁK', staromak: 'STAROMÁK', most: 'KARLŮV MOST', malastrana: 'MALÁ STRANA', hrad: 'HRAD' },
-    mapCredit: '© OpenStreetMap, ČÚZK',
     leave: 'Odejít.',
     // odchod od nepřítele, který už na hrdinku jde (uzel s flee): stojí srdce, ale nezabije
     flee: 'Utéct. (−1 srdce)',

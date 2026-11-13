@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { LADENI, HUD, QUEST, BAG, CARD, CREATE, DIALOGS, ITEMS, ATTRIBUTE_NAMES, ATTRIBUTE_ICONS, ATTRIBUTE_INFO, FACTIONS, tickets } from '../script';
+import { ABOUT, LADENI, HUD, QUEST, BAG, CARD, CREATE, DIALOGS, ITEMS, ATTRIBUTE_NAMES, ATTRIBUTE_ICONS, ATTRIBUTE_INFO, FACTIONS, tickets } from '../script';
 import { journal, factions, trustLevel, itemStats } from '../story';
 import { ATTRIBUTES, XP_LEVELS, attr, maxHp, equipItem, useSupply } from '../state';
 import { DEBUG } from '../debug';
@@ -7,7 +7,7 @@ import { JUMP_PLACES, jump } from '../skok';
 
 const MAP_KEY = 'konecna.map';
 const CARD_W = 312;
-import { head, body, panel, button, scanlines, soundButton, CRT, WIDTH, HEIGHT } from '../ui';
+import { head, body, panel, button, scanlines, soundButton, aboutPanel, CRT, WIDTH, HEIGHT } from '../ui';
 
 // Lišta a dialogy nad světem ve stylu Pip-Boye, převzato z Václaváku a zobecněno. Nahoře životy, úroveň a jízdenky;
 // dole dialog s portrétem, jménem a replikou, volby jako číslované řádky. Klávesy: Enter / mezerník potvrdí, 1–9 vyberou,
@@ -33,6 +33,8 @@ export class HudScene extends Phaser.Scene {
         soundButton(this, 494, 26, 11, 124);
         this.questButton = button(this, 622, 26, 116, 36, HUD.quests, () => this.toggleQuests(), { fontSize: 22, center: true }).setDepth(11);
         this.mapButton = button(this, 746, 26, 116, 36, HUD.map, () => this.toggleMap(), { fontSize: 22, center: true }).setDepth(11);
+        // (i) O hře: zdroje dat mapy, autoři, ukládání (stejné okno jako na titulní obrazovce)
+        button(this, 832, 26, 36, 36, ABOUT.button, () => { if (!this.panel && !this.quests && !this.jumps) this.about ??= aboutPanel(this, ABOUT, () => { this.about = null; }, 950); }, { fontSize: 22, center: true }).setDepth(11);
 
         this.toastBox = this.add.container(WIDTH / 2, 100).setDepth(30).setAlpha(0);
         this.toastBack = this.add.rectangle(0, 0, 10, 10, 0x000000, 0.85).setStrokeStyle(2, CRT.lineDim);
@@ -42,6 +44,7 @@ export class HudScene extends Phaser.Scene {
         this.panel = null;
         this.quests = null;
         this.jumps = null;
+        this.about = null;
         this.card = null;
         this.buttons = [];
         this.focus = -1;
@@ -91,8 +94,6 @@ export class HudScene extends Phaser.Scene {
         const px = WIDTH - w - 22, py = 62;
         this.minimapBox = { x: px + 8, y: py + 30, w, h, ox, oy, S };
         const parts = [panel(this, px, py, w + 16, h + 40).setDepth(10)];
-        // zdroje dat mapy (OSM chce uvedení u zobrazené mapy)
-        parts.push(body(this, px + w + 8, py + h + 48, HUD.mapCredit, { fontSize: '16px', color: CRT.dim }).setOrigin(1, 0).setDepth(11));
         parts.push(head(this, px + 10, py + 10, HUD.places[world.state.place] ?? world.state.place.toUpperCase(), { fontSize: '12px', color: CRT.amber }).setDepth(11));
         this.minimap = this.add.image(px + 8, py + 30, key).setOrigin(0, 0).setDepth(11).setInteractive({ useHandCursor: true });
         parts.push(this.minimap);
@@ -452,6 +453,7 @@ export class HudScene extends Phaser.Scene {
 
     onKey(event) {
         const key = event.key.toLowerCase();
+        if (this.about) { if (event.key === 'Escape' || event.key === 'Enter') this.about.close(); return; }
         if (DEBUG.on && key === 'l') { event.preventDefault?.(); this.toggleJumps(); return; }
         if (this.jumps) {
             if (event.key === 'Escape') this.toggleJumps();

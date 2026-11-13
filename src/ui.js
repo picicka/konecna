@@ -133,3 +133,19 @@ export const soundButton = (scene, x, y, depth = 50, width = 160) => {
     }, { fontSize: 22, center: true }).setDepth(depth);
     return control;
 };
+
+// Okno O hře (texty ABOUT ze src/script.js): zdroje dat, autoři, ukládání. Tmavý podklad bere klepnutí, aby nešla
+// pod ním hra; vrací { close }.
+export const aboutPanel = (scene, texts, onClose, depth = 60) => {
+    const w = 900, x = (WIDTH - w) / 2, parts = [];
+    const shade = scene.add.rectangle(0, 0, WIDTH, HEIGHT, 0x000000, 0.6).setOrigin(0, 0).setDepth(depth).setInteractive();
+    shade.on('pointerdown', (pointer, lx, ly, event) => event?.stopPropagation());
+    const lines = texts.lines.map((line) => body(scene, 0, 0, line, { fontSize: '24px', color: CRT.text, wordWrap: { width: w - 64 }, lineSpacing: -2 }).setDepth(depth + 2));
+    const h = 76 + lines.reduce((sum, line) => sum + line.height + 12, 0) + 70, y = Math.round((HEIGHT - h) / 2);
+    parts.push(shade, panel(scene, x, y, w, h).setDepth(depth + 1), head(scene, x + 32, y + 28, texts.title, { fontSize: '16px', color: CRT.amber }).setDepth(depth + 2), ...lines);
+    let top = y + 70;
+    lines.forEach((line) => { line.setPosition(x + 32, top); top += line.height + 12; });
+    const api = { close: () => { parts.forEach((part) => part.destroy()); onClose?.(); } };
+    parts.push(button(scene, WIDTH / 2, y + h - 40, 220, 40, texts.close, () => api.close(), { fontSize: 24, center: true }).setDepth(depth + 2));
+    return api;
+};

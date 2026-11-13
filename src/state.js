@@ -1,7 +1,9 @@
 import { ITEMS } from './script';
-// Stav jedné hry: hrdinka (životy, tři atributy, úroveň), jízdenky, inventář, úkoly, vlajky a místo. Ukládá se při příchodu
-// na místo (checkpoint) do localStorage; po smrti nabídne hra návrat na poslední místo nebo začátek.
+// Stav jedné hry: hrdinka (životy, tři atributy, úroveň), jízdenky, inventář, úkoly, vlajky a místo. Ukládá se dvakrát:
+// checkpoint při příchodu na místo (SAVE_KEY; po smrti nabídne hra návrat na něj) a průběžně s přesnou dlaždicí hrdinky
+// (POS_KEY, state.pos = { place, a, b, L }; z něj pokračuje titulní obrazovka).
 export const SAVE_KEY = 'konecna.save';
+export const POS_KEY = 'konecna.pozice';
 // Verze 4: výbava ve slotech (equip), zásoby (supplies) a nepovedené zkoušky (failed); starší uložení se nenačte.
 export const SAVE_VERSION = 4;
 
@@ -99,7 +101,18 @@ export const load = () => {
         return data?.version === SAVE_VERSION ? data : null;
     } catch (error) { return null; }
 };
-export const clearSave = () => localStorage.removeItem(SAVE_KEY);
+export const clearSave = () => { localStorage.removeItem(SAVE_KEY); localStorage.removeItem(POS_KEY); };
+// Průběžné uložení s dlaždicí hrdinky (WorldScene.autosave); bez něj se pokračuje z checkpointu.
+export const savePosition = (state) => {
+    try { localStorage.setItem(POS_KEY, JSON.stringify(state)); return true; } catch (error) { return false; }
+};
+export const loadPosition = () => {
+    try {
+        const data = JSON.parse(localStorage.getItem(POS_KEY) ?? 'null');
+        return data?.version === SAVE_VERSION ? data : load();
+    } catch (error) { return load(); }
+};
+export const clearPosition = () => localStorage.removeItem(POS_KEY);
 
 export const snapshot = (state) => ({
     place: state.place, hp: state.hp, level: state.level, xp: state.xp, attributes: state.attributes, tickets: state.tickets,

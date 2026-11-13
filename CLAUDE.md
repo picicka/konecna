@@ -44,8 +44,7 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
   střech po 2 m, commituje se). `osm.mjs` z ní bere patra a ploché střechy; bez souboru jede podle pater z OSM.
 - Krytina střech je z ortofota ČÚZK (WMS ORTOFOTO, CC BY 4.0): `npm run strechy` stáhne snímek výřezu do `build/orto`
   a `scripts/strechy.py` zapíše `data/strechy-<místo>.json` (barva a krytina každé budovy: tasky, hneda, med, tmava,
-  plech, svetla). `osm.mjs` ji dává `house()` jako `cover`. Každý nový zdroj dat se uvádí v `TITLE.credits`
-  a `HUD.mapCredit` (`src/script.js`).
+  plech, svetla). `osm.mjs` ji dává `house()` jako `cover`. Každý nový zdroj dat se uvádí v okně O hře (`ABOUT` v `src/script.js`, tlačítko i na titulní obrazovce a na liště).
 - Ručně určené prvky místa (díly landmarku, oblouky hal, zastavení s postavami a přístupem, pravidla rozsevu stromů,
   lamp a laviček) jsou v `src/places/<místo>.js`; repliky zastavení v `STOPS` v `src/script.js`. Příběh, postavy
   a zastavení všech míst jsou v `docs/pribeh.md`.
@@ -200,7 +199,9 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
 - Po zavření dialogu `this.input.keyboard.resetKeys()`, jinak Enter z poslední repliky hned znovu spustí rozhovor.
 - Phaser drží instanci scény mezi restarty: všechno herní resetovat v `init`/`create`.
 - Konce se počítají z toho, co se skutečně stalo (stav), ne z poslední události. Stav předmětu a stav postavy jsou dvě věci.
-- Stav hry je `src/state.js`; checkpoint při příchodu na místo (`save`), smrt je konec s epilogem a nabídkou návratu.
+- Stav hry je `src/state.js`; checkpoint při příchodu na místo (`save`), smrt je konec s epilogem a nabídkou návratu na
+  checkpoint. Průběžně se ukládá i přesná dlaždice (`savePosition`, `state.pos`, `WorldScene.autosave`: po rozhovoru
+  a každé dvě vteřiny v klidu); z toho pokračuje titulní obrazovka.
 - Zvuk jen syntetizovaný (`src/sound.js`), kompresor na výstupu, odemyká se prvním gestem. Hudba později MIDI přes
   `spessasynth_lib`, rozhraní `music(on)` zůstává.
 - pxl: sprite oříznutý plátnem se nezvětší sám (nastavit w/h), kupole kreslit ořezem, ne mazáním, `glow()` jen na vrchní

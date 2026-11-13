@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import * as ISO from '../iso';
 import { ensureWalk, CRT, body } from '../ui';
-import { save, maxHp } from '../state';
+import { save, savePosition, clearPosition, maxHp } from '../state';
 import { PLACES, PLACE_DEFS, groundTile, walkable, startTile, TRAM_ORIGIN } from '../map';
 import { runDialog, holds } from '../story';
 import { CUTSCENES, ODDITY_LINES, ODDITY_GROUPS } from '../script';
@@ -111,7 +111,9 @@ export class WorldScene extends Phaser.Scene {
         // skok z ladění (src/debug.js) na zadanou dlaždici, jen jednou
         const jumpTile = this.registry.get('jumpTile');
         this.registry.set('jumpTile', null);
-        this.spawnPlayer({ L: 0, ...(jumpTile ?? this.def?.arrivals?.[this.state.arrival] ?? this.def?.start ?? startTile(this.map)) });
+        // pokračování z průběžného uložení: přesná dlaždice, kde hráčka skončila (state.pos), když je pořád průchozí
+        const pos = this.state.pos?.place === this.state.place && this.walkable(this.state.pos.a, this.state.pos.b, this.state.pos.L ?? 0) ? { a: this.state.pos.a, b: this.state.pos.b, L: this.state.pos.L ?? 0 } : null;
+        this.spawnPlayer({ L: 0, ...(jumpTile ?? pos ?? this.def?.arrivals?.[this.state.arrival] ?? this.def?.start ?? startTile(this.map)) });
         this.checkStops();
         this.fadeHouses();
         // přepadení: zastavení s ambush, které ještě není vyřešené, osloví hrdinku samo hned po příchodu
@@ -138,9 +140,18 @@ export class WorldScene extends Phaser.Scene {
         this.reach = null;
         // značka dlaždice pod myší (art/kurzory.px.js), schovaná, dokud kurzor nestojí nad zemí
         this.tileMark = this.add.image(0, 0, 'atlas', 'kurzor_dlazdice').setVisible(false);
-        // Checkpoint: příchod na místo ukládá stav.
+        // Checkpoint: příchod na místo ukládá stav (při pokračování z průběžného uložení ne, checkpoint zůstává z příchodu).
         this.state.visited[this.state.place] = true;
-        save(this.state);
+        if (!pos) save(this.state);
+        // Průběžné uložení s dlaždicí: po každém rozhovoru a každé dvě vteřiny, když se zrovna nic neděje.
+        this.autosave();
+        this.time.addEvent({ delay: 2000, loop: true, callback: () => this.autosave() });
+    }
+
+    autosave() {
+        if (this.busy || this.moving || !this.player || this.state.hp <= 0 || this.hud?.panel) return;
+        this.state.pos = { place: this.state.place, a: this.tile.a, b: this.tile.b, L: this.tile.L ?? 0 };
+        savePosition(this.state);
     }
 
     inside(a, b) {
@@ -1193,6 +1204,7 @@ export class WorldScene extends Phaser.Scene {
         if (result.ending) { this.scene.stop('hud'); this.scene.start('ending', { result: result.ending }); return; }
         this.refreshGates();
         this.refreshStops();
+        this.autosave();
     }
 
     // Filmeček nad světem (CUTSCENES[key], účinek `film` u volby): svět a HUD stojí, po dohrání se pokračuje tam, kde byl.
@@ -1223,7 +1235,9 @@ export class WorldScene extends Phaser.Scene {
         this.state.place = place;
         this.state.arrival = from;
         this.state.hp = Math.min(maxHp(this.state), this.state.hp + Math.ceil(maxHp(this.state) / 2));
+        delete this.state.pos;
         save(this.state);
+        savePosition(this.state);
         this.scene.stop('hud');
         // filmeček cesty: cesta_<odkud>_<kam> (loďka, pěšky), jinak souprava metro_<kam>
         const key = CUTSCENES[`cesta_${from}_${place}`] ? `cesta_${from}_${place}` : `metro_${place}`;
@@ -1382,6 +1396,8 @@ export class WorldScene extends Phaser.Scene {
 
     // Smrt v boji: epilog smrti; checkpoint z posledního místa zůstává v localStorage.
     die() {
+        // po smrti se pokračuje z checkpointu, ne z místa, kde padla
+        clearPosition();
         this.scene.stop('hud');
         this.scene.start('ending', { result: 'death' });
     }
