@@ -52,7 +52,7 @@ anim("barrel_fire", { w: 40, h: 72, frames: 4, fps: 8 }, (c) => {
 }, glow("fF", { r: 10, strength: 0.6 }))
 
 
-// Trafika: zelený kiosek (1 dlaždice), okénko s jízdenkami, cedule TRAFIKA, stříška.
+// Trafika: zelený kiosek (1 dlaždice), okénko s jízdenkami, cedule PNS (Poštovní novinová služba) v rovině stěny, stříška.
 sprite("kiosk", { w: 132, h: 150 }, (c) => {
   const B = [66, 146]
   const R = (u, v) => [B[0] + u, B[1] - u / 2 - v], L = (u, v) => [B[0] - u, B[1] - u / 2 - v]
@@ -64,7 +64,8 @@ sprite("kiosk", { w: 132, h: 150 }, (c) => {
   for (let i = 0; i < 5; i++) c.poly(q(R, 14 + i * 6, 18 + i * 6, 34, 42), i % 2 ? "y" : "Y")
   c.poly(q(R, 8, 48, 26, 30), "h")
   // cedule
-  c.poly(q(R, 4, 52, 66, 78), "W"); const [tx, ty] = R(8, 76); c.text(tx, ty - 2, "TRAFIKA", "k")
+  c.poly(q(R, 4, 52, 60, 79), "W"); // písmo 5 × 7 (FONT57 z buildings.px.js) ve dvojnásobku: ve 3 × 5 se N nedalo přečíst
+  ;[..."PNS"].forEach((ch, i) => { for (let gy = 0; gy < 7; gy++) for (let gx = 0; gx < 5; gx++) if (FONT57[ch][gy * 5 + gx] === "1") c.poly(q(R, 11 + i * 12 + gx * 2, 13 + i * 12 + gx * 2, 62 + (6 - gy) * 2, 64 + (6 - gy) * 2), "k") })
   // stříška
   const top = (u, w) => [B[0] + u - w, B[1] - u / 2 - w / 2 - 80]
   c.poly([...top(-6, -6), ...top(62, -6), ...top(62, 62), ...top(-6, 62)], "j")

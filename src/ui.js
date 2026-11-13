@@ -96,8 +96,8 @@ export const scanlines = (scene, depth = 1000) => {
     if (!scene.textures.exists('scanline')) {
         const canvas = scene.textures.createCanvas('scanline', 2, 4);
         const ctx = canvas.getContext();
-        ctx.fillStyle = 'rgba(0,0,0,0.18)';
-        ctx.fillRect(0, 2, 2, 2);
+        ctx.fillStyle = 'rgba(0,0,0,0.14)';
+        ctx.fillRect(0, 3, 2, 1);
         canvas.refresh();
     }
     const lines = scene.add.tileSprite(0, 0, WIDTH, HEIGHT, 'scanline').setOrigin(0, 0).setDepth(depth).setScrollFactor(0);

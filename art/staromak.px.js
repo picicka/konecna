@@ -329,6 +329,76 @@
     c.px(x + 3, y - 74, "W"); c.vline(x + 3, y - 69, 3, "w") // trus
   }, glow("y", { where: [0, 0, 80, 100], r: 3, strength: 0.35 }))
 
+  // Kůň svatého Václava (Myslbek) bez jezdce ve Zlaté uličce: bronz v měděnce na paletě, na hřbetě šrouby po jezdci,
+  // na krku cenovka. Kouká doleva dolů jako postavy.
+  sprite("kun_vaclav", { w: 84, h: 84, outline: "k" }, (c) => {
+    // paleta
+    c.poly([42, 62, 80, 72, 42, 82, 4, 72], "h"); c.poly([4, 72, 42, 82, 42, 84, 4, 75], "H"); c.poly([42, 82, 80, 72, 80, 75, 42, 84], "3")
+    for (let i = 1; i < 4; i++) c.line(4 + i * 9.5, 72 - i * 2.5, 42 + i * 9.5, 82 - i * 2.5, "H")
+    // zadní nohy (dál od diváka tmavší), přední zvednutá
+    c.rect(52, 44, 5, 24, "X"); c.rect(24, 44, 5, 22, "X")
+    c.rect(58, 42, 6, 30, "Q"); c.rect(58, 42, 2, 30, "j"); c.rect(57, 70, 8, 3, "X")
+    c.rect(30, 42, 6, 30, "Q"); c.rect(30, 42, 2, 30, "j"); c.rect(29, 70, 8, 3, "X")
+    c.poly([22, 44, 27, 44, 22, 56, 18, 62, 15, 60, 19, 54], "Q") // zvednutá přední noha
+    // trup, hruď, zadek
+    c.ellipse(44, 36, 21, 11, "Q"); c.ellipse(60, 34, 9, 11, "Q"); c.ellipse(29, 36, 9, 12, "Q")
+    c.ellipse(42, 31, 16, 4, "j"); c.ellipse(60, 28, 5, 3, "j")
+    // krk a hlava (skloněná, jak ji Myslbek udělal)
+    c.poly([24, 28, 36, 26, 30, 10, 22, 6, 17, 12], "Q"); c.poly([22, 8, 27, 10, 31, 24, 27, 24], "j")
+    c.poly([22, 6, 17, 12, 8, 24, 10, 29, 15, 28, 22, 16], "Q"); c.line(20, 8, 11, 23, "j"); c.px(16, 15, "k"); c.rect(9, 26, 3, 2, "X")
+    c.poly([22, 6, 25, 1, 26, 7], "Q") // ucho
+    // hříva a ohon
+    for (let i = 0; i < 6; i++) c.line(24 + i * 2, 7 + i * 3, 28 + i * 2, 10 + i * 3, "X")
+    c.poly([67, 30, 73, 34, 75, 52, 71, 56, 69, 42], "X"); c.line(70, 34, 73, 50, "Q")
+    // stékance měděnky a šrouby po jezdci
+    ;[36, 44, 51, 61].forEach((x, i) => c.vline(x, 40 + i % 2 * 2, 5 + i * 2 % 5, "X"))
+    ;[38, 44, 50].forEach((x) => { c.rect(x, 24, 2, 3, "U"); c.px(x, 24, "u") })
+    // cenovka na provázku
+    c.line(24, 26, 20, 34, "4"); c.rect(13, 34, 15, 9, "C"); c.rect(13, 41, 15, 2, "4"); c.hline(15, 37, 11, "k"); c.hline(15, 39, 8, "3") // řádky místo písma: sprite se zrcadlí
+  })
+
+  // Lennonova zeď na Velkopřevorském náměstí, přemalovaná nabílo, jediný nápis PROUD (mlynář). Tři díly po dlaždici
+  // (zed_lennon_0–2), stěna jde podél a a kouká k divákovi; pod nátěrem prosvítají staré barvy.
+  for (let seg = 0; seg < 3; seg++) sprite(`zed_lennon_${seg}`, { w: 70, h: 120 }, (c) => {
+    const P = (u, v) => [3 + u - seg * 64, 118 - (u - seg * 64) / 2 - v]
+    const q = (u0, u1, v0, v1) => [...P(u0, v0), ...P(u1, v0), ...P(u1, v1), ...P(u0, v1)]
+    const rng = c.rng(41)
+    c.poly(q(0, 192, 0, 70), "w"); c.poly(q(0, 192, 0, 9), "p"); c.poly(q(0, 192, 8, 9), "P")
+    // staré nápisy pod nátěrem: bledé skvrny a pár míst, kde barva oprýskala až na ně
+    for (let i = 0; i < 22; i++) { const u = 4 + rng() * 176, v = 12 + rng() * 50, w = 8 + rng() * 22, h = 4 + rng() * 12; c.poly(q(u, Math.min(190, u + w), v, Math.min(68, v + h)), "W") }
+    for (let i = 0; i < 26; i++) { const u = 4 + rng() * 182, v = 11 + rng() * 54; c.poly(q(u, u + 2 + rng() * 4, v, v + 1 + rng() * 3), ["7", "E", "y", "l", "V", "o"][Math.floor(rng() * 6)]) }
+    // Lennon pod nátěrem vpravo od nápisu: vlasy, kulaté brýle, obličej; přes něj bílá, takže jen prosvítá
+    const LENNON = ["....hhhhhhhh....", "...hhhhhhhhhh...", "..hhhhhhhhhhhh..", "..hhhffffffhhh..", ".hhhffffffffhhh.", ".hhffffffffffhh.", ".hhffffffffffhh.",
+      ".hhggggffgggghh.", ".hhgffggggffghh.", ".hhggggffgggghh.", ".hhffffffffffhh.", ".hhffffmmffffhh.", ".hhffffffffffhh.", ".hhfffmmmmfffhh.", ".hhhffffffffhhh.",
+      ".hhhhffffffhhhh.", ".hhhhhffffhhhhh.", "hhhhhh....hhhhhh", "hhhhh......hhhhh", "hhhh........hhhh"]
+    LENNON.forEach((row, gy) => [...row].forEach((ch, gx) => { if (ch !== ".") c.poly(q(158 + gx * 2, 160 + gx * 2, 16 + (19 - gy) * 2, 18 + (19 - gy) * 2), { h: "P", f: "c", g: "k", m: "3" }[ch]) }))
+    c.clip(q(156, 192, 14, 58), () => c.noise(0, 0, 70, 120, "w", 0.2, 47, "*"))
+    // PROUD: písmo 5 × 7 ve čtyřnásobku, černě, s pár stékanci
+    ;[..."PROUD"].forEach((ch, i) => { for (let gy = 0; gy < 7; gy++) for (let gx = 0; gx < 5; gx++) if (FONT57[ch][gy * 5 + gx] === "1") {
+      const u = 38 + i * 24 + gx * 4, v = 26 + (6 - gy) * 4
+      c.poly(q(u, u + 4, v, v + 4), "k")
+      if (gy === 6 && rng() < 0.3) { const [x, y] = P(u + 2, v); c.vline(x, y, 4 + Math.floor(rng() * 9), "k") }
+    } })
+    // špína od země, šmouhy od koruny, koruna zdi
+    for (let i = 0; i < 16; i++) { const [x, y] = P(3 + rng() * 186, 68); c.vline(Math.round(x), Math.round(y), 6 + Math.floor(rng() * 22), "v") }
+    c.clip(q(0, 192, 9, 20), () => c.noise(0, 0, 70, 120, "v", 0.3, 43, "*"))
+    c.poly([...P(0, 70), ...P(192, 70), P(192, 70)[0] - 5, P(192, 70)[1] - 3, P(0, 70)[0] - 5, P(0, 70)[1] - 3], "q"); c.poly(q(0, 192, 68, 70), "P")
+    if (seg === 0) c.poly([...P(0, 0), ...P(0, 70), P(0, 70)[0] - 5, P(0, 70)[1] - 3, P(0, 0)[0] - 5, P(0, 0)[1] - 3], "x")
+  })
+
+  // Cedule Galerie na mostě: prkenná tabule na dvou tyčích, stojí za bednami, nápis v rovině tabule.
+  sprite("cedule_galerie", { w: 84, h: 112 }, (c) => {
+    const F = (u, v) => [u, -u / 2 - v], P = (u, v) => [42 + u, 92 - u / 2 - v]
+    const q = (u0, u1, v0, v1) => [...P(u0, v0), ...P(u1, v0), ...P(u1, v1), ...P(u0, v1)]
+    ;[-34, 33].forEach((u) => { c.poly(q(u, u + 3, 0, 76), "H"); c.poly(q(u, u + 1, 0, 76), "h") })
+    c.poly(q(-37, 37, 41, 75), "H"); c.poly(q(-36, 36, 42, 74), "C"); c.poly(q(-36, 36, 42, 44), "4")
+    c.poly(q(-36, 36, 57, 58), "4") // spára mezi prkny
+    wallText(c, F, 42, 92, -31, 60, "PRODEJNÍ", "k", { sc: 2, outline: null })
+    wallText(c, F, 42, 92, -27, 45, "GALERIE", "V", { sc: 2, outline: null })
+    ;[[-33, 71], [33, 71], [-33, 45], [33, 45]].forEach(([u, v]) => c.px(...P(u, v), "U"))
+    for (let u = -30; u < 34; u += 13) { const [x, y] = P(u, 42); c.vline(x, y, 3 + (u * 5 + 40) % 5, "4") }
+  })
+
   // Bedny Galerie: tři laťové bedny, z jedné kouká kamenná hlava, z druhé paže, sláma, cenovky.
   sprite("bedny", { w: 120, h: 92 }, (c) => {
     const crate = (x0, y0, lp, lq, h, open) => {
@@ -409,6 +479,15 @@
     c.rect(46, 41, 5, 6, "f"); c.rect(47, 47, 3, 1, "f"); c.px(48, 43, "W")
     ;[[40, 34], [56, 40], [42, 52], [55, 30]].forEach(([x, y]) => c.px(x, y, "k"))
   }, glow("f", { r: 12, strength: 0.7 }))
+  // Táž žárovka zhasnutá (než se kolo rozjede): šedé sklo, žádná záře.
+  sprite("zarovka_zhasla", { w: 64, h: 156 }, (c) => {
+    c.ellipse(24, 152, 8, 2, "A")
+    c.rect(22, 10, 5, 144, "H"); c.rect(22, 10, 2, 144, "h"); c.rect(20, 146, 9, 8, "3")
+    c.rect(22, 18, 30, 3, "H"); c.line(26, 28, 40, 20, "H", 2)
+    c.rect(18, 22, 4, 3, "W"); c.line(0, 30, 20, 23, "k")
+    c.line(48, 21, 48, 38, "k"); c.rect(47, 38, 3, 3, "M")
+    c.rect(46, 41, 5, 6, "x"); c.rect(47, 47, 3, 1, "x"); c.px(47, 42, "v")
+  })
 
   // Staroměstská mostecká věž (Parléř): tmavý pískovec, průjezd s lomeným obloukem, sochařská výzdoba se znaky,
   // ochoz s kružbami, strmá břidlicová střecha s nárožními věžičkami. Půdorys 2 × 2 dlaždice, spodní bod plátna je

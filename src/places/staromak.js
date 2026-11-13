@@ -26,5 +26,5 @@ export const STAROMAK = {
     },
     // kuriozity ve vodě na náměstí (art/kuriozity.px.js, WorldScene.placeOddities)
     oddities: [{ on: 'w', keys: ['mlok_maly_1', 'labut', 'mlok_maly_2'] }],
-    props: { trees: ['tree_bare'], bush: 0, bushes: ['bush_a'], junk: 0.02, junkKeys: ['barrel', 'tires'], shack: 0 },
+    props: { trees: ['tree_bare'], bush: 0, bushes: ['bush_a'], fire: 0.03, junk: 0.02, junkKeys: ['barrel', 'tires'], shack: 0 },
 };

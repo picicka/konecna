@@ -192,4 +192,56 @@ nsFront("ns_predni", false, 1); nsFront("ns_predni2", false, 2)
 nsFront("ns_pilir", true, 3)
 nsFar("ns_zadni", 4); nsFar("ns_zadni2", 5)
 
+// —— Stanice Vyšehrad pod silnicí u jižního konce mostu (src/places/nuselak.js nusle.station) ——
+// Silnice je o patro (NS_ST) výš než terén u mola: od její hrany k +b visí stěna po dílech na dlaždici. Počátek dílu
+// je levý konec hrany (0, NS_SM + 32), hrana stoupá doprava o 32. Díly: holý beton, prosklené čelo haly (pás skel
+// mezi pilíři, vybitá a zatlučená), klín (stěna se ke konci snižuje do terénu) a schody přes dvě dlaždice.
+const NS_ST = 64, NS_SM = 16
+function nsStFace(name, seed, h0, h1, paint) {
+  sprite(name, { w: 64, h: NS_SM + 32 + NS_ST + 2 }, (c) => {
+    const rng = c.rng(seed)
+    const F = (u, v) => [u, NS_SM + 32 - u / 2 + v]          // u podél hrany, v dolů od hrany
+    const hAt = (u) => h0 + (h1 - h0) * u / 64
+    const quad = (u0, u1, v0, v1, col) => c.poly([...F(u0, Math.min(v0, hAt(u0))), ...F(u1, Math.min(v0, hAt(u1))), ...F(u1, Math.min(v1, hAt(u1))), ...F(u0, Math.min(v1, hAt(u0)))], col)
+    c.poly([...F(0, 0), ...F(64, 0), ...F(64, h1), ...F(0, h0)], "P")
+    quad(0, 64, 0, 9, "q"); quad(0, 64, 9, 10, "A")
+    if (paint) paint(c, F, quad, rng)
+    for (let i = 0; i < 5; i++) { const u = rng() * 62, [x, y] = F(u, 10); c.vline(Math.round(x), Math.round(y), Math.min(hAt(u) - 10, 6 + Math.floor(rng() * 26)), rng() < 0.3 ? "U" : "A") }
+    if (h0 > 20) { c.line(...F(0, h0 - 1), ...F(64, h1 - 1), "9"); for (let i = 0; i < 3; i++) { const [x, y] = F(rng() * 60, hAt(32) - 2); c.vline(Math.round(x), Math.round(y) - 3, 3, "g") } }
+    // zábradlí na hraně silnice
+    for (const u of [2, 34]) { const [x, y] = F(u, 0); c.vline(Math.round(x), Math.round(y) - 12, 12, "M") }
+    c.line(...F(0, -12), ...F(64, -12), "m"); c.line(...F(0, -6), ...F(64, -6), "M")
+  })
+}
+const nsStGlass = (broken) => (c, F, quad, rng) => {
+  for (const u of [3, 34]) {
+    const t = rng()
+    quad(u, u + 27, 14, NS_ST - 8, broken && t < 0.5 ? "k" : t < 0.15 ? "H" : "n")
+    quad(u, u + 27, 14, 17, "L")
+    quad(u + 13, u + 14, 14, NS_ST - 8, "S"); quad(u, u + 27, 36, 37, "S")
+    if (broken && t < 0.5) { const [x, y] = F(u + 5, NS_ST - 9); c.poly([x, y, x + 6, y - 14, x + 10, y - 3], "L") }
+    else if (t > 0.7) c.line(...F(u + 3, 20), ...F(u + 22, NS_ST - 12), "L")
+  }
+  quad(0, 64, NS_ST - 8, NS_ST, "9")
+}
+nsStFace("ns_st_zed", 201, NS_ST, NS_ST, (c, F, quad) => { quad(31, 32, 10, NS_ST, "x") })
+nsStFace("ns_st_sklo", 202, NS_ST, NS_ST, nsStGlass(false))
+nsStFace("ns_st_sklo2", 203, NS_ST, NS_ST, nsStGlass(true))
+nsStFace("ns_st_klin_1", 204, NS_ST, 43)
+nsStFace("ns_st_klin_2", 205, 43, 21)
+nsStFace("ns_st_klin_3", 206, 21, 0)
+// Schody ze silnice dolů k molu: dvě dlaždice hrany, stupně v rovině dlaždic (hrdinka po nich jde), vlevo bok schodiště.
+sprite("ns_st_schody", { w: 194, h: NS_SM + 64 + NS_ST + 2 }, (c) => {
+  const F = (u, t) => [u + t * 64, NS_SM + 64 - u / 2 + t * 32]   // u podél hrany 0–128, t 0–1 dolů po schodech
+  c.poly([...F(0, 0), 0, NS_SM + 64 + NS_ST, ...F(0, 1)], "P"); c.line(...F(0, 0), 0, NS_SM + 64 + NS_ST, "9")
+  const N = 8
+  for (let i = 0; i < N; i++) {
+    const t0 = i / N, t1 = (i + 1) / N
+    c.poly([...F(0, t0), ...F(128, t0), ...F(128, t1), ...F(0, t1)], i % 2 ? "x" : "v")
+    c.line(...F(0, t1), ...F(128, t1), "A")
+  }
+  c.line(...F(64, 0), ...F(64, 1), "M"); c.line(...F(0, 0), ...F(0, 1), "9"); c.line(...F(128, 0), ...F(128, 1), "9")
+  c.noise(0, 0, 194, NS_SM + 64 + NS_ST + 2, "A", 0.03, 207, "xv")
+})
+
 sheet("landmarks_nusle_most", ["ns_*"], { pad: 1 })

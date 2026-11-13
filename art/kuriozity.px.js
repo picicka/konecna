@@ -235,4 +235,29 @@ sprite("kapr_vana", { w: 96, h: 64 }, (c) => {
   c.line(X + 18, Y - 38, X + 32, Y - 54, "Y"); c.px(X - 22, Y - 38, "k")
 })
 
-sheet("landmarks_kuriozity", ["mlok", "mlok_maly_*", "stalin_hlava", "metronom", "golem", "miminko", "kun_lucerna", "kafka", "labut", "kapr_vana"], { pad: 1 })
+// Naštvaná labuť (živá, na Čertovce): křídla zdvižená do hrozby, krk do S, ve 2. snímku vystřelí hlavu a syčí.
+// Počátek dole uprostřed = hladina.
+anim("labut_zla", { w: 46, h: 40, outline: "k", fps: 2, frames: 2 }, (c) => {
+  const f = c.frame ?? 0, Y = 33
+  // vlnky a odraz
+  c.hline(4, Y + 1, 38, "Z"); c.hline(8 + f * 2, Y + 3, 10, "J"); c.hline(26 - f * 2, Y + 3, 12, "J"); c.hline(14, Y + 5, 16, "Z")
+  // trup a ocas
+  c.ellipse(25, Y - 5, 13, 6, "W"); c.ellipse(26, Y - 2, 11, 3, "w"); c.poly([36, Y - 8, 43, Y - 13, 41, Y - 5], "W")
+  // zdvižená křídla (zadní tmavší), letky zašedlé
+  const up = f === 1 ? 3 : 0
+  c.poly([20, Y - 8, 26, Y - 22 - up, 36, Y - 24 - up, 40, Y - 14, 34, Y - 7], "w")
+  c.poly([18, Y - 7, 22, Y - 19 - up, 31, Y - 22 - up, 37, Y - 12, 32, Y - 5], "W")
+  c.line(24, Y - 17 - up, 34, Y - 11, "w"); c.line(23, Y - 13 - up, 32, Y - 8, "w"); c.line(33, Y - 21 - up, 38, Y - 13, "x")
+  c.noise(18, Y - 12, 22, 12, "x", 0.05, 81, "Ww")
+  // krk a hlava: vzpřímené S, nebo natažená dopředu se zobákem dokořán
+  if (f === 0) {
+    c.line(15, Y - 7, 12, Y - 14, "W", 3); c.line(12, Y - 14, 15, Y - 22, "W", 3); c.line(15, Y - 22, 12, Y - 27, "W", 3)
+    c.ellipse(11, Y - 28, 3, 3, "W"); c.poly([9, Y - 28, 3, Y - 26, 9, Y - 26], "o"); c.px(9, Y - 29, "k"); c.px(8, Y - 28, "k"); c.px(11, Y - 29, "k")
+  } else {
+    c.line(15, Y - 7, 13, Y - 13, "W", 3); c.line(13, Y - 13, 8, Y - 18, "W", 3)
+    c.ellipse(7, Y - 19, 3, 3, "W"); c.poly([5, Y - 21, 0, Y - 22, 4, Y - 19], "o"); c.poly([5, Y - 18, 0, Y - 16, 5, Y - 17], "o")
+    c.px(4, Y - 19, "r"); c.px(5, Y - 20, "k"); c.px(7, Y - 21, "k"); c.hline(6, Y - 22, 3, "k")
+  }
+})
+
+sheet("landmarks_kuriozity", ["mlok", "mlok_maly_*", "stalin_hlava", "metronom", "golem", "miminko", "kun_lucerna", "kafka", "labut", "labut_zla", "kapr_vana"], { pad: 1 })

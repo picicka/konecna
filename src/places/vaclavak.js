@@ -26,7 +26,7 @@ export const VACLAVAK = {
     gates: [{ tiles: [[49, 12], [49, 13]], open: { any: [{ flag: 'molo' }] } }],
     // kuriozity ve vodě dole a na pusté pláni za náměstím (strana k divákovi, b od 19) (art/kuriozity.px.js, WorldScene.placeOddities)
     oddities: [{ on: 'w', keys: ['mlok_maly_2', 'labut'] }, { on: 'p', minB: 19, keys: ['kun_lucerna', 'kafka', 'miminko'] }],
-    props: { trees: ['tree_a', 'tree_bare', 'tree_c', 'tree_a'],
+    props: { wreck: 0.012, trees: ['tree_a', 'tree_bare', 'tree_c', 'tree_a'],
         bush: 0.06, bushes: ['bush_a', 'bush_b', 'bush_c'],
         fire: 0.004, junk: 0.04, junkKeys: ['rubble_pile', 'barrel', 'tires', 'rubble_pile'], shack: 0 },
 };

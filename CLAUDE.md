@@ -12,8 +12,11 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
   `npm test -- --misto <místo>` zahraje jen jedno místo (asi půl minuty, začíná skokem se stavem ze `src/skoky.json`
   a končí příchodem na další místo). Čas hry v něm běží zrychleně (`?rychle` v adrese, `src/debug.js`), `--pomalu` hraje
   skutečnou rychlostí. Drobnou změnu stačí ověřit cíleným snímkem (`scripts/snimek.mjs`). Zdroj je ve `src/` včetně `index.html`, `public/` je jen výstup a necommituje se.
-- `npm run art` sestaví grafiku přes pxl (`art/*.px.js` → `art/out` → `static/images/atlas.png|json`, `houses0–3`,
-  `cs_*.png`) a zapíše `art/version.json`; BootScene ji dává do adres jako `?v=`, jinak prohlížeč drží starý atlas.
+- `npm run art` (`scripts/art.mjs`) sestaví přes pxl jen listy a obrázky filmečků, kterým se změnil zdroj v `art/`
+  (`art/*.px.js` → `art/out` → `static/images`: `atlas`, `landmarks_*`, `houses_<místo>_<n>`, `ground_<místo>_<n>`,
+  `cs_*.png`); otisky zdrojů drží `art/out/otisky.json`. Vyjmenované cíle: `npm run art -- atlas 'houses_most_*'`,
+  co je zastaralé: `-- --co`, všechno znovu (asi 6 minut) jen na pokyn: `-- --vse`. Po sestavení zapíše
+  `art/version.json`; BootScene ji dává do adres jako `?v=`, jinak prohlížeč drží starý atlas.
   Výstup ve `static/images` se commituje (GitHub Pages pxl nemá). Nový sprite = přidat do `sheet()` v `art/main.px.js`. Do scén se neskládají emoji
   ani Graphics tvary místo spritů.
 - `npm run mapa` snímky mapy po úsecích do `docs/mapa` a stránku `docs/mapa.html`, `npm run tree` rozhodovací strom do `docs/rozhodovaci-strom.html`.
@@ -23,7 +26,7 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
 - Skripty mapa a test si samy spustí `vite preview`; nad dev serverem `BASE=http://localhost:5173/`.
 - Skoky pro ladění (`src/debug.js` přepínače, `src/skok.js` skok): `?misto=<místo>` (a `&a=&b=`, `&jizdenky=`, `&buh`) spustí hru rovnou na místě se
   stavem z průchodu; průchod ho při příchodu na každé místo zapisuje do `src/skoky.json` (po změně příběhu `npm test`
-  a `npm run build`). F2 otevře panel skoků (`?ladeni` / `?ladeni=0`, v dev zapnutý sám). Odkazy jsou v `docs/index.html`.
+  a `npm run build`). L otevře panel skoků (`?ladeni` / `?ladeni=0`, v dev zapnutý sám). Odkazy jsou v `docs/index.html`.
 
 ## Místa a mapy
 
@@ -57,7 +60,7 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
   věže), má v `src/places/<místo>.js` `pass: <řádek b>` a v `PLACES` `clear` pro průjezd.
 - Karlův most (`bridge` v `src/places/most.js`, `WorldScene.buildBridge`, `art/most-oblouky.px.js`, list `landmarks_mostovka`): mostovka je rovný pás b 32–33 (`deck` v `PLACES.most.bridges`), koryto je jen namalované a hloubku (asi 13 m) dělají stěny visící od hrany dolů. Přední líc se skládá z dílů po dlaždicích (pilíř s ledolamem a prázdným podstavcem sochy, výseky oblouků po 3 nebo 4 dlaždicích, nad Kampou jen zábradlí), pilíře jsou podle obrysu mostu v OSM (ledolamy po 30 m). Nábřežní zdi se staví samy všude, kde břeh spadá do koryta k divákovi (+b, −a). Lampy z OSM se posadí na zábradlí, na Kampu se z mostu sejde jen po schodech (`stairs`).
 - Svah pod Hradem (`slope` v `PLACES.hrad`): `scripts/teren.py hrad` (`npm run teren`) spočítá z laseru ČÚZK (body terénu) výšku země po dlaždicích do `data/teren-hrad.json`; `osm.mjs` udělá z dlaždic pod `below` m n. m. suť `k` (neprůchozí), cesty v `keep` a obdélníky `terraces` zůstanou, ostrůvky, kam se ze startu nedojde, se zasypou. `levels` jsou pásy výšky po `step` m. `WorldScene.buildSlope` (`art/hrad-svah.px.js`, list `landmarks_svah`) pověsí z hrany k divákovi (+b, −a) opěrnou zeď nad skálou, uvnitř svahu terasy, kde terén klesne o pás, na odvrácené hrany nízkou zídku a po suti rozhází balvany a kvádry.
-- Nuselák (`src/places/nuselak.js`, `WorldScene.buildNusle`, `art/nuselak-most.px.js`, list `landmarks_nusle_most`; landmarky Palác kultury, hotel Forum a Muzeum Policie v `art/lm-nusle.px.js`, list `landmarks_nusle`): údolí je jezero (`slope.lake` v `PLACES.nuselak`: pod `level` m voda, domy hlouběji než `sink` pod hladinou zmizí), `landings` jsou mola k loďce, mostovka `bridges.deck` se zlomem `gap`. K divákovi visí betonová trouba a pilíře až k hladině, ze zlomu trčí souprava metra C. Účinek `rope: 'jih' | 'sever'` u volby převede hrdinku po laně přes zlom s animací (`WorldScene.ropeCross`, sprite `hero_lano`). Postavy, lachtani, racci a kotě jsou v `art/nusle-postavy.px.js`.
+- Nuselák (`src/places/nuselak.js`, `WorldScene.buildNusle`, `art/nuselak-most.px.js`, list `landmarks_nusle_most`; landmarky Palác kultury, hotel Forum a Muzeum Policie v `art/lm-nusle.px.js`, list `landmarks_nusle`): údolí je jezero (`slope.lake` v `PLACES.nuselak`: pod `level` m voda, domy hlouběji než `sink` pod hladinou zmizí), `landings` jsou mola k loďce, mostovka `bridges.deck` se zlomem `gap`. K divákovi visí betonová trouba a pilíře až k hladině, ze zlomu trčí souprava metra C. Účinek `rope: 'jih' | 'sever'` u volby převede hrdinku po laně přes zlom s animací (`WorldScene.ropeCross`, sprite `hero_lano`). Postavy, lachtani, racci a kotě jsou v `art/nusle-postavy.px.js`. Stanice Vyšehrad (`nusle.station`) je pod silnicí za jižním koncem mostu: silnice je o patro výš než terén u mola, od její hrany visí prosklené čelo haly (díly `ns_st_*`), k molu se schází po schodech a dírou ve vozovce (`lm_vysehrad`, plochý sprite) je vidět kolej. Rekvizita zastavení s `under: true` leží pod postavou (loďka, ve které převozník stojí).
 - Kuriozity v prázdných plochách (`oddities` v `src/places/<místo>.js`, `WorldScene.placeOddities`, `art/kuriozity.px.js`, list `landmarks_kuriozity`): rozbité pražské věci a zvířata (kouřící mlok z Války s mloky, Stalinova hlava, ručička metronomu z Letné, Golem, Černého miminko, kůň z Lucerny, Kafkova hlava, šlapadlo labuť, vana s kaprem). Skupina má znaky mřížky `on` (volitelně `minB`) a seznam věcí; místo vybírá hash (stejné při každém hraní), celé okolí 3 × 3 musí být stejná plocha, rozestup 6 dlaždic, od zastavení a startu 4. Obří věci jsou zvětšené dvakrát (`ODDITY_SCALE`). Klepnutí na věc s hláškami (`ODDITY_LINES` a `ODDITY_GROUPS` v `src/script.js`, u věcí od Davida Černého nadávky na autora) ukáže bublinu, každé další klepnutí další hlášku.
 - Velké kusy grafiky mají vlastní listy: `landmarks` (Fantova budova `art/fanta.px.js`, oblouky), `houses0–3`.
 
@@ -67,6 +70,8 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
   podmínku `if` (stav, předmět, úkol, jízdenky, atribut), text `else` pro případ, že neplatí (jde do stromu), účinky `do`
   (předměty, jízdenky, důvěra, úkoly, vlajky, zkušenosti, boj, přestup) a odpověď `reply`. Úkoly a předměty pro deník
   jsou v `QUESTS` a `ITEMS`, boje v `BATTLES` (`src/scenes/battle.js`, deterministický přes `state.seed`).
+- Životy se ve hře jmenují Srdce (čtvrtá část těla vedle Ruky, Úst a Oka; tvar se nemění: „−2 srdce“). V kódu
+  a v komentářích zůstává `hp` a „životy“.
 - Vlastnosti hrdinky jsou Ruka, Ústa a Oko (`ruka`, `usta`, `oko`), všude s obrázkem (`ico_ruka/usta/oko`
   v `art/chars.px.js`): na liště, v deníku, při nové úrovni a na volbě, která na vlastnosti stojí (ikona a požadovaná
   úroveň vpravo na tlačítku). Každá překážka má mít cestu přes Ruku, Ústa i Oko, nebo přes věc či úkol.
@@ -91,7 +96,13 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
   a bez jízdenek (Kuřačka sveze po společné cigaretě, nebo si převoz hrdinka odpracuje).
 - Hrdinka (sprite kouká doleva, doprava se zrcadlí) jde k divákovi `hero_go` (hlava v předklonu), od diváka zády
   `hero_up` a stojí zády `hero_back` (`art/lide.px.js`, póza `lean` a `back`).
+- Uzel rozhovoru s nepřítelem, který už útočí, má `flee: true`: místo „Odejít.“ je v něm „Utéct. (−1 srdce)“ a odchod
+  stojí srdce (`hurt`, nezabije). Vlastní volba „Couvnout“ se do dialogů nepíše. Totéž platí pro každou volbu, která rozhovor jen zavře („Ustoupit“, „Nechat být“, „Ještě ne“): odchod je vždy jen jedno tlačítko „Odejít.“
 - Nepřítel má stát v cestě: psi ze Sherwoodu lezou do tunelu a strojvedoucí bez `psi_ok` nevyjede.
+  Totéž hlídač: ochranka kanálu stojí v jediném průchodu stavebním plotem kolem ředitelovy buňky (`fences`
+  a `gates` v `src/places/hrad.js`, `WorldScene.placeFences`, dílce `plot_1–3`); co hlídá, nesmí jít obejít.
+  Kde mapa nemá úzké místo, je to přepadení: zastavení s `ambush: { until, back }` (vymahači u Mostecké) osloví
+  hrdinku samo hned po příchodu a dokud neplatí `until`, vrátí ji každý odchod i útěk na místo `back`.
 - Boj (`src/scenes/battle.js`): nepřítel má životy a vůli. Ruka (Udeřit) bere životy, Ústa (`talk` v `BATTLES`) vůli,
   Oko (Uhnout) uhne a vrátí ránu, Taška použije obvaz nebo jídlo; útěk vyjde vždy za jednu ránu. Tlačítka ukazují šanci a rozsah. Poražení i usmíření
   nemizí z mapy, dialog má uzel pro „po boji“ (`psi_ok`, `kanci_ok`, `vymahaci_pryc`, `ochranka_pryc`).
@@ -154,8 +165,19 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
 - Domy: špína s příčinou (odstřik od země, šmouhy pod římsou a parapety, rezavé stékance), plevel na římsách, zatlučená
   a vybitá okna, graffiti na betonu. Domy vrhají stín k +b (`WorldScene.drawShadows`).
 - Světlo: sudy s ohněm (`barrel_fire`, rozsev `fire` v `props` místa) mají pixelovou kaluž světla s ditheringem
-  (`WorldScene.placeLights`), další světla jsou v `lights` místa (světlo z otevřené odbavovací haly na Hlaváku láká
-  na nástupiště); domy mají kontaktní stín u paty a tmavší spodek fasády (`drawShadows`).
+  (`WorldScene.placeLights`), další světla jsou v `lights` místa (dlaždice, `scale`, `tint`, `alpha`, podmínka `if`: světlo z otevřené
+  odbavovací haly na Hlaváku láká na nástupiště, žárovka u mlynáře svítí až s vlajkou `zarovka`, reflektor na Hradě).
+  Elektřina skoro není: svítí oheň, svíčka v okně (`litWindow` v `art/buildings.px.js`, pár oken na ulici), generátor; domy mají kontaktní stín u paty a tmavší spodek fasády (`drawShadows`).
+- Drobnosti na zemi (`art/drobnosti.px.js`, `WorldScene.placeClutter`, tabulka `CLUTTER` podle povrchu): suť, cihly
+  pod fasádami, papíry, střepy, listí, hadry, kaluže, plevel a velké skvrny přes víc dlaždic. Leží naplocho pod stíny,
+  nic neblokují, kreslí je dva Blittery; hustotu místa násobí `props.clutter`. Prázdná čistá dlažba je chyba.
+- Střechy a fasády (`house()` v `art/buildings.px.js`): tašky různých odstínů, díry s latěmi a krokvemi, mech u okapu,
+  ploché střechy s pásy lepenky, skvrnami a větracími hlavicemi; opadaná omítka je nepravidelná skvrna pod okny,
+  trhliny vlasové s větvemi, nad vyhořelým oknem saze, ve výlohách mříže. Jedna barevná plocha střechy je chyba.
+- Hrdinka má světlejší kabát žlutou poštovní brašnu a nese si slabé světlo (`halo` ve `WorldScene.spawnPlayer`),
+  aby se ve tmě neztratila. Okraj mapy se do tmy rozpadá ditheringem přes tři dlaždice (`WorldScene.edgeFog`).
+- Vraky aut na silnicích (`wreck` v `props` místa): jen kde je kolem dokola volno, aby nezavřely cestu. Nad sudy
+  s ohněm stoupá kouř (částice `kour_*`).
 - Nic čistého a pastelového; když nová grafika vypadá hezky a uklizeně, je špatně.
 
 ## Pravidla kódu

@@ -295,6 +295,33 @@ sprite("reflektor", { w: 44, h: 96 }, (c) => {
   c.wire(22, 46, 42, 90, 6, "k")
 }, glow("Wf", { where: [10, 4, 20, 26], r: 14, strength: 0.7 }))
 
+// Mobilní stavební plot kolem ředitelovy buňky (WorldScene.placeFences, fences v src/places/hrad.js): jeden dílec
+// přes dlaždici podél osy a (podél b se zrcadlí), střed dílce u země je bod (33, 62). Rám z trubek, pletivo, betonové
+// patky; 2 má vybledlou plachtu Kanceláře kanálu, 3 je prohnutý a rezavý.
+function hrPlot(name, kind) {
+  sprite(name, { w: 66, h: 80 }, (c) => {
+    const rng = c.rng(kind * 7 + 3)
+    const F = (u, v) => [1 + u, 78 - u / 2 - v + (kind === 3 ? Math.round(Math.sin(u / 64 * Math.PI) * 3) : 0)]
+    const L = (u0, v0, u1, v1, col) => c.line(...F(u0, v0).map(Math.round), ...F(u1, v1).map(Math.round), col)
+    // patky
+    for (const u of [2, 56]) { const [x, y] = F(u, 0); c.rect(Math.round(x) - 2, Math.round(y) - 2, 9, 4, "P"); c.hline(Math.round(x) - 2, Math.round(y) - 3, 9, "q") }
+    // pletivo: svislé dráty a pár vodorovných
+    for (let u = 4; u < 62; u += 3) L(u, 3, u, 39, "S")
+    for (const v of [12, 22, 32]) L(2, v, 62, v, "S")
+    if (kind === 2) {
+      c.poly([...F(6, 6), ...F(58, 6), ...F(58, 30), ...F(6, 30)], "Q")
+      c.poly([...F(6, 24), ...F(58, 24), ...F(58, 30), ...F(6, 30)], "j")
+      for (let i = 0; i < 4; i++) { const u = 10 + rng() * 40; c.poly([...F(u, 6 + rng() * 10), ...F(u + 5, 8), ...F(u + 2, 20)], "k") }
+      for (let u = 10; u < 56; u += 9) L(u, 30, u, 6, "3")
+    }
+    // rám
+    L(2, 2, 62, 2, "M"); L(2, 40, 62, 40, "m"); L(2, 0, 2, 41, "m"); L(62, 0, 62, 41, "M"); L(3, 0, 3, 41, "M")
+    if (kind === 3) for (let i = 0; i < 10; i++) { const u = 4 + rng() * 56; L(u, 40, u, 34 - rng() * 12, "U") }
+    else for (let i = 0; i < 3; i++) { const u = 4 + rng() * 56; L(u, 40, u, 36 - rng() * 6, "U") }
+  })
+}
+hrPlot("plot_1", 1); hrPlot("plot_2", 2); hrPlot("plot_3", 3)
+
 // Cedule Kanceláře kanálu: deska z překližky natřená bílou, ručně psané červené a černé písmo, dva sloupky
 // zatlučené do dlažby, rez od hřebíků. Rovně proti hráčce. Spodní střed = mezi sloupky.
 sprite("ochranka_cedule", { w: 76, h: 60 }, (c) => {

@@ -64,7 +64,7 @@ export class HudScene extends Phaser.Scene {
     }
 
     // Minimapa vpravo nahoře: celá mapa místa v izometrii jako hra (dlaždice 6 × 3 body), domy a landmarky tmavé,
-    // horní úroveň (magistrála) světlejší, zastavení jantarové tečky, hrdinka bliká. Klepnutí pošle hrdinku na místo.
+    // horní úroveň (magistrála) světlejší, zastavení jantarové tečky, věci s hláškou (kuriozity) tyrkysové, hrdinka bliká. Klepnutí pošle hrdinku na místo.
     createMinimap() {
         const world = this.scene.get('world');
         if (!world?.map) return;
@@ -109,6 +109,11 @@ export class HudScene extends Phaser.Scene {
         // zastavení se překreslí po každé změně (psi odběhnou k ohni, kotě zmizí do tašky)
         this.drawMiniStops = () => {
             this.miniStops.clear();
+            // věci, na které se dá jen podívat (kuriozity a rekvizity s hláškou), mají jinou barvu než zastavení
+            (this.scene.get('world').talkingOddities ?? []).filter((odd) => odd.sprite.active && odd.tile).forEach((odd) => {
+                const { x, y } = toMini(odd.tile.a, odd.tile.b);
+                this.miniStops.fillStyle(0x6fd0e0, 1).fillRect(px + 8 + x + 1, py + 30 + y - 1, 3, 3);
+            });
             Object.values(this.scene.get('world').stops ?? {}).forEach((stop) => {
                 const { x, y } = toMini(stop.npc.a, stop.npc.b);
                 this.miniStops.fillStyle(0xffc33d, 1).fillRect(px + 8 + x + 1, py + 30 + y - 1, 3, 3);
@@ -238,7 +243,7 @@ export class HudScene extends Phaser.Scene {
     // Deník: jedna obrazovka pro všechno. Vlevo velká pošťačka, kolem ní výbava ve slotech, pod ní životy, úroveň
     // a vlastnosti; vpravo záložky Taška (výbava v tašce, zásoby, věci), Úkoly a Kdo vám věří. Q otevře úkoly, T tašku,
     // šipky doleva a doprava přepínají záložky, Esc nebo stejná klávesa zavře.
-    // Ladění: panel skoků na místa (F2, jen se zapnutým laděním, src/debug.js). Klepnutí postaví místo znovu se stavem
+    // Ladění: panel skoků na místa (L, jen se zapnutým laděním, src/debug.js). Klepnutí postaví místo znovu se stavem
     // z průchodu npm test.
     toggleJumps() {
         if (this.jumps) { this.jumps.destroy(); this.jumps = null; return; }
@@ -447,7 +452,7 @@ export class HudScene extends Phaser.Scene {
 
     onKey(event) {
         const key = event.key.toLowerCase();
-        if (DEBUG.on && event.key === 'F2') { event.preventDefault?.(); this.toggleJumps(); return; }
+        if (DEBUG.on && key === 'l') { event.preventDefault?.(); this.toggleJumps(); return; }
         if (this.jumps) {
             if (event.key === 'Escape') this.toggleJumps();
             const place = /^[1-9]$/.test(event.key) && JUMP_PLACES[Number(event.key) - 1];

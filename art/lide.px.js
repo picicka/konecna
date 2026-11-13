@@ -580,10 +580,11 @@ function lidFace(c, o) {
 const LID_HERO = {
   build: "normal", height: 46, female: true, skin: "normal",
   hair: { style: "long", col: "dark" },
-  top: { kind: "coat", col: "postal" },
+  // kabát o stupeň světlejší než pošťácká modrá ostatních a brašna v poštovní žluté: ve tmě ulice ji má být vidět
+  top: { kind: "coat", col: { d: "L", m: "l", l: "w" } },
   legs: { kind: "trousers", col: "ash" },
   shoes: { kind: "boots", col: "leather" },
-  items: ["bag", "dirt"],
+  items: ["bag", "dirt"], bagCol: "gold",
 }
 lidWalk("hero", LID_HERO)
 // chůze s hlavou v předklonu (k divákovi) a zezadu (od diváka); stání zezadu

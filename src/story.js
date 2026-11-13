@@ -217,9 +217,10 @@ async function converse(world, id, dialog, speaker, face) {
         // Při návratu do uzlu po volbě zazní jen poslední replika (otázka), ne celý úvod znovu.
         const intro = fresh ? lines.slice(0, -1) : [];
         if (intro.length) await hud.say(speaker, intro, face);
-        const options = [...choices.map((c) => ({ label: c.label, ...choiceIcon(state, id, c) })), { label: HUD.leave }];
+        const options = [...choices.map((c) => ({ label: c.label, ...choiceIcon(state, id, c) })), { label: node.flee ? HUD.flee : HUD.leave }];
         const pick = await hud.choose(speaker, lines.at(-1) ?? '', options, face);
-        if (pick >= choices.length) break;
+        // od nepřítele, který už útočí, se neodchází, ale utíká: stojí to život (hurt nezabije)
+        if (pick >= choices.length) { if (node.flee) notify(world, apply(world, { hurt: 1 }).notes); break; }
         const choice = choices[pick];
         if (choice.shop) { await shop(world, id, speaker, face); last = nodeId; continue; }
         // zkouška vlastnosti: nepovedený pokus stojí (CHECK.cost nebo fail), volba zmizí do další úrovně té vlastnosti
@@ -256,6 +257,8 @@ async function converse(world, id, dialog, speaker, face) {
                 world.refreshStops?.();
                 notify(world, w.notes);
                 if (w.levelled) await levelUp(world, w.levelled);
+                // po výhře se rozhovor nevrací k výzvě před bojem: bez vlastního pokračování skočí na uzel, který platí teď
+                if (!choice.next && !choice.end) nodeId = entryNode(state, dialog) ?? nodeId;
             } else break; // útěk: rozhovor končí, smečka zůstává
         }
         if (travel) return { travel };

@@ -9,7 +9,7 @@
 //   &buh                  nesmrtelnost v boji a zkoušky vlastností vždy vyjdou
 //   ?rychle / ?rychle=8   čas hry běží rychleji (bez čísla pětkrát): chůze, animace, časovače; logika se nemění.
 //                         Používá ho průchod npm test, jde i samostatně bez ?misto.
-//   ?ladeni / ?ladeni=0   zapne / vypne panel skoků na klávese F2 (pamatuje se v prohlížeči; s ?misto je zapnutý sám)
+//   ?ladeni / ?ladeni=0   zapne / vypne panel skoků na klávese L (pamatuje se v prohlížeči; s ?misto je zapnutý sám)
 
 const KEY = 'konecna.ladeni';
 // V Node (scripts/slepe.mjs, tree.mjs) není okno ani adresa: všechno vypnuté.

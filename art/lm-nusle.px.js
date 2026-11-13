@@ -276,8 +276,61 @@ function nusPolicie(name, o) {
   }, glow("l", { r: 6, strength: 0.5 }))
 }
 
+// Stanice Vyšehrad: hala je pod silnicí u jižního konce mostu (čelo ke svahu kreslí art/nuselak-most.px.js, díly
+// ns_st_*). Tady je díra ve vozovce nad halou, plochá: propadlým stropem je vidět kolej, nástupiště se žlutým pruhem,
+// tabule stanice a vůz, který nedojel. Dno je o H níž než vozovka (h = H je úroveň silnice).
+function nusVysehrad(name, o) {
+  const w = o.w, dpt = o.dpt
+  const lenR = 64 * w, lenL = 64 * dpt
+  const W = 64 * (w + dpt), Hc = 32 * (w + dpt) + 4
+  const ox = 64 * dpt, oy = Hc - 1
+  sprite(name, { w: W, h: Hc }, (c) => {
+    const rng = c.rng(o.seed ?? 4)
+    const { r, p, poly, FLa, FRd, quad, box, streaks, letters } = // strop haly je v úrovni mostovky a země (h = H), nástupiště a koleje jsou o H níž: počátek je posunutý o H dolů
+    nusKit(c, ox, oy + 46, rng)
+    const H = 46
+    // díra ve stropě: A0–A1 podél, D0–D1 napříč; dno je o H níž, takže je vidět od A0 + H a D0 + H dál
+    const A0 = 4, A1 = lenR - 4, D0 = 4, D1 = lenL - 4
+    poly("k", [A0, D0, H], [A1, D0, H], [A1, D1, H], [A0, D1, H])
+    // dno: štěrk kolejiště
+    poly("A", [A0 + H, D0 + H, 0], [A1, D0 + H, 0], [A1, D1, 0], [A0 + H, D1, 0])
+    // koleje podél a: pražce a dvě kolejnice
+    const R0 = D0 + H + 8, R1 = R0 + 18
+    for (let a = A0 + H + 6; a < A1 - 4; a += 10) poly("U", [a, R0 - 4, 0], [a + 3, R0 - 4, 0], [a + 3, R1 + 4, 0], [a, R1 + 4, 0])
+    for (const d of [R0, R1]) { c.line(...p(A0 + H, d, 0).map(r), ...p(A1, d, 0).map(r), "m"); c.line(...p(A0 + H + 2, d + 1, 0).map(r), ...p(A1, d + 1, 0).map(r), "M") }
+    // přívodní kolejnice
+    c.line(...p(A0 + H, R1 + 8, 0).map(r), ...p(A1, R1 + 8, 0).map(r), "u")
+    // nástupiště u zadní stěny: čelo, plocha, žlutý pruh
+    const PD = R1 + 16, PH = 9
+    quad(FRd(PD), A0 + H - PH, A1, 0, PH, "P")
+    poly("5", [A0 + H - PH, PD, PH], [A1, PD, PH], [A1, D1, PH], [A0 + H - PH, D1, PH])
+    for (let a = A0 + H; a < A1; a += 14) c.line(...p(a, PD + 7, PH).map(r), ...p(a, D1, PH).map(r), "6")
+    for (let i = 0; i < 9; i++) { const [x, y] = p(A0 + H + rng() * (A1 - A0 - H - 20), PD + 10 + rng() * (D1 - PD - 14), PH); c.rect(r(x), r(y), 3 + r(rng() * 4), 2, rng() < 0.5 ? "l" : "x") }
+    poly("y", [A0 + H - PH, PD + 3, PH], [A1, PD + 3, PH], [A1, PD + 6, PH], [A0 + H - PH, PD + 6, PH])
+    // zadní stěna haly (k divákovi) s kachlíky a tabulí stanice, pravá čelní stěna s ústím do tunelu na Pankrác
+    poly("e", [A0, D1, H], [A1, D1, H], [A1, D1, PH], [A0 + H - PH, D1, PH])
+    for (let a = A0 + 20; a < A1; a += 16) c.line(...p(a, D1, H).map(r), ...p(a, D1, Math.max(PH, H - (a - A0))).map(r), "3")
+    quad(FRd(D1), A0 + 70, A0 + 150, H - 22, H - 8, "V"); letters(FRd(D1), A0 + 74, H - 9, "VYSEHRAD", 1.5, "W")
+    poly("3", [A1, D0, H], [A1, D1, H], [A1, D1, 0], [A1, D0 + H, 0])
+    poly("k", [A1, R0 - 10, 0], [A1, R1 + 12, 0], [A1, R1 + 12, 28], [A1, R0 - 4, 32], [A1, R0 - 10, 24])
+    // ohořelý vůz metra, který nedojel: střecha a bok čouhají z tunelu
+    const V0 = A1 - 120, VH = 24
+    quad(FRd(R0 - 6), V0, A1, 0, VH, "M"); quad(FLa(V0), R0 - 6, R1 + 8, 0, VH, "m")
+    poly("x", [V0, R0 - 6, VH], [A1, R0 - 6, VH], [A1, R1 + 8, VH], [V0, R1 + 8, VH])
+    quad(FRd(R0 - 6), V0, A1, 8, 11, "V"); for (let a = V0 + 8; a < A1 - 10; a += 22) quad(FRd(R0 - 6), a, a + 14, 13, 21, rng() < 0.4 ? "k" : "n")
+    quad(FLa(V0), R0 - 1, R1 + 3, 10, 21, "n"); quad(FLa(V0), R0 + 2, R0 + 5, 2, 5, "f")
+    c.noise(...p(V0, R1 + 8, VH).map(r), 130, 60, "k", 0.05, 44, "Mmx")
+    // zubatý okraj díry: trčící výztuž a visící kusy lepenky
+    for (let i = 0; i < 16; i++) { const a = A0 + rng() * (A1 - A0), [x, y] = p(a, D0, H); c.poly([r(x) - 4, r(y), r(x) + 5, r(y) - 2, r(x) + 1, r(y) - 5 - r(rng() * 6)], "p"); if (rng() < 0.5) c.line(r(x), r(y), r(x) + 3, r(y) - 9, "U") }
+    for (let i = 0; i < 8; i++) { const d = D0 + rng() * (D1 - D0), [x, y] = p(A0, d, H); c.line(r(x), r(y), r(x) + 6 + r(rng() * 6), r(y) - 2, "U") }
+    // okraj díry: ulámaný asfalt
+    c.line(...p(A0, D0, H).map(r), ...p(A1, D0, H).map(r), "A"); c.line(...p(A0, D0, H).map(r), ...p(A0, D1, H).map(r), "A")
+  })
+}
+
 nusKcp("lm_kcp", { w: 14, dpt: 18, seed: 31 })
 nusForum("lm_forum", { w: 7, dpt: 9, seed: 32 })
 nusPolicie("lm_muzeum_policie", { w: 7, dpt: 9, seed: 33 })
+nusVysehrad("lm_vysehrad", { w: 5, dpt: 2, seed: 34 })
 
-sheet("landmarks_nusle", ["lm_kcp", "lm_forum", "lm_muzeum_policie"], { pad: 1 })
+sheet("landmarks_nusle", ["lm_kcp", "lm_forum", "lm_muzeum_policie", "lm_vysehrad"], { pad: 1 })

@@ -35,7 +35,7 @@ ol.choices{list-style:none;padding-left:0}ol.choices>li{margin:.5rem 0;padding:.
 p.rule{background:#fef3c7;border-left:4px solid #f59e0b;padding:.4rem .75rem}p.where{color:#57534e;font-size:.9em}
 </style></head><body>`);
 out.push(`<h1>${esc(TITLE.name)}. ${esc(TITLE.subtitle)} – rozhodovací strom</h1>`);
-p('Každý bod má číslo. Volby jsou X.Y.Z, repliky postav jsou v šedých blocích, účinky červeně, podmínky modře. Volby, které v dané chvíli nejdou zvolit (chybí věc, úkol nezačal), se ve hře vůbec nezobrazí. Zkouška vlastnosti se ukáže, i když chybí jeden bod: o bod méně než požadavek vyjde na 25 %, na požadavek na 50 %, o bod víc na 75 %, o dva a víc vždy. Nepovedená stojí Ruka 2 životy, Oko 1 život, Ústa 1 bod důvěry skupiny postavy a znovu jde zkusit až s vyšší vlastností.', 'rule');
+p('Každý bod má číslo. Volby jsou X.Y.Z, repliky postav jsou v šedých blocích, účinky červeně, podmínky modře. Volby, které v dané chvíli nejdou zvolit (chybí věc, úkol nezačal), se ve hře vůbec nezobrazí. Zkouška vlastnosti se ukáže, i když chybí jeden bod: o bod méně než požadavek vyjde na 25 %, na požadavek na 50 %, o bod víc na 75 %, o dva a víc vždy. Nepovedená stojí Ruka 2 srdce, Oko 1 srdce, Ústa 1 bod důvěry skupiny postavy a znovu jde zkusit až s vyšší vlastností.', 'rule');
 
 h(2, '1', 'Úvod (filmeček)');
 CUTSCENES.intro.forEach((shot, i) => { h(4, `1.${i + 1}`, `Snímek ${shot.image}`); lines(shot.lines); });
@@ -68,7 +68,7 @@ const effect = (f, win) => {
     [].concat(f.take ?? []).forEach((i) => p.push(`− ${item(i)}`));
     if (f.weapon) p.push(`zbraň ${item(f.weapon)}`);
     Object.entries(f.supply ?? {}).forEach(([k, n]) => p.push(`+ ${item(k)} ×${n}`));
-    if (f.hurt) p.push(`−${f.hurt} životů`);
+    if (f.hurt) p.push(`−${f.hurt} srdce`);
     if (f.tickets) p.push(`${f.tickets > 0 ? '+' : ''}${f.tickets} jízdenek`);
     Object.entries(f.trust ?? {}).forEach(([k, n]) => p.push(`důvěra ${k} ${n > 0 ? '+' : ''}${n}`));
     Object.entries(f.quest ?? {}).forEach(([q, s]) => p.push(`úkol ${quest(q, s)}`));
@@ -76,7 +76,7 @@ const effect = (f, win) => {
     if (f.xp) p.push(`+${f.xp} zkušeností`);
     if (f.fight) p.push(`boj: ${BATTLES[f.fight].name}${win ? ` (po výhře: ${effect(win)})` : ''}`);
     if (f.travel) p.push(`přestup: ${f.travel}`);
-    if (f.hpMax) p.push(`+${f.hpMax} životů navždy`);
+    if (f.hpMax) p.push(`+${f.hpMax} srdce navždy`);
     if (f.ending) p.push(`KONEC: ${f.ending === 'hrad' ? 'podle stavu (přehraný a nabitý záznam Řád, vybitý nebo žádný Řád bez důkazu, jinak tržiště)' : ENDINGS[f.ending].title}`);
     return p.join(', ');
 };
@@ -99,7 +99,7 @@ places.forEach(([num, title, def]) => {
     });
 });
 h(2, '9', 'Boje');
-Object.entries(BATTLES).forEach(([k, b], i) => { h(3, `9.${i + 1}`, `${b.name} (${k})`); p(`Životy ${b.hp}, vůle ${b.nerve}, útok ${b.attack.join('–')}, zvláštnost ${b.special ?? 'žádná'}, akce Úst: ${b.talk}${b.loot ? `, kořist: ${effect(b.loot)}` : ''}.`, 'where'); lines([b.intro, b.win, b.yield, b.flee]); });
+Object.entries(BATTLES).forEach(([k, b], i) => { h(3, `9.${i + 1}`, `${b.name} (${k})`); p(`Srdce ${b.hp}, vůle ${b.nerve}, útok ${b.attack.join('–')}, zvláštnost ${b.special ?? 'žádná'}, akce Úst: ${b.talk}${b.loot ? `, kořist: ${effect(b.loot)}` : ''}.`, 'where'); lines([b.intro, b.win, b.yield, b.flee]); });
 
 h(2, '2', 'Konce');
 choices('2', ['trziste', 'metro', 'metro_bez', 'lodkari', 'death'].map((key) => ({ label: ENDINGS[key].title, effect: { trziste: 'prodej Fantově neteři nebo řediteli, nebo čtečka bez záznamu při důvěře tržiště', metro: 'čtečka přehraje záznam nabitý u mlynáře', metro_bez: 'čtečka přehraje vybitý záznam, nebo bez záznamu při důvěře metra', lodkari: 'loďka z Kampy na Vyšehrad (jen kdo dal Admirálovi krabičku)', death: 'prohra v boji; nabídka návratu na poslední místo' }[key], reply: [ENDINGS[key].text, ...(ENDINGS[key].shots ?? []).flatMap((x) => x.lines)].join(' ') })));

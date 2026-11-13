@@ -19,13 +19,17 @@ const quadL = (u0, u1, v0, v1) => [...Lp(u0, v0), ...Lp(u1, v0), ...Lp(u1, v1), 
 const shift = (pts, ox, oy) => pts.map((p, i) => p + (i % 2 ? oy : ox))
 const Rout = (u, v, p) => [u + p, -u / 2 - v + p / 2]
 
-// Trhlina od bodu dolů po stěně, cik cak, dvoubarevná (tmavý stín a světlá hrana).
-function crack(c, pt, ox, oy, u, v, length, rng) {
-  let cu = u, cv = v
+// Trhlina od bodu dolů po stěně: vlasová, nahoře rozevřená (tmavá), níž jen o tón tmavší než omítka. Drží směr, občas
+// ho změní a pustí krátkou větev, takže žádné dvě nejsou stejné (dřív to byl pravidelný cik cak se světlou hranou).
+function crack(c, pt, ox, oy, u, v, length, rng, col, len) {
+  let cu = u, cv = v, drift = rng() < 0.5 ? -1 : 1
   for (let i = 0; i < length; i++) {
-    const nu = cu + (rng() < 0.5 ? -4 : 4), nv = cv - 8 - Math.floor(rng() * 8)
+    if (rng() < 0.3) drift = -drift
+    const nu = Math.max(2, Math.min(len - 2, cu + drift * (1 + Math.floor(rng() * 4)))), nv = cv - 4 - Math.floor(rng() * 9)
+    if (nv < 6) break
     const [x0, y0] = shift(pt(cu, cv), ox, oy), [x1, y1] = shift(pt(nu, nv), ox, oy)
-    c.line(x0, y0, x1, y1, "k"); c.line(x0 + 1, y0, x1 + 1, y1, "W")
+    c.line(x0, y0, x1, y1, i < length / 3 ? "k" : col)
+    if (rng() < 0.2) { const [x2, y2] = shift(pt(Math.max(2, Math.min(len - 2, cu - drift * (4 + Math.floor(rng() * 7)))), cv - 3 - Math.floor(rng() * 6)), ox, oy); c.line(x0, y0, x2, y2, col) }
     cu = nu; cv = nv
   }
 }
@@ -48,6 +52,9 @@ const FONT35 = {
   "=": "000111000111000", "-": "000000111000000", ":": "000010000010000",
 }
 // Diakritika nad písmenem: body ve sloupcích 0–2 nad horním řádkem (čárka, háček, kroužek).
+// Svítí se v okně? Asi v jednom domě z pěti, v něm jedno až dvě okna (hash ze semínka domu, patra a polohy).
+const litHash = (n) => { let x = Math.imul(n ^ 0x9e3779b9, 2654435761); x ^= x >>> 15; x = Math.imul(x, 2246822519); x ^= x >>> 13; return (x >>> 0) / 4294967296 }
+const litWindow = (seed, f, u, face) => litHash(seed * 31 + 7) < 0.3 && litHash(seed * 131 + f * 17 + u * 3 + face * 1009) < 0.14
 const MARKS = { "\u0301": [[1, 1], [2, 2]], "\u030c": [[0, 2], [1, 1], [2, 2]], "\u030a": [[1, 1]] }
 function wallText(c, F, ox, oy, u0, v0, str, col, o = {}) {
   const sc = o.sc ?? 2, outline = o.outline === undefined ? "k" : o.outline, step = 4 * sc
@@ -134,6 +141,9 @@ function sprayText(c, F, ox, oy, len, vMin, vMax, str, col, seed, vRoof = vMax) 
  *   cover: krytina z ortofota ČÚZK (scripts/strechy.py): tasky, hneda, med, tmava, plech, svetla })
  */
 // Krytina → [světlejší plocha, tmavší plocha a spáry, vršek ploché střechy]. Bez cover: tašky u sedlové, břidlice u mansardy.
+// Světlejší a tmavší odstín krytiny pro jednotlivé tašky a pro ploché střechy (spáry lepenky, skvrny).
+const COVER_LIGHT = { d: "r", r: "8", j: "2", s: "M", m: "v", w: "W" }
+const FLAT_DARK = { x: "P", a: "A", M: "S", v: "x" }
 const COVERS = { tasky: ["d", "D", "x"], hneda: ["r", "R", "x"], med: ["j", "Q", "x"], tmava: ["s", "S", "a"], plech: ["m", "M", "M"], svetla: ["w", "v", "v"] }
 function house(name, o) {
   const w = o.w, dpt = o.dpt ?? 3, floors = o.floors ?? 5
@@ -169,6 +179,25 @@ function house(name, o) {
       for (let v = 0; v < gf; v += 16) for (let u = (v / 16) % 2 ? 16 : 32; u < len; u += 32) c.poly(shift(map(u, u + 1, v, v + 15), ox, oy), "P")
     })
 
+    // Opadaná omítka pod okny a římsami (kreslí se před nimi): skvrna z několika překrytých ploch, v ní cihlové zdivo
+    // (řádky se spárami ve společné mřížce, vazba přes půl cihly), nahoře stín od hrany omítky.
+    faces.forEach(([map, len]) => {
+      const n = Math.round((len / 64) * (0.6 + damage * 1.2))
+      for (let i = 0; i < n; i++) {
+        const u = 8 + rng() * (len - 50), v = gf + 10 + rng() * (H - gf - 60), w2 = 16 + rng() * 26, h2 = 12 + rng() * 22
+        const parts = [[u, v, w2, h2]]
+        for (let k = 1 + Math.floor(rng() * 4); k > 0; k--) parts.push([u + (rng() - 0.35) * w2, v + (rng() - 0.35) * h2, w2 * (0.3 + rng() * 0.5), h2 * (0.3 + rng() * 0.6)])
+        const boxes = parts.map(([pu, pv, pw, ph]) => { const a0 = Math.max(2, Math.round(pu)), b0 = Math.max(gf + 4, Math.round(pv)); return [a0, Math.min(len - 2, Math.round(pu + pw)), b0, Math.min(H - 22, Math.round(pv + ph))] }).filter(([a0, a1, b0, b1]) => a1 - a0 > 3 && b1 - b0 > 3)
+        boxes.forEach(([a0, a1, b0, b1]) => c.poly(shift(map(a0 - 1, a1 + 1, b0 - 1, b1 + 2), ox, oy), st[2]))
+        boxes.forEach(([a0, a1, b0, b1]) => {
+          const patch = shift(map(a0, a1, b0, b1), ox, oy)
+          c.poly(patch, "R")
+          c.clip(patch, () => { for (let vv = Math.floor(b0 / 4) * 4; vv < b1; vv += 4) { c.poly(shift(map(a0 - 2, a1 + 2, vv, vv + 1), ox, oy), "D"); for (let uu = Math.floor(a0 / 10) * 10 + ((vv / 4) % 2) * 5; uu < a1; uu += 10) c.poly(shift(map(uu, uu + 1, vv, vv + 4), ox, oy), "D") } })
+        })
+      }
+    })
+
+    const burnt = []
     // Patra: kordonová římsa, okna s rámem, parapetem a klenákem, secesní girlandy, pilastry na krajích.
     faces.forEach(([map, len, street, pt]) => {
       if (blank(map)) return
@@ -187,8 +216,17 @@ function house(name, o) {
           c.poly(shift(map(u + ww / 2 - 1, u + ww / 2 + 1, v + 10, v + wh + 7), ox, oy), st[1])
           c.poly(shift(map(u + 1, u + ww - 1, v + wh - 2, v + wh), ox, oy), st[1])
           if (glass === "L") c.poly(shift(map(u + 2, u + 5, v + 11, v + wh + 6), ox, oy), "l")
-          if (glass === "k") {
-            if (rng() < 0.55) { // zatlučené prkny
+          // svíčka za oknem: v pár domech někdo bydlí (vlastní hash, ať se zbytek domu nezmění)
+          if (glass !== "k" && litWindow(o.seed ?? 1, f, u, map === quadR ? 1 : 2)) {
+            c.poly(shift(map(u + 1, u + ww - 1, v + 10, v + wh + 7), ox, oy), "O")
+            c.poly(shift(map(u + 1, u + ww - 1, v + 10, v + 24), ox, oy), "o"); c.poly(shift(map(u + 5, u + ww - 5, v + 10, v + 18), ox, oy), "y")
+            c.poly(shift(map(u + ww / 2 + 3, u + ww / 2 + 5, v + 10, v + 14), ox, oy), "f")
+            c.poly(shift(map(u + ww / 2 - 1, u + ww / 2 + 1, v + 10, v + wh + 7), ox, oy), st[1])
+            c.poly(shift(map(u + 1, u + ww - 1, v + wh - 2, v + wh), ox, oy), st[1])
+          }
+          if (glass === "k" && rng() < 0.4) burnt.push([map, u, v])
+          else if (glass === "k") {
+            if (rng() < 0.6) { // zatlučené prkny
               c.poly(shift(map(u, u + ww, v + 14, v + 19), ox, oy), "h"); c.poly(shift(map(u, u + ww, v + 26, v + 31), ox, oy), "H")
               const [x0, y0] = shift(pt(u + 1, v + 12), ox, oy), [x1, y1] = shift(pt(u + ww - 1, v + 34), ox, oy); c.line(x0, y0, x1, y1, "h", 2)
             } else { const [x, y] = shift(pt(u + 6, v + 24), ox, oy); c.line(x, y, x + 8, y - 10, "w"); c.line(x, y, x - 2, y + 9, "w") }
@@ -210,6 +248,14 @@ function house(name, o) {
       }
     })
 
+    // Saze nad vyhořelými okny: jazyk kouře po fasádě nahoru, dole hustý, výš řídne a zužuje se (přes okno o patro výš).
+    burnt.forEach(([map, u, v], i) => {
+      ;[[-3, 23, 36, 44, 0.8], [-2, 23, 44, 54, 0.55], [1, 22, 54, 66, 0.3], [5, 19, 66, 78, 0.12]].forEach(([a0, a1, b0, b1, dens], j) => {
+        if (v + b0 >= H - 14) return
+        c.clip(shift(map(u + a0, u + a1, v + b0, Math.min(H - 14, v + b1)), ox, oy), () => c.noise(0, 0, W, Hc, "A", dens, 311 + i * 7 + j, "*"))
+      })
+    })
+
     // Parter do ulice: výlohy s dřevěným rámem a odrazem nebo stažená roleta, vývěsní štít, portál s obloukem a dveřmi.
     const shopfronts = (map, len) => {
       const pt = P(map)
@@ -225,6 +271,12 @@ function house(name, o) {
           c.poly(shift(map(u, u + 56, 15, 55), ox, oy), roll < 0.5 ? "k" : "n")
           c.poly(shift(map(u + 3, u + 9, 18, 52), ox, oy), roll < 0.5 ? "n" : "L")
           if (roll < 0.5) { const [x, y] = shift(pt(u + 30, 40), ox, oy); c.line(x - 10, y + 4, x + 12, y - 14, "W"); c.line(x - 10, y + 4, x - 4, y + 10, "W") }
+          // mříž přes výlohu (svislé pruty a dva pásy), u některých vylomená
+          else if (roll < 0.72) {
+            const gone = rng() < 0.4 ? 8 + Math.floor(rng() * 32) : -99
+            for (let g = u + 4; g < u + 56; g += 6) if (Math.abs(g - u - gone) > 9) c.poly(shift(map(g, g + 1, 15, 55), ox, oy), "M")
+            c.poly(shift(map(u, u + 56, 26, 27), ox, oy), "M"); c.poly(shift(map(u, u + 56, 44, 45), ox, oy), "M")
+          }
         }
         c.poly(shift(map(u - 3, u + 59, 58, 61), ox, oy), "P")
         c.poly(shift(map(u - 3, u + 59, 2, 12), ox, oy), "P")
@@ -246,17 +298,6 @@ function house(name, o) {
     } else shopfronts(quadR, lenR)
     if (o.corner && !o.back) shopfronts(quadL, lenL)
 
-    // Opadaná omítka: nepravidelné plochy, kde je vidět cihlové zdivo (řádky se spárami, vazba přes půl cihly).
-    faces.forEach(([map, len, street, pt]) => {
-      const n = Math.round((len / 64) * (0.6 + damage * 1.2))
-      for (let i = 0; i < n; i++) {
-        const u = 8 + rng() * (len - 50), v = gf + 10 + rng() * (H - gf - 60), w2 = 18 + rng() * 30, h2 = 14 + rng() * 26
-        const patch = map(u, u + w2, v, v + h2)
-        c.poly(shift(patch, ox, oy), "R")
-        c.clip(shift(patch, ox, oy), () => { for (let vv = v; vv < v + h2; vv += 4) { c.poly(shift(map(u - 2, u + w2 + 2, vv, vv + 1), ox, oy), "D"); for (let uu = u + ((vv / 4) % 2) * 5; uu < u + w2; uu += 10) c.poly(shift(map(uu, uu + 1, vv, vv + 4), ox, oy), "D") } })
-        c.poly(shift(map(u - 1, u + w2 + 1, v + h2, v + h2 + 2), ox, oy), st[2])
-      }
-    })
     // Špína po pádu (Fallout): odstřik od země, šmouhy pod římsou a parapety, rezavé stékance; plevel na římse.
     faces.forEach(([map, len, street, pt]) => {
       c.clip(shift(map(0, len, 0, 22), ox, oy), () => c.noise(0, 0, W, Hc, "x", 0.3, 71, "*"))
@@ -283,15 +324,73 @@ function house(name, o) {
       if (damage > 0.3 && map === quadR) { const gu = 20 + Math.floor(rng() * (len - 60)); c.poly(shift(map(gu, gu + 24, H - 20, H), ox, oy), st[0]); c.poly(shift(map(gu, gu + 24, H - 20, H - 17), ox, oy), st[2]) }
     })
     // trhliny od římsy dolů
-    for (let i = 0; i < Math.round(damage * 3); i++) crack(c, R, ox, oy, 10 + Math.floor(rng() * (lenR - 20)), H - 20, 6 + Math.floor(rng() * 6), rng)
+    // trhliny: od římsy dolů a od parapetů, na čele i na boku
+    faces.forEach(([map, len, street, pt]) => {
+      for (let i = Math.round(damage * (len / 64) * (blank(map) ? 0.6 : 1.1)); i > 0; i--) {
+        const fromSill = !blank(map) && rng() < 0.45
+        crack(c, pt, ox, oy, 6 + Math.floor(rng() * (len - 12)), fromSill ? gf + Math.floor(rng() * floors) * fh + 4 : H - 20, 4 + Math.floor(rng() * 9), rng, st[2], len)
+      }
+    })
 
     // Střecha: mansarda (strmý spodní díl z břidlice s vikýři, mírný horní), sedlová s taškami, nebo plochá.
     const top = (u) => R(u, H), topL = (u) => Lp(u, H)
     const far = [lenR - lenL, -lenR / 2 - lenL / 2 - H]
     const ridge0 = [-lenL / 2, -lenL / 4 - H - Rh], ridge1 = [lenR - lenL / 2, -lenR / 2 - lenL / 4 - H - Rh]
-    const slopeLines = (poly, col, gap, from = 2) => c.clip(shift(poly, ox, oy), () => { for (let v = from; v < Rh + lenL / 4; v += gap) c.line(ox, oy - H - v, ox + lenR, oy - H - lenR / 2 - v, col) })
+    // Rovina střechy do ulice: u podél okapu, v svisle nad ním; řady krytiny jdou i do levého klínu pod hřebenem (u < 0).
+    const uMin = -Math.ceil(lenL / 2 / 12) * 12, vMax = Rh + lenL / 2
+    const S = (u, v) => [ox + u, oy - H - u / 2 - v]
+    const cell = (u, v, cw, ch) => [...S(u, v), ...S(u + cw, v), ...S(u + cw, v + ch), ...S(u, v + ch)]
+    const slopeLines = (poly, col, gap, from = 2) => c.clip(shift(poly, ox, oy), () => { for (let v = from; v < vMax; v += gap) c.line(...S(uMin, v), ...S(lenR, v), col) })
+    // Rok bez údržby na šikmé střeše: tašky jiného odstínu, šmouhy od hřebene, mech u okapu a díry po spadlých taškách,
+    // ve kterých jsou vidět latě a krokve (u hodně poškozeného domu propadlý kus střechy).
+    const weather = (poly, cw, ch, dark, light) => c.clip(shift(poly, ox, oy), () => {
+      for (let v = 0; v < vMax; v += ch) for (let u = uMin; u < lenR; u += cw) { const r = rng(); if (r < 0.09) c.poly(cell(u + 1, v + 1, cw - 1, ch - 1), dark); else if (r < 0.15) c.poly(cell(u + 1, v + 1, cw - 1, ch - 1), light) }
+      for (let i = 0; i < lenR / 18; i++) { const [x, y] = S(Math.floor(uMin / 2 + rng() * (lenR - uMin / 2)), Math.floor(rng() * vMax)); c.vline(x, y, 5 + Math.floor(rng() * 16), dark) }
+      c.clip(cell(uMin, 0, lenR - uMin, 5), () => c.noise(0, 0, W, Hc, "G", 0.45, 91, "*"))
+      c.clip(cell(uMin, 5, lenR - uMin, 6), () => c.noise(0, 0, W, Hc, "G", 0.12, 93, "*"))
+      const cols = Math.floor(lenR / cw), rows = Math.max(2, Math.floor((Rh + lenL / 4) / ch) - 1)
+      for (let i = Math.round(damage * 2 + rng() * 1.6 - 1.2); i > 0; i--) {
+        let cu = Math.floor(rng() * cols), cv = 1 + Math.floor(rng() * (rows - 1))
+        const cells = new Set()
+        for (let k = damage > 0.8 && rng() < 0.5 ? 14 + Math.floor(rng() * 14) : 2 + Math.floor(rng() * 6); k > 0; k--) {
+          cells.add(`${cu},${cv}`)
+          const r = rng(); cu += r < 0.3 ? 1 : r < 0.6 ? -1 : 0; cv += r >= 0.6 ? (r < 0.8 ? 1 : -1) : 0
+          cu = Math.max(0, Math.min(cols - 1, cu)); cv = Math.max(1, Math.min(rows - 1, cv))
+        }
+        cells.forEach((key) => {
+          const [gu, gv] = key.split(",").map(Number), hole = cell(gu * cw, gv * ch, cw, ch)
+          c.poly(hole, "k")
+          c.clip(hole, () => {
+            for (let r0 = -lenL; r0 < lenR + lenL; r0 += 18) c.line(...S(r0, 0), ...S(r0 - lenL / 2, vMax), "H")
+            c.line(...S(gu * cw, gv * ch + ch / 2), ...S(gu * cw + cw, gv * ch + ch / 2), "h")
+          })
+        })
+      }
+    })
     if (Rh === 0) {
-      c.poly(shift([...R(0, H), ...R(lenR, H), ...far, ...Lp(lenL, H)], ox, oy), cover ? cover[2] : "x")
+      // plochá střecha: lepenka v pásech se spárami, štěrk, tmavé skvrny po vodě, větrací hlavice, u poničeného domu díra
+      const base = cover ? cover[2] : "x", dark = FLAT_DARK[base] ?? "P"
+      const flat = shift([...R(0, H), ...R(lenR, H), ...far, ...Lp(lenL, H)], ox, oy)
+      const Tp = (u, d) => [ox + u - d, oy - H - u / 2 - d / 2]
+      const blob = (u, d, ru, rd, wob = 0.3) => Array.from({ length: 10 }, (_, k) => { const r = 1 - wob + rng() * wob * 2; return Tp(u + Math.cos(k * Math.PI / 5) * ru * r, d + Math.sin(k * Math.PI / 5) * rd * r) }).flat()
+      c.poly(flat, base)
+      c.clip(flat, () => {
+        c.noise(0, 0, W, Hc, dark, 0.07, 57, "*")
+        for (let d = 20 + Math.floor(rng() * 16); d < lenL - 6; d += 36) c.line(...Tp(0, d), ...Tp(lenR, d), dark)
+        for (let i = Math.round(lenR * lenL / 9000 + rng()); i > 0; i--) {
+          const stain = blob(14 + rng() * (lenR - 28), 14 + rng() * (lenL - 28), 10 + rng() * 22, 8 + rng() * 16)
+          c.clip(stain, () => c.noise(0, 0, W, Hc, dark, 0.55, 59 + i, "*"))
+        }
+        if (damage > 0.7 && lenR >= 128 && lenL >= 128 && rng() < 0.6) {
+          const hu = 40 + rng() * (lenR - 80), hd = 40 + rng() * (lenL - 80), hole = blob(hu, hd, 18 + rng() * 14, 14 + rng() * 12, 0.4)
+          c.poly(blob(hu, hd, 34, 28, 0.2), dark); c.poly(hole, "k")
+          c.clip(hole, () => { for (let r0 = -8; r0 < 40; r0 += 9) c.line(...Tp(hu - 40, hd - 30 + r0 * 2), ...Tp(hu + 40, hd - 30 + r0 * 2), "S") })
+        }
+      })
+      for (let i = lenR >= 128 ? 1 + Math.floor(rng() * 2) : 0; i > 0; i--) {
+        const [x, y] = Tp(20 + Math.floor(rng() * (lenR - 40)), 16 + Math.floor(rng() * Math.max(1, lenL - 32)))
+        c.rect(x - 5, y - 11, 10, 11, "M"); c.rect(x - 5, y - 11, 3, 11, "m"); c.rect(x - 7, y - 14, 14, 3, "S"); c.rect(x - 7, y - 14, 14, 1, "m")
+      }
       c.poly(shift([...top(0), ...top(lenR), ...R(lenR, H + 10), ...R(0, H + 10)], ox, oy), st[1])
       c.poly(shift([...topL(0), ...topL(lenL), ...Lp(lenL, H + 10), ...Lp(0, H + 10)], ox, oy), st[2])
     } else if (o.roof === "mansard") {
@@ -303,7 +402,9 @@ function house(name, o) {
       c.poly(shift([...ridge0, ...ridge1, ...far, ...topL(lenL)], ox, oy), roofB)
       // břidlice: řady každých 6 px, svislé spáry střídavě
       slopeLines(lower, roofA, 6)
-      c.clip(shift(lower, ox, oy), () => { for (let u = 0; u < lenR; u += 10) for (let v = 2; v < Rh; v += 12) { const x = ox + u + ((v / 12) % 2 ? 5 : 0); c.vline(x, oy - H - u / 2 - v - 6, 6, roofA) } })
+      c.clip(shift(lower, ox, oy), () => { for (let u = -20; u < lenR; u += 10) for (let v = 2; v < Rh; v += 12) { const x = ox + u + ((v / 12) % 2 ? 5 : 0); c.vline(x, oy - H - u / 2 - v - 6, 6, roofA) } })
+      slopeLines([...kink0, ...kink1, ...ridge1, ...ridge0], roofB, 10, 6)
+      weather([...top(0), ...top(lenR), ...kink1, ...ridge1, ...ridge0, ...kink0], 10, 6, roofB, COVER_LIGHT[roofA] ?? roofA)
       c.poly(shift([...topL(0), ...topL(lenL), ...ridge0, ...kink0], ox, oy), roofB)
       c.line(ox + kink0[0], oy + kink0[1], ox + kink1[0], oy + kink1[1], "M")
       c.line(ox + ridge0[0], oy + ridge0[1], ox + ridge1[0], oy + ridge1[1], "W")
@@ -322,7 +423,8 @@ function house(name, o) {
       c.poly(shift([...ridge0, ...ridge1, ...far, ...topL(lenL)], ox, oy), roofB)
       // tašky: řady každých 8 px, svislé spáry po 12 střídavě
       slopeLines(slope, roofB, 8)
-      c.clip(shift(slope, ox, oy), () => { for (let u = 0; u < lenR; u += 12) for (let v = 2; v < Rh + lenL / 4; v += 16) { const x = ox + u + ((v / 16) % 2 ? 6 : 0); c.vline(x, oy - H - u / 2 - v - 8, 8, roofB) } })
+      c.clip(shift(slope, ox, oy), () => { for (let u = uMin; u < lenR; u += 12) for (let v = 2; v < vMax; v += 16) { const x = ox + u + ((v / 16) % 2 ? 6 : 0); c.vline(x, oy - H - u / 2 - v - 8, 8, roofB) } })
+      weather(slope, 12, 8, roofB, COVER_LIGHT[roofA] ?? roofA)
       c.line(ox + ridge0[0], oy + ridge0[1], ox + ridge1[0], oy + ridge1[1], "W")
       c.line(ox, oy - H - 1, ox + lenR, oy - H - lenR / 2 - 1, "W")
       c.poly(shift([...topL(0), ...topL(lenL), ...ridge0], ox, oy), st[2])

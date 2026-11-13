@@ -82,7 +82,7 @@ export const ROSTER = [
         about: 'Hlídá mlýnské kolo a jediný generátor v Praze. Mluví o proudu jako jiní o Bohu.',
         look: 'Mohutný muž v montérkách s laclem, mouka i olej, na krku žárovka na provázku jako talisman.', now: SWAP },
     { place: 'most', sprite: 'kanec', dialog: 'kanci', name: 'Kanci z Kampy', faction: 'boj',
-        about: 'V parku na Kampě ryjí kanci z Petřína a hlídají cestu k mlýnu.',
+        about: 'Na dvoře mlýna na Kampě ryjí kanci z Petřína, mezi mlynářem a kolem.',
         look: 'Divočák s tesáky a hřbetní hřívou, blátivý.', now: 'Zástupný sprite.' },
     // —— Malá Strana ——
     { place: 'malastrana', sprite: 'vymahac', face: 'face_vymahac', dialog: 'vymahaci', name: 'Tržištní vymahači', faction: 'tržiště · boj',

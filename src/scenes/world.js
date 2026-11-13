@@ -17,6 +17,7 @@ import art from '../../art/version.json';
 // - po zavření dialogu this.input.keyboard.resetKeys(), jinak Enter z poslední repliky hned znovu spustí rozhovor;
 // - všechno herní se resetuje v init/create, Phaser drží instanci scény mezi restarty.
 const SPEED = 180; // bodů za vteřinu
+const WRECKS = ['car_wreck_a', 'car_wreck_b', 'car_wreck_c', 'car_wreck_burnt', 'car_wreck_crushed', 'car_wreck_flipped', 'car_wreck_burnt'];
 const UPPER_DEPTH = 60000; // horní úroveň se kreslí nad vším na zemi (hala pod ní, Fantova budova za ní)
 const k3 = (a, b, L) => `${a},${b},${L}`;
 
@@ -24,6 +25,21 @@ const k3 = (a, b, L) => `${a},${b},${L}`;
 // v bodech zvětšeného obrázku. Vyrobí se jednou za běh hry.
 const CURSOR_HOT = { jit: [1, 1], ne: [15, 15], mluvit: [15, 15], oko: [16, 16], dvere: [16, 16] };
 const CURSOR_CSS = {};
+
+// Drobnosti na zemi (art/drobnosti.px.js, WorldScene.placeClutter): co leží na kterém povrchu (znak mřížky) a jak
+// hustě (podíl dlaždic). Druh vybírá hash dlaždice, takže je rozsev při každém hraní stejný. U zdi domu padá suť a cihly.
+const CLUTTER = {
+    r: { rate: 0.3, keys: ['sut_1', 'sut_2', 'strepy_1', 'papiry_1', 'papiry_2', 'plechovky_1', 'kaluz_1', 'sut_3', 'hadry_1', 'listi_1'] },
+    p: { rate: 0.34, keys: ['papiry_1', 'papiry_2', 'papiry_3', 'sut_1', 'sut_2', 'strepy_1', 'plevel_1', 'plevel_2', 'plechovky_1', 'listi_1', 'listi_2', 'kaluz_2', 'prkna_1', 'hadry_2'] },
+    n: { rate: 0.3, keys: ['papiry_1', 'papiry_3', 'strepy_1', 'strepy_2', 'sut_1', 'plechovky_2', 'hadry_1'] },
+    f: { rate: 0.28, keys: ['plevel_1', 'plevel_2', 'plevel_3', 'listi_1', 'listi_2', 'sut_1', 'papiry_2'] },
+    g: { rate: 0.3, keys: ['plevel_1', 'plevel_2', 'plevel_3', 'listi_1', 'listi_2', 'sut_2', 'prkna_1', 'prkna_2', 'plechovky_2'] },
+    '.': { rate: 0.3, keys: ['plevel_1', 'plevel_3', 'sut_1', 'sut_3', 'prkna_2', 'cihly_1', 'plechovky_1', 'listi_2', 'hadry_2'] },
+    m: { rate: 0.12, keys: ['prkna_1', 'papiry_1', 'plechovky_1'] },
+};
+const CLUTTER_WALL = ['sut_1', 'sut_2', 'sut_3', 'cihly_1', 'cihly_2', 'sut_2', 'strepy_1'];
+// Velké skvrny přes víc dlaždic na dlažbě a silnici: rozbíjejí opakování vzoru.
+const STAINS = ['skvrna_tma_1', 'skvrna_tma_2', 'skvrna_tma_3', 'skvrna_prach_1', 'skvrna_prach_2', 'skvrna_rez_1', 'skvrna_tma_2', 'skvrna_prach_1'];
 
 const ODDITY_SCALE = { mlok: 2, stalin_hlava: 2, kafka: 2, miminko: 2, kun_lucerna: 2, metronom: 2 };
 
@@ -84,9 +100,12 @@ export class WorldScene extends Phaser.Scene {
         this.talkingOddities = [];
         this.placeStops();
         this.placeProps();
+        this.placeFences();
         this.placeOddities();
+        this.placeClutter();
         this.drawShadows();
         this.placeLights();
+        this.edgeFog();
         this.refreshGates();
         // Příchod: z jiného místa na jeho přestupní dlaždici (arrivals), jinak na start místa.
         // skok z ladění (src/debug.js) na zadanou dlaždici, jen jednou
@@ -95,6 +114,9 @@ export class WorldScene extends Phaser.Scene {
         this.spawnPlayer({ L: 0, ...(jumpTile ?? this.def?.arrivals?.[this.state.arrival] ?? this.def?.start ?? startTile(this.map)) });
         this.checkStops();
         this.fadeHouses();
+        // přepadení: zastavení s ambush, které ještě není vyřešené, osloví hrdinku samo hned po příchodu
+        const ambush = Object.entries(this.stops).find(([, stop]) => stop.ambush && !holds(this.state, stop.ambush.until));
+        if (ambush) this.time.delayedCall(500, () => this.talk(ambush[0]));
         this.cameras.main.startFollow(this.player, true, 0.12, 0.12);
         // Ladění obrazu jako Fallout 1 a 2: méně sytosti, nižší jas, víc kontrastu, tmavé okraje (jen kamera světa, lišta ne).
         if (this.cameras.main.postFX) {
@@ -191,11 +213,20 @@ export class WorldScene extends Phaser.Scene {
             // bokem z mostovky jen po schodech; nad korytem je bahno neprůchozí samo
             [b0 - 1, b1 + 1].forEach((b) => { if (!isBed(a, b) && !stairs.has(ISO.key(a, b))) this.blocked.add(ISO.key(a, b)); });
         }
+        // polorovina obrazovky za vzdálenou hranou mostovky (pod zábradlím km_far)
+        const e0 = ISO.toScreen(-8, b0 - 0.5), e1 = ISO.toScreen(this.map.len + 8, b0 - 0.5);
+        const behind = this.make.graphics().fillStyle(0xffffff).fillPoints([{ x: e0.x, y: e0.y }, { x: e1.x, y: e1.y }, { x: e1.x, y: e1.y - 6000 }, { x: e0.x, y: e0.y - 6000 }], true).createGeometryMask();
         for (let a = 0; a < this.map.len; a++) for (let b = 0; b < this.map.wid; b++) {
             if (isBed(a, b) || onDeck(a, b)) continue;
+            // úzké zálivy koryta u věží (br.noQuay): vysoká zeď by tam stála sama jako stěna bez domu, břeh zůstane plochý
+            if ((br.noQuay ?? []).some((r) => a >= r.a0 && a <= r.a1 && b >= r.b0 && b <= r.b1)) continue;
             const v = ISO.hash(a, b, 61) < 0.5 ? '' : '2';
-            if (isBed(a, b + 1)) put(`km_quay_b${v}`, ISO.toScreen(a - 0.5, b + 0.5), ISO.depthOf(a, b) - 1, 8, 40);
-            if (isBed(a - 1, b)) put(`km_quay_a${v}`, ISO.toScreen(a - 0.5, b + 0.5), ISO.depthOf(a, b) - 1, 80, 40);
+            const walls = [];
+            if (isBed(a, b + 1)) walls.push(put(`km_quay_b${v}`, ISO.toScreen(a - 0.5, b + 0.5), ISO.depthOf(a, b) - 1, 8, 40));
+            if (isBed(a - 1, b)) walls.push(put(`km_quay_a${v}`, ISO.toScreen(a - 0.5, b + 0.5), ISO.depthOf(a, b) - 1, 80, 40));
+            // zeď za mostem visí hluboko dolů a na obrazovce by přešla přes mostovku (ta je jen namalovaná zem): ořízne ji
+            // maska podél vzdálené hrany mostu
+            if (b < b0 && b >= b0 - 6) walls.forEach((w) => w.setMask(behind));
         }
     }
 
@@ -255,6 +286,21 @@ export class WorldScene extends Phaser.Scene {
         }
         put('ns_konec_sever', ISO.toScreen(g0 - 0.5, b1 + 0.5), ISO.depthOf(g0 - 1, b1, 2), 290, 200);
         put('ns_konec_jih', ISO.toScreen(g1 + 0.5, b1 + 0.5), ISO.depthOf(g1 + 1, b0) - 1, 340, 170);
+        // Stanice Vyšehrad pod silnicí (ns.station): silnice je o patro výš než terén u mola. Od její hrany (řada edge)
+        // visí k +b stěna po dílech: holý beton, prosklené čelo haly, klín do terénu; řada pod hranou je neprůchozí
+        // kromě schodů. Ve vozovce je díra s kolejemi (plochý sprite na zemi, dlaždice pod ním blokují).
+        const st = ns.station;
+        if (st) {
+            const face = (key, a) => { put(key, ISO.toScreen(a - 0.5, st.edge + 0.5), ISO.depthOf(a, st.edge + 1) - 1, 0, 48); this.blocked.add(ISO.key(a, st.edge + 1)); };
+            for (let a = st.plain[0]; a <= st.plain[1]; a++) face('ns_st_zed', a);
+            for (let a = st.glass[0]; a <= st.glass[1]; a++) face(ISO.hash(a, st.edge, 65) < 0.4 ? 'ns_st_sklo2' : 'ns_st_sklo', a);
+            [1, 2, 3].forEach((n, i) => face(`ns_st_klin_${n}`, st.glass[1] + 1 + i));
+            put('ns_st_schody', ISO.toScreen(st.stairs - 0.5, st.edge + 0.5), -88000, 0, 80);
+            const h = st.hole, hf = this.textures.getFrame('landmarks_nusle', 'lm_vysehrad');
+            const anchor = this.center({ a: h.a0, b: h.b0 + h.dpt - 1 });
+            this.add.image(anchor.x, anchor.y + ISO.TH / 2, 'landmarks_nusle', 'lm_vysehrad').setOrigin((ISO.TW / 2) * h.dpt / hf.width, 1).setDepth(-88000);
+            for (let a = h.a0; a < h.a0 + h.w; a++) for (let b = h.b0; b < h.b0 + h.dpt; b++) this.blocked.add(ISO.key(a, b));
+        }
         const f = this.textures.getFrame(SHEET, 'ns_lano');
         const foot = this.pos(g0 - 1, ns.rope);
         this.add.image(foot.x, foot.y, SHEET, 'ns_lano').setOrigin(20 / f.width, ((g1 - g0 + 2) * 32 + 120) / f.height).setDepth(ISO.depthOf(g0 - 1, ns.rope));
@@ -325,9 +371,22 @@ export class WorldScene extends Phaser.Scene {
                 // obří věci (mlok, hlavy, socha, ručička metronomu) jsou dvojnásobné, celým násobkem kvůli pixelům
                 if (ODDITY_SCALE[key]) thing.setScale(ODDITY_SCALE[key]);
                 const said = ODDITY_LINES[key];
-                if (said) this.talkingOddities.push({ sprite: thing, lines: [...said.lines, ...(ODDITY_GROUPS[said.group] ?? [])], next: 0 });
+                if (said) this.talkingOddities.push({ sprite: thing, lines: [...said.lines, ...(ODDITY_GROUPS[said.group] ?? [])], next: 0, tile: { a: spot.a, b: spot.b } });
                 this.props?.push(thing);
             });
+        });
+    }
+
+    // Ploty (def.fences): dílce plot_1–3 po dlaždicích od from do to, podél a, nebo podél b (zrcadlený sprite). Dlaždice
+    // pod dílcem je neprůchozí; střed dílce u země je střed dlaždice.
+    placeFences() {
+        (this.def?.fences ?? []).forEach(({ from, to }) => {
+            const alongA = from[1] === to[1];
+            for (let a = from[0]; a <= to[0]; a++) for (let b = from[1]; b <= to[1]; b++) {
+                const h = ISO.hash(a, b, 71), c = this.center({ a, b });
+                this.add.image(c.x, c.y, 'atlas', h < 0.5 ? 'plot_1' : h < 0.8 ? 'plot_2' : 'plot_3').setOrigin(33 / 66, 62 / 80).setFlipX(!alongA).setDepth(ISO.depthOf(a, b));
+                this.blocked.add(ISO.key(a, b));
+            }
         });
     }
 
@@ -642,9 +701,11 @@ export class WorldScene extends Phaser.Scene {
     placeStopSprites(lay) {
         const props = lay.props.map((p) => {
             const thing = this.placeThing(p.key, p.a, p.b, p);
+            // under: rekvizita leží pod postavou zastavení (loďka, ve které převozník stojí), hloubku má těsně pod ní
+            if (p.under) thing.setDepth(this.depthAt(lay.npc.a, lay.npc.b, lay.npc.L ?? 0) - 0.5);
             // rekvizita s hláškami (say: klíč v ODDITY_LINES) se nebere jako zastavení, klepnutí ukáže bublinu (nutrie na břehu)
             const said = p.say && ODDITY_LINES[p.say];
-            if (said) this.talkingOddities.push({ sprite: thing, lines: [...said.lines, ...(ODDITY_GROUPS[said.group] ?? [])], next: 0 });
+            if (said) this.talkingOddities.push({ sprite: thing, lines: [...said.lines, ...(ODDITY_GROUPS[said.group] ?? [])], next: 0, tile: { a: p.a, b: p.b } });
             return thing;
         });
         const npc = this.placeThing(lay.npc.key, lay.npc.a, lay.npc.b, { L: lay.npc.L, anim: lay.npc.anim, flip: lay.npc.flip ?? (lay.npc.b > lay.approach.b || lay.npc.a < lay.approach.a) });
@@ -761,6 +822,16 @@ export class WorldScene extends Phaser.Scene {
             const block = p.k === 'tree' && 'g.'.includes(at(ta, tb));
             this.props.push(this.placeAt(key, p.a, p.b, { flip: h < 0.5, block }));
         });
+        // vraky aut na silnicích (rules.wreck): jen tam, kde je kolem dokola volno (jedna zablokovaná dlaždice uprostřed
+        // volné plochy cestu nezavře), aspoň 6 dlaždic od sebe a od zastavení
+        const wrecks = [], stopsAt = Object.values(this.def?.stops ?? {}).flatMap((st) => [st.npc, st.approach]);
+        const open = (a, b) => [-1, 0, 1].every((da) => [-1, 0, 1].every((db) => this.free(a + da, b + db)));
+        if (rules.wreck) for (let a = 2; a < this.map.len - 2; a++) for (let b = 2; b < this.map.wid - 2; b++) {
+            if (at(a, b) !== 'r' || !ok(a, b) || ISO.hash(a, b, 71) >= rules.wreck || !open(a, b)) continue;
+            if ([...wrecks, ...stopsAt].some((w) => Math.abs(w.a - a) + Math.abs(w.b - b) < 6)) continue;
+            wrecks.push({ a, b });
+            this.props.push(this.placeAt(ISO.pick(WRECKS, a, b, 72), a, b, { flip: ISO.hash(a, b, 73) < 0.5, block: true }));
+        }
         // sudy s ohněm od sebe a od ohňů zastavení (Robin) aspoň 12 dlaždic
         const fires = Object.values(this.def?.stops ?? {}).flatMap((st) => (st.props ?? []).filter((p) => p.key === 'barrel_fire'));
         for (let a = 0; a < this.map.len; a++) for (let b = 0; b < this.map.wid; b++) {
@@ -774,6 +845,72 @@ export class WorldScene extends Phaser.Scene {
             else if (rules.fire && 'p.g'.includes(c) && ISO.hash(a, b, 31) < rules.fire && fires.every((f) => Math.abs(f.a - a) + Math.abs(f.b - b) > 12)) { fires.push({ a, b }); this.props.push(this.placeAt('barrel_fire', a, b, { block: true })); }
             else if (rules.junk && 'p.g'.includes(c) && ISO.hash(a, b, 25) < rules.junk) this.props.push(this.placeAt(ISO.pick(rules.junkKeys, a, b, 26), ja, jb, { flip: ISO.hash(a, b, 27) < 0.5, block: true }));
         }
+    }
+
+    // Drobnosti a skvrny na zemi: leží naplocho pod stíny domů, nic neblokují. Jeden Blitter místo stovek obrázků.
+    // Hustotu místa násobí def.props.clutter (výchozí 1), na horní úrovni a pod střechou haly se nesype.
+    placeClutter() {
+        const k = this.def?.props?.clutter ?? 1;
+        if (!k) return;
+        const at = (a, b) => (this.inside(a, b) ? this.map.ground[a][b] : ' ');
+        const stains = this.add.blitter(0, 0, 'atlas').setDepth(-96000);
+        const litter = this.add.blitter(0, 0, 'atlas').setDepth(-95000);
+        const put = (blit, frame, a, b, alpha = 1, flip = false) => {
+            const f = this.textures.getFrame('atlas', frame);
+            if (!f) return;
+            const { x, y } = ISO.toScreen(a, b);
+            blit.create(Math.round(x - f.width / 2), Math.round(y - f.height / 2), frame).setAlpha(alpha).setFlipX(flip);
+        };
+        for (let a = 0; a < this.map.len; a++) for (let b = 0; b < this.map.wid; b++) {
+            const c = at(a, b), rule = CLUTTER[c];
+            if (!rule || this.upper.has(ISO.key(a, b)) || !this.inside(a - 1, b - 1) || !this.inside(a + 1, b + 1)) continue;
+            if ('rpn'.includes(c) && this.inside(a - 2, b - 2) && this.inside(a + 2, b + 2) && ISO.hash(a, b, 51) < 0.07 * k) put(stains, ISO.pick(STAINS, a, b, 52), a, b, 0.55 + ISO.hash(a, b, 53) * 0.35, ISO.hash(a, b, 54) < 0.5);
+            const wall = [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([da, db]) => at(a + da, b + db) === 'b');
+            // dva hody na dlaždici, u zdi hustěji: omítka a cihly padají pod fasádu
+            for (let i = 0; i < 2; i++) {
+                if (ISO.hash(a, b, 55 + i * 10) >= rule.rate * k * (wall ? 1.6 : 1) * (i ? 0.5 : 1)) continue;
+                const key = wall && ISO.hash(a, b, 56 + i * 10) < 0.6 ? ISO.pick(CLUTTER_WALL, a, b, 57 + i * 10) : ISO.pick(rule.keys, a, b, 58 + i * 10);
+                put(litter, `smeti_${key}`, a + (ISO.hash(a, b, 59 + i * 10) - 0.5) * 0.8, b + (ISO.hash(a, b, 60 + i * 10) - 0.5) * 0.8, 1, ISO.hash(a, b, 61 + i * 10) < 0.5);
+            }
+        }
+    }
+
+    // Okraj mapy se nekončí ostrou hranou do černa: poslední tři dlaždice se do tmy rozpadnou (Bayer 4 × 4, žádný plynulý
+    // přechod). Pásy u okrajů k divákovi leží nad vším (ztratí se v nich i paty domů), u vzdálených okrajů jen na zemi,
+    // jinak by děrovaly domy, které před nimi stojí.
+    edgeFog() {
+        const N = 3, bayer = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+        const [r, g, bl] = [CRT.bg >> 16 & 255, CRT.bg >> 8 & 255, CRT.bg & 255];
+        // díl pásu: p dlaždic dovnitř mapy (osa a nebo b, směr sign), q jedna dlaždice podél okraje
+        const strip = (axis, sign, near) => {
+            const key = `edge_fog_${axis}${sign > 0 ? 'p' : 'm'}`;
+            const grid = (p, q) => (axis === 'a' ? [sign * p, q] : [q, sign * p]);
+            const corners = [[0, 0], [N, 0], [N, 1], [0, 1]].map(([p, q]) => { const [da, db] = grid(p, q); return [(da + db) * ISO.TW / 2, (db - da) * ISO.TH / 2]; });
+            const x0 = Math.min(...corners.map((c) => c[0])), y0 = Math.min(...corners.map((c) => c[1]));
+            if (!this.textures.exists(key)) {
+                const W = Math.max(...corners.map((c) => c[0])) - x0, H = Math.max(...corners.map((c) => c[1])) - y0;
+                const canvas = this.textures.createCanvas(key, W, H), ctx = canvas.getContext(), img = ctx.createImageData(W, H);
+                for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+                    const X = (x + 0.5 + x0) / (ISO.TW / 2), Y = (y + 0.5 + y0) / (ISO.TH / 2), da = (X - Y) / 2, db = (X + Y) / 2;
+                    const p = sign * (axis === 'a' ? da : db), q = axis === 'a' ? db : da;
+                    if (p < 0 || p >= N || q < 0 || q >= 1) continue;
+                    if ((1 - p / N) ** 1.6 <= (bayer[(y & 3) * 4 + (x & 3)] + 0.5) / 16) continue;
+                    const i = (y * W + x) * 4;
+                    img.data[i] = r; img.data[i + 1] = g; img.data[i + 2] = bl; img.data[i + 3] = 255;
+                }
+                ctx.putImageData(img, 0, 0);
+                canvas.refresh();
+            }
+            const blit = this.add.blitter(0, 0, key).setDepth(near ? 950000 : -88000);
+            const count = axis === 'a' ? this.map.wid : this.map.len;
+            for (let i = 0; i < count; i++) {
+                const edge = sign > 0 ? -0.5 : (axis === 'a' ? this.map.len : this.map.wid) - 0.5;
+                const o = axis === 'a' ? ISO.toScreen(edge, i - 0.5) : ISO.toScreen(i - 0.5, edge);
+                blit.create(Math.round(o.x + x0), Math.round(o.y + y0));
+            }
+        };
+        // k divákovi jsou okraje a = 0 a b = šířka (dole na obrazovce), vzdálené a = délka a b = 0
+        strip('a', 1, true); strip('b', -1, true); strip('a', -1, false); strip('b', 1, false);
     }
 
     // Světlo ohňů (Fallout: tma a v ní ostrůvky teplého světla). Kaluž je elipsa 2 : 1 v pěti stupních jasu s rozptylem
@@ -797,18 +934,24 @@ export class WorldScene extends Phaser.Scene {
 
     placeLights() {
         this.lightTexture();
-        // vlastní světla místa (def.lights: dlaždice a velikost, třeba vchod do haly na Hlaváku), jen na zemi
-        (this.def?.lights ?? []).forEach(({ a, b, L = 0, scale = 1 }) => {
+        // vlastní světla místa (def.lights: dlaždice, velikost, barva, podmínka `if`; vchod do haly na Hlaváku, žárovka
+        // u mlynáře, reflektor na Hradě), jen na zemi. Světlo s podmínkou se rozsvítí, až platí (refreshStops).
+        this.placeLightsOf = (this.def?.lights ?? []).map(({ a, b, L = 0, scale = 1, tint = 0xff9a4a, alpha = 0.8, if: cond }) => {
             const { x, y } = ISO.foot(a, b);
             // na horní úrovni (vozovka magistrály) nad vozovkou, ale pod vším, co na ní stojí
-            const pool = this.add.image(x, y - ISO.FOOT - this.height(a, b, L), 'light_pool').setDepth(L === 1 ? UPPER_DEPTH - 1 : -89000).setBlendMode(Phaser.BlendModes.ADD).setTint(0xff9a4a).setAlpha(0.8).setScale(scale);
+            const pool = this.add.image(x, y - ISO.FOOT - this.height(a, b, L), 'light_pool').setDepth(L === 1 ? UPPER_DEPTH - 1 : -89000).setBlendMode(Phaser.BlendModes.ADD).setTint(tint).setAlpha(alpha).setScale(scale);
             const seed = ISO.hash(a, b, 9);
-            this.time.addEvent({ delay: 140, loop: true, callback: () => pool.setAlpha(0.8 * (0.9 + 0.1 * Math.sin(this.time.now / 260 + seed * 40))) });
+            this.time.addEvent({ delay: 140, loop: true, callback: () => pool.setAlpha(alpha * (0.9 + 0.1 * Math.sin(this.time.now / 260 + seed * 40))) });
+            pool.setVisible(!cond || holds(this.state, cond));
+            return { pool, cond };
         });
         const fires = this.children.list.filter((o) => typeof o.frame?.name === 'string' && o.frame.name.startsWith('barrel_fire'));
         fires.forEach((f) => {
             const ground = this.add.image(f.x, f.y - 4, 'light_pool').setDepth(-89000).setBlendMode(Phaser.BlendModes.ADD).setTint(0xff7a2a).setAlpha(0.85).setScale(1.8);
             const near = this.add.image(f.x, f.y - 30, 'light_pool').setDepth(f.depth + 0.5).setBlendMode(Phaser.BlendModes.ADD).setTint(0xff8a3a).setAlpha(0.28).setScale(0.7, 1.1);
+            // kouř nad ohněm: pár pixelových obláčků (kour_1–3), stoupají, řídnou a táhnou po větru k +a
+            if (this.textures.getFrame('atlas', 'kour_1')) this.add.particles(f.x, f.y - 46, 'atlas', { frame: ['kour_1', 'kour_2', 'kour_3'], lifespan: 3200, frequency: 520, quantity: 1,
+                speedY: { min: -20, max: -11 }, speedX: { min: 2, max: 9 }, x: { min: -3, max: 3 }, scale: { start: 1, end: 2 }, alpha: { start: 0.55, end: 0 } }).setDepth(f.depth + 0.6);
             // plápolání: jas skáče po krocích, ne plynule
             const seed = ISO.hash(Math.round(f.x), Math.round(f.y), 9);
             this.time.addEvent({ delay: 110, loop: true, callback: () => {
@@ -900,6 +1043,10 @@ export class WorldScene extends Phaser.Scene {
         this.facingUp = false;
         this.shadow = this.add.ellipse(x, y, 40, 16, 0x000000, 0.35).setDepth(this.depthAt(this.tile.a, this.tile.b, this.tile.L, -1));
         this.player = this.add.sprite(x, y, 'atlas', 'hero_0').setOrigin(0.5, 1).setDepth(this.depthAt(this.tile.a, this.tile.b, this.tile.L));
+        // Hrdinka se ve tmě nesmí ztratit: slabá světlá kaluž na zemi pod ní a přísvit na postavě (jdou s ní, update).
+        this.lightTexture();
+        this.halo = this.add.image(x, y, 'light_pool').setBlendMode(Phaser.BlendModes.ADD).setTint(0xffe6c0).setAlpha(0.24).setScale(0.8);
+        this.haloNear = this.add.image(x, y - 30, 'light_pool').setBlendMode(Phaser.BlendModes.ADD).setTint(0xffe6c0).setAlpha(0.16).setScale(0.3, 0.75);
     }
 
     stopAt(a, b, L = 0) {
@@ -1036,6 +1183,8 @@ export class WorldScene extends Phaser.Scene {
         this.facingUp = false;
         this.player.stop(); this.player.setFrame('hero_0');
         const result = await runDialog(this, id);
+        // přepadení (ambush u zastavení): dokud není vyřešené, jinudy to nejde a odchod i útěk vrací na předchozí místo
+        if (stop.ambush && !holds(this.state, stop.ambush.until) && !result.dead && !result.travel && !result.ending) result.travel = stop.ambush.back;
         if (result.rope) await this.ropeCross(result.rope);
         this.input.keyboard.resetKeys();
         this.busy = false;
@@ -1093,6 +1242,7 @@ export class WorldScene extends Phaser.Scene {
     // Zastavení po rozhovoru: co má zmizet (hideIf), vybledne; co se vyřešilo (after), se přehraje na nové místo.
     refreshStops() {
         this.reach = null;
+        (this.placeLightsOf ?? []).forEach(({ pool, cond }) => pool.setVisible(!cond || holds(this.state, cond)));
         Object.values(this.stops).forEach((stop) => {
             if (stop.hideIf && holds(this.state, stop.hideIf)) {
                 const sprites = [stop.sprite, ...stop.propSprites];
@@ -1131,6 +1281,10 @@ export class WorldScene extends Phaser.Scene {
 
     update(time, delta) {
         if (!this.player) return;
+        // světlo jde s hrdinkou: na zemi pod stíny a věcmi, na mostě a na magistrále těsně pod ní
+        const lit = this.player.visible && this.shadow.visible, raised = this.tile.L === 1 || this.height(this.tile.a, this.tile.b, this.tile.L) > 0;
+        this.halo.setPosition(this.player.x, this.player.y).setDepth(raised ? this.player.depth - 2 : -89000).setVisible(lit);
+        this.haloNear.setPosition(this.player.x, this.player.y - 30).setDepth(this.player.depth + 0.5).setVisible(lit);
         if (this.tileMark.visible && (this.busy || this.hud?.panel || this.hud?.quests || this.hud?.jumps)) this.tileMark.setVisible(false);
         if (!this.moving) {
             if (!this.path.length && !this.busy && !this.hud?.panel && !this.hud?.quests && !this.hud?.jumps) {

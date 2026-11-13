@@ -179,7 +179,7 @@ je voda, svahy suť, mostovka b 17–20, zlom a 44–49 (`src/places/nuselak.js
 - **Mourek**: strážmistr pošle pro kotě za zlom; za kotě dá služební odznak (talisman, Ústa +1).
 - **Souprava metra C** v troubě mostu: služební kniha, poslední zápis „Dispečink hlásí, že trouba mostu pracuje. Pokyn
   Kanceláře kanálu: provoz nezastavovat. 14.37 —“ (útržek).
-- Stanice Vyšehrad: eskalátor jede jen jedním směrem, dolů.
+- Stanice Vyšehrad: jediná stanice céčka bez eskalátorů, hala pod silnicí u konce mostu se stropem v úrovni mostovky, strop je propadlý; dírou je vidět nástupiště a vůz, který z Pankráce dojel jen napůl.
 
 ### Loďkařský konec
 
@@ -290,7 +290,7 @@ se točí poprvé za sto let a Kampa je jediné místo v Praze, kde svítí ž
 - **Destička pro štěstí** (hlídač Nepomuckého): destička je v bednách Galerie. Ústa na neteř, nebo koupit. Odměna:
   hlídač prozradí, kudy se chodí na Malou Stranu kolem stráže, a jedno sáhnutí zadarmo: do konce hry jeden hod v boji
   navíc.
-- **Kanci z Kampy**: v parku ryjí kanci z Petřína a hlídají cestu k mlýnu. Boj, nebo Oko a obejít je po náplavce.
+- **Kanci z Kampy**: na dvoře mlýna ryjí kanci z Petřína, mezi mlynářem a kolem. Boj, nebo Oko a obejít je po náplavce.
 
 ### Zastavení
 

@@ -401,7 +401,7 @@ try {
     await converse('pilar', ['Ne. Nesu', 'Co prodáváte', 'Benzínová směs'], '16-stop-pilar');
     await converse('netere', ['Kolik dáte', 'Nesu to na Hrad'], '16-stop-netere');
     await converse('hlidac', ['Proč tu zůstal'], '16-stop-hlidac');
-    await converse('kanci', ['Obejít je'], '16-stop-kanci');
+    await converse('kanci', ['Odlákat je'], '16-stop-kanci');
     await converse('mlynar', ['Přehradím', 'Do toho', 'Můžete nabít'], '16-stop-mlynar');
     const s3 = await st();
     if (!s3.flags.nabito || !s3.items.includes('zasilka') || !s3.flags.odmitla_netere) throw new Error(`most: ${JSON.stringify({ flags: s3.flags, items: s3.items })}`);
@@ -411,6 +411,9 @@ try {
   if (await enter('malastrana')) {
     const thugs = await run(() => Boolean(window.konecna.scene.getScene('world').stops.vymahaci));
     if (!thugs) throw new Error('po odmítnutí neteře mají čekat vymahači');
+    // vymahači pošťačku přepadnou hned po příchodu (rozhovor začne sám); tržiště jí věří, tak ji pustí
+    await converse('vymahaci', ['Pan Fanta mi věří'], '18-stop-vymahaci');
+    if (!(await st()).flags.vymahaci_pryc) throw new Error('vymahači měli pustit pošťačku, které tržiště věří');
     await converse('pani', ['Co se stalo tu noc'], '18-stop-pani');
     await converse('velvyslanec', ['Nesu zprávy'], '18-stop-velvyslanec');
     await converse('straz', ['Nemáte hlad'], '18-stop-straz');
@@ -445,19 +448,19 @@ try {
     console.log('final', await state());
   }
   if (!ONLY) {
-    // Ladění: skok z adresy rovnou na místo a dlaždici, panel skoků na F2 (src/debug.js).
+    // Ladění: skok z adresy rovnou na místo a dlaždici, panel skoků na L (src/debug.js, jen se zapnutým laděním).
     await page.goto(`${BASE}?misto=nuselak&a=50&b=19&jizdenky=5${FAST && `&${FAST}`}`);
     await page.waitForFunction(() => { const w = window.konecna?.scene.getScene('world'); return window.konecna.scene.isActive('world') && w.player && w.state.place === 'nuselak'; }, null, { timeout: 60000 });
     const jumped = await run(() => { const w = window.konecna.scene.getScene('world'); return { ...w.tile, created: w.state.flags.created }; });
     console.log('skok', JSON.stringify(jumped));
     if (jumped.a !== 50 || jumped.b !== 19 || !jumped.created) throw new Error(`skok na Nuselák nesedí: ${JSON.stringify(jumped)}`);
     await page.waitForTimeout(500);
-    await page.keyboard.press('F2');
+    await page.keyboard.press('l');
     await page.waitForTimeout(300);
     await shot('23-ladeni-skok');
     await page.keyboard.press('7');
     await page.waitForFunction(() => { const w = window.konecna.scene.getScene('world'); return window.konecna.scene.isActive('world') && w.player && w.state.place === 'hrad'; }, null, { timeout: 60000 });
-    console.log('skok F2 hrad');
+    console.log('skok L hrad');
   }
 } catch (e) {
     if (e !== DONE) {

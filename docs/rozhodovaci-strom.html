@@ -9,7 +9,7 @@ ol.choices{list-style:none;padding-left:0}ol.choices>li{margin:.5rem 0;padding:.
 p.rule{background:#fef3c7;border-left:4px solid #f59e0b;padding:.4rem .75rem}p.where{color:#57534e;font-size:.9em}
 </style></head><body>
 <h1>KONEČNÁ. Nevystupovat. – rozhodovací strom</h1>
-<p class="rule">Každý bod má číslo. Volby jsou X.Y.Z, repliky postav jsou v šedých blocích, účinky červeně, podmínky modře. Volby, které v dané chvíli nejdou zvolit (chybí věc, úkol nezačal), se ve hře vůbec nezobrazí. Zkouška vlastnosti se ukáže, i když chybí jeden bod: o bod méně než požadavek vyjde na 25 %, na požadavek na 50 %, o bod víc na 75 %, o dva a víc vždy. Nepovedená stojí Ruka 2 životy, Oko 1 život, Ústa 1 bod důvěry skupiny postavy a znovu jde zkusit až s vyšší vlastností.</p>
+<p class="rule">Každý bod má číslo. Volby jsou X.Y.Z, repliky postav jsou v šedých blocích, účinky červeně, podmínky modře. Volby, které v dané chvíli nejdou zvolit (chybí věc, úkol nezačal), se ve hře vůbec nezobrazí. Zkouška vlastnosti se ukáže, i když chybí jeden bod: o bod méně než požadavek vyjde na 25 %, na požadavek na 50 %, o bod víc na 75 %, o dva a víc vždy. Nepovedená stojí Ruka 2 srdce, Oko 1 srdce, Ústa 1 bod důvěry skupiny postavy a znovu jde zkusit až s vyšší vlastností.</p>
 <h2 id="1"><a class="n" href="#1">1</a> Úvod (filmeček)</h2>
 <h4 id="1.1"><a class="n" href="#1.1">1.1</a> Snímek cs_city</h4>
 <ul class="say"><li>Praha. Rok po tom, co se stalo.</li><li>Pošťačka z Jindřišské roznáší dál. Nikdo jí neřekl, že nemá. V tašce má jediný dopis, nedoručený od toho dne, pro výpravčího z Hlavního nádraží.</li><li>Vltava teče jinudy, Nuselák je na dva kusy a na Hradě se svítí. O tom, kdo tam sedí, se mluví jen potichu.</li></ul>
@@ -102,14 +102,15 @@ p.rule{background:#fef3c7;border-left:4px solid #f59e0b;padding:.4rem .75rem}p.w
 <ul class="say"><li>Tři psi leží u Robinova ohně. Vůdce zvedne hlavu, pozná vás a zase ji položí. Nejmenší pes vrtí ocasem.</li></ul>
 <ol class="choices">
 </ol>
-<h4 id="3.5.2"><a class="n" href="#3.5.2">3.5.2</a> uzel stoji</h4>
+<h4 id="3.5.2"><a class="n" href="#3.5.2">3.5.2</a> uzel utekli</h4>
+<ul class="say"><li>Psi vzali čáru k Robinovi. Pěšina je volná a od ohně je slyšet jen uražené kňučení.</li></ul>
+<h4 id="3.5.3"><a class="n" href="#3.5.3">3.5.3</a> uzel stoji</h4>
 <ul class="say"><li>První pes vrčí. Druhý vrčí hlasitěji. Třetí kouká na vaši tašku, jako by věděl, co v ní je.</li></ul>
 <ol class="choices">
-<li id="3.5.2.1"><a class="n" href="#3.5.2.1">3.5.2.1</a> <b>Probít se.</b> <span class="fx">→ boj: Smečka ze Sherwoodu (po výhře: úkol Psi ze Sherwoodu: done, vlajka psi_ok, +3 zkušeností)</span></li>
-<li id="3.5.2.2"><a class="n" href="#3.5.2.2">3.5.2.2</a> <b>Najít díru, kudy lezou do tunelu, a zatarasit ji.</b> <span class="req">vyžaduje zkouška Oko 2</span> <span class="else">když neplatí: Díru v plotě najde jen Oko 2.</span> <span class="fx">→ úkol Psi ze Sherwoodu: done, vlajka psi_ok, +2 zkušeností; konec rozhovoru</span><div class="reply">Za keřem je v plotě díra a za ní šachta do tunelu. Zatarasíte ji plechem z boudy. Psi čuchají, nechápou a nakonec se odloudají k Robinovu ohni.</div></li>
-<li id="3.5.2.3"><a class="n" href="#3.5.2.3">3.5.2.3</a> <b>Chytit vůdce za obojek a odtáhnout ho k Robinovi.</b> <span class="req">vyžaduje zkouška Ruka 2 (vlastnost postavy)</span> <span class="else">když neplatí: Udržet vůdce smečky chce Ruku 2.</span> <span class="fx">→ úkol Psi ze Sherwoodu: done, vlajka psi_ok, +2 zkušeností; konec rozhovoru</span><div class="reply">Vůdce se vzpírá, ale obojek drží. Ostatní dva jdou za ním. Robin je uváže u ohně a dělá, že to byl jeho nápad.</div></li>
-<li id="3.5.2.4"><a class="n" href="#3.5.2.4">3.5.2.4</a> <b>Zařvat na ně jako pošťačka na psa.</b> <span class="req">vyžaduje zkouška Ústa 2</span> <span class="else">když neplatí: Zahnat psy hlasem chce Ústa 2.</span> <span class="fx">→ úkol Psi ze Sherwoodu: done, vlajka psi_ok, +2 zkušeností; konec rozhovoru</span><div class="reply">Každý pes na světě zná pošťačku, která už toho má dost. Psi stáhnou ocasy, odplíží se k Robinovu ohni a dělají, že spí.</div></li>
-<li id="3.5.2.5"><a class="n" href="#3.5.2.5">3.5.2.5</a> <b>Couvnout.</b> <span class="fx">→ konec rozhovoru</span></li>
+<li id="3.5.3.1"><a class="n" href="#3.5.3.1">3.5.3.1</a> <b>Probít se.</b> <span class="fx">→ boj: Smečka ze Sherwoodu (po výhře: úkol Psi ze Sherwoodu: done, vlajka psi_ok, +3 zkušeností); dál utekli</span></li>
+<li id="3.5.3.2"><a class="n" href="#3.5.3.2">3.5.3.2</a> <b>Najít díru, kudy lezou do tunelu, a zatarasit ji.</b> <span class="req">vyžaduje zkouška Oko 2</span> <span class="else">když neplatí: Díru v plotě najde jen Oko 2.</span> <span class="fx">→ úkol Psi ze Sherwoodu: done, vlajka psi_ok, +2 zkušeností; konec rozhovoru</span><div class="reply">Za keřem je v plotě díra a za ní šachta do tunelu. Zatarasíte ji plechem z boudy. Psi čuchají, nechápou a nakonec se odloudají k Robinovu ohni.</div></li>
+<li id="3.5.3.3"><a class="n" href="#3.5.3.3">3.5.3.3</a> <b>Chytit vůdce za obojek a odtáhnout ho k Robinovi.</b> <span class="req">vyžaduje zkouška Ruka 2 (vlastnost postavy)</span> <span class="else">když neplatí: Udržet vůdce smečky chce Ruku 2.</span> <span class="fx">→ úkol Psi ze Sherwoodu: done, vlajka psi_ok, +2 zkušeností; konec rozhovoru</span><div class="reply">Vůdce se vzpírá, ale obojek drží. Ostatní dva jdou za ním. Robin je uváže u ohně a dělá, že to byl jeho nápad.</div></li>
+<li id="3.5.3.4"><a class="n" href="#3.5.3.4">3.5.3.4</a> <b>Zařvat na ně jako pošťačka na psa.</b> <span class="req">vyžaduje zkouška Ústa 2</span> <span class="else">když neplatí: Zahnat psy hlasem chce Ústa 2.</span> <span class="fx">→ úkol Psi ze Sherwoodu: done, vlajka psi_ok, +2 zkušeností; konec rozhovoru</span><div class="reply">Každý pes na světě zná pošťačku, která už toho má dost. Psi stáhnou ocasy, odplíží se k Robinovu ohni a dělají, že spí.</div></li>
 </ol>
 <h3 id="3.6"><a class="n" href="#3.6">3.6</a> Výpravčí (nastupiste)</h3>
 <p class="where">Karta: Ruka 1, Ústa 1, Oko 2. Hlásí vlaky, které nejedou. Chce jediné: aby nádražní hodiny zase šly.</p>
@@ -133,7 +134,6 @@ p.rule{background:#fef3c7;border-left:4px solid #f59e0b;padding:.4rem .75rem}p.w
 <li id="4.1.1.1"><a class="n" href="#4.1.1.1">4.1.1.1</a> <b>Sjet soupravou zpátky na Hlavák. (1 jízdenka)</b> <span class="req">vyžaduje bez vlajky jizdni_rad, aspoň 1 jízdenek</span> <span class="else">když neplatí: Zpátky se jezdí za jízdenku.</span> <span class="fx">→ -1 jízdenek, přestup: hlavak</span></li>
 <li id="4.1.1.2"><a class="n" href="#4.1.1.2">4.1.1.2</a> <b>Sjet zpátky na Hlavák. Znám jízdní řád.</b> <span class="req">vyžaduje vlajka jizdni_rad</span> <span class="else">když neplatí: Zadarmo jen se znalostí jízdního řádu.</span> <span class="fx">→ přestup: hlavak</span></li>
 <li id="4.1.1.3"><a class="n" href="#4.1.1.3">4.1.1.3</a> <b>Sjet zpátky na Hlavák. Strojvedoucí mě zná.</b> <span class="req">vyžaduje bez vlajky jizdni_rad, důvěra metro aspoň 2</span> <span class="else">když neplatí: Zadarmo jen tomu, komu metro věří (2).</span> <span class="fx">→ přestup: hlavak</span></li>
-<li id="4.1.1.4"><a class="n" href="#4.1.1.4">4.1.1.4</a> <b>Zůstat nahoře.</b> <span class="fx">→ konec rozhovoru</span></li>
 </ol>
 <h3 id="4.2"><a class="n" href="#4.2">4.2</a> Dispečerka (dispecerka)</h3>
 <p class="where">Karta: Ruka 1, Ústa 2, Oko 2. Hlas metra ze stanice Muzeum. Řád pro ni znamená, že je všechno zapsané.</p>
@@ -173,7 +173,6 @@ p.rule{background:#fef3c7;border-left:4px solid #f59e0b;padding:.4rem .75rem}p.w
 <ol class="choices">
 <li id="4.4.2.1"><a class="n" href="#4.4.2.1">4.4.2.1</a> <b>Shodit ji.</b> <span class="fx">→ boj: Nutrie z Vltavy (po výhře: vlajka nutrie_pryc, +2 zkušeností); dál knoflik</span></li>
 <li id="4.4.2.2"><a class="n" href="#4.4.2.2">4.4.2.2</a> <b>Vyplašit ji kamínkem.</b> <span class="req">vyžaduje zkouška Oko 2</span> <span class="else">když neplatí: Trefit nutrii kamínkem chce Oko 2.</span> <span class="fx">→ vlajka nutrie_pryc, +1 zkušeností; dál knoflik</span><div class="reply">Kamínek cvakne o trychtýř. Nutrie seskočí a uraženě si sedne na kraj vody, zády k vám.</div></li>
-<li id="4.4.2.3"><a class="n" href="#4.4.2.3">4.4.2.3</a> <b>Nechat ji být.</b> <span class="fx">→ konec rozhovoru</span></li>
 </ol>
 <h4 id="4.4.3"><a class="n" href="#4.4.3">4.4.3</a> uzel knoflik</h4>
 <ul class="say"><li>Knoflík jde ztuha, ale jde.</li></ul>
@@ -197,7 +196,6 @@ p.rule{background:#fef3c7;border-left:4px solid #f59e0b;padding:.4rem .75rem}p.w
 <li id="4.5.2.5"><a class="n" href="#4.5.2.5">4.5.2.5</a> <b>Kolego, seděli jsme naproti dvacet let. Pusťte mě.</b> <span class="req">vyžaduje zkouška Ústa 3 (vlastnost postavy)</span> <span class="else">když neplatí: Ukecat revizora chce Ústa 3.</span> <span class="fx">→ úkol K vodě: done, vlajka molo, +2 zkušeností; konec rozhovoru</span><div class="reply">…Dvacet dva. A ani jednou jste mě nepustila bez fronty. Projděte. Ale zapíšu si to jako služební cestu.</div></li>
 <li id="4.5.2.6"><a class="n" href="#4.5.2.6">4.5.2.6</a> <b>Proklouznout na molo, až se otočí k vodě.</b> <span class="req">vyžaduje zkouška Oko 3 (vlastnost postavy)</span> <span class="else">když neplatí: Proklouznout revizorovi chce Oko 3.</span> <span class="fx">→ úkol K vodě: done, vlajka molo, +2 zkušeností</span><div class="reply">Revizor se otočí k vodě, kde něco šplouchne. Než se otočí zpátky, jste na molu. Dělá, že vás nevidí. Kolegyni se nekontroluje.</div></li>
 <li id="4.5.2.7"><a class="n" href="#4.5.2.7">4.5.2.7</a> <b>Metro za mě ručí. Zeptejte se dispečerky.</b> <span class="req">vyžaduje důvěra metro aspoň 2</span> <span class="else">když neplatí: Jen když vám metro věří (2).</span> <span class="fx">→ úkol K vodě: done, vlajka molo; konec rozhovoru</span><div class="reply">Dispečerka o vás mluvila. Za koho ručí metro, toho nekontroluju. Projděte.</div></li>
-<li id="4.5.2.8"><a class="n" href="#4.5.2.8">4.5.2.8</a> <b>Ještě se vrátím.</b> <span class="fx">→ konec rozhovoru</span></li>
 </ol>
 <h3 id="4.6"><a class="n" href="#4.6">4.6</a> Kuřačka (kuracka)</h3>
 <p class="where">Karta: Ruka 2, Ústa 2, Oko 3. Loďkařská hlídka. Cigareta, motorový člun a přesvědčení, že suchá země se přeceňuje.</p>
@@ -306,14 +304,13 @@ p.rule{background:#fef3c7;border-left:4px solid #f59e0b;padding:.4rem .75rem}p.w
 <ul class="say"><li>Flotila stojí pod mostem. Admirál na přídi drží proslov k lachtanům, protože lidi už ho slyšeli.</li><li>Kormidelník vám podá ruku. „Na Vyšehrad. Kolem skály a jsme doma.“</li></ul>
 <ol class="choices">
 <li id="5.7.3.1"><a class="n" href="#5.7.3.1">5.7.3.1</a> <b>Nalodit se. Na Vyšehrad.</b> <span class="fx">→ KONEC: Po vodě</span></li>
-<li id="5.7.3.2"><a class="n" href="#5.7.3.2">5.7.3.2</a> <b>Ještě ne.</b> <span class="fx">→ konec rozhovoru</span></li>
 </ol>
 <h3 id="5.8"><a class="n" href="#5.8">5.8</a> Stanice Vyšehrad (vysehrad)</h3>
 <p class="where">Začíná uzlem: hub.</p>
 <h4 id="5.8.1"><a class="n" href="#5.8.1">5.8.1</a> uzel hub</h4>
-<ul class="say"><li>Stanice Vyšehrad. Céčko tu skončilo uprostřed mostu, ale eskalátory pořád jedou. Jen jedním směrem, dolů.</li></ul>
+<ul class="say"><li>Stanice Vyšehrad. Jediná na céčku, kde se nejezdí po eskalátorech: hala visí pod silnicí, strop má v úrovni mostu a koleje z ní vedou rovnou do jeho trouby.</li><li>Strop se propadl. Dírou je vidět nástupiště, tabule se jménem a vůz, který z Pankráce dojel jen napůl.</li></ul>
 <ol class="choices">
-<li id="5.8.1.1"><a class="n" href="#5.8.1.1">5.8.1.1</a> <b>Sjet eskalátorem dolů.</b> <span class="req">vyžaduje jen jednou</span> <span class="fx">→ +1 zkušeností</span><div class="reply">Dole je tma, voda po kotníky a jízdní řád z doby před tím. Nahoru se jde pěšky, sto padesát schodů. Nohy si to pamatují.</div></li>
+<li id="5.8.1.1"><a class="n" href="#5.8.1.1">5.8.1.1</a> <b>Nahlédnout dírou na nástupiště.</b> <span class="req">vyžaduje jen jednou</span> <span class="fx">→ +1 zkušeností</span><div class="reply">Na nástupišti leží sklo a jízdní řád z doby před tím. Koleje míří do trouby mostu a po pár stech metrech končí ve vzduchu. Z tunelu od Pankráce táhne.</div></li>
 </ol>
 <h2 id="6"><a class="n" href="#6">6</a> Staromák</h2>
 <h3 id="6.1"><a class="n" href="#6.1">6.1</a> Kuřačka (tyn)</h3>
@@ -380,7 +377,6 @@ p.rule{background:#fef3c7;border-left:4px solid #f59e0b;padding:.4rem .75rem}p.w
 <li id="6.4.2.1"><a class="n" href="#6.4.2.1">6.4.2.1</a> <b>Vyhnat je.</b> <span class="fx">→ boj: Nutrie z výlohy (po výhře: vlajka nutrie2_pryc, +2 zkušeností); dál hak</span></li>
 <li id="6.4.2.2"><a class="n" href="#6.4.2.2">6.4.2.2</a> <b>Vyrazit mříž a vytrhnout hák, než se proberou.</b> <span class="req">vyžaduje zkouška Ruka 3</span> <span class="else">když neplatí: Vyrazit mříž chce Ruku 3.</span> <span class="fx">→ vlajka nutrie2_pryc, vlajka hak_venku, +2 zkušeností; konec rozhovoru</span><div class="reply">Mříž povolí na první kopnutí. Hák jde ven i s kusem norka. Nutrie se ani nestačí probudit.</div></li>
 <li id="6.4.2.3"><a class="n" href="#6.4.2.3">6.4.2.3</a> <b>Vytáhnout hák zezadu, dírou ve stropě.</b> <span class="req">vyžaduje zkouška Oko 3</span> <span class="else">když neplatí: Díru ve stropě butiku najde jen Oko 3.</span> <span class="fx">→ vlajka nutrie2_pryc, vlajka hak_venku, +2 zkušeností; konec rozhovoru</span><div class="reply">Z patra butiku vede do výlohy díra po lustru. Hák jde ven, nutrie spí dál, zabalené v kašmíru.</div></li>
-<li id="6.4.2.4"><a class="n" href="#6.4.2.4">6.4.2.4</a> <b>Nechat je být.</b> <span class="fx">→ konec rozhovoru</span></li>
 </ol>
 <h4 id="6.4.3"><a class="n" href="#6.4.3">6.4.3</a> uzel hak</h4>
 <ul class="say"><li>Nutrie se krčí v rohu výlohy. Hák trčí z kožichů.</li></ul>
@@ -423,7 +419,6 @@ p.rule{background:#fef3c7;border-left:4px solid #f59e0b;padding:.4rem .75rem}p.w
 <li id="6.7.1.2"><a class="n" href="#6.7.1.2">6.7.1.2</a> <b>Loďkou, dokud je Admirál na obhlídce.</b> <span class="req">vyžaduje vlajka apostolove, bez vlajky admiral_prevoz</span> <span class="else">když neplatí: Kdy loďka zůstává bez dozoru, ví jen Orlojník.</span> <span class="fx">→ důvěra lodkari -1, přestup: most</span><div class="reply">Celá hodina. Admirál odplouvá na obhlídku, jeho loďka se houpe u lávky. Nikdo se nedívá.</div></li>
 <li id="6.7.1.3"><a class="n" href="#6.7.1.3">6.7.1.3</a> <b>Po střechách Klementina.</b> <span class="req">vyžaduje zkouška Oko 2</span> <span class="else">když neplatí: Cestu po střechách najde jen Oko 2.</span> <span class="fx">→ vlajka klementinum, +2 zkušeností, přestup: most</span><div class="reply">Po lešení nahoru, po střechách Klementina k hvězdárenské věži s Atlasem. Dole Karlova jako černé zrcadlo. Ke Křižovníkům dolů po hromosvodu.</div></li>
 <li id="6.7.1.4"><a class="n" href="#6.7.1.4">6.7.1.4</a> <b>Přeplavat Karlovu ke Křižovníkům.</b> <span class="req">vyžaduje zkouška Ruka 3</span> <span class="else">když neplatí: Přeplavat Karlovu chce Ruku 3.</span> <span class="fx">→ +2 zkušeností, přestup: most</span><div class="reply">Voda je studená a černá a pod ní jsou výlohy. Plavete kolem Klementina, Atlas na věži se dívá jinam. Ke Křižovníkům dolezete mokrá, ale celá.</div></li>
-<li id="6.7.1.5"><a class="n" href="#6.7.1.5">6.7.1.5</a> <b>Ještě ne.</b> <span class="fx">→ konec rozhovoru</span></li>
 </ol>
 <h2 id="7"><a class="n" href="#7">7</a> Karlův most a Kampa</h2>
 <h3 id="7.1"><a class="n" href="#7.1">7.1</a> Pilař (pilar)</h3>
@@ -483,42 +478,45 @@ p.rule{background:#fef3c7;border-left:4px solid #f59e0b;padding:.4rem .75rem}p.w
 <li id="7.3.2.3"><a class="n" href="#7.3.2.3">7.3.2.3</a> <b>Proč tu zůstal jen Nepomucký?</b> <span class="req">vyžaduje jen jednou</span><div class="reply">Je přišroubovanej. Loďkaři na něj vytáhli pilu a pila přišla o zub. Svatej Jan drží. Do Vltavy ho už jednou hodili, podruhý nechce.</div></li>
 </ol>
 <h3 id="7.4"><a class="n" href="#7.4">7.4</a> Kanci z Kampy (kanci)</h3>
-<p class="where">Karta: Ruka 3, Ústa 1, Oko 1. Tlupa divočáků pod platany na Kampě. Vůdce má kly jako bodáky.</p>
+<p class="where">Karta: Ruka 3, Ústa 1, Oko 1. Tlupa divočáků z Petřína na dvoře mlýna. Vůdce má kly jako bodáky.</p>
 <p class="where">Začíná uzlem: klid (když vlajka kanci_ok), jinak ryji.</p>
 <h4 id="7.4.1"><a class="n" href="#7.4.1">7.4.1</a> uzel klid</h4>
-<ul class="say"><li>Kanci ryjí pod platany a vás si nevšímají. Vůdce funí, jako by si stěžoval na počasí.</li></ul>
+<ul class="say"><li>Kanci ryjí pod platany na Kampě a vás si nevšímají. Vůdce funí, jako by si stěžoval na počasí.</li></ul>
 <ol class="choices">
 </ol>
-<h4 id="7.4.2"><a class="n" href="#7.4.2">7.4.2</a> uzel ryji</h4>
-<ul class="say"><li>Pod platany ryjí kanci z Petřína. Vůdce zvedne rypák a dívá se na vás jako na lanýž.</li></ul>
+<h4 id="7.4.2"><a class="n" href="#7.4.2">7.4.2</a> uzel pryc</h4>
+<ul class="say"><li>Kanci se táhnou přes lávku pod platany. Dvůr mlýna je volný.</li></ul>
+<h4 id="7.4.3"><a class="n" href="#7.4.3">7.4.3</a> uzel ryji</h4>
+<ul class="say"><li>Na dvoře mlýna ryjí kanci z Petřína, přesně mezi vámi a kolem. Vůdce zvedne rypák a dívá se na vás jako na lanýž.</li></ul>
 <ol class="choices">
-<li id="7.4.2.1"><a class="n" href="#7.4.2.1">7.4.2.1</a> <b>Prorazit si cestu.</b> <span class="fx">→ boj: Kanci z Kampy (po výhře: vlajka kanci_ok, +3 zkušeností); konec rozhovoru</span></li>
-<li id="7.4.2.2"><a class="n" href="#7.4.2.2">7.4.2.2</a> <b>Obejít je po náplavce.</b> <span class="req">vyžaduje zkouška Oko 2</span> <span class="else">když neplatí: Cestu po náplavce uvidí jen Oko 2.</span> <span class="fx">→ vlajka kanci_ok, +2 zkušeností; konec rozhovoru</span><div class="reply">Po kamenech podél Čertovky. Mokré boty, ale celá kůže. Kanci ryjí dál.</div></li>
-<li id="7.4.2.3"><a class="n" href="#7.4.2.3">7.4.2.3</a> <b>Couvnout.</b> <span class="fx">→ konec rozhovoru</span></li>
+<li id="7.4.3.1"><a class="n" href="#7.4.3.1">7.4.3.1</a> <b>Prorazit si cestu.</b> <span class="fx">→ boj: Kanci z Kampy (po výhře: vlajka kanci_ok, +3 zkušeností); dál pryc</span></li>
+<li id="7.4.3.2"><a class="n" href="#7.4.3.2">7.4.3.2</a> <b>Odlákat je šrotem pod platany.</b> <span class="req">vyžaduje zkouška Oko 2</span> <span class="else">když neplatí: Prasklý pytel šrotu u dveří mlýna uvidí jen Oko 2.</span> <span class="fx">→ vlajka kanci_ok, vlajka kanci_srot, +2 zkušeností; konec rozhovoru</span><div class="reply">U dveří mlýna stojí prasklý pytel šrotu. Nasypete z něj cestičku přes lávku až pod platany na Kampě. Vůdce zvedne rypák, zafuní a celá tlupa jde po šrotu za ním. Dvůr je volný.</div></li>
 </ol>
 <h3 id="7.5"><a class="n" href="#7.5">7.5</a> Mlynář z Kampy (mlynar)</h3>
 <p class="where">Obchod (volba „obchod“, zboží s cenou; na co nejsou jízdenky, je vidět zašedlé): Chleba z mlýna za 4 (když úkol Proud: done).</p>
 <p class="where">Karta: Ruka 3, Ústa 1, Oko 2. Roztočil mlýnské kolo na Čertovce a rozsvítil jedinou žárovku v Praze, která nesvítí Hradu.</p>
-<p class="where">Začíná uzlem: kanci (když bez vlajky kanci_ok), jinak prvni (když bez vlajky met_mlynar), jinak hub.</p>
+<p class="where">Začíná uzlem: kanci (když bez vlajky kanci_ok), jinak srot (když vlajka kanci_srot, bez vlajky met_mlynar), jinak prvni (když bez vlajky met_mlynar), jinak hub.</p>
 <h4 id="7.5.1"><a class="n" href="#7.5.1">7.5.1</a> uzel kanci</h4>
-<ul class="say"><li>Mlynář na vás volá přes Čertovku: „Kanci! Pod platany jsou kanci! Dokud tam ryjou, sem nechoďte, kolo počká.“</li></ul>
+<ul class="say"><li>Mlynář stojí ve dveřích a volá přes dvůr: „Kanci! Mám na dvoře kance! Dokud tu ryjou, ke kolu se nedostanu já ani vy. Kolo počká.“</li></ul>
 <ol class="choices">
 </ol>
-<h4 id="7.5.2"><a class="n" href="#7.5.2">7.5.2</a> uzel prvni → úkol Proud: nest, vlajka met_mlynar → dál hub</h4>
+<h4 id="7.5.2"><a class="n" href="#7.5.2">7.5.2</a> uzel srot → dál prvni</h4>
+<ul class="say"><li>To byl můj šrot. Celý pytel, na zimu. No, lepší šrot pod platany než kanci na dvoře. Na to bych nepřišel.</li></ul>
+<h4 id="7.5.3"><a class="n" href="#7.5.3">7.5.3</a> uzel prvni → úkol Proud: nest, vlajka met_mlynar → dál hub</h4>
 <ul class="say"><li>Slyšíte? Nic neslyšíte. Čertovka má všechnu vodu, co Vltavě zbyla. Kolo se po sto letech zase roztočilo a já k němu připojil generátor a žárovku. Jedinou v Praze, která nesvítí Hradu.</li><li>Před týdnem se zaseklo. Žárovka zhasla a Kampa je zase potmě.</li></ul>
-<h4 id="7.5.3"><a class="n" href="#7.5.3">7.5.3</a> uzel hub</h4>
+<h4 id="7.5.4"><a class="n" href="#7.5.4">7.5.4</a> uzel hub</h4>
 <ul class="say"><li>Kolo stojí, žárovka nesvítí. Co chcete?</li></ul>
 <ol class="choices">
-<li id="7.5.3.1"><a class="n" href="#7.5.3.1">7.5.3.1</a> <b>Uvolním to kolo.</b> <span class="req">vyžaduje úkol Proud: nest, zkouška Ruka 2</span> <span class="else">když neplatí: Odvalit, co v kole vězí, chce Ruku 2.</span> <span class="fx">→ dál kolo</span></li>
-<li id="7.5.3.2"><a class="n" href="#7.5.3.2">7.5.3.2</a> <b>Přehradím Čertovku, ať se dá kolo vyprostit.</b> <span class="req">vyžaduje úkol Proud: nest, zkouška Oko 2</span> <span class="else">když neplatí: Kde přehradit proud, uvidí jen Oko 2.</span> <span class="fx">→ dál kolo</span></li>
-<li id="7.5.3.3"><a class="n" href="#7.5.3.3">7.5.3.3</a> <b>Můžete nabít tuhle krabičku?</b> <span class="req">vyžaduje v tašce Krabička od Fanty, bez vlajky nabito, úkol Proud: done</span> <span class="else">když neplatí: Až kolo zase jede a jen se zásilkou v tašce.</span> <span class="fx">→ vlajka nabito, +2 zkušeností</span><div class="reply">Ukažte. Má to konektor jako všechno z metra. Vybitá na dřeň, kdo ví jak dlouho. Hotovo. Teď by to promluvilo, kdyby to někdo pustil. Nevím, co to je, a nechci to vědět. Proud se neptá, co pohání.</div></li>
-<li id="7.5.3.4"><a class="n" href="#7.5.3.4">7.5.3.4</a> <b>Prodáte něco? (otevře obchod)</b></li>
-<li id="7.5.3.5"><a class="n" href="#7.5.3.5">7.5.3.5</a> <b>Proč jste přemaloval Lennonovu zeď?</b> <span class="req">vyžaduje jen jednou</span><div class="reply">Potmě ji stejně nikdo neviděl. Teď je na ní jediný nápis: PROUD. Když žárovka svítí, přečte si ho celá Kampa.</div></li>
+<li id="7.5.4.1"><a class="n" href="#7.5.4.1">7.5.4.1</a> <b>Uvolním to kolo.</b> <span class="req">vyžaduje úkol Proud: nest, zkouška Ruka 2</span> <span class="else">když neplatí: Odvalit, co v kole vězí, chce Ruku 2.</span> <span class="fx">→ dál kolo</span></li>
+<li id="7.5.4.2"><a class="n" href="#7.5.4.2">7.5.4.2</a> <b>Přehradím Čertovku, ať se dá kolo vyprostit.</b> <span class="req">vyžaduje úkol Proud: nest, zkouška Oko 2</span> <span class="else">když neplatí: Kde přehradit proud, uvidí jen Oko 2.</span> <span class="fx">→ dál kolo</span></li>
+<li id="7.5.4.3"><a class="n" href="#7.5.4.3">7.5.4.3</a> <b>Můžete nabít tuhle krabičku?</b> <span class="req">vyžaduje v tašce Krabička od Fanty, bez vlajky nabito, úkol Proud: done</span> <span class="else">když neplatí: Až kolo zase jede a jen se zásilkou v tašce.</span> <span class="fx">→ vlajka nabito, +2 zkušeností</span><div class="reply">Ukažte. Má to konektor jako všechno z metra. Vybitá na dřeň, kdo ví jak dlouho. Hotovo. Teď by to promluvilo, kdyby to někdo pustil. Nevím, co to je, a nechci to vědět. Proud se neptá, co pohání.</div></li>
+<li id="7.5.4.4"><a class="n" href="#7.5.4.4">7.5.4.4</a> <b>Prodáte něco? (otevře obchod)</b></li>
+<li id="7.5.4.5"><a class="n" href="#7.5.4.5">7.5.4.5</a> <b>Proč jste přemaloval Lennonovu zeď?</b> <span class="req">vyžaduje jen jednou</span><div class="reply">Potmě ji stejně nikdo neviděl. Teď je na ní jediný nápis: PROUD. Když žárovka svítí, přečte si ho celá Kampa.</div></li>
 </ol>
-<h4 id="7.5.4"><a class="n" href="#7.5.4">7.5.4</a> uzel kolo</h4>
+<h4 id="7.5.5"><a class="n" href="#7.5.5">7.5.5</a> uzel kolo</h4>
 <ul class="say"><li>Kolo vězí na něčem kamenném.</li></ul>
 <ol class="choices">
-<li id="7.5.4.1"><a class="n" href="#7.5.4.1">7.5.4.1</a> <b>Do toho.</b> <span class="fx">→ úkol Proud: done, vlajka zarovka, +3 zkušeností; dál hub</span><div class="reply">V lopatkách vězí kamenná hlava, nějaký svatý, kterého loďkaři nedovezli. Hlava jde ven a kolo se rozjede. Žárovka nad mlýnem se rozsvítí. Lidi pod oblouky mostu zvednou hlavy. Mlynář pláče a tvrdí, že je to prach. Kdybyste měla něco na nabití, proud je zadarmo. Pro vás.</div></li>
+<li id="7.5.5.1"><a class="n" href="#7.5.5.1">7.5.5.1</a> <b>Do toho.</b> <span class="fx">→ úkol Proud: done, vlajka zarovka, +3 zkušeností; dál hub</span><div class="reply">V lopatkách vězí kamenná hlava, nějaký svatý, kterého loďkaři nedovezli. Hlava jde ven a kolo se rozjede. Žárovka nad mlýnem se rozsvítí. Lidi pod oblouky mostu zvednou hlavy. Mlynář pláče a tvrdí, že je to prach. Kdybyste měla něco na nabití, proud je zadarmo. Pro vás.</div></li>
 </ol>
 <h3 id="7.6"><a class="n" href="#7.6">7.6</a> Mostecká ulice (mostecka)</h3>
 <p class="where">Začíná uzlem: ulice.</p>
@@ -526,7 +524,6 @@ p.rule{background:#fef3c7;border-left:4px solid #f59e0b;padding:.4rem .75rem}p.w
 <ul class="say"><li>Malostranská mostecká věž. Za ní Mostecká a Malá Strana, suchá a netknutá, jako by se nic nestalo.</li></ul>
 <ol class="choices">
 <li id="7.6.1.1"><a class="n" href="#7.6.1.1">7.6.1.1</a> <b>Jít na Malou Stranu.</b> <span class="fx">→ přestup: malastrana</span></li>
-<li id="7.6.1.2"><a class="n" href="#7.6.1.2">7.6.1.2</a> <b>Ještě ne.</b> <span class="fx">→ konec rozhovoru</span></li>
 </ol>
 <h2 id="8"><a class="n" href="#8">8</a> Malá Strana</h2>
 <h3 id="8.1"><a class="n" href="#8.1">8.1</a> Mostecká ulice (mostecka_zpet)</h3>
@@ -535,23 +532,21 @@ p.rule{background:#fef3c7;border-left:4px solid #f59e0b;padding:.4rem .75rem}p.w
 <ul class="say"><li>Mostecká dolů k mostu. Za věží suché koryto, Kampa a mlýn.</li></ul>
 <ol class="choices">
 <li id="8.1.1.1"><a class="n" href="#8.1.1.1">8.1.1.1</a> <b>Vrátit se na most a na Kampu.</b> <span class="fx">→ přestup: most</span></li>
-<li id="8.1.1.2"><a class="n" href="#8.1.1.2">8.1.1.2</a> <b>Zůstat.</b> <span class="fx">→ konec rozhovoru</span></li>
 </ol>
 <h3 id="8.2"><a class="n" href="#8.2">8.2</a> Tržištní vymahači (vymahaci)</h3>
 <p class="where">Karta: Ruka 3, Ústa 2, Oko 1. Fantovi kluci na Malé Straně. Řetěz, baseballka a nic osobního.</p>
 <p class="where">Začíná uzlem: sedi (když vlajka vymahaci_pryc), jinak cekaji. Zmizí, když bez vlajky odmitla_netere.</p>
 <h4 id="8.2.1"><a class="n" href="#8.2.1">8.2.1</a> uzel sedi</h4>
-<ul class="say"><li>Vymahači sedí u morového sloupu a dělají, že vás nevidí. Větší si zapaluje, menší kouká do zdi.</li></ul>
+<ul class="say"><li>Vymahači sedí na obrubníku u Mostecké a dělají, že vás nevidí. Větší si zapaluje, menší kouká do zdi.</li></ul>
 <ol class="choices">
 </ol>
 <h4 id="8.2.2"><a class="n" href="#8.2.2">8.2.2</a> uzel cekaji → vlajka met_vymahaci</h4>
-<ul class="say"><li>Dva chlapi v teplákovkách se opírají o morový sloup. „Pošťačka. Pan Fanta vzkazuje, že nespolupracujete. Tak jdeme spolupracovat my.“</li></ul>
+<ul class="say"><li>Sotva vyjdete z Mostecké, postaví se vám do cesty dva chlapi v teplákovkách. Jinudy to nejde, ulice je jejich.</li><li>„Pošťačka. Pan Fanta vzkazuje, že nespolupracujete. Tak jdeme spolupracovat my.“</li></ul>
 <ol class="choices">
 <li id="8.2.2.1"><a class="n" href="#8.2.2.1">8.2.2.1</a> <b>Tak pojďte.</b> <span class="fx">→ boj: Tržištní vymahači (po výhře: vlajka vymahaci_pryc, +3 zkušeností); konec rozhovoru</span></li>
 <li id="8.2.2.2"><a class="n" href="#8.2.2.2">8.2.2.2</a> <b>Kolik stojí, abyste mě neviděli? (10 jízdenek)</b> <span class="req">vyžaduje aspoň 10 jízdenek, zkouška Ústa 2 (vlastnost postavy)</span> <span class="else">když neplatí: Usmlouvat to chce Ústa 2 a deset jízdenek.</span> <span class="fx">→ -10 jízdenek, vlajka vymahaci_pryc, +1 zkušeností</span><div class="reply">Deset. Neviděli jsme vás. Ani tu krabičku. Panu Fantovi řekneme, že jste byla rychlá.</div></li>
-<li id="8.2.2.3"><a class="n" href="#8.2.2.3">8.2.2.3</a> <b>Odstrčit je a projít.</b> <span class="req">vyžaduje zkouška Ruka 3 (vlastnost postavy)</span> <span class="else">když neplatí: Odstrčit vymahače chce Ruku 3.</span> <span class="fx">→ vlajka vymahaci_pryc, +2 zkušeností</span><div class="reply">Menšího odstrčíte do sloupu, větší couvne. „Dobře, dobře. Panu Fantovi řekneme, že jste byla rychlá.“</div></li>
+<li id="8.2.2.3"><a class="n" href="#8.2.2.3">8.2.2.3</a> <b>Odstrčit je a projít.</b> <span class="req">vyžaduje zkouška Ruka 3 (vlastnost postavy)</span> <span class="else">když neplatí: Odstrčit vymahače chce Ruku 3.</span> <span class="fx">→ vlajka vymahaci_pryc, +2 zkušeností</span><div class="reply">Menšího odstrčíte do zdi, větší couvne. „Dobře, dobře. Panu Fantovi řekneme, že jste byla rychlá.“</div></li>
 <li id="8.2.2.4"><a class="n" href="#8.2.2.4">8.2.2.4</a> <b>Pan Fanta mi věří. Zeptejte se ho.</b> <span class="req">vyžaduje důvěra trziste aspoň 3</span> <span class="else">když neplatí: Jen když vám tržiště věří (3).</span> <span class="fx">→ vlajka vymahaci_pryc</span><div class="reply">…Věří? Vám? To nám neřekl. Dobře, my jsme vás neviděli, vy jste neviděla nás.</div></li>
-<li id="8.2.2.5"><a class="n" href="#8.2.2.5">8.2.2.5</a> <b>Couvnout k mostu.</b> <span class="fx">→ konec rozhovoru</span></li>
 </ol>
 <h3 id="8.3"><a class="n" href="#8.3">8.3</a> Paní z Nerudovky (pani)</h3>
 <p class="where">Karta: Ruka 1, Ústa 3, Oko 2. Bydlí v Nerudovce odjakživa. Pamatuje si noc, kdy přišla voda.</p>
@@ -586,13 +581,11 @@ p.rule{background:#fef3c7;border-left:4px solid #f59e0b;padding:.4rem .75rem}p.w
 <ol class="choices">
 <li id="8.5.1.1"><a class="n" href="#8.5.1.1">8.5.1.1</a> <b>Mám směs. Jedna ku pětadvaceti.</b> <span class="req">vyžaduje v tašce Benzínová směs</span> <span class="else">když neplatí: Trabant chce benzín; směs prodává Pilař na mostě.</span> <span class="fx">→ − Benzínová směs, vlajka trabant_najedeny, +2 zkušeností; dál jede</span><div class="reply">Glo glo glo… Dvoutakt! Konečně někdo, kdo rozumí strojům. Nasedněte. Kam? Na Hrad? Mám diplomatickou značku, salutujou mi.</div></li>
 <li id="8.5.1.2"><a class="n" href="#8.5.1.2">8.5.1.2</a> <b>Proč nadáváte na Černého?</b> <span class="req">vyžaduje jen jednou</span><div class="reply">Protože mě udělal symbolem. Symbol nepotřebuje benzín, říkal. Symbol potřebuje pochopení. Já potřebuju benzín, pochopení mám až po krk.</div></li>
-<li id="8.5.1.3"><a class="n" href="#8.5.1.3">8.5.1.3</a> <b>Nechat ho nadávat.</b> <span class="fx">→ konec rozhovoru</span></li>
 </ol>
 <h4 id="8.5.2"><a class="n" href="#8.5.2">8.5.2</a> uzel jede</h4>
 <ul class="say"><li>Trabant poskakuje na místě. „Nahoru? Jedu, kam chcete, hlavně ne zpátky do zahrady.“</li></ul>
 <ol class="choices">
 <li id="8.5.2.1"><a class="n" href="#8.5.2.1">8.5.2.1</a> <b>Na Hrad.</b> <span class="fx">→ vlajka trabantem, přestup: hrad</span></li>
-<li id="8.5.2.2"><a class="n" href="#8.5.2.2">8.5.2.2</a> <b>Ještě počkej.</b> <span class="fx">→ konec rozhovoru</span></li>
 </ol>
 <h3 id="8.6"><a class="n" href="#8.6">8.6</a> Hradní stráž (straz)</h3>
 <p class="where">Karta: Ruka 3, Ústa 1, Oko 1. Hradní stráž. Rok nejí nic než z automatu, ale stojí dál.</p>
@@ -628,13 +621,11 @@ p.rule{background:#fef3c7;border-left:4px solid #f59e0b;padding:.4rem .75rem}p.w
 <li id="8.8.1.1"><a class="n" href="#8.8.1.1">8.8.1.1</a> <b>Rozehnat je.</b> <span class="fx">→ boj: Holubi ze Zámeckých schodů (po výhře: vlajka holubi_pryc, +2 zkušeností); dál nahore</span></li>
 <li id="8.8.1.2"><a class="n" href="#8.8.1.2">8.8.1.2</a> <b>Vyšplhat po zídce kolem hejna.</b> <span class="req">vyžaduje zkouška Ruka 2</span> <span class="else">když neplatí: Vyšplhat po zídce chce Ruku 2.</span> <span class="fx">→ vlajka holubi_pryc, +1 zkušeností; dál nahore</span></li>
 <li id="8.8.1.3"><a class="n" href="#8.8.1.3">8.8.1.3</a> <b>Proklouznout, když se dívají jinam.</b> <span class="req">vyžaduje zkouška Oko 2</span> <span class="else">když neplatí: Proklouznout mezi holuby chce Oko 2.</span> <span class="fx">→ vlajka holubi_pryc, +1 zkušeností; dál nahore</span></li>
-<li id="8.8.1.4"><a class="n" href="#8.8.1.4">8.8.1.4</a> <b>Couvnout.</b> <span class="fx">→ konec rozhovoru</span></li>
 </ol>
 <h4 id="8.8.2"><a class="n" href="#8.8.2">8.8.2</a> uzel nahore</h4>
 <ul class="say"><li>Nahoře na schodech je zídka a za ní Hradčanské náměstí. Stráž stojí u brány, bokem k vám.</li></ul>
 <ol class="choices">
 <li id="8.8.2.1"><a class="n" href="#8.8.2.1">8.8.2.1</a> <b>Počkat na poledne a přelézt.</b> <span class="req">vyžaduje vlajka cesta_schody</span> <span class="else">když neplatí: Kdy se nikdo nedívá, ví hlídač Nepomuckého nebo stráž sama.</span> <span class="fx">→ vlajka schody_cesta, +2 zkušeností, přestup: hrad</span><div class="reply">Poledne. Stráž si mění místa a na minutu se nikdo nedívá. Přes zídku, přes náměstí a Matyášovou branou dovnitř.</div></li>
-<li id="8.8.2.2"><a class="n" href="#8.8.2.2">8.8.2.2</a> <b>Vrátit se dolů.</b> <span class="fx">→ konec rozhovoru</span></li>
 </ol>
 <h2 id="9"><a class="n" href="#9">9</a> Hrad</h2>
 <h3 id="9.1"><a class="n" href="#9.1">9.1</a> Průvodkyně (pruvodkyne)</h3>
@@ -682,7 +673,6 @@ p.rule{background:#fef3c7;border-left:4px solid #f59e0b;padding:.4rem .75rem}p.w
 <li id="9.2.2.3"><a class="n" href="#9.2.2.3">9.2.2.3</a> <b>Tady máte výplatu. (20 jízdenek)</b> <span class="req">vyžaduje aspoň 20 jízdenek</span> <span class="else">když neplatí: Výplata pro dva stojí dvacet jízdenek.</span> <span class="fx">→ -20 jízdenek, vlajka ochranka_pryc, +1 zkušeností; konec rozhovoru</span><div class="reply">Pravé jízdenky z metra! Neoznačené! Nic jsme neviděli, jdeme na oběd, poprvé po roce.</div></li>
 <li id="9.2.2.4"><a class="n" href="#9.2.2.4">9.2.2.4</a> <b>Protlačit se mezi nimi ke dveřím.</b> <span class="req">vyžaduje zkouška Ruka 3 (vlastnost postavy)</span> <span class="else">když neplatí: Protlačit se mezi ochrankou chce Ruku 3.</span> <span class="fx">→ vlajka ochranka_pryc, +2 zkušeností</span><div class="reply">Prosmýknete se ramenem mezi nimi. Než se otočí, držíte kliku. „Tak jo. Za tohle nás neplatí.“</div></li>
 <li id="9.2.2.5"><a class="n" href="#9.2.2.5">9.2.2.5</a> <b>Projít silou.</b> <span class="fx">→ boj: Ochranka kanálu (po výhře: vlajka ochranka_pryc, +3 zkušeností); konec rozhovoru</span></li>
-<li id="9.2.2.6"><a class="n" href="#9.2.2.6">9.2.2.6</a> <b>Ustoupit.</b> <span class="fx">→ konec rozhovoru</span></li>
 </ol>
 <h3 id="9.3"><a class="n" href="#9.3">9.3</a> Ředitel Kanceláře kanálu (reditel)</h3>
 <p class="where">Karta: Ruka 1, Ústa 3, Oko 3. Ředitel Kanceláře kanálu. Sedí v buňce na nádvoří a podepisuje.</p>
@@ -713,14 +703,13 @@ p.rule{background:#fef3c7;border-left:4px solid #f59e0b;padding:.4rem .75rem}p.w
 <ol class="choices">
 <li id="9.4.2.1"><a class="n" href="#9.4.2.1">9.4.2.1</a> <b>Zapojit krabičku a pustit záznam do rozhlasu.</b> <span class="req">vyžaduje v tašce Krabička od Fanty</span> <span class="else">když neplatí: Bez zásilky není co přehrát.</span> <span class="fx">→ vlajka prehrala, KONEC: podle stavu (přehraný a nabitý záznam Řád, vybitý nebo žádný Řád bez důkazu, jinak tržiště)</span></li>
 <li id="9.4.2.2"><a class="n" href="#9.4.2.2">9.4.2.2</a> <b>Nemám co zapojit. Zapnout aspoň rozhlas.</b> <span class="req">vyžaduje bez Krabička od Fanty</span> <span class="else">když neplatí: Jen bez zásilky.</span> <span class="fx">→ KONEC: podle stavu (přehraný a nabitý záznam Řád, vybitý nebo žádný Řád bez důkazu, jinak tržiště)</span></li>
-<li id="9.4.2.3"><a class="n" href="#9.4.2.3">9.4.2.3</a> <b>Ještě ne.</b> <span class="fx">→ konec rozhovoru</span></li>
 </ol>
 <h3 id="9.5"><a class="n" href="#9.5">9.5</a> Zlatá ulička (zlata)</h3>
 <p class="where">Začíná uzlem: sklad.</p>
 <h4 id="9.5.1"><a class="n" href="#9.5.1">9.5.1</a> uzel sklad</h4>
-<ul class="say"><li>V domečcích Zlaté uličky stojí sochy. Svatý Ivo bez hlavy, Bruncvík bez meče, a v posledním domečku kůň. Kůň svatého Václava, s cenovkou, kterou nikdo nezaplatí.</li></ul>
+<ul class="say"><li>Zlatá ulička je sklad. V bednách mezi domečky leží sochy z mostu po kusech, na podstavci visí cedulka PRODÁNO. A před posledním domečkem stojí bronzový kůň bez jezdce.</li></ul>
 <ol class="choices">
-<li id="9.5.1.1"><a class="n" href="#9.5.1.1">9.5.1.1</a> <b>Prohlédnout si koně.</b> <span class="req">vyžaduje jen jednou</span> <span class="fx">→ vlajka zlata_videla, +2 zkušeností</span><div class="reply">Na cenovce stojí: „Kůň, bronz, Myslbek, 1 ks. Rezervováno pro p. ředitele.“ Na kopytě někdo vyškrábal: VÁCLAV TU NEBYL.</div></li>
+<li id="9.5.1.1"><a class="n" href="#9.5.1.1">9.5.1.1</a> <b>Prohlédnout si koně.</b> <span class="req">vyžaduje jen jednou</span> <span class="fx">→ vlajka zlata_videla, +2 zkušeností</span><div class="reply">Na hřbetě má díry po šroubech a na krku cenovku: „Kůň, bronz, Myslbek, 1 ks. Rezervováno pro p. ředitele.“ Na kopytě někdo vyškrábal: VÁCLAV TU NEBYL. Tak tady skončil kůň svatého Václava. Kdo kupuje bronz po kusech, bydlí vysoko.</div></li>
 </ol>
 <h3 id="9.6"><a class="n" href="#9.6">9.6</a> Vyhlídka Na Opyši (vyhlidka)</h3>
 <p class="where">Začíná uzlem: otevreno (když vlajka vyhlidka_otevrena), jinak zavreno. Zmizí, když bez vlajky vyhlidka_otevrena.</p>
@@ -735,25 +724,25 @@ p.rule{background:#fef3c7;border-left:4px solid #f59e0b;padding:.4rem .75rem}p.w
 </ol>
 <h2 id="9"><a class="n" href="#9">9</a> Boje</h2>
 <h3 id="9.1"><a class="n" href="#9.1">9.1</a> Smečka ze Sherwoodu (psi)</h3>
-<p class="where">Životy 8, vůle 6, útok 1–1, zvláštnost twice, akce Úst: Zařvat na ně.</p>
+<p class="where">Srdce 8, vůle 6, útok 1–1, zvláštnost twice, akce Úst: Zařvat na ně.</p>
 <ul class="say"><li>Tři psi vystoupí z křoví. Vůdce smečky má na krku Fantovu stužku.</li><li>Vůdce si olízne tlapu a odkulhá k Robinovu ohni. Ostatní dva jdou za ním. Pěšina je volná.</li><li>Psi couvnou a odklušou k Robinovu ohni. Vůdce se ještě ohlédne, ale už nevrčí.</li><li>Couvnete. Psi štěkají, ale nejdou za vámi.</li></ul>
 <h3 id="9.2"><a class="n" href="#9.2">9.2</a> Nutrie z Vltavy (nutrie)</h3>
-<p class="where">Životy 5, vůle 4, útok 1–1, zvláštnost dodge, akce Úst: Zasyčet na ni.</p>
+<p class="where">Srdce 5, vůle 4, útok 1–1, zvláštnost dodge, akce Úst: Zasyčet na ni.</p>
 <ul class="say"><li>Nutrie se postaví na zadní a cení oranžové zuby. Je větší, než vypadala.</li><li>Nutrie sleze z reproduktoru a sedne si na kraj vody, uraženě.</li><li>Nutrie sleze z reproduktoru a sedne si na kraj vody. Dívá se jinam.</li><li>Ustoupíte. Nutrie si sedne zpátky na reproduktor.</li></ul>
 <h3 id="9.3"><a class="n" href="#9.3">9.3</a> Nutrie z výlohy (nutrie2)</h3>
-<p class="where">Životy 8, vůle 5, útok 1–2, zvláštnost twice, akce Úst: Zasyčet na ně, kořist: + Obvaz ×1.</p>
+<p class="where">Srdce 8, vůle 5, útok 1–2, zvláštnost twice, akce Úst: Zasyčet na ně, kořist: + Obvaz ×1.</p>
 <ul class="say"><li>Z hnízda kožichů vylezou dvě nutrie. Jedna má na krku hedvábný šátek.</li><li>Nutrie se stáhnou do rohu výlohy a tváří se, že tam nikdy nebyly.</li><li>Nutrie se zavrtají hlouběji do kašmíru a nechají hák hákem.</li><li>Ustoupíte. Nutrie se zavrtají zpátky do kašmíru.</li></ul>
 <h3 id="9.4"><a class="n" href="#9.4">9.4</a> Kanci z Kampy (kanci)</h3>
-<p class="where">Životy 14, vůle 8, útok 2–3, zvláštnost žádná, akce Úst: Zařvat na ně.</p>
-<ul class="say"><li>Vůdce tlupy zafuní a sklopí kly. Za ním další dva, menší a stejně naštvaní.</li><li>Vůdce si lehne pod platan a funí. Ostatní ryjí dál a vás si nevšímají.</li><li>Kanci ustoupí pod platany a ryjí dál. Cesta k mlýnu je volná.</li><li>Utečete za platan. Kanci ryjí dál.</li></ul>
+<p class="where">Srdce 14, vůle 8, útok 2–3, zvláštnost žádná, akce Úst: Zařvat na ně.</p>
+<ul class="say"><li>Vůdce tlupy zafuní a sklopí kly. Za ním další dva, menší a stejně naštvaní.</li><li>Vůdce zafuní a odvede tlupu přes lávku pod platany. Dvůr je volný.</li><li>Kanci couvnou a táhnou přes lávku pod platany. Cesta ke kolu je volná.</li><li>Utečete za roh mlýna. Kanci ryjí dál.</li></ul>
 <h3 id="9.5"><a class="n" href="#9.5">9.5</a> Tržištní vymahači (vymahaci)</h3>
-<p class="where">Životy 13, vůle 7, útok 1–2, zvláštnost twice, akce Úst: Domluvit jim, kořist: + Baseballka s cenovkou.</p>
-<ul class="say"><li>Jeden vytáhne řetěz, druhý baseballku s Fantovou cenovkou. „Nic osobního.“</li><li>Vymahači si sednou na schod morového sloupu a počítají zuby. „Panu Fantovi řekneme, že jste byla rychlá.“</li><li>„Nic osobního,“ řekne ten větší a schová řetěz. Sednou si k morovému sloupu. „Panu Fantovi řekneme, že jste byla rychlá.“</li><li>Couvnete k mostu. Vymahači zůstávají u sloupu.</li></ul>
+<p class="where">Srdce 13, vůle 7, útok 1–2, zvláštnost twice, akce Úst: Domluvit jim, kořist: + Baseballka s cenovkou.</p>
+<ul class="say"><li>Jeden vytáhne řetěz, druhý baseballku s Fantovou cenovkou. „Nic osobního.“</li><li>Vymahači si sednou na schod morového sloupu a počítají zuby. „Panu Fantovi řekneme, že jste byla rychlá.“</li><li>„Nic osobního,“ řekne ten větší a schová řetěz. Sednou si k morovému sloupu. „Panu Fantovi řekneme, že jste byla rychlá.“</li><li>Utečete zpátky na most. Vymahači zůstávají v ústí Mostecké.</li></ul>
 <h3 id="9.6"><a class="n" href="#9.6">9.6</a> Holubi ze Zámeckých schodů (holubi)</h3>
-<p class="where">Životy 6, vůle 3, útok 1–1, zvláštnost dodge, akce Úst: Mávnout taškou.</p>
+<p class="where">Srdce 6, vůle 3, útok 1–1, zvláštnost dodge, akce Úst: Mávnout taškou.</p>
 <ul class="say"><li>Hejno se zvedne. Kulhavý vůdce letí přímo na vás.</li><li>Holubi usednou na zídku a dělají, že vás nevidí.</li><li>Hejno se přesune o schod výš a dělá, že vás nevidí.</li><li>Couvnete. Holubi si sednou zpátky na schody.</li></ul>
 <h3 id="9.7"><a class="n" href="#9.7">9.7</a> Ochranka kanálu (ochranka)</h3>
-<p class="where">Životy 16, vůle 5, útok 2–3, zvláštnost žádná, akce Úst: Mluvit o výplatě, kořist: + Obvaz ×2.</p>
+<p class="where">Srdce 16, vůle 5, útok 2–3, zvláštnost žádná, akce Úst: Mluvit o výplatě, kořist: + Obvaz ×2.</p>
 <ul class="say"><li>Ochranka vytáhne obušky. „Rok bez výplaty a teď tohle.“</li><li>Ochranka si sedne na schody buňky. „Za tohle nás neplatí. Za nic nás neplatí.“</li><li>Ochranka si sedne na schody buňky a zapálí si. „Rok bez výplaty. Dělejte si, co chcete.“</li><li>Ustoupíte. Ochranka se vrátí ke dveřím.</li></ul>
 <h2 id="2"><a class="n" href="#2">2</a> Konce</h2>
 <ol class="choices">
