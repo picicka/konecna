@@ -61,6 +61,7 @@ export class WorldScene extends Phaser.Scene {
         this.blocked = new Set();
         this.reserved = new Set();
         this.houses = [];
+        this.talkingOddities = [];
         this.stops = {};
         this.problems = [];
         this.upper = new Map(); // klíč a,b → výška horní úrovně
@@ -99,7 +100,6 @@ export class WorldScene extends Phaser.Scene {
         this.placeTrains();
         this.placeRoofs();
         this.placeRibs();
-        this.talkingOddities = [];
         this.placeStops();
         this.placeProps();
         this.placeFences();
@@ -298,7 +298,7 @@ export class WorldScene extends Phaser.Scene {
             if (low(a, b0 - 1)) put(`ns_zadni${ISO.hash(a, b0, 64) < 0.5 ? '' : '2'}`, ISO.toScreen(a - 0.5, b0 - 0.5), ISO.depthOf(a, b0 - 1), 8, 44);
         }
         put('ns_konec_sever', ISO.toScreen(g0 - 0.5, b1 + 0.5), ISO.depthOf(g0 - 1, b1, 2), 290, 200);
-        put('ns_konec_jih', ISO.toScreen(g1 + 0.5, b1 + 0.5), ISO.depthOf(g1 + 1, b0) - 1, 340, 170);
+        this.lookAt(put('ns_konec_jih', ISO.toScreen(g1 + 0.5, b1 + 0.5), ISO.depthOf(g1 + 1, b0) - 1, 340, 170), 'ns_souprava', { a: g1, b: b1 });
         // Stanice Vyšehrad pod silnicí (ns.station): silnice je o patro výš než terén u mola. Od její hrany (řada edge)
         // visí k +b stěna po dílech: holý beton, prosklené čelo haly, klín do terénu; řada pod hranou je neprůchozí
         // kromě schodů. Ve vozovce je díra s kolejemi (plochý sprite na zemi, dlaždice pod ním blokují).
@@ -403,8 +403,34 @@ export class WorldScene extends Phaser.Scene {
         });
     }
 
+    // Věc jen ke koukání (vůz, vrak, tramvaj): klíč v ODDITY_LINES, klepnutí ukáže bublinu. Je velká a stojí mezi domy
+    // a pod střechami hal, proto se trefuje přesně (exact): klepnutí musí padnout na její bod, který není průhledný
+    // a který nezakrývá dům, střecha haly ani přístřešek před ní.
+    lookAt(sprite, say, tile, start = 0) {
+        const said = ODDITY_LINES[say];
+        if (said) this.talkingOddities.push({ sprite, lines: said.lines, next: start, tile, exact: true });
+    }
+
+    // Leží bod světa na neprůhledném bodě obrázku?
+    solidAt(sprite, x, y) {
+        const b = sprite.getBounds();
+        if (!b.contains(x, y)) return false;
+        const u = (x - b.x) / b.width, fx = Math.floor((sprite.flipX ? 1 - u : u) * sprite.frame.width), fy = Math.floor((y - b.y) / b.height * sprite.frame.height);
+        return this.textures.getPixelAlpha(fx, fy, sprite.texture.key, sprite.frame.name) > 40;
+    }
+
+    oddAt(world) {
+        const { x, y } = world;
+        const cover = () => [...this.houses, ...(this.roofs ?? []), ...(this.canopies ?? [])];
+        // malá věc (kuriozita, rekvizita) má přednost před stavbou za ní, ze staveb ta nejvíc vpředu
+        const hits = (this.talkingOddities ?? []).filter((o) => o.sprite.active && (o.exact
+            ? this.solidAt(o.sprite, x, y) && !(o.sprite.mask && this.holeZone?.contains(x, y)) && !cover().some((c) => c.depth > o.sprite.depth && c.alpha > 0.9 && this.solidAt(c, x, y))
+            : o.sprite.getBounds().contains(x, y)));
+        return hits.find((o) => !o.exact) ?? hits.sort((p, q) => q.sprite.depth - p.sprite.depth)[0];
+    }
+
     // Bublina s hláškou nad kuriozitou (ODDITY_LINES): každé klepnutí další hláška, po pár vteřinách zmizí.
-    oddityBubble(odd) {
+    oddityBubble(odd, at = null) {
         this.bubble?.destroy();
         const text = odd.lines[odd.next % odd.lines.length];
         odd.next++;
@@ -414,7 +440,8 @@ export class WorldScene extends Phaser.Scene {
         const back = this.add.rectangle(0, -h / 2 + 7, w, h, 0x000000, 0.85).setStrokeStyle(2, CRT.lineDim);
         const tail = this.add.triangle(0, 14, -8, 0, 8, 0, 0, 10, 0x000000, 0.85);
         label.setY(0);
-        this.bubble = this.add.container(Math.round(top.centerX), Math.round(top.top - 18), [back, tail, label]).setDepth(1e7);
+        // velká věc (stavba, vůz): bublina nad místem klepnutí, jinak nad věcí
+        this.bubble = this.add.container(Math.round(at ? at.x : top.centerX), Math.round(at ? at.y - 24 : top.top - 18), [back, tail, label]).setDepth(1e7);
         this.registry.get('sound')?.tick?.();
         this.time.delayedCall(4500, () => { if (this.bubble && this.bubble.list.includes(label)) { this.bubble.destroy(); this.bubble = null; } });
     }
@@ -490,6 +517,7 @@ export class WorldScene extends Phaser.Scene {
         if (len % 2 === 0) { thing.x += ISO.TW / 4; thing.y -= ISO.TH / 4; }
         for (let a = a0; a < a0 + len; a++) (L === 1 ? this.upperBlocked : this.blocked).add(ISO.key(a, b));
         thing.setDepth(this.depthAt(a0 + len - 1, b, L));
+        this.lookAt(thing, key, { a: mid, b });
         return thing;
     }
 
@@ -673,7 +701,16 @@ export class WorldScene extends Phaser.Scene {
     }
 
     placeLandmark() {
-        (this.def?.landmark ?? []).forEach(({ atlas, key, a0, b0, w, dpt, depthAt, pass }) => this.placeBox(atlas ?? 'landmarks', key, a0, b0, w, dpt, depthAt, pass));
+        (this.def?.landmark ?? []).forEach(({ atlas, key, a0, b0, w, dpt, depthAt, pass, say, overlay }) => {
+            const sprite = this.placeBox(atlas ?? 'landmarks', key, a0, b0, w, dpt, depthAt, pass);
+            // say: stavba jen ke koukání (hlášky v ODDITY_LINES); overlay: animovaný sprite na stěně k +b (neon),
+            // u podél stěny od spodního rohu, v výška nad zemí, počátek spritu vlevo dole
+            if (say) this.lookAt(sprite, say, { a: a0, b: b0 });
+            if (overlay) {
+                const { atlas: sheet, frames } = this.idleAnim(overlay.key);
+                this.add.sprite(sprite.x + overlay.u, sprite.y - overlay.u / 2 - overlay.v, sheet, frames[0]).setOrigin(0, 1).setDepth(sprite.depth + 0.5).play(`${overlay.key}_idle`);
+            }
+        });
     }
 
     // Oblouky zřícené haly: levá noha na středu dlaždice (a, b0), oblouk přes span dlaždic napříč. Hloubka podle levé
@@ -825,6 +862,16 @@ export class WorldScene extends Phaser.Scene {
             const alongA = path(ta - 1, tb) + path(ta + 1, tb), alongB = path(ta, tb - 1) + path(ta, tb + 1);
             return alongA === alongB ? ISO.hash(ta, tb, 23) < 0.5 : alongB > alongA;
         };
+        // Strom ani keř nesmí zakrýt postavu zastavení: co stojí před ní (větší hloubka) a obrázkem by ji překrylo,
+        // se nevysadí. Postavy jsou i podoby zastavení po vyřešení (after).
+        const figures = Object.values(this.def?.stops ?? {}).flatMap((st) => [st.npc, st.after?.npc]).filter(Boolean).map((n) => ({ ...ISO.foot(n.a, n.b), depth: ISO.depthOf(n.a, n.b) }));
+        const hides = (key, a, b) => {
+            const frame = this.textures.getFrame('atlas', key);
+            if (!frame) return false;
+            const { x, y } = ISO.foot(a, b), half = frame.width * 0.4, depth = ISO.depthOf(a, b);
+            return figures.some((f) => depth > f.depth && Math.abs(x - f.x) < half + 28 && y > f.y - 96 && y - frame.height < f.y);
+        };
+        let trams = 0;
         (this.map.props ?? []).forEach((p) => {
             const ta = Math.round(p.a), tb = Math.round(p.b);
             if (!this.inside(ta, tb)) return;
@@ -837,6 +884,8 @@ export class WorldScene extends Phaser.Scene {
                 // souprava 14,7 m blokuje dlaždice pod sebou
                 const ang = Number(p.k.split('_').pop()) * Math.PI / 180;
                 for (let t = -7; t <= 7; t += 1) this.blocked.add(ISO.key(Math.round(p.a + Math.cos(ang) * t / this.map.tile), Math.round(p.b + Math.sin(ang) * t / this.map.tile)));
+                // vraky tramvají místa mají společné hlášky (tram_<místo>), každá začíná jinou
+                this.lookAt(tram, `tram_${this.map.place}`, { a: ta, b: tb }, trams++);
                 this.props.push(tram);
                 return;
             }
@@ -851,6 +900,7 @@ export class WorldScene extends Phaser.Scene {
             if (this.reserved.has(ISO.key(ta, tb)) || nearStart(ta, tb) || this.blocked.has(ISO.key(ta, tb))) return;
             const key = p.k === 'tree' ? ISO.pick(rules.trees ?? ['tree_a'], Math.round(p.a * 100), Math.round(p.b * 100), 22) : p.k;
             const block = p.k === 'tree' && 'g.'.includes(at(ta, tb));
+            if (p.k === 'tree' && hides(key, p.a, p.b)) return;
             if (p.k === 'bench') {
                 if (benchKept.some((q) => Math.hypot(q.a - p.a, q.b - p.b) < 1.3)) return;
                 benchKept.push(p);
@@ -877,7 +927,7 @@ export class WorldScene extends Phaser.Scene {
             const roll = ISO.hash(a, b, 21);
             // keře, harampádí a boudy: posunuté v rámci dlaždice, aby nestály v mřížce
             const ja = a + (ISO.hash(a, b, 41) - 0.5) * 0.6, jb = b + (ISO.hash(a, b, 42) - 0.5) * 0.6;
-            if (rules.bush && 'g.'.includes(c) && ISO.hash(a, b, 28) < rules.bush) this.props.push(this.placeAt(ISO.pick(rules.bushes, a, b, 29), ja, jb, { flip: ISO.hash(a, b, 30) < 0.5 }));
+            if (rules.bush && 'g.'.includes(c) && ISO.hash(a, b, 28) < rules.bush) { if (!hides(ISO.pick(rules.bushes, a, b, 29), ja, jb)) this.props.push(this.placeAt(ISO.pick(rules.bushes, a, b, 29), ja, jb, { flip: ISO.hash(a, b, 30) < 0.5 })); }
             else if (rules.shack && c === 'g' && !near(a, b, 'f') && roll > 1 - rules.shack) this.props.push(this.placeAt('shack', a, b, { flip: ISO.hash(a, b, 24) < 0.5, block: true }));
             else if (rules.fire && 'p.g'.includes(c) && ISO.hash(a, b, 31) < rules.fire && fires.every((f) => Math.abs(f.a - a) + Math.abs(f.b - b) > 12)) { fires.push({ a, b }); this.props.push(this.placeAt('barrel_fire', a, b, { block: true })); }
             else if (rules.junk && 'p.g'.includes(c) && ISO.hash(a, b, 25) < rules.junk) this.props.push(this.placeAt(ISO.pick(rules.junkKeys, a, b, 26), ja, jb, { flip: ISO.hash(a, b, 27) < 0.5, block: true }));
@@ -1110,8 +1160,8 @@ export class WorldScene extends Phaser.Scene {
         // Klepnutí na postavu (i na její hlavu nad sousední dlaždicí) má přednost před dlaždicí pod prstem.
         const hit = Object.values(this.stops).find((stop) => stop.sprite.getBounds().contains(world.x, world.y));
         if (hit) { this.goToStop(hit.id); return; }
-        const odd = (this.talkingOddities ?? []).find((o) => o.sprite.active && o.sprite.getBounds().contains(world.x, world.y));
-        if (odd) { this.oddityBubble(odd); return; }
+        const odd = this.oddAt(world);
+        if (odd) { this.oddityBubble(odd, odd.exact ? world : null); return; }
         const through = this.doorAt(world.x, world.y);
         if (through) { this.goTo(through); return; }
         const target = this.pick(world.x, world.y);
@@ -1186,7 +1236,7 @@ export class WorldScene extends Phaser.Scene {
         const t = this.pick(world.x, world.y);
         const inside = this.inside(t.a, t.b);
         if (Object.values(this.stops).some((s) => s.sprite.getBounds().contains(world.x, world.y)) || (inside && this.stopAt(t.a, t.b, t.L))) this.setCursor('mluvit');
-        else if ((this.talkingOddities ?? []).some((o) => o.sprite.active && o.sprite.getBounds().contains(world.x, world.y))) this.setCursor('oko');
+        else if (this.oddAt(world)) this.setCursor('oko');
         else if (this.doorAt(world.x, world.y)) this.setCursor('dvere');
         else {
             const ok = inside && this.reachable(t);

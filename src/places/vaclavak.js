@@ -10,7 +10,10 @@ export const VACLAVAK = {
     start: { a: 107, b: 12 },
     // zpátky loďkou s Kuřačkou (z Nuslí, ze Staromáku) se přijede k molu, ne k Muzeu
     arrivals: { nuselak: { a: 19, b: 12 }, staromak: { a: 19, b: 12 } },
-    landmark: [{ atlas: 'landmarks_vaclavak', key: 'lm_muzeum', a0: 112, w: 12, b0: 7, dpt: 15 }],
+    // dům Na Můstku kouká z vody hned za molem u jeho konce (a 21–23, b 9–11), na stěně mu bliká neonová obálka
+    landmark: [{ atlas: 'landmarks_vaclavak', key: 'lm_muzeum', a0: 112, w: 12, b0: 7, dpt: 15, say: 'muzeum' },
+        { atlas: 'landmarks_vaclavak', key: 'lm_mustek', a0: 21, w: 3, b0: 9, dpt: 3, say: 'mustek', overlay: { key: 'obalka_neon', u: 88, v: 116 } }],
+    lights: [{ a: 23, b: 12, scale: 1.1, tint: 0x9be04a, alpha: 0.5 }],
     stops: {
         vylez: { npc: { key: 'vylez', a: 108, b: 11 }, approach: { a: 107, b: 11 }, props: [] },
         dispecerka: { npc: { key: 'dispecerka', a: 102, b: 10 }, approach: { a: 102, b: 11 }, props: [{ key: 'metro_entrance', a: 103, b: 9 }] },

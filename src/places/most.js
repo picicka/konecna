@@ -3,11 +3,11 @@
 // přes něj, Čertovka (w) má všechnu vodu. Kampa je jižně od mostu (b 0–16). Příběh a postavy: docs/pribeh.md, místo 4.
 export const MOST = {
     start: { a: 10, b: 37 },
-    arrivals: { staromak: { a: 10, b: 37 }, malastrana: { a: 72, b: 23 } },
+    arrivals: { staromak: { a: 10, b: 37 }, malastrana: { a: 74, b: 33 } },
     // mostecké věže stojí na mostě, most prochází jejich branou (pass: řádek b, který zůstává průchozí)
     landmark: [
-        { atlas: 'landmarks_most', key: 'lm_vez_stare', a0: 9, w: 3, b0: 32, dpt: 3, pass: 33 },
-        { atlas: 'landmarks_most', key: 'lm_veze_male', a0: 76, w: 3, b0: 31, dpt: 5, pass: 33 },
+        { atlas: 'landmarks_most', key: 'lm_vez_stare', a0: 9, w: 3, b0: 32, dpt: 3, pass: 33, say: 'vez_stare' },
+        { atlas: 'landmarks_most', key: 'lm_veze_male', a0: 76, w: 3, b0: 31, dpt: 5, pass: 33, say: 'veze_male' },
     ],
     stops: {
         pilar: { npc: { key: 'pilar', a: 8, b: 37 }, approach: { a: 9, b: 37 }, props: [{ key: 'bedny', a: 8, b: 36 }] },
@@ -21,13 +21,14 @@ export const MOST = {
             // přemalovaná Lennonova zeď (tři díly po dlaždici, nápis PROUD) stojí na Velkopřevorském náměstí u mlýna
             // kolo stojí a žárovka nesvítí, dokud ho pošťačka neuvolní (vlajka zarovka); kolo leží po proudu Čertovky (zrcadlený sprite)
             after: { if: { flag: 'zarovka' }, props: [{ key: 'mlynske_kolo', a: 64.4, b: 17, flip: true, anim: true }, { key: 'zarovka', a: 69, b: 19 }, { key: 'zed_lennon_0', a: 70, b: 22 }, { key: 'zed_lennon_1', a: 71, b: 22, say: 'zed_lennon' }, { key: 'zed_lennon_2', a: 72, b: 22 }] } },
-        mostecka: { npc: { key: 'lamp', a: 74, b: 23 }, approach: { a: 73, b: 23 }, props: [] },
+        // odchod na Malou Stranu: uliční cedule před bránou Malostranské věže na konci mostu, přisvícená (lights)
+        mostecka: { npc: { key: 'cedule_mostecka', a: 75, b: 32, flip: false }, approach: { a: 75, b: 33 }, props: [] },
     },
     // Most nad suchým korytem (WorldScene.buildBridge): mostovka b 32–33, díly od a0 po a1 (za Staroměstskou věží po
     // Čertovku), pilíře podle obrysu mostu v OSM (ledolamy po 30 m, a 51 je břeh Kampy, a 64 v Čertovce), schody na Kampu
     // (skutečné schodiště z mostu na Na Kampě). axis: osa mostu z OSM (mírně do oblouku) pro lampy na zábradlí.
     // noQuay: bez nábřežních zdí kolem výběžku Novotného lávky u Staroměstské věže a zálivu u Čertovky pod Malostranskými
-    bridge: { noQuay: [{ a0: 4, a1: 19, b0: 21, b1: 31 }, { a0: 61, a1: 67, b0: 25, b1: 31 }], a0: 12, a1: 66, deck: [32, 33], piers: [10, 14, 18, 22, 27, 31, 35, 39, 43, 47, 51, 64], stairs: [{ a: 56, b: 31 }],
+    bridge: { noQuay: [{ a0: 4, a1: 19, b0: 18, b1: 31 }, { a0: 61, a1: 67, b0: 25, b1: 31 }], a0: 12, a1: 66, deck: [32, 33], piers: [10, 14, 18, 22, 27, 31, 35, 39, 43, 47, 51, 64], stairs: [{ a: 56, b: 31 }],
         axis: [[8, 34], [11.3, 34], [22.7, 33.9], [47.5, 32.2], [53.3, 32.1], [57.8, 32.3], [67.9, 32.7], [73.7, 33.3]] },
     // kuriozity v suchém korytě Vltavy (art/kuriozity.px.js, WorldScene.placeOddities)
     oddities: [{ on: 'h', keys: ['mlok', 'stalin_hlava', 'labut', 'kapr_vana', 'mlok_maly_1', 'mlok_maly_2'] },
@@ -35,5 +36,5 @@ export const MOST = {
         { on: 'w', area: { a0: 65, a1: 66, b0: 23, b1: 24 }, keys: ['labut_zla'] }],
     props: { wreck: 0.005, trees: ['tree_a', 'tree_bare', 'tree_c', 'tree_topol_a', 'tree_kastan_a', 'tree_bare_d', 'tree_platan_a', 'tree_briza_a', 'tree_topol_b', 'tree_pahyl_a', 'tree_b', 'tree_mlady_b'], bush: 0.05, bushes: ['bush_a', 'bush_b', 'bush_c', 'bush_rakos_a', 'bush_trava_a', 'bush_trni_a', 'bush_rez_a', 'bush_velky_a', 'bush_rakos_a', 'bush_trava_b'], fire: 0.004, junk: 0.03, junkKeys: ['rubble_pile', 'barrel', 'tires'], shack: 0 },
     // jediná žárovka v Praze svítí, až mlynář rozjede kolo (vlajka zarovka)
-    lights: [{ a: 69, b: 19, scale: 1.5, tint: 0xffc070, alpha: 0.9, if: { flag: 'zarovka' } }],
+    lights: [{ a: 69, b: 19, scale: 1.5, tint: 0xffc070, alpha: 0.9, if: { flag: 'zarovka' } }, { a: 75, b: 33, scale: 1.1, alpha: 0.7 }],
 };

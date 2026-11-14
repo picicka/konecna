@@ -367,7 +367,7 @@ Zdroj pravdy (polohy postav, přístupy, rekvizity) je `src/places/malastrana.js
 | Brána Ke Hradu | horní konec Nerudovky | stráž, Kastelán |
 | Kampa, loďka | zpět dole, Čertovka | Kuřačka |
 
-Přestup dál: Trabant na nohách nahoru na nádvoří, nebo Kastelán, nebo propustka; dolů loďka na Vyšehrad jako epilog.
+Přestup dál: Trabant na nohách nahoru na nádvoří, nebo Kastelán, nebo propustka; z Hradu se zpátky schází Nerudovou od cedule u Matyášovy brány (zastavení `brana_dolu`); dolů loďka na Vyšehrad jako epilog.
 
 ## Nelinearita a návraty
 

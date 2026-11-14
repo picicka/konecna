@@ -12,10 +12,10 @@ export const HLAVAK = {
     // s Wilsonovou na střeše (b 15–20), nájezdové rampy a prosklené schodišťové věže na plácku (b 21).
     landmark: [
         ...[
-            ['lm_fanta_wing5', 27, 5], ['lm_fanta_wing4', 32, 4], ['lm_fanta_tower', 36, 2], ['lm_fanta_hall', 38, 7],
+            ['lm_fanta_wing5', 27, 5], ['lm_fanta_wing4', 32, 4], ['lm_fanta_tower', 36, 2], ['lm_fanta_hall', 38, 7, 'fanta_budova'],
             ['lm_fanta_tower_broken', 45, 2], ['lm_fanta_wing5b', 47, 5], ['lm_fanta_wing4', 52, 4],
         // hloubka nad halovými loděmi (b 0–10) a pod odbavovací halou: jako by stála na b 13
-        ].map(([key, a0, w]) => ({ atlas: 'landmarks', key, a0, w, b0: 11, dpt: 4, depthAt: { a: a0, b: 13, lift: 8 } })),
+        ].map(([key, a0, w, say]) => ({ atlas: 'landmarks', key, a0, w, b0: 11, dpt: 4, depthAt: { a: a0, b: 13, lift: 8 }, say })),
         ...[
             ['lm_viaduct_6', 0, 6, 'landmarks4'], ['lm_viaduct_5', 6, 5, 'landmarks4'], ['lm_viaduct_5b', 11, 5, 'landmarks4'],
             ['lm_viaduct_6', 16, 6, 'landmarks4'], ['lm_viaduct_5', 22, 5, 'landmarks4'],

@@ -8,9 +8,9 @@ export const NUSELAK = {
     // příchod: Kuřaččinou loďkou od Václaváku k severnímu molu, s flotilou od Kampy k jižnímu molu
     arrivals: { vaclavak: { a: 21, b: 25 }, staromak: { a: 77, b: 24 }, most: { a: 76, b: 24 } },
     landmark: [
-        { atlas: 'landmarks_nusle', key: 'lm_muzeum_policie', a0: 2, w: 7, b0: 34, dpt: 9 },
-        { atlas: 'landmarks_nusle', key: 'lm_kcp', a0: 94, w: 14, b0: 28, dpt: 18 },
-        { atlas: 'landmarks_nusle', key: 'lm_forum', a0: 90, w: 7, b0: 0, dpt: 9 },
+        { atlas: 'landmarks_nusle', key: 'lm_muzeum_policie', a0: 2, w: 7, b0: 34, dpt: 9, say: 'muzeum_policie' },
+        { atlas: 'landmarks_nusle', key: 'lm_kcp', a0: 94, w: 14, b0: 28, dpt: 18, say: 'kcp' },
+        { atlas: 'landmarks_nusle', key: 'lm_forum', a0: 90, w: 7, b0: 0, dpt: 9, say: 'forum' },
     ],
     // most: mostovka, zlom, pilíře (po 15,5 dlaždice jako skutečná pole 115 m), lano v řádku b 19
     nusle: { a0: 15, a1: 79, deck: [17, 20], gap: [44, 49], piers: [23, 38, 55, 70], rope: 19,
@@ -22,7 +22,7 @@ export const NUSELAK = {
         // Kuřačka stojí v loďce u severního mola (loďka leží pod ní: under)
         kuracka_nusle: { npc: { key: 'kuracka', a: 22, b: 25 }, approach: { a: 21, b: 25 }, props: [{ key: 'lodka', a: 21.55, b: 25.45, block: false, under: true }] },
         // policista bez pravomocí u vchodu do Muzea Policie, před muzeem vrak Tatry VB
-        policista: { npc: { key: 'policista', a: 3, b: 43 }, approach: { a: 4, b: 43 }, props: [{ key: 'tatra_vb', a: 10, b: 38 }],
+        policista: { npc: { key: 'policista', a: 3, b: 43 }, approach: { a: 4, b: 43 }, props: [{ key: 'tatra_vb', a: 10, b: 38, say: 'tatra_vb' }],
             after: { if: { quest: { kote: 'done' } }, npc: { key: 'policista_kote', a: 3, b: 43 } } },
         // lanař u severního konce zlomu, sloupek lana na 43,19
         lanar: { npc: { key: 'lanar', a: 43, b: 18 }, approach: { a: 42, b: 18 }, props: [] },

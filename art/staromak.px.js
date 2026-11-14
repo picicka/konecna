@@ -186,23 +186,13 @@
     c.px(dx + 15, dy - 44, "W"); c.px(dx + 17, dy - 40, "W"); c.px(dx + 16, dy - 48, "W")
   }))
 
-  // Dlouhý hák lovce značek na tyči zaražené u výlohy: bidlo z hladiny, kovový hák, na něm uvízlý cár kožichu.
-  sprite("lovec_hak", { w: 60, h: 120 }, (c) => {
-    c.ellipse(30, 116, 12, 3, "J"); c.ellipse(30, 116, 8, 2, "Z")
-    c.line(30, 116, 46, 18, "H", 3); c.line(29, 114, 45, 18, "h")
-    c.line(42, 30, 50, 24, "M", 2); c.rect(44, 14, 4, 8, "M")
-    // hák: oblouk dolů a hrot
-    c.line(46, 14, 50, 4, "M", 2); c.line(50, 4, 56, 6, "M", 2); c.line(56, 6, 57, 16, "M", 2); c.line(57, 16, 53, 20, "m")
-    c.px(52, 19, "m")
-    c.poly([50, 20, 58, 18, 59, 34, 54, 40, 50, 30], "U"); c.line(52, 24, 54, 38, "3"); c.px(57, 22, "u")
-    c.line(36, 92, 20, 104, "4"); c.line(20, 104, 14, 116, "4") // provaz k loďce
-  })
-
-  // Zatopený butik na nároží v Pařížské (1 dlaždice): dvě výlohy, kovový rám se zlatým nápisem, rozbité sklo.
-  // Vlevo hnízdo nutrií z kožichů, vpravo figurína bez hlavy. Spodní okraj plátna je hladina u rohu.
-  sprite("vyloha", { w: 132, h: 160 }, (c) => {
+  // Zatopený butik na nároží v Pařížské (1 dlaždice): přízemní pavilon s plochou střechou, dvě výlohy, kovový rám se
+  // zlatým nápisem, rozbité sklo. Vlevo hnízdo nutrií z kožichů, vpravo figurína bez hlavy. Je to kvádr: dvě stěny
+  // a střecha s atikou, hrany tmavou linkou. Počátek dole uprostřed je roh u hladiny.
+  // hak: z levé výlohy trčí bidlo lovcova háku, hák vězí v kožiších; nutrie: v hnízdě sedí nutrie.
+  const vyloha = (name, { hak, nutrie }) => sprite(name, { w: 220, h: 200 }, (c) => {
     const rng = c.rng(5)
-    const x0 = 66, y0 = 159, L = sL(x0, y0), R = sR(x0, y0)
+    const x0 = 110, y0 = 199, L = sL(x0, y0), R = sR(x0, y0)
     const H = 124
     // omítka nad výlohou, sokl a rám
     c.poly(sQ(L, 0, 64, 0, H), "C"); c.poly(sQ(R, 0, 64, 0, H), "e")
@@ -218,7 +208,7 @@
     c.poly(sQ(L, 8, 58, 20, 24), "H")
     c.clip(sQ(L, 4, 60, 8, 72), () => {
       ;[[16, 30, 12, "u"], [30, 28, 14, "K"], [46, 30, 11, "w"], [22, 38, 9, "U"], [38, 40, 9, "3"], [52, 38, 7, "u"], [30, 44, 6, "K"]].forEach(([u, v, r, col]) => { const [x, y] = L(u, v); c.ellipse(x, y, r, rd(r * 0.6), col) })
-      const [nx, ny] = L(34, 50); c.ellipse(nx, ny, 7, 5, "u"); c.rect(nx - 7, ny, 3, 3, "f"); c.px(nx - 3, ny - 2, "k")
+      if (nutrie) { const [nx, ny] = L(34, 50); c.ellipse(nx, ny, 7, 5, "u"); c.rect(nx - 7, ny, 3, 3, "f"); c.px(nx - 3, ny - 2, "k") }
     })
     // vpravo: figurína bez hlavy v kabátě, ruka zlomená
     { const [fx, fy] = R(32, 22); c.poly([fx - 7, fy, fx + 7, fy, fx + 5, fy - 34, fx - 5, fy - 34], "V"); c.rect(fx - 3, fy - 38, 6, 4, "w"); c.line(fx + 5, fy - 30, fx + 12, fy - 18, "w", 2) }
@@ -234,7 +224,32 @@
     c.clip((x, y) => c.is(x, y, "CeSAa"), () => { c.poly(sQ(L, 0, 64, 96, 108), "4"); c.poly(sQ(R, 0, 64, 96, 108), "3") })
     for (let u = 2; u < 64; u += 3) { const [x, y] = L(u, 0); if (rng() < 0.5) c.vline(x, y - 4, 3, "G"); const [x2, y2] = R(u, 0); if (rng() < 0.5) c.vline(x2, y2 - 4, 3, "Q") }
     for (let u = 6; u < 62; u += 9) { const [x, y] = L(u, 108); c.vline(x, y, 4 + rd(rng() * 10), "e") }
+    // plochá střecha: lepenka v pásech, atika kolem dokola, kaluž, větrací hlavice, suť a plevel
+    const T = (u, d) => [x0 - u + d, y0 - H - u / 2 - d / 2]
+    const TQ = (u0, u1, d0, d1) => [...T(u0, d0), ...T(u1, d0), ...T(u1, d1), ...T(u0, d1)]
+    c.poly(TQ(0, 64, 0, 64), "c")
+    c.poly(TQ(4, 60, 4, 60), "S")
+    for (let u = 16; u < 60; u += 14) c.line(...T(u, 4).map(rd), ...T(u, 60).map(rd), "A")
+    c.poly(TQ(14, 34, 30, 52), "A"); c.poly(TQ(18, 30, 34, 48), "X"); c.line(...T(20, 38).map(rd), ...T(27, 38).map(rd), "Z")
+    { const [vx, vy] = T(46, 18).map(rd); c.rect(vx - 3, vy - 9, 6, 9, "M"); c.rect(vx - 3, vy - 9, 2, 9, "m"); c.rect(vx - 5, vy - 12, 10, 3, "x"); c.hline(vx - 4, vy, 9, "k") }
+    for (let i = 0; i < 9; i++) { const [x, y] = T(6 + rng() * 52, 6 + rng() * 52).map(rd); c.px(x, y, rng() < 0.5 ? "v" : "P"); if (rng() < 0.4) c.px(x + 1, y, "x") }
+    for (let i = 0; i < 6; i++) { const [x, y] = T(4 + rng() * 4, 6 + rng() * 54).map(rd); c.vline(x, y - 3, 3, "G") }
+    // vnitřní líc atiky ve stínu a hrany kvádru
+    c.line(...T(4, 4).map(rd), ...T(60, 4).map(rd), "A"); c.line(...T(4, 4).map(rd), ...T(4, 60).map(rd), "A")
+    c.line(...L(0, H), ...L(64, H), "k"); c.line(...R(0, H), ...R(64, H), "k"); c.line(...L(0, 0), ...L(0, H), "k")
+    c.line(...L(64, 0), ...L(64, H), "k"); c.line(...R(64, 0), ...R(64, H), "k")
+    c.line(...T(64, 0).map(rd), ...T(64, 64).map(rd), "3"); c.line(...T(0, 64).map(rd), ...T(64, 64).map(rd), "3")
+    if (hak) {
+      // bidlo háku trčí z hnízda ven přes parapet k lávce, hák sám vězí v kožiších; z konce visí provaz
+      const [hx, hy] = L(30, 40)
+      c.line(hx, hy, hx - 46, hy - 4, "H", 3); c.line(hx, hy - 1, hx - 46, hy - 5, "h")
+      c.line(hx + 1, hy, hx + 5, hy - 6, "M", 2); c.line(hx + 5, hy - 6, hx + 9, hy - 2, "m")
+      c.line(hx - 46, hy - 3, hx - 50, hy + 14, "4"); c.line(hx - 50, hy + 14, hx - 47, hy + 30, "4")
+      c.poly([hx - 4, hy - 2, hx + 6, hy - 4, hx + 8, hy + 6, hx - 2, hy + 7], "U"); c.px(hx + 2, hy + 1, "u")
+    }
   })
+  vyloha("vyloha", { hak: true, nutrie: true })
+  vyloha("vyloha_bez", { hak: false, nutrie: false })
 
   // Druhá loďka: dřevěná pramice s oprýskanou zelenou barvou, dvě vesla, sedačky, plechovka na vylévání.
   // Leží napříč (podél osy b). Spodní okraj plátna je hladina pod přídí.
@@ -574,3 +589,20 @@
 
   sheet("landmarks_staromak", ["hus", "orloj", "vez_mostecka"], { pad: 1 })
 }
+
+// Uliční cedule na odchodech pěšky (pohled zepředu): rezavý sloupek, červená smaltovaná tabule s bílým písmem a okrajem
+// jako pražské uliční cedule, pod ní bílá směrovka s šipkou. Oprýskaná. Mostecká stojí u Malostranské věže (odchod
+// z mostu na Malou Stranu), Nerudova u Matyášovy brány (z Hradu dolů). Písmo pxl nemá diakritiku: čárka je bod navíc.
+const uliceCedule = (name, ulice, kam, carka = null) => sprite(name, { w: 52, h: 84, outline: "k" }, (c) => {
+  c.rect(24, 22, 3, 60, "M"); c.vline(24, 22, 60, "m"); c.rect(21, 80, 9, 3, "A")
+  for (const y of [40, 58, 70]) c.px(26, y, "U")
+  c.rect(4, 4, 44, 15, "W"); c.rect(5, 5, 42, 13, "V"); c.rect(6, 6, 40, 11, "7"); c.rect(7, 7, 38, 9, "V")
+  c.text(10, 9, ulice, "W"); if (carka !== null) { c.px(carka, 7, "W"); c.px(carka + 1, 6, "W") }
+  c.px(6, 6, "U"); c.px(45, 15, "U"); c.rect(30, 15, 4, 2, "U"); c.px(12, 16, "k")
+  for (const x of [8, 44]) c.px(x, 11, "x")
+  c.poly([8, 24, 40, 24, 47, 29, 40, 34, 8, 34], "w"); c.poly([9, 25, 39, 25, 45, 29, 39, 33, 9, 33], "W")
+  c.text(11, 27, kam, "k")
+  c.px(42, 31, "U"); c.px(10, 32, "x")
+})
+uliceCedule("cedule_mostecka", "MOSTECKA", "M.STRANA", 40)
+uliceCedule("cedule_nerudova", "NERUDOVA", "M.STRANA")

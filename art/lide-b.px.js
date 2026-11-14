@@ -162,7 +162,8 @@ const LIB_LOVEC = {
   shoes: { kind: "shoes", col: "leather" },
   items: ["hook", "sunglasses"],
 }
-libIdle("lovec", LIB_LOVEC, null, (c, g) => {
+// Hák má v ruce až poté, co ho dostane zpátky z výlohy (lovec_s_hakem, zastavení after); do té doby stojí bez něj.
+const libLovecKozich = (c, g) => {
   const { cx, sy, hipY, kneeY } = g
   // rozepnutý kožich: holá hruď a břicho s žebry
   c.poly([cx - 2, sy, cx + 1, sy, cx + 1, hipY - 1, cx - 1, hipY - 1], "8")
@@ -172,7 +173,9 @@ libIdle("lovec", LIB_LOVEC, null, (c, g) => {
   c.vline(cx + 4, hipY + 2, 5, "U")
   // cenovky na provázku kolem krku
   c.px(cx - 2, sy + 1, "C"); c.px(cx, sy + 2, "C"); c.rect(cx - 2, sy + 3, 2, 2, "W"); c.px(cx + 1, sy + 3, "W"); c.px(cx - 1, sy + 4, "V")
-})
+}
+libIdle("lovec", { ...LIB_LOVEC, items: ["sunglasses"] }, null, libLovecKozich)
+libIdle("lovec_s_hakem", LIB_LOVEC, null, libLovecKozich)
 sprite("face_lovec", { w: 56, h: 56, outline: "k" }, (c) => {
   lidFace(c, LIB_LOVEC)
   // holá hruď v rozevřeném kožichu
@@ -185,8 +188,6 @@ sprite("face_lovec", { w: 56, h: 56, outline: "k" }, (c) => {
   c.line(20, 40, 24, 47, "C"); c.line(32, 40, 28, 47, "C")
   c.poly([22, 47, 27, 46, 28, 52, 23, 53], "W"); c.px(24, 49, "V"); c.hline(24, 51, 3, "x")
   c.poly([28, 47, 32, 48, 31, 53, 27, 52], "w"); c.px(29, 50, "x")
-  // hák na tyči vedle hlavy
-  c.vline(50, 6, 50, "h"); c.vline(51, 6, 50, "H"); c.hline(46, 5, 6, "M"); c.vline(46, 5, 4, "M"); c.px(47, 9, "M")
 })
 
 // —— Kuřák s pilou: řeže sochy z mostu ——

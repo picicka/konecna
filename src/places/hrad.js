@@ -4,16 +4,18 @@
 export const HRAD = {
     start: { a: 2, b: 18 },
     landmark: [
-        { atlas: 'landmarks_hrad', key: 'lm_katedrala', a0: 12, w: 17, b0: 13, dpt: 7 },
-        { atlas: 'landmarks_kostely', key: 'lm_jiri', a0: 37, w: 7, b0: 14, dpt: 5 },
+        { atlas: 'landmarks_hrad', key: 'lm_katedrala', a0: 12, w: 17, b0: 13, dpt: 7, say: 'katedrala' },
+        { atlas: 'landmarks_kostely', key: 'lm_jiri', a0: 37, w: 7, b0: 14, dpt: 5, say: 'jiri' },
     ],
     stops: {
+        // cesta zpátky: uliční cedule u Matyášovy brány, Nerudovou dolů na Malou Stranu (přisvícená, lights)
+        brana_dolu: { npc: { key: 'cedule_nerudova', a: 1, b: 19, flip: false }, approach: { a: 2, b: 19 }, props: [] },
         pruvodkyne: { npc: { key: 'pruvodkyne', a: 11, b: 17 }, approach: { a: 10, b: 17 }, props: [] },
         // ochranka stojí v jediném průchodu plotem kolem buňky (fences, gates); když ustoupí (ochranka_pryc), jde si
         // sednout k buňce a cedule z průchodu zmizí ke straně
         ochranka: { npc: { key: 'ochranka', a: 18, b: 22 }, approach: { a: 17, b: 22 }, props: [{ key: 'ochranka_cedule', a: 18, b: 23 }],
             after: { if: { flag: 'ochranka_pryc' }, npc: { key: 'ochranka', a: 19, b: 25, from: 'npc' }, approach: { a: 20, b: 25 }, props: [{ key: 'ochranka_cedule', a: 17, b: 24 }] } },
-        reditel: { npc: { key: 'reditel', a: 23, b: 22 }, approach: { a: 23, b: 21 }, props: [{ key: 'generator', a: 25, b: 21, anim: true }, { key: 'obelisk', a: 24, b: 19 }] },
+        reditel: { npc: { key: 'reditel', a: 23, b: 22 }, approach: { a: 23, b: 21 }, props: [{ key: 'generator', a: 25, b: 21, anim: true }, { key: 'obelisk', a: 24, b: 19, say: 'obelisk' }] },
         ctecka: { npc: { key: 'ctecka', a: 21, b: 22 }, approach: { a: 22, b: 22 }, props: [{ key: 'bunka', a: 21, b: 24 }, { key: 'reflektor', a: 19, b: 23 }] },
         // sklad soch, které skoupil Hrad: kůň svatého Václava bez jezdce, bedny se sochami po kusech, prodaný podstavec
         zlata: { npc: { key: 'kun_vaclav', a: 53, b: 9 }, approach: { a: 53, b: 8 }, props: [{ key: 'bedny', a: 52, b: 12 }, { key: 'podstavec_c', a: 52, b: 11 }] },
@@ -31,5 +33,5 @@ export const HRAD = {
     oddities: [{ on: 'k', keys: ['metronom', 'golem'] }],
     props: { trees: ['tree_a', 'tree_c', 'tree_kastan_a', 'tree_b', 'tree_bare_b', 'tree_briza_a', 'tree_mlady_a', 'tree_kastan_b', 'tree_briza_b', 'tree_bare_c'], bush: 0.04, bushes: ['bush_a', 'bush_b', 'bush_rez_b', 'bush_trni_b', 'bush_trava_a', 'bush_velky_b', 'bush_plot_a', 'bush_c'], fire: 0.003, junk: 0.01, junkKeys: ['barrel'], shack: 0 },
     // pracovní reflektor a světla generátoru u ředitelovy buňky (bílé, studenější než oheň)
-    lights: [{ a: 20, b: 23, scale: 1.4, tint: 0xfff0c8, alpha: 0.75 }, { a: 25, b: 22, scale: 1.1, tint: 0xfff0c8, alpha: 0.6 }],
+    lights: [{ a: 2, b: 19, scale: 1, alpha: 0.6 }, { a: 20, b: 23, scale: 1.4, tint: 0xfff0c8, alpha: 0.75 }, { a: 25, b: 22, scale: 1.1, tint: 0xfff0c8, alpha: 0.6 }],
 };

@@ -19,6 +19,26 @@
     "w": 1728,
     "h": 1404
    }
+  },
+  "lm_mustek": {
+   "frame": {
+    "x": 1729,
+    "y": 0,
+    "w": 384,
+    "h": 530
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 384,
+    "h": 530
+   },
+   "sourceSize": {
+    "w": 384,
+    "h": 530
+   }
   }
  },
  "meta": {
@@ -26,7 +46,7 @@
   "image": "landmarks_vaclavak.png",
   "format": "RGBA8888",
   "size": {
-   "w": 1728,
+   "w": 2113,
    "h": 1404
   },
   "scale": "1"

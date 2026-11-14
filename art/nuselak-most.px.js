@@ -142,19 +142,39 @@ sprite("ns_konec_jih", { w: 380, h: 320 }, (c) => {
   // kolejnice v dutině a kabely
   c.line(...F(g0 + 24, -NS_G + 14), ...F(g1 - 24, -NS_G + 14), "M")
   c.line(...F(g0 + 30, -30), ...F(g0 + 60, -44), "k"); c.line(...F(g1 - 40, -32), ...F(g1 - 70, -48), "k")
-  // souprava 81-71: čelo trčí z dutiny ven (k −a) a dolů, nakloněné
+  // souprava 81-71: vůz trčí z dutiny ven (k −a) a dolů, nakloněný. Kvádr se třemi viditelnými stěnami, každá jinak
+  // světlá (šedá střecha se žebry, tmavý bok k +b s okny a dveřmi, červené čelo), hrany tmavou linkou, jinak je to placka.
+  const NL = 96, rt = -28, rb = -84
   const tx = (a, d, h) => p(-a, d, h - a * 0.35)
-  const d0 = Wd / 2 - 46, d1 = Wd / 2 + 46
-  c.poly([...tx(0, d0, -30), ...tx(0, d1, -30), ...tx(60, d1, -36), ...tx(60, d0, -36)], "V")       // střecha
-  c.poly([...tx(60, d0, -36), ...tx(60, d1, -36), ...tx(60, d1, -86), ...tx(60, d0, -86)], "V")      // čelo
-  c.poly([...tx(0, d1, -30), ...tx(60, d1, -36), ...tx(60, d1, -86), ...tx(0, d1, -80)], "R")      // bok k +b
-  c.poly([...tx(60, d0 + 10, -42), ...tx(60, d1 - 10, -42), ...tx(60, d1 - 10, -60), ...tx(60, d0 + 10, -60)], "n")  // okno
-  c.line(...tx(60, d0 + 14, -46), ...tx(60, d0 + 40, -58), "l"); c.line(...tx(60, d0 + 50, -44), ...tx(60, d1 - 16, -56), "l")
-  c.poly([...tx(60, d0, -66), ...tx(60, d1, -66), ...tx(60, d1, -72), ...tx(60, d0, -72)], "W")    // bílý pruh
-  for (const d of [d0 + 14, d1 - 14]) { const [x, y] = tx(60, d, -78); c.circ(Math.round(x), Math.round(y), 3, "x"); c.px(Math.round(x), Math.round(y), "w") }
-  for (let k = 0; k < 4; k++) c.line(...tx(14 + k * 12, d1, -34), ...tx(14 + k * 12, d1, -78), "D")
+  const d0 = Wd / 2 - 32, d1 = Wd / 2 + 32
+  const face = (pts, col) => c.poly(pts.flat(), col)
+  // střecha
+  face([tx(0, d0, rt), tx(0, d1, rt), tx(NL, d1, rt), tx(NL, d0, rt)], "m")
+  for (let a = 10; a < NL; a += 12) c.line(...tx(a, d0 + 6, rt), ...tx(a, d1 - 6, rt), "M")
+  for (const d of [d0 + 6, d1 - 6]) c.line(...tx(0, d, rt), ...tx(NL, d, rt), "x")
+  face([tx(30, d0 + 20, rt), tx(30, d1 - 20, rt), tx(54, d1 - 20, rt), tx(54, d0 + 20, rt)], "x")   // větrací nástavba
+  // bok k +b: tmavě červený, pás oken, dvoje dveře, světlý pruh pod okny, podvozek ve stínu
+  face([tx(0, d0, rt), tx(NL, d0, rt), tx(NL, d0, rb), tx(0, d0, rb)], "D")
+  face([tx(0, d0, -40), tx(NL - 6, d0, -40), tx(NL - 6, d0, -56), tx(0, d0, -56)], "n")
+  for (const a of [18, 22, 62, 66]) c.line(...tx(a, d0, -36), ...tx(a, d0, rb + 6), "D")
+  for (const a of [20, 64]) c.line(...tx(a, d0, -36), ...tx(a, d0, rb + 6), "k")
+  c.line(...tx(40, d0, -44), ...tx(52, d0, -52), "l")
+  face([tx(0, d0, -62), tx(NL, d0, -62), tx(NL, d0, -66), tx(0, d0, -66)], "v")
+  face([tx(0, d0, rb + 6), tx(NL, d0, rb + 6), tx(NL, d0, rb), tx(0, d0, rb)], "A")
+  for (let i = 0; i < 7; i++) { const a = 6 + rng() * (NL - 12); c.line(...tx(a, d0, -66), ...tx(a, d0, -70 - rng() * 10), "U") }
+  // čelo k −a: červené, čelní sklo, bílý pruh, světla, spřáhlo
+  face([tx(NL, d0, rt), tx(NL, d1, rt), tx(NL, d1, rb), tx(NL, d0, rb)], "V")
+  face([tx(NL, d0 + 8, -36), tx(NL, d1 - 8, -36), tx(NL, d1 - 8, -58), tx(NL, d0 + 8, -58)], "n")
+  c.line(...tx(NL, Wd / 2, -36), ...tx(NL, Wd / 2, -58), "V")
+  c.line(...tx(NL, d0 + 12, -40), ...tx(NL, d0 + 26, -54), "l"); c.line(...tx(NL, d1 - 26, -40), ...tx(NL, d1 - 12, -52), "l")
+  face([tx(NL, d0, -64), tx(NL, d1, -64), tx(NL, d1, -70), tx(NL, d0, -70)], "W")
+  for (const d of [d0 + 12, d1 - 12]) { const [x, y] = tx(NL, d, -76); c.circ(Math.round(x), Math.round(y), 3, "x"); c.px(Math.round(x), Math.round(y), "w") }
+  face([tx(NL, Wd / 2 - 8, rb + 6), tx(NL, Wd / 2 + 8, rb + 6), tx(NL, Wd / 2 + 8, rb), tx(NL, Wd / 2 - 8, rb)], "A")
+  // hrany kvádru
+  for (const [u, v] of [[[NL, d0, rt], [NL, d0, rb]], [[NL, d0, rt], [NL, d1, rt]], [[0, d0, rt], [NL, d0, rt]], [[NL, d1, rt], [NL, d1, rb]], [[NL, d0, rb], [NL, d1, rb]], [[0, d0, rb], [NL, d0, rb]]]) c.line(...tx(...u), ...tx(...v), "k")
+  c.line(...tx(NL - 1, d0 + 1, rt + 1), ...tx(NL - 1, d1 - 1, rt + 1), "r")
   // nápis linky na čele: červený čtverec C
-  const [cx, cy] = tx(60, d0 + 6, -40); c.rect(Math.round(cx) - 4, Math.round(cy) - 2, 8, 8, "7"); c.text(Math.round(cx) - 2, Math.round(cy) - 1, "C", "k")
+  const [cx, cy] = tx(NL, d0 + 6, -32); c.rect(Math.round(cx) - 4, Math.round(cy) - 2, 8, 8, "7"); c.text(Math.round(cx) - 2, Math.round(cy) - 1, "C", "k")
   // pod průřezem utržené konce trouby a výztuž visící dolů
   for (let i = 0; i < 18; i++) { const d = g0 + rng() * (g1 - g0); c.line(...F(d, -NS_G), ...F(d + (rng() - 0.5) * 6, -NS_G - 8 - rng() * 30), "U") }
   c.poly([...F(g0 + 10, -NS_G), ...F(g0 + 60, -NS_G), ...F(g0 + 40, -NS_G - 40)], "P")

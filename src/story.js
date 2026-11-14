@@ -236,6 +236,7 @@ async function converse(world, id, dialog, speaker, face) {
         }
         if (choice.once) state.asked[id] = [...(state.asked[id] ?? []), choice.id];
         const { fight, travel, ending, film, rope, ...now } = choice.do ?? {};
+        const before = entryNode(state, dialog);
         const r = apply(world, now);
         world.refreshStops?.(); // co se vyřešilo, se přehraje hned (psi odběhnou, zatímco Robin mluví)
         // filmeček nad světem (vyhlídka): po něm rozhovor pokračuje odpovědí
@@ -264,7 +265,11 @@ async function converse(world, id, dialog, speaker, face) {
         if (travel) return { travel };
         if (ending) return { ending: resolveEnding(state, ending) };
         if (choice.end) break;
+        // volba překážku vyřešila (vstupní uzel rozhovoru je po ní jiný než před ní): rozhovor se nevrací k výzvě, která už
+        // neplatí, ale skočí na uzel, který platí teď (odstrčení vymahači sedí, ochranka má pauzu)
+        const after = entryNode(state, dialog);
         if (choice.next && choice.next !== nodeId) nodeId = choice.next;
+        else if (!choice.next && after && after !== before && after !== nodeId) nodeId = after;
         else last = nodeId; // zpátky do téhož uzlu: jen otázka
     }
     return {};

@@ -165,6 +165,96 @@ export const ODDITY_LINES = {
         'Syčí dál. Z okna nad vodou někdo volá: „Nechte ji, ona je tu správcová.“',
         'Labuť se otočí zády a pleskne křídlem o hladinu. Audience skončila.',
     ] },
+    // Hlavák, věci jen ke koukání: vraky tramvají u Vrchlického sadů, lokomotiva v hale a autobus na magistrále
+    tram_hlavak: { lines: [
+        'Tramvaj T3, linka 9, směr Spojovací. Dál než sem nedojela.',
+        'Za sklem kabiny lísteček propiskou: „Jsem hned zpátky.“',
+    ] },
+    loco_363: { lines: [
+        'Lokomotiva 363, říkalo se jí eso. Sběrač má pořád nahoře, drát nad ním chybí.',
+    ] },
+    bus_wreck: { lines: [
+        'Autobus na letiště. Na předním skle cedule: ODJEZD PO NAPLNĚNÍ.',
+    ] },
+    // Stavby a věci jen ke koukání po místech (nejvýš pět na místo; landmark, rekvizita nebo kuriozita se say)
+    // Hlavák
+    fanta_budova: { lines: [
+        'Fantova budova. Secese, kupole, nad vchodem Praga mater urbium. Matka měst má vymlácená okna.',
+    ] },
+    // Václavák
+    muzeum: { lines: [
+        'Národní muzeum. Kupole drží, kašna před ním vyschla. Vstupné nikdo nevybírá.',
+    ] },
+    mustek: { lines: [
+        'Dům Na Můstku. Z vody kouká pět pater a hodiny na střeše. Ukazují 14:37.',
+        'Na fasádě bliká zelená obálka. Někdo tam nahoře pořád rozesílá e-maily. Nechodí nikomu.',
+    ] },
+    // Staromák
+    hus: { lines: [
+        'Husův pomník, teď ostrov. Na podstavci: Milujte se, pravdy každému přejte. Pod tím vodoryska.',
+    ] },
+    zvon: { lines: [
+        'Dům U Kamenného zvonu. Zvon na nároží je z kamene. Nezvonil nikdy, takže se nic nezměnilo.',
+    ] },
+    radnice: { lines: [
+        'Staroměstská radnice. Orloj má ciferník těsně nad hladinou a kalendář pod ní.',
+    ] },
+    tyn: { lines: [
+        'Týnský chrám. Věže nejsou stejně široké. Zblízka to vidí každý, zdálky nikdo.',
+    ] },
+    kinsky: { lines: [
+        'Palác Kinských. Růžové rokoko a balkon do náměstí. Z balkonu teď řeční racci.',
+    ] },
+    // Nuselák
+    kcp: { lines: [
+        'Palác kultury. Beton, sklo a sál skoro pro tři tisíce lidí. Výhled na Hrad v ceně.',
+    ] },
+    forum: { lines: [
+        'Hotel Forum, přes dvacet pater. Na recepci visí všechny klíče.',
+    ] },
+    muzeum_policie: { lines: [
+        'Muzeum Policie v bývalém klášteře. Na dvoře bývalo dětské dopravní hřiště. Semafor tam stojí dál.',
+    ] },
+    ns_souprava: { lines: [
+        'Souprava linky C. Čelo visí nad vodou, zbytek zůstal v tubusu.',
+    ] },
+    tatra_vb: { lines: [
+        'Tatra 613 Veřejné bezpečnosti, exponát. Jediné auto široko daleko, které nikdo nevykradl.',
+    ] },
+    // Karlův most a Kampa
+    vez_stare: { lines: [
+        'Staroměstská mostecká věž. Průvodci psali, že je to nejkrásnější gotická brána v Evropě. Leží dole v bahně.',
+    ] },
+    veze_male: { lines: [
+        'Malostranské mostecké věže. Menší je románská, větší gotická. Hádat se o to není s kým.',
+    ] },
+    stalin_hlava: { lines: [
+        'Stalinova hlava z Letné. Do koryta to měla z kopce.',
+    ] },
+    // Malá Strana
+    mikulas_ms: { lines: [
+        'Svatý Mikuláš. Kostel patřil církvi, zvonice vedle něj obci.',
+        'Ze zvonice kdysi tajní sledovali velvyslanectví. Dalekohled tam prý zůstal.',
+    ] },
+    budka_straz: { lines: [
+        'Strážní budka, červené a bílé pruhy. Uvnitř háček na čepici.',
+    ] },
+    // Hrad
+    katedrala: { lines: [
+        'Katedrála svatého Víta. Stavěli ji skoro šest set let. Lešení na věži je zase zpátky.',
+    ] },
+    jiri: { lines: [
+        'Bazilika svatého Jiří. Bílé věže se jmenují Adam a Eva. Adam je ten tlustší.',
+    ] },
+    obelisk: { lines: [
+        'Plečnikův obelisk. Praskl už při převozu, proto je kratší. Zbytek drží.',
+    ] },
+    metronom: { lines: [
+        'Ručička metronomu z Letné. Takt neudává.',
+    ] },
+    golem: { lines: [
+        'Golem. Šém má vyndaný. Někdo měl rozum.',
+    ] },
     // nutrie, která po kamínku nebo boji seskočila z reproduktoru (rekvizita zastavení se say)
     nutrie_breh: { lines: [
         'Nutrie sedí zády k vám a dělá, že neexistujete.',
@@ -284,6 +374,9 @@ export const CUTSCENES = {
     ],
     cesta_malastrana_most: [
         { image: 'cs_most', lines: ['Mosteckou dolů. Pod věží suché koryto, vpravo Kampa a mlýn.'] },
+    ],
+    cesta_hrad_malastrana: [
+        { image: 'cs_malastrana', lines: ['Matyášovou bránou ven a Nerudovkou dolů. Generátor je slyšet ještě u Dvou slunců, pak už jen vlastní kroky.'] },
     ],
     cesta_malastrana_hrad: [
         { image: 'cs_hrad', lines: [
@@ -1035,8 +1128,15 @@ export const DIALOGS = {
                 { id: 'a2x', label: 'Nevím.', reply: ['Škoda. Prohlídka pokračuje bez vyhlídky.'], do: { quest: { prohlidka: 'done' } }, end: true },
             ] },
             kviz3: { say: ['Otázka třetí: proč na mostě zůstal Nepomucký?'], choices: [
-                { id: 'a3', label: 'Je přišroubovaný.', if: { flag: 'met_hlidac' }, else: 'To ví jen ten, kdo mluvil s hlídačem na mostě.', do: { quest: { prohlidka: 'done' }, flag: 'vyhlidka_otevrena', xp: 3 }, reply: ['Výborně! Tři ze tří! Promiňte, já… já ty otázky už říkala jen holubům.', 'Za odměnu vám odemknu vyhlídku Na Opyši. Je odtamtud vidět celé nové koryto, od Starého Města po Vyšehrad.'] },
+                { id: 'a3', label: 'Je přišroubovaný.', if: { flag: 'met_hlidac' }, else: 'To ví jen ten, kdo mluvil s hlídačem na mostě.', do: { quest: { prohlidka: 'done' }, flag: 'vyhlidka_otevrena', xp: 3 }, reply: ['Výborně! Tři ze tří! Promiňte, já… já ty otázky už říkala jen holubům.', 'Za odměnu vám odemknu vyhlídku Na Opyši. Je odtamtud vidět celé nové koryto, od Starého Města po Vyšehrad.'], end: true },
                 { id: 'a3x', label: 'Nevím.', reply: ['Škoda. Prohlídka pokračuje bez vyhlídky.'], do: { quest: { prohlidka: 'done' } }, end: true },
+            ] },
+        } },
+    brana_dolu: { name: 'Matyášova brána', face: null,
+        entry: [{ node: 'brana' }],
+        nodes: {
+            brana: { say: ['Matyášova brána. Za ní Hradčanské náměstí a Nerudova, z kopce dolů až na Malou Stranu.'], choices: [
+                { id: 'jit', label: 'Sejít na Malou Stranu.', do: { travel: 'malastrana' } },
             ] },
         } },
     ochranka: { stats: { ruka: 3, usta: 2, oko: 1 }, about: 'Dva chlapi v reflexních vestách Kanceláře kanálu. Hlídají buňku a čekají na výplatu.', faction: 'hrad', name: 'Ochranka kanálu', face: 'face_ochranka',
