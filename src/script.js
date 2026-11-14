@@ -225,8 +225,9 @@ export const ODDITY_LINES = {
     vez_stare: { lines: [
         'Staroměstská mostecká věž. Průvodci psali, že je to nejkrásnější gotická brána v Evropě. Leží dole v bahně.',
     ] },
-    veze_male: { lines: [
-        'Malostranské mostecké věže. Menší je románská, větší gotická. Hádat se o to není s kým.',
+    mlok: { lines: [
+        'Mlok. Sedí v bahně, kouří doutník a čeká, až se voda vrátí.',
+        'Čapek o nich napsal román. Mlok ho nečetl, ale drží se ho.',
     ] },
     stalin_hlava: { lines: [
         'Stalinova hlava z Letné. Do koryta to měla z kopce.',
@@ -520,7 +521,7 @@ export const BATTLES = {
     nutrie2: { name: 'Nutrie z výlohy', sprite: 'nutrie', scale: 4, hp: 8, nerve: 5, attack: [1, 2], special: 'twice', loot: { supply: { obvaz: 1 } }, talk: 'Zasyčet na ně',
         intro: 'Z hnízda kožichů vylezou dvě nutrie. Jedna má na krku hedvábný šátek.',
         hit: 'Nutrie kousne.', twice: 'Druhá nutrie se přidá.', miss: 'Nutrie syčí.', hurt: 'Nutrie zapiští.', shout: 'Nutrie couvnou do kožichů.',
-        win: 'Nutrie se stáhnou do rohu výlohy a hák nechají hákem.', yield: 'Nutrie se zavrtají hlouběji do kašmíru. Hák zůstane trčet bez stráže.', flee: 'Ustoupíte. Nutrie se zavrtají zpátky do kašmíru.' },
+        win: 'Nutrie vyskáčou rozbitým sklem na lávku. Hák nechají hákem.', yield: 'Nutrie couvnou, protáhnou se rozbitým sklem ven a sednou si na lávku. Hák zůstane trčet bez stráže.', flee: 'Ustoupíte. Nutrie se zavrtají zpátky do kašmíru.' },
     kanci: { name: 'Kanci z Kampy', sprite: 'kanec', scale: 4, hp: 14, nerve: 8, attack: [2, 3], special: null, talk: 'Zařvat na ně',
         intro: 'Vůdce tlupy zafuní a sklopí kly. Za ním další dva, menší a stejně naštvaní.',
         hit: 'Kanec vás nabere.', miss: 'Kanec proletí kolem.', hurt: 'Kanec zakvičí.', shout: 'Kanec zaváhá.',
@@ -890,16 +891,17 @@ export const DIALOGS = {
             ] },
         } },
     vyloha: { name: 'Výloha butiku', face: null,
-        entry: [{ if: { flag: 'hak_venku' }, node: 'hotovo' }, { if: { flag: 'nutrie2_pryc' }, node: 'hak' }, { node: 'nutrie' }],
+        entry: [{ if: { flag: ['hak_venku', 'nutrie_venku'] }, node: 'hotovo' }, { if: { flag: 'hak_venku' }, node: 'spi' }, { if: { flag: 'nutrie2_pryc' }, node: 'hak' }, { node: 'nutrie' }],
         nodes: {
-            hotovo: { say: ['Prázdná výloha. Figuríny bez kabátů koukají do vody.'], choices: [] },
+            hotovo: { say: ['Hnízdo z kožichů je prázdné. Nutrie sedí venku na lávce a hlídají ho odtamtud.'], choices: [] },
+            spi: { say: ['Nutrie spí dál, zabalené v kašmíru. Po háku zbyla v kožiších díra.'], choices: [] },
             nutrie: { say: ['Ve výloze mezi figurínami je hnízdo z kožichů. Kouká z něj nutrie. A další. Z hnízda trčí lovcův hák.'], choices: [
-                { id: 'boj', label: 'Vyhnat je.', do: { fight: 'nutrie2' }, win: { flag: 'nutrie2_pryc', xp: 2 }, next: 'hak' },
+                { id: 'boj', label: 'Vyhnat je.', do: { fight: 'nutrie2' }, win: { flag: ['nutrie2_pryc', 'nutrie_venku'], xp: 2 }, next: 'hak' },
                 { id: 'mriz', label: 'Vyrazit mříž a vytrhnout hák, než se proberou.', if: { attr: { ruka: 3 } }, else: 'Vyrazit mříž chce Ruku 3.', do: { flag: ['nutrie2_pryc', 'hak_venku'], xp: 2 }, reply: ['Mříž povolí na první kopnutí. Hák jde ven i s kusem norka. Nutrie se ani nestačí probudit.'], end: true },
                 { id: 'jinudy', label: 'Vytáhnout hák zezadu, dírou ve stropě.', if: { attr: { oko: 3 } }, else: 'Díru ve stropě butiku najde jen Oko 3.', do: { flag: ['nutrie2_pryc', 'hak_venku'], xp: 2 }, reply: ['Z patra butiku vede do výlohy díra po lustru. Hák jde ven, nutrie spí dál, zabalené v kašmíru.'], end: true },
             ] },
-            hak: { say: ['Nutrie se krčí v rohu výlohy. Hák trčí z kožichů.'], choices: [
-                { id: 'vytahnout', label: 'Vytáhnout hák.', do: { flag: 'hak_venku', xp: 1 }, reply: ['Hák jde ven i s norkovým kabátem. Kabát necháte nutriím, ať nemají zimu.'], end: true },
+            hak: { say: ['Nutrie sedí venku na lávce. Hák trčí z kožichů.'], choices: [
+                { id: 'vytahnout', label: 'Vytáhnout hák.', do: { flag: 'hak_venku', xp: 1 }, reply: ['Hák jde ven i s norkovým kabátem. Kabát vrátíte do hnízda, ať se mají kam vrátit.'], end: true },
             ] },
         } },
     potapecka: { stats: { ruka: 3, usta: 1, oko: 3 }, about: 'Jediná z metra, kdo leze do zatopené Staroměstské. Vynáší, co se dá.', faction: 'metro', name: 'Potápěčka', face: 'face_potapecka',

@@ -366,22 +366,26 @@ p.rule{background:#fef3c7;border-left:4px solid #f59e0b;padding:.4rem .75rem}p.w
 <li id="6.3.2.4"><a class="n" href="#6.3.2.4">6.3.2.4</a> <b>Jak se dostanu po střechách na most?</b> <span class="req">vyžaduje jen jednou</span><div class="reply">Přes Klementinum. Z Karlovy po lešení na střechu, kolem hvězdárny a dolů ke Křižovníkům. Kdo nemá dobré oči, spadne do Karlovy. Kdo má, je na mostě.</div></li>
 </ol>
 <h3 id="6.4"><a class="n" href="#6.4">6.4</a> Výloha butiku (vyloha)</h3>
-<p class="where">Začíná uzlem: hotovo (když vlajka hak_venku), jinak hak (když vlajka nutrie2_pryc), jinak nutrie.</p>
+<p class="where">Začíná uzlem: hotovo (když vlajka hak_venku, vlajka nutrie_venku), jinak spi (když vlajka hak_venku), jinak hak (když vlajka nutrie2_pryc), jinak nutrie.</p>
 <h4 id="6.4.1"><a class="n" href="#6.4.1">6.4.1</a> uzel hotovo</h4>
-<ul class="say"><li>Prázdná výloha. Figuríny bez kabátů koukají do vody.</li></ul>
+<ul class="say"><li>Hnízdo z kožichů je prázdné. Nutrie sedí venku na lávce a hlídají ho odtamtud.</li></ul>
 <ol class="choices">
 </ol>
-<h4 id="6.4.2"><a class="n" href="#6.4.2">6.4.2</a> uzel nutrie</h4>
+<h4 id="6.4.2"><a class="n" href="#6.4.2">6.4.2</a> uzel spi</h4>
+<ul class="say"><li>Nutrie spí dál, zabalené v kašmíru. Po háku zbyla v kožiších díra.</li></ul>
+<ol class="choices">
+</ol>
+<h4 id="6.4.3"><a class="n" href="#6.4.3">6.4.3</a> uzel nutrie</h4>
 <ul class="say"><li>Ve výloze mezi figurínami je hnízdo z kožichů. Kouká z něj nutrie. A další. Z hnízda trčí lovcův hák.</li></ul>
 <ol class="choices">
-<li id="6.4.2.1"><a class="n" href="#6.4.2.1">6.4.2.1</a> <b>Vyhnat je.</b> <span class="fx">→ boj: Nutrie z výlohy (po výhře: vlajka nutrie2_pryc, +2 zkušeností); dál hak</span></li>
-<li id="6.4.2.2"><a class="n" href="#6.4.2.2">6.4.2.2</a> <b>Vyrazit mříž a vytrhnout hák, než se proberou.</b> <span class="req">vyžaduje zkouška Ruka 3</span> <span class="else">když neplatí: Vyrazit mříž chce Ruku 3.</span> <span class="fx">→ vlajka nutrie2_pryc, vlajka hak_venku, +2 zkušeností; konec rozhovoru</span><div class="reply">Mříž povolí na první kopnutí. Hák jde ven i s kusem norka. Nutrie se ani nestačí probudit.</div></li>
-<li id="6.4.2.3"><a class="n" href="#6.4.2.3">6.4.2.3</a> <b>Vytáhnout hák zezadu, dírou ve stropě.</b> <span class="req">vyžaduje zkouška Oko 3</span> <span class="else">když neplatí: Díru ve stropě butiku najde jen Oko 3.</span> <span class="fx">→ vlajka nutrie2_pryc, vlajka hak_venku, +2 zkušeností; konec rozhovoru</span><div class="reply">Z patra butiku vede do výlohy díra po lustru. Hák jde ven, nutrie spí dál, zabalené v kašmíru.</div></li>
+<li id="6.4.3.1"><a class="n" href="#6.4.3.1">6.4.3.1</a> <b>Vyhnat je.</b> <span class="fx">→ boj: Nutrie z výlohy (po výhře: vlajka nutrie2_pryc, vlajka nutrie_venku, +2 zkušeností); dál hak</span></li>
+<li id="6.4.3.2"><a class="n" href="#6.4.3.2">6.4.3.2</a> <b>Vyrazit mříž a vytrhnout hák, než se proberou.</b> <span class="req">vyžaduje zkouška Ruka 3</span> <span class="else">když neplatí: Vyrazit mříž chce Ruku 3.</span> <span class="fx">→ vlajka nutrie2_pryc, vlajka hak_venku, +2 zkušeností; konec rozhovoru</span><div class="reply">Mříž povolí na první kopnutí. Hák jde ven i s kusem norka. Nutrie se ani nestačí probudit.</div></li>
+<li id="6.4.3.3"><a class="n" href="#6.4.3.3">6.4.3.3</a> <b>Vytáhnout hák zezadu, dírou ve stropě.</b> <span class="req">vyžaduje zkouška Oko 3</span> <span class="else">když neplatí: Díru ve stropě butiku najde jen Oko 3.</span> <span class="fx">→ vlajka nutrie2_pryc, vlajka hak_venku, +2 zkušeností; konec rozhovoru</span><div class="reply">Z patra butiku vede do výlohy díra po lustru. Hák jde ven, nutrie spí dál, zabalené v kašmíru.</div></li>
 </ol>
-<h4 id="6.4.3"><a class="n" href="#6.4.3">6.4.3</a> uzel hak</h4>
-<ul class="say"><li>Nutrie se krčí v rohu výlohy. Hák trčí z kožichů.</li></ul>
+<h4 id="6.4.4"><a class="n" href="#6.4.4">6.4.4</a> uzel hak</h4>
+<ul class="say"><li>Nutrie sedí venku na lávce. Hák trčí z kožichů.</li></ul>
 <ol class="choices">
-<li id="6.4.3.1"><a class="n" href="#6.4.3.1">6.4.3.1</a> <b>Vytáhnout hák.</b> <span class="fx">→ vlajka hak_venku, +1 zkušeností; konec rozhovoru</span><div class="reply">Hák jde ven i s norkovým kabátem. Kabát necháte nutriím, ať nemají zimu.</div></li>
+<li id="6.4.4.1"><a class="n" href="#6.4.4.1">6.4.4.1</a> <b>Vytáhnout hák.</b> <span class="fx">→ vlajka hak_venku, +1 zkušeností; konec rozhovoru</span><div class="reply">Hák jde ven i s norkovým kabátem. Kabát vrátíte do hnízda, ať se mají kam vrátit.</div></li>
 </ol>
 <h3 id="6.5"><a class="n" href="#6.5">6.5</a> Lovec značek (lovec)</h3>
 <p class="where">Karta: Ruka 2, Ústa 2, Oko 2. Loví hákem zboží ze zatopených butiků v Pařížské. Tvrdí, že je všechno originál.</p>
@@ -744,7 +748,7 @@ p.rule{background:#fef3c7;border-left:4px solid #f59e0b;padding:.4rem .75rem}p.w
 <ul class="say"><li>Nutrie se postaví na zadní a cení oranžové zuby. Je větší, než vypadala.</li><li>Nutrie sleze z reproduktoru, odplave tři tempa a vyleze na kraj vody.</li><li>Nutrie sleze z reproduktoru a sedne si na kraj vody. Zuby schová.</li><li>Ustoupíte. Nutrie si sedne zpátky na reproduktor.</li></ul>
 <h3 id="9.3"><a class="n" href="#9.3">9.3</a> Nutrie z výlohy (nutrie2)</h3>
 <p class="where">Srdce 8, vůle 5, útok 1–2, zvláštnost twice, akce Úst: Zasyčet na ně, kořist: + Obvaz ×1.</p>
-<ul class="say"><li>Z hnízda kožichů vylezou dvě nutrie. Jedna má na krku hedvábný šátek.</li><li>Nutrie se stáhnou do rohu výlohy a hák nechají hákem.</li><li>Nutrie se zavrtají hlouběji do kašmíru. Hák zůstane trčet bez stráže.</li><li>Ustoupíte. Nutrie se zavrtají zpátky do kašmíru.</li></ul>
+<ul class="say"><li>Z hnízda kožichů vylezou dvě nutrie. Jedna má na krku hedvábný šátek.</li><li>Nutrie vyskáčou rozbitým sklem na lávku. Hák nechají hákem.</li><li>Nutrie couvnou, protáhnou se rozbitým sklem ven a sednou si na lávku. Hák zůstane trčet bez stráže.</li><li>Ustoupíte. Nutrie se zavrtají zpátky do kašmíru.</li></ul>
 <h3 id="9.4"><a class="n" href="#9.4">9.4</a> Kanci z Kampy (kanci)</h3>
 <p class="where">Srdce 14, vůle 8, útok 2–3, zvláštnost žádná, akce Úst: Zařvat na ně.</p>
 <ul class="say"><li>Vůdce tlupy zafuní a sklopí kly. Za ním další dva, menší a stejně naštvaní.</li><li>Vůdce zafuní a odvede tlupu přes lávku pod platany. Dvůr je volný.</li><li>Kanci couvnou a táhnou přes lávku pod platany. Cesta ke kolu je volná.</li><li>Utečete za roh mlýna. Kanci ryjí dál.</li></ul>

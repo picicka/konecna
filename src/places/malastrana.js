@@ -8,7 +8,8 @@ export const MALASTRANA = {
     // chrám svatého Mikuláše uprostřed Malostranského náměstí (půdorys z OSM a 8–17, b 18–23)
     landmark: [{ atlas: 'landmarks_kostely', key: 'lm_mikulas_ms', a0: 8, w: 10, b0: 18, dpt: 6, say: 'mikulas_ms' }],
     stops: {
-        mostecka_zpet: { npc: { key: 'lamp', a: 4, b: 15 }, approach: { a: 3, b: 15 }, props: [] },
+        // cesta zpátky na most: červená uliční cedule Mostecká se směrovkou k mostu
+        mostecka_zpet: { npc: { key: 'cedule_kampa', a: 4, b: 15, flip: false }, approach: { a: 3, b: 15 }, props: [] },
         // vymahači čekají, jen když pošťačka odmítla Fantovu neteř. Stojí hned u ústí Mostecké a přepadnou ji při
         // příchodu (ambush): rozhovor začne sám a dokud neplatí until, vrátí ji každý odchod zpátky na most
         vymahaci: { npc: { key: 'vymahac', a: 5, b: 16 }, approach: { a: 4, b: 16 }, props: [], hideIf: { noFlag: 'odmitla_netere' },
@@ -20,5 +21,7 @@ export const MALASTRANA = {
         kastelan: { npc: { key: 'kastelan', a: 62, b: 37 }, approach: { a: 61, b: 37 }, props: [] },
         schody: { npc: { key: 'holub', a: 44, b: 53 }, approach: { a: 44, b: 54 }, props: [] },
     },
+    // přisvícená uliční cedule u ústí Mostecké (cesta zpátky na Karlův most a Kampu)
+    lights: [{ a: 3, b: 15, scale: 1, alpha: 0.6 }],
     props: { wreck: 0.008, trees: ['tree_a', 'tree_c', 'tree_bare', 'tree_kastan_a', 'tree_bare_c', 'tree_b', 'tree_mlady_a', 'tree_kastan_b', 'tree_pahyl_b'], bush: 0.05, bushes: ['bush_a', 'bush_b', 'bush_c', 'bush_rez_a', 'bush_trni_a', 'bush_trava_a', 'bush_velky_a', 'bush_plot_a', 'bush_trava_b'], fire: 0.003, junk: 0.02, junkKeys: ['rubble_pile', 'barrel', 'tires'], shack: 0 },
 };

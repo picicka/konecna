@@ -441,7 +441,11 @@ export class WorldScene extends Phaser.Scene {
         const tail = this.add.triangle(0, 14, -8, 0, 8, 0, 0, 10, 0x000000, 0.85);
         label.setY(0);
         // velká věc (stavba, vůz): bublina nad místem klepnutí, jinak nad věcí
-        this.bubble = this.add.container(Math.round(at ? at.x : top.centerX), Math.round(at ? at.y - 24 : top.top - 18), [back, tail, label]).setDepth(1e7);
+        // bublina zůstane celá v obraze (pod horní lištou a mimo okraje), i když věc stojí u kraje
+        const view = this.cameras.main.worldView;
+        const bx = Phaser.Math.Clamp(at ? at.x : top.centerX, view.x + w / 2 + 8, view.right - w / 2 - 8);
+        const by = Math.max(at ? at.y - 24 : top.top - 18, view.y + 64 + h);
+        this.bubble = this.add.container(Math.round(bx), Math.round(by), [back, tail, label]).setDepth(1e7);
         this.registry.get('sound')?.tick?.();
         this.time.delayedCall(4500, () => { if (this.bubble && this.bubble.list.includes(label)) { this.bubble.destroy(); this.bubble = null; } });
     }
@@ -750,8 +754,12 @@ export class WorldScene extends Phaser.Scene {
 
     // Podoba zastavení: když platí after.if (psi dají pokoj, nutrie sleze), stojí postava a rekvizity podle after.
     layoutOf(stop) {
-        const done = Boolean(stop.after && holds(this.state, stop.after.if));
-        const src = done ? { ...stop, ...stop.after } : stop;
+        // after: jedna podoba po vyřešení; stages: víc podob, platí první, jejíž podmínka platí (výloha: hák venku
+        // a nutrie venku, hák venku a nutrie spí, nutrie venku a hák ještě vězí). done je číslo podoby (0 = výchozí).
+        const base = stop.base ?? stop;
+        const stages = base.stages ?? (base.after ? [base.after] : []);
+        const done = stages.findIndex((st) => holds(this.state, st.if)) + 1;
+        const src = done ? { ...base, ...stages[done - 1] } : base;
         return { done, approach: { L: 0, ...src.approach }, npc: { L: 0, ...src.npc }, props: src.props ?? [] };
     }
 
@@ -775,9 +783,9 @@ export class WorldScene extends Phaser.Scene {
         Object.entries(this.def?.stops ?? {}).forEach(([id, stop]) => {
             if (stop.hideIf && holds(this.state, stop.hideIf)) return;
             const lay = this.layoutOf(stop);
-            [lay.approach, stop.approach, stop.after?.approach, stop.after?.npc, ...(stop.after?.props ?? [])].filter((t) => t && !t.L).forEach((t) => this.reserved.add(ISO.key(t.a, t.b)));
+            [lay.approach, stop.approach, ...[stop.after, ...(stop.stages ?? [])].filter(Boolean).flatMap((st) => [st.approach, st.npc, ...(st.props ?? [])])].filter((t) => t && !t.L).forEach((t) => this.reserved.add(ISO.key(t.a, t.b)));
             const { npc, props } = this.placeStopSprites(lay);
-            this.stops[id] = { ...stop, approach: lay.approach, npc: lay.npc, props: lay.props, id, sprite: npc, propSprites: props, done: lay.done };
+            this.stops[id] = { ...stop, base: stop, approach: lay.approach, npc: lay.npc, props: lay.props, id, sprite: npc, propSprites: props, done: lay.done };
         });
     }
 
@@ -791,10 +799,12 @@ export class WorldScene extends Phaser.Scene {
         const { npc, props } = this.placeStopSprites(lay);
         const defs = [[lay.npc, npc], ...lay.props.map((p, i) => [p, props[i]])];
         const walkers = new Set();
-        const covered = new Set(defs.filter(([d]) => d.from === undefined).map(([d]) => ISO.key(d.a, d.b)));
+        // co už na svém místě stojí (stejný sprite na stejné dlaždici z minulé podoby), znovu nepřichází ani neskáče
+        const stays = (d) => old.some(([, , t]) => t.key === d.key && t.a === d.a && t.b === d.b);
+        const covered = new Set(defs.filter(([d]) => d.from === undefined || stays(d)).map(([d]) => ISO.key(d.a, d.b)));
         defs.forEach(([def, sprite]) => {
             const src = old.find(([k]) => k === String(def.from));
-            if (!src) return;
+            if (!src || stays(def)) return;
             if (def.jump) { this.jumpThing(sprite, { x: src[1].x, y: src[1].y - def.jump }); return; }
             walkers.add(src[0]);
             this.walkThing(src[1], src[2], def, sprite);
@@ -804,7 +814,7 @@ export class WorldScene extends Phaser.Scene {
             if (covered.has(ISO.key(t.a, t.b))) s.destroy();
             else this.tweens.add({ targets: s, alpha: 0, duration: 400, onComplete: () => s.destroy() });
         });
-        Object.assign(stop, { approach: lay.approach, npc: lay.npc, props: lay.props, sprite: npc, propSprites: props, done: true });
+        Object.assign(stop, { approach: lay.approach, npc: lay.npc, props: lay.props, sprite: npc, propSprites: props, done: lay.done });
     }
 
     // Postava dojde po dlaždicích na místo cílového spritu (ten se do té doby schová), pak se vymění.
@@ -864,7 +874,7 @@ export class WorldScene extends Phaser.Scene {
         };
         // Strom ani keř nesmí zakrýt postavu zastavení: co stojí před ní (větší hloubka) a obrázkem by ji překrylo,
         // se nevysadí. Postavy jsou i podoby zastavení po vyřešení (after).
-        const figures = Object.values(this.def?.stops ?? {}).flatMap((st) => [st.npc, st.after?.npc]).filter(Boolean).map((n) => ({ ...ISO.foot(n.a, n.b), depth: ISO.depthOf(n.a, n.b) }));
+        const figures = Object.values(this.def?.stops ?? {}).flatMap((st) => [st.npc, st.after?.npc, ...(st.stages ?? []).map((g) => g.npc)]).filter(Boolean).map((n) => ({ ...ISO.foot(n.a, n.b), depth: ISO.depthOf(n.a, n.b) }));
         const hides = (key, a, b) => {
             const frame = this.textures.getFrame('atlas', key);
             if (!frame) return false;
@@ -1350,7 +1360,7 @@ export class WorldScene extends Phaser.Scene {
                 delete this.stops[stop.id];
                 return;
             }
-            if (stop.after && !stop.done && holds(this.state, stop.after.if)) this.changeStop(stop);
+            if ((stop.after || stop.stages) && this.layoutOf(stop).done !== stop.done) this.changeStop(stop);
         });
         this.hud?.drawMiniStops?.();
     }

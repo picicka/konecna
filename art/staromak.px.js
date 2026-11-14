@@ -250,6 +250,8 @@
   })
   vyloha("vyloha", { hak: true, nutrie: true })
   vyloha("vyloha_bez", { hak: false, nutrie: false })
+  vyloha("vyloha_hak", { hak: true, nutrie: false })
+  vyloha("vyloha_spi", { hak: false, nutrie: true })
 
   // Druhá loďka: dřevěná pramice s oprýskanou zelenou barvou, dvě vesla, sedačky, plechovka na vylévání.
   // Leží napříč (podél osy b). Spodní okraj plátna je hladina pod přídí.
@@ -606,3 +608,4 @@ const uliceCedule = (name, ulice, kam, carka = null) => sprite(name, { w: 52, h:
 })
 uliceCedule("cedule_mostecka", "MOSTECKA", "M.STRANA", 40)
 uliceCedule("cedule_nerudova", "NERUDOVA", "M.STRANA")
+uliceCedule("cedule_kampa", "MOSTECKA", "K.MOST", 40)
