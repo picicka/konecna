@@ -139,6 +139,9 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
   cesta stojí, a hledá si je sám zpřesňováním (pamatuje si je ve `scripts/slepe-sledovane.json`, `--znovu` hledá od nuly).
   Nález vypíše s nejkratší cestou, jak se do něj dostat; `--misto <místo>` jedno místo, `-v` kola zpřesňování,
   `--bez rozhovor.uzel.volba` vypne volbu na zkoušku. Vypíše i volby, které nejdou zvolit nikdy.
+- Hlasy postav: každá postava mluví po svém (karty a pravidla ve skillu `hlasy`, `.claude/skills/hlasy/SKILL.md`), suchá pointa patří
+  vypravěči. `npm run opakovani` (`scripts/opakovani.mjs`) hlídá gagy s limitem (`WATCH`), spojení opakovaná ve třech
+  a více replikách a pevné mezery; pouští se po každé změně textů.
 - Po každé změně dialogů `npm run tree`; průchod `npm test` (hlavní linka cestou bez boje a jeden boj) nabídnout
   a pustit na pokyn, pro změnu na jednom místě stačí `npm test -- --misto <místo>`.
 - Grafika místa (díly země a domy) se nahrává až při vstupu na místo (`WorldScene.preload`), grafika ostatních míst se

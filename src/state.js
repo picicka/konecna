@@ -84,6 +84,9 @@ export const gainXp = (state, amount) => {
 export const resolveEnding = (state, key) => {
     if (key !== 'hrad') return key;
     if (state.flags.prehrala) return state.flags.nabito ? 'metro' : 'metro_bez';
+    // Bez krabičky u čtečky: tu, kterou má Admirál, ředitel do šuplíku nedostane, takže čtečka jen mlčí. Konec Tržiště
+    // zbývá pro krabičku prodanou neteři (strýc ji prodal dál na Hrad), pokud hrdince nevěří nejvíc metro.
+    if (state.flags.dala_admiralovi) return 'metro_bez';
     return trustedFaction(state) === 'metro' ? 'metro_bez' : 'trziste';
 };
 

@@ -411,7 +411,7 @@ uličce jsou v domečcích uskladněné sochy z Karlova mostu, každá s ceno
    - **Metro** (nejvyšší důvěra metra a zásilka nabitá): čtečka záznam přehraje, dispečerčin rozhlas ho pustí na celou
      Prahu, ochranka si vezme výplatu a odejde, ředitelovi zhasne generátor. Souprava zase staví podle jízdního řádu.
      „Řád.“
-   - **Metro bez důkazu** (důvěra metra, zásilka vybitá nebo pryč): čtečka mlčí, ředitel se usmívá, dispečerka
+   - **Metro bez důkazu** (zásilka vybitá, nebo pryč a důvěra metra, nebo ji má Admirál): čtečka mlčí, ředitel se usmívá, dispečerka
      pošťačku zapíše jako úřední osobu, která nic nedovezla. Varianta textu, ne čtvrtý konec.
    - **Loďkaři**: nedojde na Hrad vůbec. Z Malé Strany zpátky na Kampu, Kuřačka a loďka novým korytem kolem
      zlomeného Nuseláku na Vyšehrad. Admirál na skále, flotila pod ní, zásilku hodí do vody jako obětinu, nebo ji nechá
@@ -424,7 +424,7 @@ uličce jsou v domečcích uskladněné sochy z Karlova mostu, každá s ceno
 
 - **Dotazy na závěr** (průvodkyně): odpovědět na tři otázky o tom, jak to v Praze chodí teď, na které hráčka zná odpověď jen z toho,
   co cestou viděla (Orloj, kůň, Nepomucký). Odměna: průvodkyně otevře vyhlídku a hra ukáže nové koryto celé,
-  od Hlaváku po Vyšehrad, jako poslední obrázek před koncem. Volba „Dívat se“ pustí panoráma `cs_opys`: suché koryto
+  od Starého Města po Vyšehrad, jako poslední obrázek před koncem. Volba „Dívat se“ pustí panoráma `cs_opys`: suché koryto
   s Karlovým mostem, nové koryto přes Staré Město, zlomený Nuselák s lanem přes mezeru (na Pankrác se chodí po laně),
   Vyšehrad s ohni loďkařů a ležící Žižkovská věž.
 
@@ -453,7 +453,7 @@ proslov a titulek „Po vodě“. Vyšehrad sám je obrázek a text, ne mapa.
 
 ## Útržky příčiny (pořadí, v jakém je hráčka může posbírat)
 
-1. Kuřačka na vodě: „největší vodní dílo od Zemana“.
+1. Kuřačka na vodě: „největší vodní dílo od Zemana“. Dispečerka mluví jen o mimořádné události: voda vnikla do sítě ze směru, kde síť není; příčina není zapsaná.
 2. Potápěčka: voda přišla ze západu tunelem, který na mapě metra není.
 3. Most: sochy kupuje Hrad, někdo nahoře má na všechno.
 4. Paní z Nerudovky: kolona Kanceláře kanálu tu noc předtím, ráno zavřený Hrad.
