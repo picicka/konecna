@@ -45,6 +45,14 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
 - Krytina střech je z ortofota ČÚZK (WMS ORTOFOTO, CC BY 4.0): `npm run strechy` stáhne snímek výřezu do `build/orto`
   a `scripts/strechy.py` zapíše `data/strechy-<místo>.json` (barva a krytina každé budovy: tasky, hneda, med, tmava,
   plech, svetla). `osm.mjs` ji dává `house()` jako `cover`. Každý nový zdroj dat se uvádí v okně O hře (`ABOUT` v `src/script.js`, tlačítko i na titulní obrazovce a na liště).
+- Domy ze skutečné geometrie (zatím jen Staromák): `npm run ipr` (`scripts/ipr.py <místo> --stahnout`) stáhne listy 3D modelu
+  budov IPR Praha (otevřená data, CC BY 4.0, do `build/ipr`) a pro každý kvádr z `data/<místo>.json` vykreslí sprite ze
+  skutečných stěn a střech: listy `static/images/domy_<místo>_<n>` a `data/domy-<místo>.json` (klíč, list, kotva `ox`/`oy`,
+  výška stínu `tall`). Kvádry, mřížka, hloubka a průchodnost zůstávají z `osm.mjs`; mění se jen obrázek. Dům modelu se
+  uřízne na hraně dlaždic domů (pruh půl dlaždice navíc tam, kde půdorys končí), řez do zbořeného vnitrobloku je dvorní
+  fasáda. Barvy jen z palety hry, styl omítky a členění fasády po domech, krytina z ortofota, tagy z `docs/todo.md`.
+  Hra je vezme, když je místo v `src/map.js` obalené `real(...)`; kvádr bez geometrie (dům pod landmarkem) má starý sprite
+  z `houses_`. Po `npm run osm` místa pustit `npm run ipr` znovu (kvádry se mohly změnit).
 - Ručně určené prvky místa (díly landmarku, oblouky hal, zastavení s postavami a přístupem, pravidla rozsevu stromů,
   lamp a laviček) jsou v `src/places/<místo>.js`; repliky zastavení v `STOPS` v `src/script.js`. Příběh, postavy
   a zastavení všech míst jsou v `docs/pribeh.md`.

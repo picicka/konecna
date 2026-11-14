@@ -78,8 +78,10 @@ export class WorldScene extends Phaser.Scene {
     preload() {
         const options = this.registry.get('options');
         const v = `?v=${art.version}`;
-        const keys = [...Array.from({ length: this.map.groundChunks?.sheets ?? 0 }, (_, s) => `ground_${this.map.place}_${s}`), ...Array.from({ length: this.map.houseSheets ?? 0 }, (_, s) => `houses_${this.map.place}_${s}`)];
-        Object.keys(PLACES).filter((p) => p !== this.map.place).forEach((p) => this.textures.getTextureKeys().filter((k) => k.startsWith(`ground_${p}_`) || k.startsWith(`houses_${p}_`)).forEach((k) => this.textures.remove(k)));
+        const keys = [...Array.from({ length: this.map.groundChunks?.sheets ?? 0 }, (_, s) => `ground_${this.map.place}_${s}`), ...Array.from({ length: this.map.real?.sheets ?? 0 }, (_, s) => `domy_${this.map.place}_${s}`),
+            // staré listy jen pro kvádry, ke kterým model budov nic nemá (nebo když místo skutečné domy nemá vůbec)
+            ...(this.map.real ? [...new Set(this.map.houses.filter((h, i) => !this.map.real.houses[i]).map((h) => `houses_${this.map.place}_${h.key.slice(2, h.key.indexOf('_'))}`))] : Array.from({ length: this.map.houseSheets ?? 0 }, (_, s) => `houses_${this.map.place}_${s}`))];
+        Object.keys(PLACES).filter((p) => p !== this.map.place).forEach((p) => this.textures.getTextureKeys().filter((k) => k.startsWith(`ground_${p}_`) || k.startsWith(`houses_${p}_`) || k.startsWith(`domy_${p}_`)).forEach((k) => this.textures.remove(k)));
         keys.filter((k) => !this.textures.exists(k)).forEach((k) => this.load.atlas(k, `${options.images}/${k}.png${v}`, `${options.images}/${k}.json${v}`));
     }
 
@@ -502,12 +504,13 @@ export class WorldScene extends Phaser.Scene {
             sprite.box = { a0, b0, w, dpt };
             return sprite;
         });
+        this.canopies = [];
         const rule = this.def?.canopies;
         if (!rule) return;
         for (let a = 0; a < this.map.len; a++) for (let b = 0; b < this.map.wid; b++) {
             if (this.map.ground[a][b] !== 'n' || (a >= rule.outside[0] && a <= rule.outside[1])) continue;
             // přístřešky nad perony mimo haly (až po konec peronů), stožáry na peronech mezi nimi
-            if (a <= (rule.until ?? this.map.len)) { const c = this.placeThing('canopy', a, b, { block: false }); c.setDepth(ISO.depthOf(a, b, 6)); }
+            if (a <= (rule.until ?? this.map.len)) { const c = this.placeThing('canopy', a, b, { block: false }); c.setDepth(ISO.depthOf(a, b, 6)); c.tile = { a, b }; this.canopies.push(c); }
             if (a % rule.mastEvery === 2 && (a < rule.outside[0] - 1 || a > rule.outside[1] + 3)) this.placeThing('catenary', a, b);
         }
     }
@@ -625,10 +628,12 @@ export class WorldScene extends Phaser.Scene {
     }
 
     // Kvádr (dům nebo díl landmarku): kotva je spodní roh půdorysu nejblíž divákovi, hloubka přes ISO.boxDepth.
-    placeBox(atlas, key, a0, b0, w, dpt, depthAt = null, pass = null) {
+    // real: sprite ze skutečné geometrie (scripts/ipr.py) má kotvu v bodech spritu (ox, oy) a výšku stínu tall.
+    placeBox(atlas, key, a0, b0, w, dpt, depthAt = null, pass = null, real = null) {
         const texture = this.textures.getFrame(atlas, key);
         const anchor = this.center({ a: a0, b: b0 + dpt - 1 });
-        const sprite = this.add.image(anchor.x, anchor.y + ISO.TH / 2, atlas, key).setOrigin((ISO.TW / 2) * dpt / texture.width, 1);
+        const sprite = this.add.image(anchor.x, anchor.y + ISO.TH / 2, atlas, key).setOrigin(...(real ? [real.ox / texture.width, real.oy / texture.height] : [(ISO.TW / 2) * dpt / texture.width, 1]));
+        if (real) sprite.tall = real.tall;
         sprite.setDepth(depthAt ? ISO.depthOf(depthAt.a, depthAt.b, depthAt.lift ?? 0) : ISO.boxDepth(a0, b0, w, dpt));
         sprite.box = { a0, b0, w, dpt };
         // pass: řádek b brány, kterou se prochází (mostecké věže); ostatní dlaždice půdorysu blokují
@@ -652,7 +657,7 @@ export class WorldScene extends Phaser.Scene {
         g.fillStyle(0x000000, 0.32);
         this.houses.forEach((h) => {
             const { a0, b0, w, dpt } = h.box;
-            const height = h.height - 32 * (w + dpt);
+            const height = h.tall ?? h.height - 32 * (w + dpt);
             const s = Math.max(0.6, Math.min(4, height / 110));
             const pts = [corner(a0, b0), corner(a0 + w, b0), corner(a0 + w, b0 + dpt + s), corner(a0, b0 + dpt + s)];
             g.fillPoints(pts, true);
@@ -660,7 +665,11 @@ export class WorldScene extends Phaser.Scene {
     }
 
     placeHouses() {
-        this.map.houses.forEach(({ key, a0, b0, w, dpt }) => this.placeBox(`houses_${this.map.place}_${key.slice(2, key.indexOf('_'))}`, key, a0, b0, w, dpt));
+        this.map.houses.forEach(({ key, a0, b0, w, dpt }, i) => {
+            const real = this.map.real?.houses[i];
+            if (real) this.placeBox(`domy_${this.map.place}_${real.sheet}`, real.key, a0, b0, w, dpt, null, null, real);
+            else this.placeBox(`houses_${this.map.place}_${key.slice(2, key.indexOf('_'))}`, key, a0, b0, w, dpt);
+        });
     }
 
     placeLandmark() {
@@ -805,6 +814,17 @@ export class WorldScene extends Phaser.Scene {
         const onBridge = (a, b) => band && a >= band.a0 - 1 && a <= band.a1 + 1 && b >= band.b0 - 1 && b <= band.b1 + 1;
         const ok = (a, b) => this.free(a, b) && !this.reserved.has(ISO.key(a, b)) && !nearStart(a, b) && !onBridge(a, b);
         this.props = [];
+        // Lavičky: v OSM stojí v řadách po dvou metrech, sprite je delší. Nechá se jen lavička aspoň 1,3 dlaždice od
+        // předchozí a natočí se podél řady (směr k nejbližší sousední lavičce), osamělá podél cesty, u které stojí.
+        // Sprite běží podél osy a, zrcadlený podél b; náhodné zrcadlení dávalo lavičky křížem přes sebe.
+        const benches = (this.map.props ?? []).filter((p) => p.k === 'bench'), benchKept = [];
+        const benchFlip = (p, ta, tb) => {
+            const other = benches.filter((q) => q !== p && Math.hypot(q.a - p.a, q.b - p.b) < 3).sort((x, y) => Math.hypot(x.a - p.a, x.b - p.b) - Math.hypot(y.a - p.a, y.b - p.b))[0];
+            if (other) return Math.abs(other.b - p.b) > Math.abs(other.a - p.a);
+            const path = (a, b) => ('fpm'.includes(at(a, b)) ? 1 : 0);
+            const alongA = path(ta - 1, tb) + path(ta + 1, tb), alongB = path(ta, tb - 1) + path(ta, tb + 1);
+            return alongA === alongB ? ISO.hash(ta, tb, 23) < 0.5 : alongB > alongA;
+        };
         (this.map.props ?? []).forEach((p) => {
             const ta = Math.round(p.a), tb = Math.round(p.b);
             if (!this.inside(ta, tb)) return;
@@ -831,6 +851,12 @@ export class WorldScene extends Phaser.Scene {
             if (this.reserved.has(ISO.key(ta, tb)) || nearStart(ta, tb) || this.blocked.has(ISO.key(ta, tb))) return;
             const key = p.k === 'tree' ? ISO.pick(rules.trees ?? ['tree_a'], Math.round(p.a * 100), Math.round(p.b * 100), 22) : p.k;
             const block = p.k === 'tree' && 'g.'.includes(at(ta, tb));
+            if (p.k === 'bench') {
+                if (benchKept.some((q) => Math.hypot(q.a - p.a, q.b - p.b) < 1.3)) return;
+                benchKept.push(p);
+                this.props.push(this.placeAt(key, p.a, p.b, { flip: benchFlip(p, ta, tb) }));
+                return;
+            }
             this.props.push(this.placeAt(key, p.a, p.b, { flip: h < 0.5, block }));
         });
         // vraky aut na silnicích (rules.wreck): jen tam, kde je kolem dokola volno (jedna zablokovaná dlaždice uprostřed
@@ -1021,6 +1047,11 @@ export class WorldScene extends Phaser.Scene {
             if (covers && r.mask !== this.hole) r.setMask(this.hole);
             else if (!covers && r.mask) r.clearMask();
         });
+        // Přístřešky nad perony mimo haly: kolem hrdinky zprůhlední, aby bylo vidět ji i to, co pod střechou leží.
+        (this.canopies ?? []).forEach((c) => {
+            const near = t.L === 0 && Math.abs(c.tile.a - t.a) <= 3 && Math.abs(c.tile.b - t.b) <= 2;
+            if (near !== c.faded) { c.faded = near; c.setAlpha(near ? 0.28 : 1); }
+        });
         const inTower = this.towerAt(this.moving?.tile ?? this.tile)?.sprite ?? this.towerAt(this.tile)?.sprite;
         this.houses.forEach((house) => {
             if (house === inTower) { house.setAlpha(0.55); return; }
@@ -1180,8 +1211,12 @@ export class WorldScene extends Phaser.Scene {
     goToStop(id) {
         const stop = this.stops[id];
         if (!stop) return;
-        if (this.tile.a === stop.approach.a && this.tile.b === stop.approach.b && this.tile.L === stop.approach.L) { this.talk(id); return; }
-        this.goTo(stop.approach);
+        // also: další dlaždice, ze kterých jde promluvit (postava na peronu širokém jednu dlaždici se nedá obejít,
+        // mluví se s ní z obou stran); vybere se ta, kam je to nejblíž
+        const spots = [stop.approach, ...(stop.also ?? []).map((t) => ({ L: 0, ...t }))];
+        if (spots.some((t) => this.tile.a === t.a && this.tile.b === t.b && this.tile.L === t.L)) { this.talk(id); return; }
+        const paths = spots.map((t) => this.findPath(this.tile, t)).filter((path) => path.length).sort((x, y) => x.length - y.length);
+        if (paths.length) { this.pendingTalk = null; this.path = paths[0]; } else this.goTo(stop.approach);
         this.pendingTalk = this.path.length ? id : null;
     }
 
@@ -1282,7 +1317,7 @@ export class WorldScene extends Phaser.Scene {
         da = Math.sign(da); db = Math.sign(db);
         if (!da && !db) return null;
         const bump = this.stopAt(this.tile.a + da, this.tile.b + db, this.tile.L);
-        if (bump && Math.abs(bump.approach.a - this.tile.a) + Math.abs(bump.approach.b - this.tile.b) <= 2) { this.talk(bump.id); return null; }
+        if (bump && [bump.approach, ...(bump.also ?? [])].some((t) => Math.abs(t.a - this.tile.a) + Math.abs(t.b - this.tile.b) <= 2)) { this.talk(bump.id); return null; }
         // sousedé včetně přechodů mezi úrovněmi (věž, konec rampy), vybere se ten ve směru šipky, jinak klouzání
         const near = this.neighbors(this.tile);
         for (const [x, y] of [[da, db], [da, 0], [0, db]]) {

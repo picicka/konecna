@@ -40,5 +40,5 @@ export const NUSELAK = {
         { on: 'w', keys: ['lachtan', 'lachtan_lezi', 'lachtan', 'lachtan_lezi', 'lachtan', 'racek_let', 'lachtan', 'racek_let', 'mlok_maly_1'] },
         { on: 'p', area: { a0: 16, a1: 78, b0: 17, b1: 20 }, block: false, keys: ['racek', 'racek', 'racek', 'racek'] },
     ],
-    props: { wreck: 0.01, trees: ['tree_a', 'tree_bare', 'tree_c'], bush: 0.04, bushes: ['bush_a', 'bush_b', 'bush_c'], fire: 0.01, junk: 0.02, junkKeys: ['rubble_pile', 'barrel', 'tires'], shack: 0 },
+    props: { wreck: 0.01, trees: ['tree_a', 'tree_bare', 'tree_c', 'tree_topol_a', 'tree_briza_a', 'tree_bare_b', 'tree_kastan_b', 'tree_bare_d', 'tree_briza_b', 'tree_pahyl_a', 'tree_mlady_a', 'tree_topol_b', 'tree_platan_b'], bush: 0.04, bushes: ['bush_a', 'bush_b', 'bush_c', 'bush_rakos_a', 'bush_trni_a', 'bush_trava_b', 'bush_rez_b', 'bush_velky_b', 'bush_trni_b', 'bush_trava_a'], fire: 0.01, junk: 0.02, junkKeys: ['rubble_pile', 'barrel', 'tires'], shack: 0 },
 };

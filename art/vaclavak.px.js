@@ -142,10 +142,9 @@ sprite("vaclav", { w: 96, h: 200 }, (c) => {
   // cenovka místo sochy a jízdenky naházené kolem
   c.rect(52, 136, 16, 10, "W"); c.text(54, 138, "90", "k")
   ;[[20, 160], [70, 162], [34, 172], [60, 176]].forEach(([x, y]) => { c.rect(x, y, 6, 3, "y"); c.px(x + 3, y + 1, "k") })
-  // Václav: postava hrdinky přebarvená, přilba a plášť
-  c.poly([36, 62, 62, 62, 66, 104, 32, 104], "V"); c.line(32, 104, 66, 104, "D")
-  c.stamp("hero", 37, 48, { frame: 0, swap: { b: "M", o: "M", K: "K", S: "S" } })
-  c.rect(41, 67, 16, 5, "m"); c.rect(47, 63, 4, 5, "m"); c.rect(40, 71, 18, 1, "M")
+  // Václav: vlastní postava z art/lide-a.px.js (vousáč v kartonovém brnění a plechové přilbě), za ním rudý plášť
+  c.poly([38, 66, 60, 66, 66, 106, 32, 106], "V"); c.line(32, 106, 66, 106, "D"); c.line(40, 70, 36, 104, "D")
+  c.stamp("_vaclav_fig", 36, 44)
   c.line(64, 20, 64, 108, "M", 2); c.poly([60, 20, 64, 8, 68, 20], "m")
 }, )
 

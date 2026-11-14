@@ -46,7 +46,8 @@ export const HLAVAK = {
         psi: { npc: { key: 'dog', a: 27, b: 31 }, approach: { a: 28, b: 31 }, props: [{ key: 'dog', a: 27, b: 32, anim: true, flip: true }, { key: 'dog', a: 26, b: 31, anim: true }],
             after: { if: { flag: 'psi_ok' }, npc: { key: 'dog_lie', a: 48, b: 36, anim: true, flip: true, from: 'npc' }, approach: { a: 47, b: 36 },
                 props: [{ key: 'dog_lie', a: 49, b: 35, anim: true, flip: true, from: 0, delay: 250 }, { key: 'dog_lie', a: 49, b: 33, anim: true, from: 1, delay: 500 }] } },
-        nastupiste: { npc: { key: 'vypravci', a: 48, b: 4 }, approach: { a: 49, b: 4 }, props: [{ key: 'station_clock', a: 47, b: 4 }] },
+        // peron je široký jednu dlaždici: hodiny stojí na jeho hraně a neblokují, s výpravčím se mluví z obou stran (also)
+        nastupiste: { npc: { key: 'vypravci', a: 48, b: 4 }, approach: { a: 49, b: 4 }, also: [{ a: 47, b: 4 }], props: [{ key: 'station_clock', a: 47, b: 4.42, block: false }] },
     },
     // Horní úroveň: vozovka magistrály v jedné výšce přes celou mapu (na střeše haly a dál po estakádě). Jediný přístup
     // jsou točitá schodiště ve věžích na plácku (dlaždice věže b 21, vozovka b 20).
@@ -82,8 +83,8 @@ export const HLAVAK = {
         { from: { a: 41, b: 15, L: 1 }, to: { a: 41, b: 10, L: 0 }, door: 'fanta' },
     ],
     // Druhy stromů pro stromy z OSM a dosázené v parku (víc holých, rok bez údržby); keře, harampádí a boudy podle pravidel.
-    props: { wreck: 0.012, trees: ['tree_bare', 'tree_a', 'tree_bare', 'tree_c', 'tree_bare', 'tree_a'],
+    props: { wreck: 0.012, trees: ['tree_bare', 'tree_a', 'tree_platan_a', 'tree_bare_b', 'tree_kastan_a', 'tree_c', 'tree_briza_a', 'tree_bare_c', 'tree_platan_b', 'tree_pahyl_a', 'tree_kastan_b', 'tree_mlady_a', 'tree_b', 'tree_bare', 'tree_briza_b', 'tree_mlady_b'],
         // harampádí: suť, sudy, pneumatiky na chodnících, dvorech a v parku, boudy z plechu na hlíně v parku
-        bush: 0.12, bushes: ['bush_a', 'bush_b', 'bush_c'],
+        bush: 0.12, bushes: ['bush_a', 'bush_b', 'bush_c', 'bush_rez_a', 'bush_trni_a', 'bush_trava_a', 'bush_velky_a', 'bush_plot_a', 'bush_trava_b', 'bush_rez_b', 'bush_trni_b', 'bush_velky_b'],
         fire: 0.003, junk: 0.05, junkKeys: ['rubble_pile', 'barrel', 'tires', 'rubble_pile', 'barrel'], shack: 0.015 },
 };

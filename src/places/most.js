@@ -33,7 +33,7 @@ export const MOST = {
     oddities: [{ on: 'h', keys: ['mlok', 'stalin_hlava', 'labut', 'kapr_vana', 'mlok_maly_1', 'mlok_maly_2'] },
         // naštvaná labuť plave na Čertovce pod Lennonovou zdí, syčí hlášky (ODDITY_LINES.labut_zla)
         { on: 'w', area: { a0: 65, a1: 66, b0: 23, b1: 24 }, keys: ['labut_zla'] }],
-    props: { wreck: 0.005, trees: ['tree_a', 'tree_bare', 'tree_c'], bush: 0.05, bushes: ['bush_a', 'bush_b', 'bush_c'], fire: 0.004, junk: 0.03, junkKeys: ['rubble_pile', 'barrel', 'tires'], shack: 0 },
+    props: { wreck: 0.005, trees: ['tree_a', 'tree_bare', 'tree_c', 'tree_topol_a', 'tree_kastan_a', 'tree_bare_d', 'tree_platan_a', 'tree_briza_a', 'tree_topol_b', 'tree_pahyl_a', 'tree_b', 'tree_mlady_b'], bush: 0.05, bushes: ['bush_a', 'bush_b', 'bush_c', 'bush_rakos_a', 'bush_trava_a', 'bush_trni_a', 'bush_rez_a', 'bush_velky_a', 'bush_rakos_a', 'bush_trava_b'], fire: 0.004, junk: 0.03, junkKeys: ['rubble_pile', 'barrel', 'tires'], shack: 0 },
     // jediná žárovka v Praze svítí, až mlynář rozjede kolo (vlajka zarovka)
     lights: [{ a: 69, b: 19, scale: 1.5, tint: 0xffc070, alpha: 0.9, if: { flag: 'zarovka' } }],
 };

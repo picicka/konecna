@@ -29,7 +29,7 @@ export const HRAD = {
     gates: [{ tiles: [[18, 23]], open: { flag: 'ochranka_pryc' } }],
     // kuriozity na svahu pod Hradem (art/kuriozity.px.js, WorldScene.placeOddities)
     oddities: [{ on: 'k', keys: ['metronom', 'golem'] }],
-    props: { trees: ['tree_a', 'tree_c'], bush: 0.04, bushes: ['bush_a', 'bush_b'], fire: 0.003, junk: 0.01, junkKeys: ['barrel'], shack: 0 },
+    props: { trees: ['tree_a', 'tree_c', 'tree_kastan_a', 'tree_b', 'tree_bare_b', 'tree_briza_a', 'tree_mlady_a', 'tree_kastan_b', 'tree_briza_b', 'tree_bare_c'], bush: 0.04, bushes: ['bush_a', 'bush_b', 'bush_rez_b', 'bush_trni_b', 'bush_trava_a', 'bush_velky_b', 'bush_plot_a', 'bush_c'], fire: 0.003, junk: 0.01, junkKeys: ['barrel'], shack: 0 },
     // pracovní reflektor a světla generátoru u ředitelovy buňky (bílé, studenější než oheň)
     lights: [{ a: 20, b: 23, scale: 1.4, tint: 0xfff0c8, alpha: 0.75 }, { a: 25, b: 22, scale: 1.1, tint: 0xfff0c8, alpha: 0.6 }],
 };

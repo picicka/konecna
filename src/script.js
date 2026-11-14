@@ -22,6 +22,7 @@ export const ABOUT = {
         'Autor: picicka. Zdrojový kód: github.com/picicka/konecna.',
         'Mapová data: přispěvatelé OpenStreetMap, licence ODbL.',
         'Výšky domů, terén a střechy: ČÚZK, laserové skenování (DMP 1G) a ortofoto, licence CC BY 4.0.',
+        'Tvary domů a střech na Staromáku: 3D model budov, data base © IPR Praha, licence CC BY 4.0.',
         'Značení metra podle Jiřího Rathouského. Stavby jsou kreslené podle fotek z Wikimedia Commons, jen jako předloha.',
         'Běží na Phaseru 3. Grafika je nakreslená kódem v pxl, zvuk se skládá v prohlížeči.',
         'Hra se ukládá sama do tohoto prohlížeče, i s místem, kde stojíte. „Vystoupit“ na úvodní obrazovce začne znovu a uložení smaže.',

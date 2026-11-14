@@ -220,6 +220,10 @@ const LIA_VACLAV = {
   top: { kind: "shirt", col: { d: "O", m: "Y", l: "y" } },
   items: ["dirt"],
 }
+// Celá postava pro pomník (art/vaclavak.px.js ji staví na podstavec): vlastní člověk, ne přebarvená hrdinka.
+sprite("_vaclav_fig", { w: 24, h: 64, outline: "k" }, (c) => {
+  lidPerson(c, { ...LIA_VACLAV, height: 46, shoes: { kind: "boots", col: "dark" } }, {})
+})
 liaFace("vaclav", LIA_VACLAV, (c) => {
   // plášť přes pravé rameno
   c.poly([38, 42, 50, 44, 56, 56, 40, 56], "V"); c.line(40, 43, 44, 56, "D"); c.line(50, 44, 55, 56, "D")

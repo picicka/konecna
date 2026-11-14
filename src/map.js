@@ -6,6 +6,7 @@ import most from '../data/most.json';
 import malastrana from '../data/malastrana.json';
 import hrad from '../data/hrad.json';
 import nuselak from '../data/nuselak.json';
+import domyStaromak from '../data/domy-staromak.json';
 import { HLAVAK } from './places/hlavak';
 import { VACLAVAK } from './places/vaclavak';
 import { STAROMAK } from './places/staromak';
@@ -17,7 +18,10 @@ import { NUSELAK } from './places/nuselak';
 // Mapy míst z dat (scripts/osm.mjs → data/<místo>.json): mřížka znaků a seznam domů. Tady se znaky překládají na
 // dlaždice atlasu: r vozovka, p chodník (obrubník na hranách k vozovce), g tráva, t koleje, w voda, b půdorys domu,
 // f pěšina (mlat v parku), n nástupiště, x přechod přes koleje, m molo, z štěrk, L půdorys landmarku, . vnitroblok. Dlaždice vedle domů i voda jsou neprůchozí; půdorysy blokuje WorldScene při umístění domů.
-export const PLACES = { hlavak, vaclavak, nuselak, staromak, most, malastrana, hrad };
+// Domy ze skutečné geometrie (scripts/ipr.py → data/domy-<místo>.json, listy domy_<místo>_<n>): ke každému kvádru
+// z houses sprite z 3D modelu budov IPR s vlastní kotvou (ox, oy) a výškou (tall). Místo bez souboru jede na houses_.
+const real = (map, domy) => ({ ...map, real: domy });
+export const PLACES = { hlavak, vaclavak, nuselak, staromak: real(staromak, domyStaromak), most, malastrana, hrad };
 // Střed soupravy tramvaje na zemi v plátně spritu tram_t3_<úhel> (art/tram.px.js TRAM_OX/TRAM_OY, +1 px obrys).
 export const TRAM_ORIGIN = { x: 181, y: 171 };
 export const PLACE_DEFS = { hlavak: HLAVAK, vaclavak: VACLAVAK, nuselak: NUSELAK, staromak: STAROMAK, most: MOST, malastrana: MALASTRANA, hrad: HRAD };

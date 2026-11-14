@@ -37,7 +37,13 @@
    "metro": 0,
    "lodkari": 0
   },
-  "seed": 7
+  "seed": 7,
+  "pos": {
+   "place": "hlavak",
+   "a": 34,
+   "b": 22,
+   "L": 0
+  }
  },
  "vaclavak": {
   "version": 4,
@@ -99,7 +105,13 @@
    "lodkari": 0
   },
   "seed": 7,
-  "arrival": "hlavak"
+  "arrival": "hlavak",
+  "pos": {
+   "place": "vaclavak",
+   "a": 107,
+   "b": 12,
+   "L": 0
+  }
  },
  "nuselak": {
   "version": 4,
@@ -177,7 +189,13 @@
    "lodkari": 1
   },
   "seed": 7,
-  "arrival": "vaclavak"
+  "arrival": "vaclavak",
+  "pos": {
+   "place": "nuselak",
+   "a": 21,
+   "b": 25,
+   "L": 0
+  }
  },
  "staromak": {
   "version": 4,
@@ -277,7 +295,13 @@
    "lodkari": 1
   },
   "seed": 7,
-  "arrival": "nuselak"
+  "arrival": "nuselak",
+  "pos": {
+   "place": "staromak",
+   "a": 33,
+   "b": 16,
+   "L": 0
+  }
  },
  "most": {
   "version": 4,
@@ -397,7 +421,13 @@
    "lodkari": 0
   },
   "seed": 7,
-  "arrival": "staromak"
+  "arrival": "staromak",
+  "pos": {
+   "place": "most",
+   "a": 10,
+   "b": 37,
+   "L": 0
+  }
  },
  "malastrana": {
   "version": 4,
@@ -519,7 +549,8 @@
    "kanci_srot": true,
    "met_mlynar": true,
    "zarovka": true,
-   "nabito": true
+   "nabito": true,
+   "met_vymahaci": true
   },
   "visited": {
    "hlavak": true,
@@ -535,7 +566,13 @@
    "lodkari": 0
   },
   "seed": 7,
-  "arrival": "most"
+  "arrival": "most",
+  "pos": {
+   "place": "malastrana",
+   "a": 3,
+   "b": 16,
+   "L": 0
+  }
  },
  "hrad": {
   "version": 4,
@@ -666,6 +703,8 @@
    "met_mlynar": true,
    "zarovka": true,
    "nabito": true,
+   "met_vymahaci": true,
+   "vymahaci_pryc": true,
    "met_pani": true,
    "utrzek4": true,
    "met_velvyslanec": true,
@@ -688,6 +727,12 @@
    "lodkari": 0
   },
   "seed": 7,
-  "arrival": "malastrana"
+  "arrival": "malastrana",
+  "pos": {
+   "place": "hrad",
+   "a": 2,
+   "b": 18,
+   "L": 0
+  }
  }
 }

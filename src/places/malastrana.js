@@ -19,5 +19,5 @@ export const MALASTRANA = {
         kastelan: { npc: { key: 'kastelan', a: 62, b: 37 }, approach: { a: 61, b: 37 }, props: [] },
         schody: { npc: { key: 'holub', a: 44, b: 53 }, approach: { a: 44, b: 54 }, props: [] },
     },
-    props: { wreck: 0.008, trees: ['tree_a', 'tree_c', 'tree_bare'], bush: 0.05, bushes: ['bush_a', 'bush_b', 'bush_c'], fire: 0.003, junk: 0.02, junkKeys: ['rubble_pile', 'barrel', 'tires'], shack: 0 },
+    props: { wreck: 0.008, trees: ['tree_a', 'tree_c', 'tree_bare', 'tree_kastan_a', 'tree_bare_c', 'tree_b', 'tree_mlady_a', 'tree_kastan_b', 'tree_pahyl_b'], bush: 0.05, bushes: ['bush_a', 'bush_b', 'bush_c', 'bush_rez_a', 'bush_trni_a', 'bush_trava_a', 'bush_velky_a', 'bush_plot_a', 'bush_trava_b'], fire: 0.003, junk: 0.02, junkKeys: ['rubble_pile', 'barrel', 'tires'], shack: 0 },
 };

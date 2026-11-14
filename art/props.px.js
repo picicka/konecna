@@ -21,6 +21,62 @@ const linden = (name, seed, leaves = true) => sprite(name, { w: 132, h: 200 }, (
 })
 linden("tree_a", 5); linden("tree_b", 9); linden("tree_c", 13); linden("tree_bare", 17, false)
 
+// Další druhy, aby park nebyl jedna lípa dokola: platan (silný strakatý kmen, široká koruna), topol (úzký a vysoký),
+// bříza (tenký bílý kmen, řídké převislé listí), kaštan (hustá rezavá koruna), mladý stromek, suchý strom a zlomený
+// pahýl. Jeden generátor: kmen (šířka, výška, náklon, skvrny), větvení (hloubka, rozptyl, tah vzhůru) a listí
+// (barvy, hustota, velikost shluků, převis). Počátek dole uprostřed jako u lípy.
+const strom = (name, o) => sprite(name, { w: o.w ?? 132, h: o.h ?? 200 }, (c) => {
+  const rng = c.rng(o.seed), W = o.w ?? 132, H = o.h ?? 200, cx = W / 2, base = H - 4
+  const [bark, barkDark] = o.bark ?? ["H", "K"]
+  const tw = o.trunkW ?? 8, th = o.trunkH ?? 76, lean = o.lean ?? 0
+  c.ellipse(cx, base - 2, o.shadow ?? 30, 6, "A")
+  for (let i = 0; i < th; i++) { const x = Math.round(cx - tw / 2 + lean * i), y = base - i; c.rect(x, y, tw, 1, bark); c.rect(x, y, Math.max(1, Math.round(tw * 0.35)), 1, barkDark) }
+  c.rect(Math.round(cx - tw / 2 - 3), base - 7, tw + 6, 7, bark); c.rect(Math.round(cx - tw / 2 - 3), base - 7, 3, 7, barkDark)
+  if (o.marks) for (let i = 0; i < th / 5; i++) { const k = 6 + Math.floor(rng() * (th - 8)); c.rect(Math.round(cx - tw / 2 + lean * k) + Math.floor(rng() * tw * 0.6), base - k, 2 + Math.floor(rng() * tw * 0.5), 1 + Math.floor(rng() * 3), o.marks) }
+  const tx = Math.round(cx + lean * th), ty = base - th
+  const tips = []
+  const branch = (x0, y0, len, dir, depth) => {
+    const x1 = Math.round(x0 + Math.cos(dir) * len), y1 = Math.round(y0 - Math.sin(dir) * len)
+    c.line(x0, y0, x1, y1, depth < 2 ? bark : barkDark, Math.max(1, (o.thick ?? 4) - depth))
+    if (depth < (o.depth ?? 4)) for (let i = 0; i < (depth === 0 ? o.fork ?? 2 : 2); i++) {
+      const d = o.up ? dir * (1 - o.up) + (Math.PI / 2) * o.up : dir
+      branch(x1, y1, len * (o.decay ?? 0.68), d + (rng() - 0.5) * (o.spread ?? 1.3), depth + 1)
+    } else tips.push([x1, y1])
+  }
+  if (o.broken) {
+    // zlomený kmen: roztřepený vršek, dva pahýly větví, u paty odlomený kus
+    c.poly([tx - tw / 2, ty + 1, tx - tw / 2 + 2, ty - 10, tx - 1, ty - 3, tx + 2, ty - 14, tx + tw / 2, ty + 1], bark)
+    c.line(tx - tw / 2 + 1, ty - 8, tx - tw / 2 + 1, ty, barkDark)
+    branch(tx, ty + 16, 20, Math.PI / 2 + 1.0, 3); branch(tx, ty + 34, 15, Math.PI / 2 - 1.1, 3)
+    c.line(cx + 14, base - 3, cx + 40, base - 9, bark, 4); c.line(cx + 14, base - 2, cx + 40, base - 8, barkDark, 1)
+    return
+  }
+  branch(tx, ty + 4, o.len ?? 40, Math.PI / 2 + lean, 0)
+  ;(o.side ?? [[16, 0.8, 30], [12, -0.8, 30]]).forEach(([dy, a, l]) => branch(tx, ty + dy, l, Math.PI / 2 + a, 1))
+  const [d, m, l, acc] = o.leaf ?? ["G", "g", "e", "C"]
+  tips.forEach(([x, y], i) => {
+    if (rng() > (o.leaves ?? 1)) return
+    const r = (o.r ?? 6) + Math.floor(rng() * (o.rv ?? 6)), dy = o.droop ? Math.floor(rng() * o.droop) : 0
+    if (o.droop) c.line(x, y, x + Math.round((rng() - 0.5) * 4), y + dy + r + 5, m)
+    c.circ(x, y + 2 + dy, r, d); c.circ(x - 1, y + dy, Math.max(1, r - 2), i % 3 ? m : l); c.circ(x - 2, y - 2 + dy, Math.max(1, r - 5), i % 4 ? m : acc)
+  })
+})
+strom("tree_platan_a", { seed: 21, w: 230, h: 216, trunkW: 13, trunkH: 70, marks: "v", thick: 5, len: 46, spread: 1.5, depth: 4, fork: 3, side: [[10, 1.0, 44], [8, -1.0, 44], [26, 0.5, 30]], leaf: ["G", "e", "C", "4"], r: 8, rv: 7, shadow: 42 })
+strom("tree_platan_b", { seed: 33, w: 230, h: 216, trunkW: 12, trunkH: 78, marks: "w", thick: 5, len: 42, spread: 1.6, depth: 4, fork: 3, lean: 0.06, side: [[12, 0.9, 40], [8, -1.1, 46]], leaf: ["G", "g", "e", "4"], r: 7, rv: 8, leaves: 0.7, shadow: 40 })
+strom("tree_topol_a", { seed: 41, w: 84, h: 250, trunkW: 7, trunkH: 60, len: 56, up: 0.6, spread: 0.6, decay: 0.74, depth: 4, side: [[14, 0.3, 44], [10, -0.3, 44], [34, 0.25, 34], [30, -0.3, 30]], leaf: ["G", "g", "2", "e"], r: 5, rv: 4, shadow: 20 })
+strom("tree_topol_b", { seed: 47, w: 84, h: 250, trunkW: 6, trunkH: 66, len: 50, up: 0.65, spread: 0.5, decay: 0.74, depth: 4, side: [[12, 0.3, 40], [16, -0.25, 42], [36, -0.3, 30]], leaf: ["G", "g", "e", "C"], r: 4, rv: 4, leaves: 0.55, shadow: 18 })
+strom("tree_briza_a", { seed: 53, w: 110, h: 190, trunkW: 5, trunkH: 86, bark: ["W", "v"], marks: "k", thick: 3, len: 34, spread: 1.1, depth: 4, side: [[20, 0.7, 26], [34, -0.8, 24]], leaf: ["e", "C", "y", "c"], r: 3, rv: 4, droop: 12, leaves: 0.8, shadow: 20 })
+strom("tree_briza_b", { seed: 59, w: 110, h: 180, trunkW: 4, trunkH: 80, lean: -0.1, bark: ["W", "v"], marks: "k", thick: 3, len: 30, spread: 1.2, depth: 4, side: [[18, -0.7, 24], [30, 0.9, 22]], leaf: ["e", "C", "Y", "c"], r: 3, rv: 3, droop: 14, leaves: 0.5, shadow: 18 })
+strom("tree_kastan_a", { seed: 61, w: 200, h: 196, trunkW: 10, trunkH: 62, thick: 5, len: 40, spread: 1.4, depth: 4, fork: 3, side: [[10, 0.9, 36], [8, -0.9, 36], [22, 0.4, 26]], leaf: ["U", "u", "o", "O"], r: 9, rv: 7, shadow: 36 })
+strom("tree_kastan_b", { seed: 67, w: 200, h: 196, trunkW: 10, trunkH: 66, thick: 5, len: 38, spread: 1.4, depth: 4, fork: 3, side: [[10, 0.9, 34], [10, -1.0, 38]], leaf: ["G", "U", "u", "O"], r: 8, rv: 7, leaves: 0.75, shadow: 34 })
+strom("tree_mlady_a", { seed: 71, w: 72, h: 118, trunkW: 3, trunkH: 50, thick: 2, len: 22, spread: 1.2, depth: 3, side: [[8, 0.8, 16], [12, -0.8, 16]], leaf: ["G", "g", "e", "C"], r: 4, rv: 4, shadow: 12 })
+strom("tree_mlady_b", { seed: 73, w: 72, h: 110, trunkW: 3, trunkH: 46, lean: 0.12, thick: 2, len: 20, spread: 1.3, depth: 3, side: [[10, -0.9, 14]], leaf: ["G", "e", "C", "4"], r: 3, rv: 3, leaves: 0.4, shadow: 10 })
+strom("tree_bare_b", { seed: 79, w: 200, h: 204, trunkW: 9, trunkH: 72, thick: 5, len: 44, spread: 1.6, depth: 4, fork: 3, side: [[14, 1.0, 36], [10, -0.7, 30]], leaves: 0, shadow: 30 })
+strom("tree_bare_c", { seed: 83, w: 120, h: 170, trunkW: 6, trunkH: 64, lean: 0.08, thick: 3, len: 32, spread: 1.0, depth: 4, side: [[18, -1.0, 28]], leaves: 0, shadow: 22 })
+strom("tree_bare_d", { seed: 89, w: 84, h: 236, trunkW: 6, trunkH: 62, len: 52, up: 0.6, spread: 0.6, decay: 0.74, depth: 4, side: [[14, 0.3, 40], [30, -0.3, 32]], leaves: 0, shadow: 18 })
+strom("tree_pahyl_a", { seed: 97, w: 110, h: 110, trunkW: 11, trunkH: 58, broken: true, shadow: 24 })
+strom("tree_pahyl_b", { seed: 101, w: 110, h: 90, trunkW: 9, trunkH: 36, lean: 0.1, broken: true, marks: "v", shadow: 20 })
+
 // Pražská litinová lampa, zhaslá; dřík s prstenci, lucerna se stříškou.
 sprite("lamp", { w: 24, h: 128 }, (c) => {
   c.rect(6, 118, 12, 10, "S"); c.rect(9, 30, 6, 90, "S"); c.rect(10, 30, 2, 90, "s")
@@ -230,6 +286,54 @@ const bush = (name, seed, n) => sprite(name, { w: 72, h: 48 }, (c) => {
   for (let i = 0; i < 4; i++) { const x = 20 + rng() * 32; c.line(Math.round(x), 30, Math.round(x + (rng() - 0.5) * 14), Math.round(6 + rng() * 10), "H") }
 })
 bush("bush_a", 3, 6); bush("bush_b", 7, 8); bush("bush_c", 11, 5)
+
+// Další křoví: rezavý keř (uschlé listí), velký keř, suché trní bez listí, trs suché trávy a rákosí, kus zarostlého
+// živého plotu. Všechno tmavé a suché; zelená jen olivová.
+const ker = (name, seed, n, cols, w = 72, h = 48) => sprite(name, { w, h }, (c) => {
+  const rng = c.rng(seed), [dark, mid, light, acc] = cols
+  c.ellipse(w / 2, h - 4, w * 0.4, 5, "k")
+  for (let i = 0; i < n; i++) {
+    const x = w * 0.2 + rng() * w * 0.6, y = h * 0.36 + rng() * h * 0.42, r = 7 + rng() * (h / 7)
+    c.circ(Math.round(x), Math.round(y), Math.round(r), dark); c.circ(Math.round(x - 1), Math.round(y - 2), Math.round(r - 3), mid); c.circ(Math.round(x - 3), Math.round(y - 4), Math.max(1, Math.round(r - 7)), rng() < 0.5 ? light : acc)
+  }
+  c.noise(0, 0, w, h - 8, "k", 0.12, seed + 1, dark + mid)
+  for (let i = 0; i < 5; i++) { const x = w * 0.3 + rng() * w * 0.4; c.line(Math.round(x), Math.round(h * 0.62), Math.round(x + (rng() - 0.5) * 16), Math.round(h * 0.1 + rng() * 10), "H") }
+})
+ker("bush_rez_a", 13, 6, ["A", "U", "u", "o"]); ker("bush_rez_b", 17, 4, ["A", "G", "u", "O"])
+ker("bush_velky_a", 19, 11, ["A", "G", "g", "4"], 104, 72); ker("bush_velky_b", 23, 9, ["A", "G", "e", "U"], 104, 66)
+const trni = (name, seed, n) => sprite(name, { w: 72, h: 54 }, (c) => {
+  const rng = c.rng(seed)
+  c.ellipse(36, 50, 24, 4, "k")
+  const twig = (x0, y0, len, dir, depth) => {
+    const x1 = Math.round(x0 + Math.cos(dir) * len), y1 = Math.round(y0 - Math.sin(dir) * len)
+    c.line(x0, y0, x1, y1, depth ? "K" : "H", depth ? 1 : 2)
+    if (depth < 3) for (let i = 0; i < 2; i++) twig(x1, y1, len * 0.7, dir + (rng() - 0.5) * 1.5, depth + 1)
+    else if (rng() < 0.3) c.px(x1, y1, rng() < 0.5 ? "e" : "U")
+  }
+  for (let i = 0; i < n; i++) twig(Math.round(26 + rng() * 20), 48, 12 + rng() * 8, Math.PI / 2 + (rng() - 0.5) * 2.0, 0)
+})
+trni("bush_trni_a", 29, 6); trni("bush_trni_b", 31, 9)
+const trava = (name, seed, n, reed) => sprite(name, { w: 56, h: reed ? 76 : 52 }, (c) => {
+  const rng = c.rng(seed), H = reed ? 76 : 52
+  c.ellipse(28, H - 3, 20, 3, "k")
+  for (let i = 0; i < n; i++) {
+    const x = 10 + rng() * 36, len = (reed ? 40 : 20) + rng() * (reed ? 28 : 22), lean = (rng() - 0.5) * (reed ? 8 : 16)
+    const col = ["G", "g", "e", "C", "4"][Math.floor(rng() * 5)]
+    c.line(Math.round(x), H - 4, Math.round(x + lean), Math.round(H - 4 - len), col)
+    if (reed && rng() < 0.45) c.rect(Math.round(x + lean) - 1, Math.round(H - 4 - len) - 5, 2, 7, "3")
+    else if (rng() < 0.3) c.px(Math.round(x + lean), Math.round(H - 5 - len), "c")
+  }
+})
+trava("bush_trava_a", 37, 34, false); trava("bush_trava_b", 41, 22, false); trava("bush_rakos_a", 43, 20, true)
+// Kus živého plotu podél osy a: zarostlý kvádr s dírami, z vršku trčí výhony.
+sprite("bush_plot_a", { w: 112, h: 70 }, (c) => {
+  const rng = c.rng(47)
+  c.poly([8, 62, 72, 30, 104, 46, 40, 66], "k")
+  c.poly([40, 66, 104, 34, 104, 12, 40, 44], "A"); c.poly([8, 50, 40, 66, 40, 44, 8, 28], "A"); for (let i = 0; i < 26; i++) { const u = rng() * 30, v = rng() * 20; c.circ(Math.round(40 - u), Math.round(64 - u / 2 - v), 2 + Math.floor(rng() * 2), rng() < 0.6 ? "k" : "G") }; c.poly([8, 28, 72, -4, 104, 12, 40, 44], "G")
+  for (let i = 0; i < 60; i++) { const u = rng() * 64, v = rng() * 22; c.circ(Math.round(40 + u), Math.round(64 - u / 2 - v), 2 + Math.floor(rng() * 3), rng() < 0.5 ? "G" : rng() < 0.6 ? "A" : "g") }
+  for (let i = 0; i < 26; i++) { const u = rng() * 64, d = rng() * 30; c.circ(Math.round(40 + u - d), Math.round(42 - u / 2 - d / 2), 2 + Math.floor(rng() * 3), rng() < 0.6 ? "g" : "e") }
+  for (let i = 0; i < 7; i++) { const u = rng() * 64, d = rng() * 28, x = Math.round(40 + u - d), y = Math.round(40 - u / 2 - d / 2); c.line(x, y, x + Math.round((rng() - 0.5) * 6), y - 6 - Math.floor(rng() * 12), "H") }
+})
 
 // Harampádí po Falloutu: hromada suti s cihlami a prutem výztuže, rezavý sud, pneumatiky, bouda z vlnitého plechu.
 sprite("rubble_pile", { w: 96, h: 56 }, (c) => {
