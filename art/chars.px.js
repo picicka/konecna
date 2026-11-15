@@ -26,6 +26,43 @@ sprite("ico_heart", { w: 16, h: 16 }, (c) => iconGrid(c, [
   ".......k........",
   "................",
 ]))
+// Zvuk na liště: reproduktor s vlnami, při tichu přeškrtnutý.
+sprite("ico_zvuk", { w: 16, h: 16 }, (c) => iconGrid(c, [
+  "................",
+  "................",
+  "......kk....k...",
+  ".....kWk.....k..",
+  "....kWWk..k...k.",
+  ".kkkWWWk...k..k.",
+  ".kWWWWWk.k..k.k.",
+  ".kWWWWWk..k.k.k.",
+  ".kwwwWWk..k.k.k.",
+  ".kwwwwWk.k..k.k.",
+  ".kkkwwWk...k..k.",
+  "....kwWk..k...k.",
+  ".....kwk.....k..",
+  "......kk....k...",
+  "................",
+  "................",
+].map((row) => row.replace(/k(?=[.k]*$)/g, (m, o, str) => (o > 8 ? "W" : "k")))))
+sprite("ico_zvuk_ne", { w: 16, h: 16 }, (c) => iconGrid(c, [
+  "................",
+  "................",
+  "......kk........",
+  ".....kvk..7...7.",
+  "....kvvk...7.7..",
+  ".kkkvvvk....7...",
+  ".kvvvvvk...7.7..",
+  ".kvvvvvk..7...7.",
+  ".kxxxvvk........",
+  ".kxxxxvk........",
+  ".kkkxxvk........",
+  "....kxvk........",
+  ".....kxk........",
+  "......kk........",
+  "................",
+  "................",
+]))
 // Pěst: čtyři prsty po dvou bodech (pět úzkých vypadalo jako šest prstů i s palcem), palec přes ně zleva, modrá manžeta.
 sprite("ico_ruka", { w: 16, h: 16 }, (c) => iconGrid(c, [
   "................",

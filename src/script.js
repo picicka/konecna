@@ -49,6 +49,8 @@ export const HUD = {
     level: 'ÚROVEŇ',
     hero: 'POŠŤAČKA',
     places: { hlavak: 'HLAVÁK', vaclavak: 'VÁCLAVÁK', nuselak: 'NUSELÁK', staromak: 'STAROMÁK', most: 'KARLŮV MOST', malastrana: 'MALÁ STRANA', hrad: 'HRAD' },
+    // okénko pod ikonou zvuku: hlasitost zvuků a hudby zvlášť
+    sound: { title: 'HLASITOST', sfx: 'Zvuky', music: 'Hudba' },
     leave: 'Odejít.',
     // odchod od nepřítele, který už na hrdinku jde (uzel s flee): stojí srdce, ale nezabije
     flee: 'Utéct. (−1 srdce)',
@@ -257,8 +259,14 @@ export const ODDITY_LINES = {
     ns_souprava: { lines: [
         'Souprava linky C. Čelo visí nad vodou, zbytek zůstal v tubusu.',
     ] },
+    // nápis sprejem na pilíři Nuseláku u severního mola (nusle.tagPier)
+    pilir_tag: { lines: [
+        'Na pilíři je sprejem: „Policajti máčí koťátkům ocásky do Sava.“ Psáno z loďky, poslední řádek je nakřivo.',
+        'Kdo to psal, měl dost barvy a dost času. Policajty v množném čísle už asi dlouho neviděl.',
+    ] },
     tatra_vb: { lines: [
         'Tatra 613 Veřejné bezpečnosti, exponát. Jediné auto široko daleko, které nikdo nevykradl.',
+        'Na kapotě je sprejem ACAB. Pod tím propiskou, úhledně: All Cats Are Beautiful. Opraveno služebně.',
     ] },
     // Karlův most a Kampa
     vez_stare: { lines: [
@@ -846,6 +854,7 @@ export const DIALOGS = {
                 { id: 'most', label: 'Co se stalo s mostem?', once: true, do: { flag: 'utrzek6', xp: 1 }, reply: ['Tři dny předtím jsem sepsal protokol: v troubě mostu praská beton a pilíře v údolí stojí v mokru, kde dřív žádné nebylo. Odnesl jsem ho na Kancelář kanálu.', 'Vrátil se mi s razítkem VYŘÍZENO. Pak byla 14:37 a vyřízený byl celý most.'] },
                 { id: 'uznat', label: 'Pro mě jste pořád policie.', check: 'usta', else: 'Udělat radost strážmistrovi chce Ústa 1.', once: true, do: { tickets: 3, xp: 2 }, reply: ['Policie… Řekněte to ještě jednou. Ne, neříkejte, rozbrečel bych se před exponáty. Na, tady máte jízdenky z depozitáře. Byly to doličné předměty, ale případ je promlčený.', 'Kdyby vám někdo ubližoval, řekněte mu, že jste pod ochranou Muzea Policie. A pak utíkejte sem, uvařím čaj.'] },
                 { id: 'pokuta', label: 'Dáte mi pokutu?', once: true, do: { xp: 1 }, reply: ['Za co? …Za chůzi po vozovce. Sto korun. Koruny už nejsou, tak napomenutí. Buďte na sebe opatrná.'] },
+                { id: 'napisy', label: 'Čtete, co se o vás píše po zdech?', once: true, reply: ['Evidováno. Čtyřiadvacet nápisů, vedu si je v bloku. Jenže se v nich píše „policajti“. Množné číslo. Já jsem jeden. Poslední v Praze. Zbytek sboru ten den nenastoupil do služby a nenastoupil dodnes.', 'Za bývalé kolegy ručit nemůžu. Jestli někdo z nich máčel koťatům ocásky do Sava nebo nepřišel na besídku, je to věc inspekce. Inspekce jsem teď taky já, takže se to šetří.', 'Za sebe můžu prohlásit jediné. „Policajt kotě nepohladí“ se nezakládá na… není to pravda. Sáhněte mi do kapsy. Opatrně, spí.'] },
                 { id: 'tatra', label: 'Čí je ta Tatra před muzeem?', once: true, reply: ['Služební. Tatra 613, Veřejná bezpečnost. Exponát. Ve 14:37 jsem v ní seděl a poslouchal vysílačku. Volali všichni najednou a nikdo nevěděl, kam jet.'] },
             ] },
             doma: { say: ['Mourek spí ve vitríně s pouty. Já hlídám jeho. Tak to má být.'], choices: [

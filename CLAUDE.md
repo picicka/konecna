@@ -26,7 +26,7 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
 - Skripty mapa a test si samy spustí `vite preview`; nad dev serverem `BASE=http://localhost:5173/`.
 - Skoky pro ladění (`src/debug.js` přepínače, `src/skok.js` skok): `?misto=<místo>` (a `&a=&b=`, `&jizdenky=`, `&buh`) spustí hru rovnou na místě se
   stavem z průchodu; průchod ho při příchodu na každé místo zapisuje do `src/skoky.json` (po změně příběhu `npm test`
-  a `npm run build`). L otevře panel skoků (`?ladeni` / `?ladeni=0`, v dev zapnutý sám). Odkazy jsou v `docs/index.html`.
+  a `npm run build`). L otevře panel skoků jen s `?ladeni` v adrese (nepamatuje se, s `?misto` ani v dev se nezapíná sám). Odkazy jsou v `docs/index.html`.
 
 ## Místa a mapy
 
@@ -239,14 +239,14 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
 - Stav hry je `src/state.js`; checkpoint při příchodu na místo (`save`), smrt je konec s epilogem a nabídkou návratu na
   checkpoint. Průběžně se ukládá i přesná dlaždice (`savePosition`, `state.pos`, `WorldScene.autosave`: po rozhovoru
   a každé dvě vteřiny v klidu); z toho pokračuje titulní obrazovka.
-- Zvuk jen syntetizovaný (`src/sound.js`), kompresor na výstupu, odemyká se prvním gestem. Hudba později MIDI přes
+- Zvuk jen syntetizovaný (`src/sound.js`), kompresor na výstupu, odemyká se prvním gestem. Na liště a na titulní obrazovce je ikona reproduktoru (`soundButton` v `ui.js`, `ico_zvuk`), která otevře okénko s hlasitostí zvuků a hudby zvlášť (`sound.setVolume('sfx' | 'music', 0–1)`, `localStorage` `konecna.volume`); hudba má vlastní větev mimo hlasitost zvuků a rozehraje se po odemknutí. Hudba později MIDI přes
   `spessasynth_lib`, rozhraní `music(on)` zůstává.
   Svět má zvuky místa podle polohy hrdinky (`WorldScene.updateAmbience`: vítr všude, praskání nejbližšího ohně, šplouchání
   vody do pěti dlaždic), ruch se ozývá (štěknutí a vrčení voříška, třepot holubů, písknutí krysy), boj má úder, ránu do prázdna,
   zařvání, zásah, výhru a prohru, nová úroveň a zkouška vlastnosti mají vlastní znělku. Krok zní podle povrchu (`WorldScene.stepSound`: prkna lávky a mola, tráva a hlína, dlažba), v obdélnících `echo` místa (halové lodě Hlaváku, vozovka nad stanicí Vyšehrad)
   a v podchodu s ozvěnou. Neonová obálka Na Můstku bzučí podle vzdálenosti (`sound.hum`). Zvony jsou v `bells` místa (`WorldScene.updateBells`):
   Orloj odbije, jakmile platí vlajka `apostolove`, a pak každé tři minuty, katedrála jednou, když hrdinka dojde před průčelí.
-  Ambientní hudba `music()` se zatím nepouští.
+  Hudba se mění podle situace (`MUSIC` v `sound.js`, `sound.music('<druh>')`, `musicBack()` vrátí předchozí): `ambient` ulice, `voda` zatopená místa (Václavák, Nuselák, Staromák), `hrad`, `battle` souboj, `film` filmečky, `konec` závěr a epilog, `title` titulní obrazovka. Hraje od odemknutí zvuku, výchozí hlasitost je poloviční.
 - pxl: sprite oříznutý plátnem se nezvětší sám (nastavit w/h), kupole kreslit ořezem, ne mazáním, `glow()` jen na vrchní
   úrovni sprite/scene. Šum jen tam, kde je materiál zrnitý (asfalt, suť), ne na omítce.
 

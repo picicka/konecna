@@ -6,16 +6,55 @@ import { createAudio } from './audio';
 // stroje, krok, mince, zvonek, dopad, zvon), smyčky (bzučení, vítr, oheň) a tichý ambient. Složitější hudba (MIDI přes
 // spessasynth_lib) může přijít později, rozhraní music(on) zůstane.
 const STORAGE_KEY = 'konecna.sound';
+// Hlasitost zvuků a hudby zvlášť (0–1), nastavuje se v okně pod ikonou zvuku (soundButton v ui.js).
+const VOLUME_KEY = 'konecna.volume';
+const loadVolume = () => {
+    try { const v = JSON.parse(localStorage.getItem(VOLUME_KEY)); if (v && typeof v.sfx === 'number' && typeof v.music === 'number') return v; } catch (error) { /* výchozí */ }
+    return localStorage.getItem(STORAGE_KEY) === 'off' ? { sfx: 0, music: 0 } : { sfx: 1, music: 0.5 };
+};
+
+// Hudby podle situace: dron (frekvence, hlasitost) a krok sekvenceru po every ms; note(typ, frekvence, doznění,
+// hlasitost) a hit(filtr, frekvence, doznění, hlasitost) hrají do hudební větve. Všechno syntetizované.
+const pick = (list) => list[Math.floor(Math.random() * list.length)];
+const MUSIC = {
+    // ulice: hluboký dron a občasný tón z mollové pentatoniky
+    ambient: { drone: [55, 55.4, 82.4], every: 2600, step: (i, note) => { if (Math.random() < 0.7) note('sine', pick([220, 261.6, 293.7, 329.6, 392, 440, 523.3]), 2.4, 0.14, 0.6); } },
+    // zatopená místa: nižší dron a kapky, vysoký tón s dvěma slábnoucími ozvěnami
+    voda: { drone: [49, 73.4, 98.3], droneGain: 0.08, every: 3400, step: (i, note) => {
+        if (Math.random() < 0.75) { const f = pick([392, 440, 523.3, 587.3, 659.3, 784]); note('triangle', f, 1.2, 0.12, 0.005); setTimeout(() => note('triangle', f, 1.0, 0.05, 0.005), 380); setTimeout(() => note('triangle', f, 0.8, 0.02, 0.005), 760); }
+        if (i % 4 === 3) note('sine', 196, 3.2, 0.1, 1.2);
+    } },
+    // Hrad: dva blízké hluboké tóny, které se o sebe třou, a řídké temné tóny
+    hrad: { drone: [41.2, 43.65, 61.7], droneGain: 0.11, every: 4200, step: (i, note) => { note('triangle', pick([164.8, 174.6, 233.1, 246.9]), 3.6, 0.12, 1.0); if (i % 3 === 2) note('sine', 82.4, 4, 0.14, 1.5); } },
+    // souboj: rychlý basový ostinát, činel na lehké doby, každý osmý krok akcent
+    battle: { drone: [82.4, 41.2], droneGain: 0.05, droneType: 'triangle', every: 190, step: (i, note, hit) => {
+        const bass = [82.4, 82.4, 98, 82.4, 110, 82.4, 98, 123.5][i % 8];
+        note('square', bass, 0.16, 0.13, 0.005);
+        if (i % 2) hit('highpass', 5000, 0.04, 0.12);
+        if (i % 8 === 0) { hit('lowpass', 140, 0.22, 0.6, 0.7); note('sawtooth', 164.8, 0.5, 0.07, 0.01); }
+        if (i % 32 === 28) [329.6, 392, 440].forEach((f, k) => setTimeout(() => note('square', f, 0.14, 0.07, 0.005), k * 95));
+    } },
+    // filmečky: klidný dron a pomalé tóny v moll
+    film: { drone: [65.4, 98], droneGain: 0.07, every: 3200, step: (i, note) => { note('sine', [261.6, 311.1, 392, 349.2, 311.1, 466.2, 392, 261.6][i % 8], 3, 0.13, 0.4); } },
+    // závěr a epilog: stoupající durový rozklad, každé čtyři kroky spodní tón
+    konec: { drone: [73.4, 110], droneGain: 0.07, every: 900, step: (i, note) => { note('triangle', [293.7, 370, 440, 587.3, 440, 370][i % 6], 1.8, 0.11, 0.02); if (i % 6 === 0) note('sine', 146.8, 3, 0.12, 0.3); } },
+    // titulní obrazovka: skoro ticho, dron a vzácný tón pod bzučením neonu
+    title: { drone: [55, 110.3], droneGain: 0.06, every: 5200, step: (i, note) => { if (Math.random() < 0.6) note('sine', pick([220, 329.6, 440]), 4, 0.1, 1.2); } },
+};
 
 export const createSound = () => {
     const getAudio = createAudio({ masterGain: 1, reverbSeconds: 1.2, decayPower: 3, wetGain: 0.25 });
     const LEVEL = 1;
     let compressor = null;
-    let enabled = localStorage.getItem(STORAGE_KEY) !== 'off';
+    const volume = loadVolume();
+    let musicBus = null;
     let unlocked = false;
     let noiseBuffer = null;
     const loops = {};
     let musicTimer = null;
+    let musicMode = null;      // co právě hraje
+    let musicWanted = 'ambient';   // co má hrát (pamatuje se i před odemknutím zvuku)
+    let musicBefore = 'ambient';   // kam se vrátit po souboji nebo filmečku (musicBack)
     let stepParity = 0;
 
     // Kompresor na výstupu drží špičky, takže jednotlivé zvuky mohou být výrazně hlasitější bez praskání.
@@ -34,7 +73,10 @@ export const createSound = () => {
             a.master.connect(compressor);
             compressor.connect(a.context.destination);
         }
-        a.master.gain.value = enabled ? LEVEL : 0;
+        // hudba má vlastní větev mimo hlasitost zvuků (do kompresoru vedle master)
+        if (!musicBus) { musicBus = a.context.createGain(); musicBus.connect(compressor); }
+        musicBus.gain.value = volume.music;
+        a.master.gain.value = volume.sfx * LEVEL;
         return a;
     };
 
@@ -50,7 +92,7 @@ export const createSound = () => {
     };
 
     // Tón: typ, frekvence (případně sklouznutí), obálka attack/decay, hlasitost, dozvuk.
-    const tone = (type, from, to, attack, decay, gain, wet = false) => {
+    const tone = (type, from, to, attack, decay, gain, wet = false, dest = null) => {
         const a = audio();
         if (!a) return;
         const t = a.context.currentTime;
@@ -63,14 +105,14 @@ export const createSound = () => {
         g.gain.exponentialRampToValueAtTime(gain, t + attack);
         g.gain.exponentialRampToValueAtTime(0.0001, t + attack + decay);
         osc.connect(g);
-        g.connect(a.master);
+        g.connect(dest ?? a.master);
         if (wet) g.connect(a.reverb);
         osc.start(t);
         osc.stop(t + attack + decay + 0.05);
     };
 
     // Šum přes filtr: kroky, tiknutí, prasknutí, dopad.
-    const burst = (filterType, frequency, decay, gain, q = 1, wet = false) => {
+    const burst = (filterType, frequency, decay, gain, q = 1, wet = false, dest = null) => {
         const a = audio();
         if (!a) return;
         const t = a.context.currentTime;
@@ -84,7 +126,7 @@ export const createSound = () => {
         g.gain.exponentialRampToValueAtTime(0.0001, t + decay);
         source.connect(filter);
         filter.connect(g);
-        g.connect(a.master);
+        g.connect(dest ?? a.master);
         if (wet) g.connect(a.reverb);
         source.start(t);
         source.stop(t + decay + 0.05);
@@ -119,7 +161,14 @@ export const createSound = () => {
     };
 
     return {
-        get enabled() { return enabled; },
+        get enabled() { return volume.sfx > 0 || volume.music > 0; },
+        get volume() { return { ...volume }; },
+        // hlasitost 0–1 pro 'sfx' (zvuky) nebo 'music' (hudba); drží se v localStorage
+        setVolume(kind, value) {
+            volume[kind] = Math.max(0, Math.min(1, value));
+            localStorage.setItem(VOLUME_KEY, JSON.stringify(volume));
+            audio();
+        },
         // První gesto uživatele: odemkne zvuk; vrací true, když se právě odemkl.
         unlock() {
             if (unlocked) return false;
@@ -128,11 +177,9 @@ export const createSound = () => {
             return true;
         },
         toggle() {
-            enabled = !enabled;
-            localStorage.setItem(STORAGE_KEY, enabled ? 'on' : 'off');
-            const a = audio();
-            if (a) a.master.gain.value = enabled ? LEVEL : 0;
-            return enabled;
+            const on = volume.sfx > 0 || volume.music > 0;
+            this.setVolume('sfx', on ? 0 : 1); this.setVolume('music', on ? 0 : 0.5);
+            return !on;
         },
         click() { tone('square', 1400, 900, 0.005, 0.05, 0.22); },
         tick() { burst('highpass', 3000, 0.03, 0.3); },
@@ -244,22 +291,36 @@ export const createSound = () => {
             }, 45));
         },
         // Ambient: hluboký dron a občasný tón z mollové pentatoniky s dozvukem.
-        music(on) {
-            if (!on) { clearInterval(musicTimer); musicTimer = null; stopLoop('drone'); return; }
+        // Hudba podle situace (MUSIC níže): 'ambient' ulice, 'voda' zatopená místa, 'hrad', 'battle' souboj, 'film'
+        // filmečky, 'konec' závěr a epilog, 'title' titulní obrazovka. music(true) spustí, co je zrovna žádané, music(false)
+        // hudbu zastaví; musicBack() se vrátí k tomu, co hrálo před soubojem nebo filmečkem.
+        music(mode) {
+            if (mode === false) { clearInterval(musicTimer); musicTimer = null; stopLoop('drone'); musicMode = null; return; }
+            if (mode !== true && mode !== musicWanted) { musicBefore = musicWanted; musicWanted = mode; }
             const a = audio();
-            if (!a || musicTimer) return;
+            if (!a || musicMode === musicWanted) return;
+            clearInterval(musicTimer); stopLoop('drone');
+            const def = MUSIC[musicWanted] ?? MUSIC.ambient, t = a.context.currentTime;
             const g = a.context.createGain();
-            g.gain.value = 0.1;
-            const oscs = [55, 55.4, 82.4].map((f) => { const osc = a.context.createOscillator(); osc.type = 'sine'; osc.frequency.value = f; osc.connect(g); osc.start(); return osc; });
-            g.connect(a.master);
+            g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(def.droneGain ?? 0.1, t + 1.5);
+            const oscs = def.drone.map((f) => { const osc = a.context.createOscillator(); osc.type = def.droneType ?? 'sine'; osc.frequency.value = f; osc.connect(g); osc.start(); return osc; });
+            g.connect(musicBus);
             loops.drone = { source: { stop: () => oscs.forEach((osc) => osc.stop()) }, gain: g, timers: [] };
-            const scale = [220, 261.6, 293.7, 329.6, 392, 440, 523.3];
-            musicTimer = setInterval(() => { if (Math.random() < 0.7) tone('sine', scale[Math.floor(Math.random() * scale.length)], scale[0] * 1.0001, 0.6, 2.4, 0.14, true); }, 2600);
+            const note = (type, f, decay, gain, attack = 0.02) => tone(type, f, f * 1.0001, attack, decay, gain, false, musicBus);
+            const hit = (filter, f, decay, gain, q = 1) => burst(filter, f, decay, gain, q, false, musicBus);
+            let step = 0;
+            musicTimer = setInterval(() => def.step(step++, note, hit), def.every);
+            musicMode = musicWanted;
         },
+        musicBack() { this.music(musicBefore); },
+        get musicMode() { return musicWanted; },
+        // krátký tón do hudební větve: ukázka hlasitosti hudby při nastavování
+        note() { const a = audio(); if (a) tone('sine', 329.6, 329.6, 0.02, 0.5, 0.3, false, musicBus); },
         stopAll() {
             Object.keys(loops).forEach(stopLoop);
             clearInterval(musicTimer);
             musicTimer = null;
+            musicMode = null;
         },
     };
 };

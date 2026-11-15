@@ -14,6 +14,7 @@ export class CutsceneScene extends Phaser.Scene {
 
     init(data) {
         this.shots = data.shots ?? CUTSCENES[data.key] ?? [];
+        this.music = data.music ?? 'film';
         this.onDone = data.onDone;
         this.shotIndex = 0;
         this.lineIndex = 0;
@@ -21,6 +22,9 @@ export class CutsceneScene extends Phaser.Scene {
     }
 
     create() {
+        // filmeček má vlastní hudbu (epilog hraje hudbu závěru); po něm se vrátí, co hrálo předtím
+        this.registry.get('sound')?.music(this.music);
+        this.events.once('shutdown', () => this.registry.get('sound')?.musicBack());
         this.cameras.main.setBackgroundColor(CRT.bg);
         // obrázek se zvětší na celou šířku plátna: filmečky 640 × 360 dvakrát, bližší záběry epilogu 320 × 180 čtyřikrát
         const fit = (key) => WIDTH / this.textures.get(key).getSourceImage().width;

@@ -45,7 +45,7 @@ function nsRailing(c, F, u0, u1, rng) {
 
 // Přední líc mostovky (k +b): zábradlí, římsa, trouba. pier: pod troubou pilíř až k hladině (lichoběžník, nahoře
 // široký, dole užší), s mokrým pruhem u hladiny.
-function nsFront(name, pier, seed) {
+function nsFront(name, pier, seed, tag = null) {
   const W = 112, H = NS_T + (pier ? NS_D + 40 : NS_G + 16)
   sprite(name, { w: W, h: H }, (c) => {
     const rng = c.rng(seed)
@@ -64,6 +64,22 @@ function nsFront(name, pier, seed) {
       c.poly([...p(L(bot + 30), 0, bot + 30), ...p(R(bot + 30), 0, bot + 30), ...p(R(bot), 0, bot), ...p(L(bot), 0, bot)], "x")
       for (let u = L(bot); u < R(bot); u += 3) c.line(...p(u, 0, bot + 4), ...p(u, 0, bot + 10 + rng() * 14), rng() < 0.5 ? "Q" : "K")
       c.line(...p(L(bot) - 6, -4, bot), ...p(R(bot) + 6, -4, bot), "J"); c.line(...p(L(bot) - 3, -8, bot), ...p(R(bot) + 2, -8, bot), "Z")
+      // nápis sprejem na líci pilíře (řádky pod sebou, písmo 5 × 7 v rovině stěny, úzké I, tmavý obrys, stékance)
+      if (tag) tag.forEach((text, li) => {
+        const h = top - 16 - li * 13, wide = [...text].reduce((n, ch) => n + (ch === "I" || ch === "Í" ? 4 : ch === " " ? 4 : 6), 0) - 1
+        let u = Math.round((L(h) + R(h) - wide) / 2)
+        const cells = []
+        for (const ch of text) {
+          const d = ch.normalize("NFD"), g = FONT57[d[0]], thin = d[0] === "I"
+          if (g) for (let gy = 0; gy < 7; gy++) for (let gx = 0; gx < 5; gx++) if (g[gy * 5 + gx] === "1") cells.push([u + gx - (thin ? 1 : 0), h - gy])
+          ;[...d.slice(1)].forEach((m) => (MARKS57[m] ?? []).forEach(([gx, up]) => cells.push([u + gx - (thin ? 1 : 0), h + up])))
+          u += thin ? 4 : d[0] === " " ? 4 : 6
+        }
+        // bílý sprej bez obrysu (obrys u takhle malého písma slévá písmena), pod ním stín o bod níž a pár stékanců
+        cells.forEach(([cu, cv]) => c.px(...p(cu, 0, cv - 1), "A"))
+        cells.forEach(([cu, cv]) => c.px(...p(cu, 0, cv), "W"))
+        cells.filter(([, cv], i) => cv === h - 6 && i % 3 === 0).forEach(([cu, cv]) => c.line(...p(cu, 0, cv - 1), ...p(cu, 0, cv - 3 - (cu % 4)), "w"))
+      })
     }
     // trouba: dolní hrana stínem, nahoře římsa (deska mostovky přečnívá)
     nsConcrete(c, F, 0, 64, -NS_G, -10, rng, "P", "x", "A")
@@ -210,6 +226,8 @@ sprite("ns_lano", { w: (NS_GAP + 1) * 64 + 60, h: (NS_GAP + 1) * 32 + 170 }, (c)
 
 nsFront("ns_predni", false, 1); nsFront("ns_predni2", false, 2)
 nsFront("ns_pilir", true, 3)
+// pilíř u severního mola s nápisem, na který se odvolává strážmistr Kulhánek (nusle.tagPier, hláška pilir_tag)
+nsFront("ns_pilir_tag", true, 3, ["POLICAJTI", "MÁČÍ", "KOŤÁTKŮM", "OCÁSKY", "DO SAVA"])
 nsFar("ns_zadni", 4); nsFar("ns_zadni2", 5)
 
 // —— Stanice Vyšehrad pod silnicí u jižního konce mostu (src/places/nuselak.js nusle.station) ——

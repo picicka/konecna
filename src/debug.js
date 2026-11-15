@@ -9,18 +9,17 @@
 //   &buh                  nesmrtelnost v boji a zkoušky vlastností vždy vyjdou
 //   ?rychle / ?rychle=8   čas hry běží rychleji (bez čísla pětkrát): chůze, animace, časovače; logika se nemění.
 //                         Používá ho průchod npm test, jde i samostatně bez ?misto.
-//   ?ladeni / ?ladeni=0   zapne / vypne panel skoků na klávese L (pamatuje se v prohlížeči; s ?misto je zapnutý sám)
+//   ?ladeni               zapne panel skoků na klávese L, jen dokud je v adrese (nepamatuje se, s ?misto se nezapíná sám)
 
-const KEY = 'konecna.ladeni';
 // V Node (scripts/slepe.mjs, tree.mjs) není okno ani adresa: všechno vypnuté.
 const params = new URLSearchParams(typeof window === 'undefined' ? '' : window.location.search);
-const remember = (on) => { try { if (on) localStorage.setItem(KEY, '1'); else localStorage.removeItem(KEY); } catch (error) { /* soukromé okno */ } };
-if (params.has('ladeni')) remember(params.get('ladeni') !== '0');
-const stored = (() => { try { return localStorage.getItem(KEY) === '1'; } catch (error) { return false; } })();
+// dřív se zapnuté ladění pamatovalo v prohlížeči; starý záznam se uklidí, aby L nezůstalo zapnuté napořád
+try { localStorage.removeItem('konecna.ladeni'); } catch (error) { /* soukromé okno, Node */ }
 const num = (key) => (params.has(key) && Number.isFinite(Number(params.get(key))) ? Number(params.get(key)) : null);
 
 export const DEBUG = {
-    on: params.has('misto') || stored || Boolean(import.meta.env?.DEV),
+    // panel skoků na L jen s ?ladeni v adrese: L je snadná klávesa a hráčka by si jím skočila omylem
+    on: params.has('ladeni') && params.get('ladeni') !== '0',
     place: params.get('misto'),
     tile: num('a') !== null && num('b') !== null ? { a: num('a'), b: num('b'), L: num('L') ?? 0 } : null,
     tickets: num('jizdenky') ?? 0,

@@ -109,6 +109,8 @@ export class WorldScene extends Phaser.Scene {
         this.drawShadows();
         this.placeLights();
         this.placeLife();
+        // hudba místa: zatopená místa mají kapky, Hrad temný dron, ostatní ulice
+        this.registry.get('sound')?.music({ hrad: 'hrad', staromak: 'voda', nuselak: 'voda', vaclavak: 'voda' }[this.state.place] ?? 'ambient');
         // zvuky místa (vítr, oheň, voda) jedou z update; s koncem scény utichnou
         this.bellState = null;
         this.events.once('shutdown', () => { const s = this.registry.get('sound'); s?.wind(false); s?.fire(9); s?.water(0); s?.hum(0); });
@@ -299,7 +301,8 @@ export class WorldScene extends Phaser.Scene {
         this.bridgeBand = { a0: ns.a0, a1: ns.a1, b0, b1 };
         for (let a = ns.a0; a <= ns.a1; a++) {
             if (a >= g0 && a <= g1) continue;
-            if (low(a, b1 + 1)) put(ns.piers.includes(a) ? 'ns_pilir' : `ns_predni${ISO.hash(a, b1, 63) < 0.5 ? '' : '2'}`, ISO.toScreen(a - 0.5, b1 + 0.5), ISO.depthOf(a, b1, 1), 16, 64);
+            if (low(a, b1 + 1) && a === ns.tagPier) this.lookAt(put('ns_pilir_tag', ISO.toScreen(a - 0.5, b1 + 0.5), ISO.depthOf(a, b1, 1), 16, 64), 'pilir_tag', { a, b: b1 });
+            else if (low(a, b1 + 1)) put(ns.piers.includes(a) ? 'ns_pilir' : `ns_predni${ISO.hash(a, b1, 63) < 0.5 ? '' : '2'}`, ISO.toScreen(a - 0.5, b1 + 0.5), ISO.depthOf(a, b1, 1), 16, 64);
             if (low(a, b0 - 1)) put(`ns_zadni${ISO.hash(a, b0, 64) < 0.5 ? '' : '2'}`, ISO.toScreen(a - 0.5, b0 - 0.5), ISO.depthOf(a, b0 - 1), 8, 44);
         }
         put('ns_konec_sever', ISO.toScreen(g0 - 0.5, b1 + 0.5), ISO.depthOf(g0 - 1, b1, 2), 290, 200);

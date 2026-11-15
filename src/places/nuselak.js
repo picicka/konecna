@@ -14,6 +14,8 @@ export const NUSELAK = {
     ],
     // most: mostovka, zlom, pilíře (po 15,5 dlaždice jako skutečná pole 115 m), lano v řádku b 19
     nusle: { a0: 15, a1: 79, deck: [17, 20], gap: [44, 49], piers: [23, 38, 55, 70], rope: 19,
+        // pilíř u severního mola nese nápis o policajtech a koťátkách (klepnutím ho přečte bublina)
+        tagPier: 23,
         // stanice Vyšehrad pod silnicí za koncem mostu: silnice (b 17–20) je o patro výš než terén u mola. Od hrany
         // edge visí stěna: holý beton (plain), schody dolů k molu (stairs, dvě dlaždice), prosklené čelo haly (glass)
         // a za ním tři díly klínu do terénu; hole je díra ve vozovce, kterou je vidět kolej a nástupiště

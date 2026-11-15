@@ -18,13 +18,14 @@ export class EndingScene extends Phaser.Scene {
     }
 
     create() {
+        this.registry.get('sound')?.music('konec');
         const ending = ENDINGS[this.result] ?? ENDINGS.death;
         const state = this.registry.get('state');
         if (!this.shown) {
             const epilog = this.result === 'death' || !state ? [] : EPILOG.filter((e) => (!e.ending || e.ending === this.result) && holds(state, e.if)).map((e) => ({ image: e.image, lines: [e.line] }));
             const shots = [...(ending.shots ?? []), ...epilog, ...(this.result === 'death' || !state ? [] : [ENDINGS.last])];
             if (shots.length) {
-                this.scene.start('cutscene', { shots, onDone: (cutscene) => cutscene.scene.start('ending', { result: this.result, shown: true }) });
+                this.scene.start('cutscene', { shots, music: 'konec', onDone: (cutscene) => cutscene.scene.start('ending', { result: this.result, shown: true }) });
                 return;
             }
         }

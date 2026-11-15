@@ -28,6 +28,7 @@ export class TitleScene extends Phaser.Scene {
         this.game.events.on('sound-unlocked', hum);
         this.events.once('shutdown', () => { this.game.events.off('sound-unlocked', hum); sound.neon(false); });
         soundButton(this, WIDTH - 100, 36);
+        sound.music('title');
         // (i) O hře: zdroje dat, kdo hru dělá a jak se ukládá
         button(this, WIDTH - 210, 36, 44, 36, ABOUT.button, () => { this.about ??= aboutPanel(this, ABOUT, () => { this.about = null; }); }, { fontSize: 22, center: true }).setDepth(50);
         this.input.keyboard.on('keydown-ESC', () => this.about?.close());

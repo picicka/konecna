@@ -1,3 +1,4 @@
+import { HUD } from './script';
 // UI ve stylu Pip-Boye: zelený fosfor na černé, pixelová písma, panely s dvojitým rámečkem, scanlines.
 // Plátno je 1280 × 720 bodů zobrazené 1:1 (na menších displejích zmenšené bez vyhlazení, na 4K zdvojené),
 // takže všechny rozměry jsou v herních pixelech. Převzato z Václaváku (320 × 560), čísla přepočítaná.
@@ -122,15 +123,37 @@ export const ensureWalk = (scene, key, frames = 4) => {
     scene.anims.create({ key: `${key}_walk`, frames: Array.from({ length: frames }, (_, i) => ({ key: 'atlas', frame: `${key}_${i}` })), frameRate: 8, repeat: -1 });
 };
 
-// Vypínač zvuku; stav drží sound.js v localStorage.
-export const soundButton = (scene, x, y, depth = 50, width = 160) => {
+// Ikona zvuku (reproduktor, přeškrtnutý při tichu): klepnutí otevře okénko se dvěma táhly, hlasitost zvuků a hudby
+// zvlášť po desetinách (první políčko je ticho). Stav drží sound.js v localStorage. Popisky jsou v HUD.sound.
+export const soundButton = (scene, x, y, depth = 50) => {
+    const MUTE = 0xff5a48;   // červená políčka ticha (barva neonu z palety)
     const sound = scene.registry.get('sound');
-    const label = () => (sound.enabled ? 'ZVUK: ANO' : 'ZVUK: NE');
-    const control = button(scene, x, y, width, 36, label(), () => {
+    const control = button(scene, x, y, 44, 36, '', () => (control.panel ? close() : open()), { center: true }).setDepth(depth);
+    const icon = scene.add.image(0, 0, 'atlas', 'ico_zvuk').setScale(2);
+    control.add(icon);
+    const refresh = () => icon.setFrame(sound.enabled ? 'ico_zvuk' : 'ico_zvuk_ne');
+    const close = () => { control.panel?.forEach((part) => part.destroy()); control.panel = null; };
+    const open = () => {
         sound.unlock();
-        sound.toggle();
-        control.caption.setText(label());
-    }, { fontSize: 22, center: true }).setDepth(depth);
+        const w = 330, h = 118, px = Math.min(WIDTH - w - 8, Math.max(8, x - w / 2)), py = y + 26, d = depth + 900, parts = [];
+        const shade = scene.add.rectangle(0, 0, WIDTH, HEIGHT, 0x000000, 0.001).setOrigin(0, 0).setDepth(d).setInteractive();
+        shade.on('pointerdown', (pointer, lx, ly, event) => { event?.stopPropagation(); close(); });
+        parts.push(shade, panel(scene, px, py, w, h).setDepth(d + 1), head(scene, px + 18, py + 14, HUD.sound.title, { fontSize: '14px', color: CRT.amber }).setDepth(d + 2));
+        [['sfx', HUD.sound.sfx], ['music', HUD.sound.music]].forEach(([kind, label], row) => {
+            const ry = py + 52 + row * 34;
+            parts.push(body(scene, px + 18, ry, label, { fontSize: '24px', color: CRT.text }).setOrigin(0, 0.5).setDepth(d + 2));
+            const cells = [];
+            const paint = () => { const n = Math.round(sound.volume[kind] * 10); cells.forEach((cell, i) => cell.setFillStyle(i === 0 ? (n === 0 ? MUTE : CRT.panel) : i <= n ? CRT.line : CRT.panel)); refresh(); };
+            for (let i = 0; i <= 10; i++) {
+                const cell = scene.add.rectangle(px + 104 + i * 19 + (i ? 6 : 0), ry, 15, i ? 22 : 12, CRT.panel).setStrokeStyle(2, i ? CRT.lineDim : MUTE).setDepth(d + 2).setInteractive({ useHandCursor: true });
+                cell.on('pointerdown', (pointer, lx, ly, event) => { event?.stopPropagation(); sound.setVolume(kind, i / 10); paint(); if (kind === 'sfx') sound.click(); else sound.note?.(); });
+                cells.push(cell); parts.push(cell);
+            }
+            paint();
+        });
+        control.panel = parts;
+    };
+    refresh();
     return control;
 };
 

@@ -56,6 +56,9 @@ export class BattleScene extends Phaser.Scene {
 
     create() {
         const sound = this.registry.get('sound');
+        // souboj má vlastní hudbu; po něm se vrátí hudba místa
+        sound?.music('battle');
+        this.events.once('shutdown', () => sound?.musicBack());
         this.add.rectangle(0, 0, WIDTH, HEIGHT, 0x050806, 0.94).setOrigin(0, 0);
         panel(this, 40, 40, WIDTH - 80, 380);
         head(this, 64, 60, this.def.name.toUpperCase(), { color: CRT.amber });

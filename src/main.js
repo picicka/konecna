@@ -45,7 +45,8 @@ const start = () => {
     window.konecna = game;
     const sound = createSound();
     game.registry.set('sound', sound);
-    const unlock = () => { if (sound.unlock()) game.events.emit('sound-unlocked'); };
+    // po odemknutí zvuku se rozehraje tichá ambientní hudba (hlasitost v okénku pod ikonou zvuku)
+    const unlock = () => { if (sound.unlock()) { sound.music(true); game.events.emit('sound-unlocked'); } };
     ['pointerdown', 'keydown', 'touchstart'].forEach((type) => document.addEventListener(type, unlock, { passive: true }));
     game.registry.set('options', { images: `${import.meta.env.BASE_URL}images` });
 };

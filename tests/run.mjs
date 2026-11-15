@@ -449,7 +449,7 @@ try {
   }
   if (!ONLY) {
     // Ladění: skok z adresy rovnou na místo a dlaždici, panel skoků na L (src/debug.js, jen se zapnutým laděním).
-    await page.goto(`${BASE}?misto=nuselak&a=50&b=19&jizdenky=5${FAST && `&${FAST}`}`);
+    await page.goto(`${BASE}?misto=nuselak&a=50&b=19&jizdenky=5&ladeni${FAST && `&${FAST}`}`);
     await page.waitForFunction(() => { const w = window.konecna?.scene.getScene('world'); return window.konecna.scene.isActive('world') && w.player && w.state.place === 'nuselak'; }, null, { timeout: 60000 });
     const jumped = await run(() => { const w = window.konecna.scene.getScene('world'); return { ...w.tile, created: w.state.flags.created }; });
     console.log('skok', JSON.stringify(jumped));
