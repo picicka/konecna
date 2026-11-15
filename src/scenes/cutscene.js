@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { CUTSCENES, HUD } from '../script';
-import { body, panel, button, scanlines, CRT, WIDTH, HEIGHT } from '../ui';
+import { body, panel, button, scanlines, CRT, WIDTH, HEIGHT, BASE_WIDTH } from '../ui';
 
 // Filmeček ve stylu diapozitivů Falloutu: pixelový obrázek 640 × 360 zvětšený 2× s pomalým nájezdem a titulky psané
 // po písmenech. Klepnutí, Enter nebo mezerník dopíšou řádek, další klepnutí ho přepne; tlačítko vpravo nahoře přeskočí.
@@ -27,7 +27,7 @@ export class CutsceneScene extends Phaser.Scene {
         this.events.once('shutdown', () => this.registry.get('sound')?.musicBack());
         this.cameras.main.setBackgroundColor(CRT.bg);
         // obrázek se zvětší na celou šířku plátna: filmečky 640 × 360 dvakrát, bližší záběry epilogu 320 × 180 čtyřikrát
-        const fit = (key) => WIDTH / this.textures.get(key).getSourceImage().width;
+        const fit = (key) => BASE_WIDTH / this.textures.get(key).getSourceImage().width;   // na širším plátně telefonu zůstane obrázek uprostřed
         this.fit = fit;
         this.image = this.add.image(WIDTH / 2, IMAGE_Y, this.shots[0]?.image ?? 'cs_city').setOrigin(0.5, 0.5);
         this.image.setScale(fit(this.image.texture.key));

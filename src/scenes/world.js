@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import * as ISO from '../iso';
-import { ensureWalk, CRT, body } from '../ui';
+import { ensureWalk, CRT, body, MOBILE } from '../ui';
 import { save, savePosition, clearPosition, maxHp } from '../state';
 import { PLACES, PLACE_DEFS, groundTile, walkable, startTile, TRAM_ORIGIN } from '../map';
 import { runDialog, holds } from '../story';
@@ -129,6 +129,8 @@ export class WorldScene extends Phaser.Scene {
         const ambush = Object.entries(this.stops).find(([, stop]) => stop.ambush && !holds(this.state, stop.ambush.until));
         if (ambush) this.time.delayedCall(500, () => this.talk(ambush[0]));
         this.cameras.main.startFollow(this.player, true, 0.12, 0.12);
+        // telefon: svět o polovinu blíž, aby postavy a věci šly trefit prstem (je vidět menší kus mapy)
+        if (MOBILE) this.cameras.main.setZoom(1.5);
         // Ladění obrazu jako Fallout 1 a 2: méně sytosti, nižší jas, víc kontrastu, tmavé okraje (jen kamera světa, lišta ne).
         if (this.cameras.main.postFX) {
             const grade = this.cameras.main.postFX.addColorMatrix();

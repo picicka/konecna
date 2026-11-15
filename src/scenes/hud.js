@@ -7,7 +7,7 @@ import { JUMP_PLACES, jump } from '../skok';
 
 const MAP_KEY = 'konecna.map';
 const CARD_W = 312;
-import { head, body, panel, button, scanlines, soundButton, fullscreenButton, aboutPanel, CRT, WIDTH, HEIGHT } from '../ui';
+import { head, body, panel, button, scanlines, soundButton, fullscreenButton, aboutPanel, CRT, WIDTH, HEIGHT, MOBILE, SIDE } from '../ui';
 
 // Lišta a dialogy nad světem ve stylu Pip-Boye, převzato z Václaváku a zobecněno. Nahoře životy, úroveň a jízdenky;
 // dole dialog s portrétem, jménem a replikou, volby jako číslované řádky. Klávesy: Enter / mezerník potvrdí, 1–9 vyberou,
@@ -31,12 +31,27 @@ export class HudScene extends Phaser.Scene {
             return body(this, x + 38, 26, '', { fontSize: '26px', color: CRT.text }).setOrigin(0, 0.5).setDepth(11);
         });
         this.ticketText = body(this, WIDTH - 24, 26, '', { fontSize: '26px', color: CRT.amber }).setOrigin(1, 0.5).setDepth(11);
-        soundButton(this, 470, 26, 11);
-        fullscreenButton(this, 518, 26, 11);
-        this.questButton = button(this, 622, 26, 116, 36, HUD.quests, () => this.toggleQuests(), { fontSize: 22, center: true }).setDepth(11);
-        this.mapButton = button(this, 746, 26, 116, 36, HUD.map, () => this.toggleMap(), { fontSize: 22, center: true }).setDepth(11);
-        // (i) O hře: zdroje dat mapy, autoři, ukládání (stejné okno jako na titulní obrazovce)
-        button(this, 832, 26, 36, 36, ABOUT.button, () => { if (!this.panel && !this.quests && !this.jumps) this.about ??= aboutPanel(this, ABOUT, () => { this.about = null; }, 950); }, { fontSize: 22, center: true }).setDepth(11);
+        const about = () => { if (!this.panel && !this.quests && !this.jumps) this.about ??= aboutPanel(this, ABOUT, () => { this.about = null; }, 950); };
+        if (MOBILE) {
+            // telefon: lišta jen ukazuje stav, ovládání je ve sloupci velkých tlačítek vpravo (dotykový cíl aspoň 44 bodů displeje)
+            const bw = SIDE - 16, bh = 84, x = WIDTH - SIDE / 2, at = (i) => 62 + bh / 2 + i * (bh + 8);
+            const big = { fontSize: 28, center: true, hitPad: 4 };
+            this.questButton = button(this, x, at(0), bw, bh, HUD.quests, () => this.toggleQuests(), big).setDepth(11);
+            button(this, x, at(1), bw, bh, HUD.bag, () => this.toggleBag(), big).setDepth(11);
+            this.mapButton = button(this, x, at(2), bw, bh, HUD.map, () => this.toggleMap(), big).setDepth(11);
+            soundButton(this, x, at(3), 11, bw, bh);
+            button(this, x, at(4), bw, bh, ABOUT.button, about, big).setDepth(11);
+            // karta postavy se na telefonu neukazuje sama: tohle tlačítko ji během rozhovoru otevře a zavře
+            this.cardButton = button(this, x, at(5), bw, bh, HUD.card, () => this.toggleCard(), { ...big, primary: true }).setDepth(26).setVisible(false);
+            if (!navigator.standalone) fullscreenButton(this, x, at(6), 11, bw, 56);
+        } else {
+            soundButton(this, 470, 26, 11);
+            fullscreenButton(this, 518, 26, 11);
+            this.questButton = button(this, 622, 26, 116, 36, HUD.quests, () => this.toggleQuests(), { fontSize: 22, center: true }).setDepth(11);
+            this.mapButton = button(this, 746, 26, 116, 36, HUD.map, () => this.toggleMap(), { fontSize: 22, center: true }).setDepth(11);
+            // (i) O hře: zdroje dat mapy, autoři, ukládání (stejné okno jako na titulní obrazovce)
+            button(this, 832, 26, 36, 36, ABOUT.button, about, { fontSize: 22, center: true }).setDepth(11);
+        }
 
         this.toastBox = this.add.container(WIDTH / 2, 100).setDepth(30).setAlpha(0);
         this.toastBack = this.add.rectangle(0, 0, 10, 10, 0x000000, 0.85).setStrokeStyle(2, CRT.lineDim);
@@ -93,7 +108,7 @@ export class HudScene extends Phaser.Scene {
         // horní úroveň (vozovka magistrály, rampy) přes halu
         world.upper.forEach((height, k) => { const [a, b] = k.split(',').map(Number); const { x, y } = toMini(a, b); ctx.fillStyle = height > 100 ? '#6a6458' : '#5c574d'; ctx.fillRect(x, y, S * 2, S); });
         canvas.refresh();
-        const px = WIDTH - w - 22, py = 62;
+        const px = WIDTH - w - 22 - SIDE, py = 62;
         this.minimapBox = { x: px + 8, y: py + 30, w, h, ox, oy, S };
         const parts = [panel(this, px, py, w + 16, h + 40).setDepth(10)];
         parts.push(head(this, px + 10, py + 10, HUD.places[world.state.place] ?? world.state.place.toUpperCase(), { fontSize: '12px', color: CRT.amber }).setDepth(11));
@@ -127,7 +142,8 @@ export class HudScene extends Phaser.Scene {
         parts.push(this.miniStops, this.miniPlayer);
         this.miniParts = parts;
         this.toMini = (a, b) => { const p = toMini(a, b); return { x: px + 8 + p.x + S, y: py + 30 + p.y + S / 2 }; };
-        this.mapOpen = localStorage.getItem(MAP_KEY) !== '0';
+        // na telefonu je minimapa ve výchozím stavu zavřená (zabírá půl obrazu), jinak otevřená
+        this.mapOpen = (localStorage.getItem(MAP_KEY) ?? (MOBILE ? '0' : '1')) !== '0';
         this.showMap();
     }
 
@@ -188,7 +204,9 @@ export class HudScene extends Phaser.Scene {
     renderPanel({ speaker, face, body: text, buttons }) {
         this.closePanel();
         const x = 24;
-        const width = WIDTH - 48 - (this.card ? CARD_W + 8 : 0);
+        // telefon: rozhovor se vyhne sloupci tlačítek, karta ho nezužuje (otevírá se přes něj), písmo a tlačítka jsou větší
+        const width = WIDTH - 48 - SIDE - (this.card && !MOBILE ? CARD_W + 8 : 0);
+        const bh = MOBILE ? (buttons.length > 6 ? 56 : 64) : 46, bstep = bh + 6, bfont = MOBILE ? 34 : 28;
         const container = this.add.container(0, 0).setDepth(20);
         const parts = [];
         const textX = face ? 160 : 28;
@@ -197,7 +215,7 @@ export class HudScene extends Phaser.Scene {
             parts.push(head(this, textX, y, speaker.toUpperCase(), { color: CRT.amber, wordWrap: { width: width - textX } }));
             y += 28;
         }
-        const bodyText = body(this, textX, y, text, { fontSize: '30px', wordWrap: { width: width - textX - 16 }, lineSpacing: -4 });
+        const bodyText = body(this, textX, y, text, { fontSize: MOBILE ? '36px' : '30px', wordWrap: { width: width - textX - 16 }, lineSpacing: -4 });
         parts.push(bodyText);
         if (face) {
             parts.push(this.add.image(28, 20, 'atlas', face).setOrigin(0, 0).setScale(2));
@@ -205,8 +223,8 @@ export class HudScene extends Phaser.Scene {
         }
         y = Math.max(y + bodyText.height, face ? 140 : 0) + 14;
         this.buttons = buttons.map((item, index) => {
-            const control = button(this, width / 2 + x, y + 24, width - 32, 46, item.label, () => item.onPress(index), { primary: item.primary, disabled: item.disabled, index: buttons.length > 1 ? index + 1 : null, center: buttons.length === 1, fontSize: 28, icon: item.icon, badge: item.badge });
-            y += 52;
+            const control = button(this, width / 2 + x, y + bh / 2 + 1, width - 32, bh, item.label, () => item.onPress(index), { primary: item.primary, disabled: item.disabled, index: buttons.length > 1 ? index + 1 : null, center: buttons.length === 1, fontSize: bfont, icon: item.icon, badge: item.badge });
+            y += bstep;
             return control;
         });
         const height = y + 10;
@@ -405,12 +423,27 @@ export class HudScene extends Phaser.Scene {
     // Karta postavy vpravo vedle rozhovoru: jméno, skupina a její důvěra, celá postava zvětšená, vlastnosti a kdo to je.
     // Jen u postav se stats (DIALOGS); obrázek je sprite zastavení ve světě, zvětšený celým násobkem, aby zůstal ostrý.
     showCard(id) {
-        this.hideCard();
+        if (!MOBILE) { this.drawCard(id); return; }
+        // telefon: karta se neukazuje sama, jen se nabídne tlačítkem ve sloupci
+        this.card?.destroy(); this.card = null;
+        const has = Boolean(DIALOGS[id]?.stats && this.scene.get('world')?.stops?.[id]?.sprite);
+        this.cardId = has ? id : null;
+        this.cardButton?.setVisible(has);
+        this.showMap();
+    }
+
+    toggleCard() {
+        if (this.card) { this.card.destroy(); this.card = null; this.showMap(); }
+        else if (this.cardId) this.drawCard(this.cardId);
+    }
+
+    drawCard(id) {
+        this.card?.destroy(); this.card = null;
         const dialog = DIALOGS[id];
         const stop = this.scene.get('world')?.stops?.[id];
         if (!dialog?.stats || !stop?.sprite) return;
-        const x = WIDTH - 24 - CARD_W, y = 62, h = HEIGHT - 16 - y;
-        const c = this.add.container(0, 0).setDepth(19);
+        const x = WIDTH - 24 - CARD_W - SIDE, y = 62, h = HEIGHT - 16 - y;
+        const c = this.add.container(0, 0).setDepth(MOBILE ? 25 : 19);
         c.add(panel(this, x, y, CARD_W, h));
         let ty = y + 16;
         const name = head(this, x + 16, ty, dialog.name.toUpperCase(), { color: CRT.amber, fontSize: '14px', wordWrap: { width: CARD_W - 32 } });
@@ -444,6 +477,8 @@ export class HudScene extends Phaser.Scene {
         const scale = Math.max(1, Math.min(5, Math.floor(Math.min(room.w / frame.width, room.h / frame.height))));
         c.add(this.add.rectangle(x + 16, statsY - 8, room.w, 2, CRT.lineDim).setOrigin(0, 0));
         c.add(this.add.image(x + CARD_W / 2, statsY - 12, frame.texture.key, frame.name).setOrigin(0.5, 1).setScale(scale));
+        // telefon: karta leží přes rozhovor, klepnutí na ni ji zavře
+        if (MOBILE) { const tap = this.add.rectangle(x, y, CARD_W, h, 0x000000, 0.001).setOrigin(0, 0).setInteractive(); tap.on('pointerdown', (pointer, lx, ly, event) => { event?.stopPropagation(); this.toggleCard(); }); c.add(tap); }
         this.card = c;
         this.showMap();
     }
@@ -451,6 +486,8 @@ export class HudScene extends Phaser.Scene {
     hideCard() {
         this.card?.destroy();
         this.card = null;
+        this.cardId = null;
+        this.cardButton?.setVisible(false);
         this.showMap();
     }
 

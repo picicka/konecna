@@ -1,9 +1,27 @@
+import Phaser from 'phaser';
 import { HUD } from './script';
 // UI ve stylu Pip-Boye: zelený fosfor na černé, pixelová písma, panely s dvojitým rámečkem, scanlines.
 // Plátno je 1280 × 720 bodů zobrazené 1:1 (na menších displejích zmenšené bez vyhlazení, na 4K zdvojené),
 // takže všechny rozměry jsou v herních pixelech. Převzato z Václaváku (320 × 560), čísla přepočítaná.
-export const WIDTH = 1280;
+export const BASE_WIDTH = 1280;
 export const HEIGHT = 720;
+// Telefon (malý dotykový displej, nebo ?mobil v adrese pro zkoušení): plátno se rozšíří podle displeje, aby hra
+// vyplnila celou šířku bez černých pruhů, svět se přiblíží, ovládání lišty se přestěhuje do sloupce velkých tlačítek
+// vpravo (SIDE) a rozhovory mají větší písmo a tlačítka. Na počítači se nic nemění.
+const query = typeof window === 'undefined' ? new URLSearchParams('') : new URLSearchParams(window.location.search);
+export const MOBILE = typeof window !== 'undefined' && (query.has('mobil') ? query.get('mobil') !== '0'
+    : Boolean(window.matchMedia?.('(pointer: coarse)').matches) && Math.min(window.screen.width, window.screen.height) <= 520);
+const phoneWidth = () => {
+    const shell = document.querySelector('[data-shell]');
+    if (!shell) return BASE_WIDTH;
+    const cs = getComputedStyle(shell), pad = (k) => parseFloat(cs[k]) || 0;
+    const w = shell.clientWidth - pad('paddingLeft') - pad('paddingRight'), h = shell.clientHeight - pad('paddingTop') - pad('paddingBottom');
+    const aspect = Math.max(w, h) / Math.max(1, Math.min(w, h));   // hra se hraje na šířku, i když se načte na výšku
+    return Math.max(BASE_WIDTH, Math.min(1700, Math.round(HEIGHT * aspect / 2) * 2));
+};
+export const WIDTH = MOBILE ? phoneWidth() : BASE_WIDTH;
+// šířka sloupce velkých tlačítek vpravo (jen telefon); rozhovor, karta a minimapa se mu vyhnou
+export const SIDE = MOBILE ? 132 : 0;
 
 export const FONT_HEAD = "'Press Start 2P', monospace";
 export const FONT_BODY = "'VT323', monospace";
@@ -76,7 +94,10 @@ export const button = (scene, x, y, width, height, label, onPress, options = {})
     container.caption = caption;
     container.disabled = Boolean(options.disabled);
     if (!options.disabled) {
-        box.setInteractive({ useHandCursor: true });
+        // na telefonu reaguje tlačítko i kousek kolem sebe (prst je širší než kurzor)
+        const pad = options.hitPad ?? (MOBILE ? 3 : 0);
+        if (pad) box.setInteractive({ hitArea: new Phaser.Geom.Rectangle(-pad, -pad, width + pad * 2, height + pad * 2), hitAreaCallback: Phaser.Geom.Rectangle.Contains, useHandCursor: true });
+        else box.setInteractive({ useHandCursor: true });
         box.on('pointerover', () => box.setFillStyle(CRT.panelLight));
         box.on('pointerout', () => box.setFillStyle(options.primary ? CRT.panelLight : CRT.panel));
         box.on('pointerdown', (pointer, localX, localY, event) => { event?.stopPropagation(); container.press(); });
@@ -125,17 +146,17 @@ export const ensureWalk = (scene, key, frames = 4) => {
 
 // Ikona zvuku (reproduktor, přeškrtnutý při tichu): klepnutí otevře okénko se dvěma táhly, hlasitost zvuků a hudby
 // zvlášť po desetinách (první políčko je ticho). Stav drží sound.js v localStorage. Popisky jsou v HUD.sound.
-export const soundButton = (scene, x, y, depth = 50) => {
+export const soundButton = (scene, x, y, depth = 50, bw = 44, bh = 36) => {
     const MUTE = 0xff5a48;   // červená políčka ticha (barva neonu z palety)
     const sound = scene.registry.get('sound');
-    const control = button(scene, x, y, 44, 36, '', () => (control.panel ? close() : open()), { center: true }).setDepth(depth);
+    const control = button(scene, x, y, bw, bh, '', () => (control.panel ? close() : open()), { center: true }).setDepth(depth);
     const icon = scene.add.image(0, 0, 'atlas', 'ico_zvuk').setScale(2);
     control.add(icon);
     const refresh = () => icon.setFrame(sound.enabled ? 'ico_zvuk' : 'ico_zvuk_ne');
     const close = () => { control.panel?.forEach((part) => part.destroy()); control.panel = null; };
     const open = () => {
         sound.unlock();
-        const w = 330, h = 118, px = Math.min(WIDTH - w - 8, Math.max(8, x - w / 2)), py = y + 26, d = depth + 900, parts = [];
+        const w = 330, h = 118, px = Math.min(WIDTH - w - 8 - (bw > 44 ? bw + 12 : 0), Math.max(8, x - w / 2)), py = Math.min(HEIGHT - h - 8, y + (bw > 44 ? -h / 2 : 26)), d = depth + 900, parts = [];
         const shade = scene.add.rectangle(0, 0, WIDTH, HEIGHT, 0x000000, 0.001).setOrigin(0, 0).setDepth(d).setInteractive();
         shade.on('pointerdown', (pointer, lx, ly, event) => { event?.stopPropagation(); close(); });
         parts.push(shade, panel(scene, px, py, w, h).setDepth(d + 1), head(scene, px + 18, py + 14, HUD.sound.title, { fontSize: '14px', color: CRT.amber }).setDepth(d + 2));
@@ -159,9 +180,9 @@ export const soundButton = (scene, x, y, depth = 50) => {
 
 // Celá obrazovka (ikona se čtyřmi rohy): schová lišty prohlížeče. Kde to prohlížeč neumí (iPhone), tlačítko není
 // a vrací se null; tam pomůže přidat hru na plochu (TITLE.homescreen).
-export const fullscreenButton = (scene, x, y, depth = 50) => {
+export const fullscreenButton = (scene, x, y, depth = 50, bw = 44, bh = 36) => {
     if (!scene.scale.fullscreen.available) return null;
-    const control = button(scene, x, y, 44, 36, '', () => scene.scale.toggleFullscreen(), { center: true }).setDepth(depth);
+    const control = button(scene, x, y, bw, bh, '', () => scene.scale.toggleFullscreen(), { center: true }).setDepth(depth);
     control.add(scene.add.image(0, 0, 'atlas', 'ico_cela').setScale(2));
     return control;
 };

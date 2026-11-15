@@ -61,6 +61,8 @@ export const HUD = {
     places: { hlavak: 'HLAVÁK', vaclavak: 'VÁCLAVÁK', nuselak: 'NUSELÁK', staromak: 'STAROMÁK', most: 'KARLŮV MOST', malastrana: 'MALÁ STRANA', hrad: 'HRAD' },
     // okénko pod ikonou zvuku: hlasitost zvuků a hudby zvlášť
     sound: { title: 'HLASITOST', sfx: 'Zvuky', music: 'Hudba' },
+    // tlačítko karty postavy ve sloupci na telefonu
+    card: 'Karta',
     leave: 'Odejít.',
     // odchod od nepřítele, který už na hrdinku jde (uzel s flee): stojí srdce, ale nezabije
     flee: 'Utéct. (−1 srdce)',

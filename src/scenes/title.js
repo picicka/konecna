@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { TITLE, ABOUT } from '../script';
-import { head, body, button, scanlines, soundButton, fullscreenButton, aboutPanel, CRT, WIDTH, HEIGHT } from '../ui';
+import { head, body, button, scanlines, soundButton, fullscreenButton, MOBILE, aboutPanel, CRT, WIDTH, HEIGHT } from '../ui';
 import { createState, loadPosition, clearSave } from '../state';
 
 // Titulní obrazovka: tmavá Praha z úvodního filmečku, nad ní nápis KONEČNÁ jako cedule na nástupišti a podtitul.
@@ -27,9 +27,11 @@ export class TitleScene extends Phaser.Scene {
         hum();
         this.game.events.on('sound-unlocked', hum);
         this.events.once('shutdown', () => { this.game.events.off('sound-unlocked', hum); sound.neon(false); });
-        soundButton(this, WIDTH - 100, 36);
+        // telefon: tlačítka v rohu jsou dvakrát větší, aby šla trefit prstem
+        const big = MOBILE ? [96, 76] : [44, 36], by = MOBILE ? 52 : 36, bx = (i) => WIDTH - (MOBILE ? 60 + i * 106 : 48 + i * 52);
+        soundButton(this, bx(1), by, 50, ...big);
         // celá obrazovka; na iPhonu to prohlížeč neumí, tam místo tlačítka rada přidat hru na plochu
-        const full = fullscreenButton(this, WIDTH - 48, 36);
+        const full = fullscreenButton(this, bx(0), by, 50, ...big);
         const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
         // iPhone a iPad v prohlížeči: výrazný řádek s radou a při prvním spuštění okno s návodem (pamatuje se, že ho hráčka viděla)
         if (ios && !navigator.standalone) {
@@ -40,7 +42,7 @@ export class TitleScene extends Phaser.Scene {
         }
         sound.music('title');
         // (i) O hře: zdroje dat, kdo hru dělá a jak se ukládá
-        button(this, WIDTH - 210, 36, 44, 36, ABOUT.button, () => { this.about ??= aboutPanel(this, ABOUT, () => { this.about = null; }); }, { fontSize: 22, center: true }).setDepth(50);
+        button(this, bx(MOBILE ? 2 : 3), by, ...big, ABOUT.button, () => { this.about ??= aboutPanel(this, ABOUT, () => { this.about = null; }); }, { fontSize: 22, center: true }).setDepth(50);
         this.input.keyboard.on('keydown-ESC', () => this.about?.close());
 
         this.ready = false;
