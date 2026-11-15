@@ -11,6 +11,14 @@ export const TITLE = {
     hint: 'Klepnutím, šipkami nebo WASD chodíte, Enter potvrdí, čísla vybírají. Q deník, T taška, M mapa.',
     // iPhone neumí celou obrazovku z prohlížeče: rada na titulní obrazovce
     homescreen: 'Na celou obrazovku: v Safari Sdílet → Přidat na plochu a hru spustit z ikony.',
+    // okno s návodem při prvním spuštění na iPhonu a iPadu v prohlížeči (ne z plochy)
+    homescreenPanel: { title: 'NA CELOU OBRAZOVKU', close: 'Rozumím', lines: [
+        'V prohlížeči na iPhonu zabírá kus displeje lišta. Bez ní hra běží, když si ji přidáte na plochu:',
+        '1. Otevřete tuhle stránku v Safari.',
+        '2. Klepněte dole na Sdílet (čtvereček se šipkou nahoru).',
+        '3. Vyberte Přidat na plochu.',
+        '4. Hru spouštějte z ikony s pošťačkou.',
+    ] },
 };
 
 // Okno O hře (tlačítko i na titulní obrazovce a na liště): zdroje dat mapy (licence OpenStreetMap ODbL i ČÚZK CC BY 4.0

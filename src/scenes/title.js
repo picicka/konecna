@@ -31,7 +31,13 @@ export class TitleScene extends Phaser.Scene {
         // celá obrazovka; na iPhonu to prohlížeč neumí, tam místo tlačítka rada přidat hru na plochu
         const full = fullscreenButton(this, WIDTH - 48, 36);
         const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-        if (ios && !navigator.standalone) body(this, WIDTH / 2, HEIGHT - 28, TITLE.homescreen, { fontSize: '22px', color: CRT.dim, align: 'center' }).setOrigin(0.5, 0.5);
+        // iPhone a iPad v prohlížeči: výrazný řádek s radou a při prvním spuštění okno s návodem (pamatuje se, že ho hráčka viděla)
+        if (ios && !navigator.standalone) {
+            body(this, WIDTH / 2, HEIGHT - 30, TITLE.homescreen, { fontSize: '28px', color: CRT.amber, align: 'center' }).setOrigin(0.5, 0.5).setDepth(40);
+            let seen = false;
+            try { seen = localStorage.getItem('konecna.plocha') === '1'; } catch (error) { /* soukromé okno */ }
+            if (!seen) this.time.delayedCall(600, () => { this.about ??= aboutPanel(this, TITLE.homescreenPanel, () => { this.about = null; try { localStorage.setItem('konecna.plocha', '1'); } catch (error) { /* soukromé okno */ } }); });
+        }
         sound.music('title');
         // (i) O hře: zdroje dat, kdo hru dělá a jak se ukládá
         button(this, WIDTH - 210, 36, 44, 36, ABOUT.button, () => { this.about ??= aboutPanel(this, ABOUT, () => { this.about = null; }); }, { fontSize: 22, center: true }).setDepth(50);
