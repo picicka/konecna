@@ -18,8 +18,8 @@ export const STAROMAK = {
     stops: {
         tyn: { npc: { key: 'kuracka', a: 32, b: 16 }, approach: { a: 33, b: 16 }, props: [{ key: 'lodka', a: 35, b: 17 }] },
         admiral: { npc: { key: 'admiral', a: 22, b: 13 }, approach: { a: 22, b: 12 }, props: [{ key: 'hus', a: 22, b: 10, say: 'hus' }] },
-        // Orlojník u Orloje na jižní stěně radniční věže, z loďky
-        orlojnik: { npc: { key: 'orlojnik', a: 21, b: 25 }, approach: { a: 21, b: 24 }, props: [{ key: 'ostrov_lodka', a: 20, b: 25 }] },
+        // Orlojník u Orloje na jižní stěně radniční věže: stojí v loďce na vodě u lávky pod Orlojem
+        orlojnik: { npc: { key: 'orlojnik', a: 19, b: 25 }, approach: { a: 19, b: 24 }, props: [{ key: 'ostrov_lodka', a: 18.3, b: 25.5, block: false, under: true }] },
         // butik na nároží Pařížské: z levé výlohy trčí bidlo lovcova háku. Podoby (stages, platí první): vyhnané nutrie
         // (nutrie_venku, po boji) vyskočí z hnízda na lávku vedle a zůstanou tam; vytažený hák (hak_venku) zmizí z výlohy.
         // Kdo hák vytáhl potichu (mříž, díra ve stropě), nechal nutrie spát v hnízdě.
@@ -36,6 +36,8 @@ export const STAROMAK = {
         potapecka: { npc: { key: 'potapecka', a: 4, b: 11 }, approach: { a: 5, b: 11 }, props: [{ key: 'metro_totem_a', a: 4, b: 12 }] },
         karlova: { npc: { key: 'ostrov_lodka', a: 7, b: 24 }, approach: { a: 8, b: 24 }, props: [] },
     },
+    // zvon Orloje: odbije, jakmile apoštolové zase vycházejí, a pak každé tři minuty (WorldScene.updateBells)
+    bells: [{ a: 16, b: 22, if: { flag: 'apostolove' }, every: 180000 }],
     // kuriozity ve vodě na náměstí (art/kuriozity.px.js, WorldScene.placeOddities)
     oddities: [{ on: 'w', keys: ['mlok_maly_1', 'labut', 'mlok_maly_2'] }],
     props: { trees: ['tree_bare', 'tree_bare_c', 'tree_pahyl_a', 'tree_bare_b', 'tree_pahyl_b'], bush: 0, bushes: ['bush_a'], fire: 0.03, junk: 0.02, junkKeys: ['barrel', 'tires'], shack: 0 },

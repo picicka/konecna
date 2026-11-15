@@ -21,7 +21,8 @@ export class HudScene extends Phaser.Scene {
     create() {
         this.state = this.registry.get('state');
         panel(this, 0, 0, WIDTH, 52).setDepth(10);
-        this.hpText = body(this, 24, 26, '', { fontSize: '26px', color: CRT.red }).setOrigin(0, 0.5).setDepth(11);
+        this.add.image(22, 26, 'atlas', 'ico_heart').setScale(2).setOrigin(0, 0.5).setDepth(11);
+        this.hpText = body(this, 62, 26, '', { fontSize: '26px', color: CRT.red }).setOrigin(0, 0.5).setDepth(11);
         this.levelText = body(this, 300, 26, '', { fontSize: '26px', color: CRT.text }).setOrigin(0, 0.5).setDepth(11);
         // vlastnosti jako obrázky s číslem (Ruka, Ústa, Oko); s výbavou zeleně
         this.attrTexts = ATTRIBUTES.map((attribute, i) => {
@@ -155,7 +156,7 @@ export class HudScene extends Phaser.Scene {
 
     refresh() {
         const max = maxHp(this.state);
-        this.hpText.setText(`${HUD.hp} ${'■'.repeat(Math.max(0, this.state.hp))}${'□'.repeat(Math.max(0, max - this.state.hp))}`);
+        this.hpText.setText(`${'■'.repeat(Math.max(0, this.state.hp))}${'□'.repeat(Math.max(0, max - this.state.hp))}`);
         this.levelText.setText(`${HUD.level} ${this.state.level}`);
         this.ticketText.setText(tickets(this.state.tickets));
         this.attrTexts?.forEach((t, i) => {
@@ -294,7 +295,8 @@ export class HudScene extends Phaser.Scene {
         });
         let ly = 468;
         const next = XP_LEVELS[st.level];
-        text(64, ly, `${HUD.hp} ${st.hp}/${maxHp(st)}${next !== undefined ? ` · ${BAG.xp(next - st.xp)}` : ''}`, { fontSize: '20px', color: CRT.red });
+        parts.push(this.add.image(64, ly + 11, 'atlas', 'ico_heart').setScale(2).setOrigin(0, 0.5));
+        text(104, ly, `${st.hp}/${maxHp(st)}${next !== undefined ? ` · ${BAG.xp(next - st.xp)}` : ''}`, { fontSize: '20px', color: CRT.red });
         ly += 30;
         ATTRIBUTES.forEach((a) => {
             const value = attr(st, a), base = st.attributes[a];

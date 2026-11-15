@@ -258,7 +258,8 @@ if (place.flood) {
     (place.flood.islands ?? []).forEach((o) => { for (let a = Math.floor(o.a - o.r); a <= Math.ceil(o.a + o.r); a++) for (let b = Math.floor(o.b - o.r); b <= Math.ceil(o.b + o.r); b++) if (inside(a, b) && grid[a][b] !== 'b' && Math.hypot(a - o.a, b - o.b) <= o.r) grid[a][b] = 'p'; });
     (place.flood.piers ?? []).forEach((q) => { for (let a = q.a0; a <= q.a1; a++) for (let b = q.b0; b <= q.b1; b++) if (inside(a, b) && grid[a][b] !== 'b') grid[a][b] = 'm'; });
 }
-if (place.pier) for (let a = place.pier.a0; a <= place.pier.a1; a++) for (let b = place.pier.b0; b <= place.pier.b1; b++) { grid[a][b] = 'm'; owner[a][b] = null; }
+// molo (pier) a jeho odbočky (piers: lávka od mola k domu, na Václaváku k paláci Koruna)
+for (const q of [place.pier, ...(place.piers ?? [])].filter(Boolean)) for (let a = q.a0; a <= q.a1; a++) for (let b = q.b0; b <= q.b1; b++) { grid[a][b] = 'm'; owner[a][b] = null; }
 
 // slope (Hrad): co leží pod hradním ostrohem (terén z laseru ČÚZK pod `below` m n. m., data/teren-<místo>.json), je
 // svah se sutí (k, neprůchozí); domy a landmarky zůstávají. Cesty v `keep` (Jiřská dolů na Opyš) a obdélníky `terraces`

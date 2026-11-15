@@ -10,7 +10,7 @@ export const HRAD = {
     stops: {
         // cesta zpátky: uliční cedule u Matyášovy brány, Nerudovou dolů na Malou Stranu (přisvícená, lights)
         brana_dolu: { npc: { key: 'cedule_nerudova', a: 1, b: 19, flip: false }, approach: { a: 2, b: 19 }, props: [] },
-        pruvodkyne: { npc: { key: 'pruvodkyne', a: 11, b: 17 }, approach: { a: 10, b: 17 }, props: [] },
+        pruvodkyne: { npc: { key: 'pruvodkyne', a: 11, b: 19 }, approach: { a: 10, b: 19 }, props: [] },
         // ochranka stojí v jediném průchodu plotem kolem buňky (fences, gates); když ustoupí (ochranka_pryc), jde si
         // sednout k buňce a cedule z průchodu zmizí ke straně
         ochranka: { npc: { key: 'ochranka', a: 18, b: 22 }, approach: { a: 17, b: 22 }, props: [{ key: 'ochranka_cedule', a: 18, b: 23 }],
@@ -27,6 +27,8 @@ export const HRAD = {
         { from: [18, 20], to: [27, 20] }, { from: [18, 26], to: [27, 26] },
         { from: [18, 21], to: [18, 21] }, { from: [18, 24], to: [18, 25] }, { from: [27, 21], to: [27, 25] },
     ],
+    // zvon katedrály: odbije jednou, když hrdinka poprvé dojde před průčelí (WorldScene.updateBells)
+    bells: [{ a: 20, b: 20, near: 6 }],
     // průchod plotem je zavřený, dokud ochranka neustoupí
     gates: [{ tiles: [[18, 23]], open: { flag: 'ochranka_pryc' } }],
     // kuriozity na svahu pod Hradem (art/kuriozity.px.js, WorldScene.placeOddities)

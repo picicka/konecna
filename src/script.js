@@ -47,7 +47,6 @@ export const HUD = {
     bag: 'Taška',
     map: 'Mapa',
     tickets: 'jízdenek',
-    hp: 'SRDCE',
     level: 'ÚROVEŇ',
     hero: 'POŠŤAČKA',
     places: { hlavak: 'HLAVÁK', vaclavak: 'VÁCLAVÁK', nuselak: 'NUSELÁK', staromak: 'STAROMÁK', most: 'KARLŮV MOST', malastrana: 'MALÁ STRANA', hrad: 'HRAD' },
@@ -152,8 +151,26 @@ export const QUEST = {
 // Hlášky po kliknutí na kuriozity (bublina nad věcí, WorldScene.oddityBubble): nejdřív vlastní, pak společné
 // skupiny. Věci od Davida Černého (kůň z Lucerny, miminko, Kafkova hlava) mají společné nadávky na autora.
 export const ODDITY_LINES = {
-    // voříšek z ruchu (WorldScene.placeLife): řekne to a odběhne
-    voricek: { lines: ['Haf?'] },
+    // voříšek z ruchu (WorldScene.placeLife): po každé hlášce odběhne. Mluví, ale snaží se dělat psí věci.
+    voricek: { lines: [
+        '„Ty musíš bejt dobře chycená, že mluvíš se psem.“',
+        '„Haf?“',
+        '„Počkej, teď mám vrtět ocasem. Vydrž. Jo, takhle.“',
+        '„Hoď klacek. Ne, nehoď. Bolej mě kolena.“',
+        '„Vrrr. Dobrý? Vrčení mi nikdy nešlo, já jsem spíš na povídání.“',
+        '„Jdu očuchat támhleten roh. Nezajímá mě, ale čeká se to ode mě.“',
+        '„Když zahřmí, lezu pod tramvaj. To nehraju.“',
+        '„Haf. Haf haf. Tak, odštěkáno, mám padla.“',
+    ] },
+    // kočka Šklíba na stromě uprostřed Václaváku (rekvizita zastavení se say): voříšek je jediný v pořádku, potrhlí jsou ostatní
+    skliba: { lines: [
+        '„Ten pes? Ten je tu jediný v pořádku. Ví, že je pes, a přizná, že mu to nejde.“',
+        '„Potrhlí jsou ti ostatní. Jeden hlásí vlaky, které nejedou. Druhá zapisuje svět do sešitu, aby platil.“',
+        '„Pán na nádraží ti dal krabičku a neřekl, co v ní je. Ty ji neseš. Kdo z vás dvou je potrhlejší, si nech pro sebe.“',
+        '„Na podstavci se střídají lidi, aby tam někdo stál. Pes by si lehl vedle a měl by to vyřízené.“',
+        '„Všichni se ptají, kolik je hodin, a všichni vědí, že 14:37. Pes se neptá.“',
+        '„Já? Já tu vlastně nejsem. Vidíš úsměv, zbytek se mi nechtělo nosit.“',
+    ] },
     // přemalovaná Lennonova zeď u mlýna na Kampě (rekvizita zastavení mlynáře se say)
     zed_lennon: { lines: [
         'Lennonova zeď, přetřená nabílo. Jediný nápis: PROUD. Vedle něj pod barvou prosvítají kulaté brýle.',
@@ -235,8 +252,11 @@ export const ODDITY_LINES = {
         'Mlok. Sedí v bahně, kouří doutník a čeká, až se voda vrátí.',
         'Čapek o nich napsal román. Mlok ho nečetl, ale drží se ho.',
     ] },
+    labut: { lines: [
+        'Šlapadlo labuť. Půjčovna na Žofíně za ni brala zálohu. Tuhle už nikdo nevrátí.',
+    ] },
     stalin_hlava: { lines: [
-        'Stalinova hlava z Letné. Do koryta to měla z kopce.',
+        'Stalinova hlava z Letné. Po odstřelu sjela do Vltavy. Voda je pryč a hlava je zase vidět.',
     ] },
     // Malá Strana
     mikulas_ms: { lines: [
@@ -311,12 +331,12 @@ export const CUTSCENES = {
     ],
     intro: [
         { image: 'cs_city', lines: [
-            'Praha. Rok po tom, co se stalo.',
-            'Pošťačka z Jindřišské roznáší dál. Nikdo jí neřekl, že nemá. V tašce má jediný dopis, nedoručený od toho dne, pro výpravčího z Hlavního nádraží.',
+            'Praha. Rok po tom, co se to stalo.',
+            'Pošťačka z Jindřišské roznáší dál. Nikdo jí neřekl, že to nemá dělat. V tašce má jediný dopis, nedoručený od toho dne, pro výpravčího z Hlavního nádraží.',
             'Vltava teče jinudy, Nuselák je na dva kusy a na Hradě se svítí. O tom, kdo tam sedí, se mluví jen potichu.',
         ] },
         { image: 'cs_city', lines: [
-            'Praha se rozpadla na tři tábory. Pan Fanta a jeho tržiště prodají všechno, i to, co nemají. Metro drží řád, jízdenky a evidenci. Loďkaři vládnou vodě na Starém Městě.',
+            'Praha se rozpadla na tři tábory. Pan Fanta a jeho tržiště prodají všechno, i to, co nemají. Metro drží jízdní Řád, jízdenky a evidenci. Loďkaři vládnou vodě na Starém Městě.',
             'Každý z nich bude chtít to, co ponesete. Kdo vám věří a co z toho máte, uvidíte v deníku.',
         ] },
         { image: 'cs_metro', toll: true, lines: [
@@ -330,7 +350,7 @@ export const CUTSCENES = {
         { image: 'cs_metro', toll: true, lines: [
             'Souprava se rozjede. Tma, rachot, pak brzdy.',
             'Zastaví mezi stanicemi. „Konečná. Nevystupovat.“',
-            'Strojvedoucí otevře nouzový výlez. Nahoře je Muzeum. Dolní půlka Václaváku je pod vodou.',
+            'Zbytek se jde pěšky tunelem. Schody ze stanice vedou k Muzeu. Dolní půlka Václaváku je pod vodou.',
         ] },
     ],
     // Přestupy po vodě a pěšky: klíč cesta_<odkud>_<kam> (WorldScene.travel), jinak metro_<kam>.
@@ -419,6 +439,8 @@ export const ENDINGS = {
         shots: [{ image: 'cs_ctecka', lines: ['Obrazovka zabliká a zhasne. Čtečka nemá co přehrát. Rozhlas chvíli šumí naprázdno.', 'Ředitel se usmívá. „Vidíte? Nic tam není. Nikdy nic nebylo.“', 'Dispečerka vás zapíše jako úřední osobu, která nic nedovezla. I to je zápis.'] }] },
     lodkari: { title: 'Po vodě', text: 'Z loďky je vidět zlomený Nuselák. Vyšehrad svítí. Praha je najednou docela malá.',
         shots: [{ image: 'cs_vysehrad', lines: ['Kormidelník vede flotilu ze zatopených Nuslí pod zlomeným mostem, kolem skály až pod Vyšehrad.', 'Nuselák visí nad vodou na dva kusy. Pod skálou flotila zakotví. Admirál domluví, sundá čepici a zvedne krabičku nad hlavu.', 'Pak hodí krabičku do proudu. Oběť kanálu. Voda ji vezme bez poděkování.'] }] },
+    // poslední snímek každého konce (kromě smrti), až za epilogem: 14:37 zůstává a nikdo neví proč
+    last: { image: 'cs_hodiny', lines: ['A kolik je vlastně hodin? 14:37. Bylo včera, je dnes a zítra bude nejspíš zase.', 'Hodiny, které jdou, na tom nic nemění. Od teď bude asi už jen 14:37. Proč zrovna tolik, neví nikdo.'] },
     death: { title: 'Konečná', text: 'Praha si vás nechala. Někdo si vezme boty, někdo zásilku.', shots: [] },
     again: 'Hrát znovu',
     resume: 'Zpátky na poslední místo',
@@ -472,6 +494,7 @@ export const ITEMS = {
     // zásoby
     obvaz: { name: 'Obvaz', text: 'Z lékárničky v tramvaji. Sterilní byl předtím.', use: { heal: 3 } },
     konzerva: { name: 'Konzerva', text: 'Lančmít ze státních hmotných rezerv. Datum radši nečíst.', use: { heal: 5 } },
+    chlebicek: { name: 'Chlebíček z Koruny', text: 'Veka, vlašák, salám a kolečko vejce. Vlašák je z toho, co bylo.', use: { heal: 4 } },
     chleba: { name: 'Chleba z mlýna', text: 'Z mouky z Čertovky, upečený na plotně. Ještě teplý.', use: { heal: 6 } },
 };
 // Taška (T): výbava ve slotech, zásoby a věci. Řádek výbavy ukazuje, co věc dává.
@@ -561,7 +584,7 @@ export const BATTLE = {
     talkHint: (lo, hi) => `vůle −${lo}–${hi}`,
     defendHint: (p) => `uhnete na ${p} %, pak vrátíte ránu`,
     fleeHint: 'vždy, ale jednou to schytáte',
-    you: 'Vy', hp: 'SRDCE', nerve: 'VŮLE',
+    you: 'Vy', nerve: 'VŮLE',
     help: 'Ruka bere srdce, Ústa vůli. Komu dojde jedno, nebo druhé, prohrál. Oko pomáhá trefit se a uhnout. Taška: obvaz nebo jídlo místo tahu.',
     hit: 'Trefa za', miss: 'Vedle.', guard: 'Čekáte na útok.', counter: 'Uhnete a vrátíte to za', dodged: 'Uhnete.',
     shout: 'Vůle', fleeing: 'Otočíte se k útěku.', dead: 'Padáte do prachu.',
@@ -689,13 +712,27 @@ export const DIALOGS = {
                 { id: 'znovu', label: 'Jít se znovu podívat na plejtváka.', if: { flag: 'plejtvak' }, else: 'Nejdřív musíte dovnitř.', do: { film: 'muzeum' }, reply: ['Visí. Otáčí se. Nic víc po vás nechce.'] },
             ] },
         } },
-    vylez: { name: 'Nouzový výlez', face: null,
+    vylez: { name: 'Vstup do metra', face: null,
         entry: [{ node: 'dvere' }],
         nodes: {
-            dvere: { say: ['Betonová bouda s plechovými dveřmi. Dole ve tmě čeká souprava a z tunelu fouká.'], choices: [
+            dvere: { say: ['Schody do stanice Muzeum. Dole ve tmě čeká souprava a z tunelu fouká.'], choices: [
                 { id: 'zpet', label: 'Sjet soupravou zpátky na Hlavák. (1 jízdenka)', if: { tickets: 1, noFlag: 'jizdni_rad' }, else: 'Zpátky se jezdí za jízdenku.', do: { tickets: -1, travel: 'hlavak' } },
                 { id: 'zpet_rad', label: 'Sjet zpátky na Hlavák. Znám jízdní řád.', if: { flag: 'jizdni_rad' }, else: 'Zadarmo jen se znalostí jízdního řádu.', do: { travel: 'hlavak' } },
                 { id: 'zpet_metro', label: 'Sjet zpátky na Hlavák. Strojvedoucí mě zná.', if: { trust: { metro: 2 }, noFlag: 'jizdni_rad' }, else: 'Zadarmo jen tomu, komu metro věří (2).', do: { travel: 'hlavak' } },
+            ] },
+        } },
+    bufet: { stats: { ruka: 2, usta: 2, oko: 1 }, about: 'Čtyřicet let za pultem automatu Koruna. Pult vynesla na molo a prodává dál, jen už nikdo nestojí frontu.', name: 'Bufetářka', face: 'face_bufetarka',
+        shop: [
+            { item: 'chlebicek', price: 2, reply: ['Jeden vlašák. Sníst do večera. Další!'] },
+        ],
+        entry: [{ if: { noFlag: 'met_bufet' }, node: 'prvni' }, { node: 'hub' }],
+        nodes: {
+            prvni: { say: ['Další! Vlašák, šunkový, vajíčkový. Platí se jízdenkou, vrací se taky jízdenkou.', 'Automat Koruna. Dole je voda po strop, tak jsem pult vynesla sem pod věž. Chlebíček se jí vestoje, to se nezměnilo.'], do: { flag: 'met_bufet' }, next: 'hub' },
+            hub: { say: ['Další! Co to bude?'], choices: [
+                { id: 'obchod', label: 'Chlebíček, prosím.', shop: true },
+                { id: 'z_ceho', label: 'Z čeho je ten vlašák?', once: true, reply: ['Brambory z Letné, majonéza z vajec od holubů. Salám je Fantův lančmít nakrájený natenko. Recept je stejný, jen suroviny si dělají, co chtějí.'] },
+                { id: 'fronta', label: 'Kde máte frontu?', once: true, reply: ['V poledne tu stávalo třicet lidí a všichni spěchali. Teď přijde za den šest a žádný nespěchá. Chybí mi, jak na mě křičeli, ať dělám.'] },
+                { id: 'vez', label: 'Co je to za korunu nahoře?', once: true, reply: ['Věž s korunou z perel. Svítívala. Když je jasno, stejně si pod ni lidi chodí stoupnout, jako by pod ní pořád bylo světlo.'] },
             ] },
         } },
     dispecerka: { stats: { ruka: 1, usta: 2, oko: 2 }, about: 'Hlas metra ze stanice Muzeum. Řád pro ni znamená, že je všechno zapsané.', faction: 'metro', name: 'Dispečerka', face: 'face_dispecerka',

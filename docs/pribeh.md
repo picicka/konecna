@@ -141,12 +141,13 @@ Zdroj pravdy je `src/places/vaclavak.js`, dialogy v `DIALOGS` v `src/script.js
 
 | Zastavení | Postava | Přístup | Rekvizity |
 |---|---|---|---|
-| Nouzový výlez na magistrále před Muzeem, start 107,12 (zpátky soupravou na Hlavák) | výlez 108,11 | 107,11 | – |
-| Vstup do stanice Muzeum, rozhlas | dispečerka 102,10 | 102,11 | vstup do metra 103,9 |
+| Vstup do stanice Muzeum vedle dispečerky, start 105,12 (zpátky soupravou na Hlavák) | vstup do metra 104,10 | 104,11 | kočka Šklíba na stromě 90,13 (jen hlášky) |
+| Rozhlas u vstupu do stanice Muzeum | dispečerka 102,10 | 102,11 | – |
+| Bufet automatu Koruna na odbočce mola pod nárožní věží (chlebíčky za jízdenky) | bufetářka 18,9 | 17,9 | pult 18,10 |
 | Prázdný podstavec pomníku | Václav na směny 100,13 | 99,13 | – |
 | Reproduktor u Jindřišské | nutrie 53,8 | 53,9 | – |
 | Hranice vody, začátek mola | revizor 50,11 | 51,12 | molo je zavřené (49,12 a 49,13), dokud nepustí |
-| Pokladna Národního muzea | pokladna 109,17 | 108,17 | vstup do dvorany s kostrou plejtváka (filmeček `muzeum`, vlajka `plejtvak`, +2 zkušenosti) |
+| Pokladna Národního muzea | pokladna 109,10 | 108,10 | vstup do dvorany s kostrou plejtváka (filmeček `muzeum`, vlajka `plejtvak`, +2 zkušenosti) |
 | Konec mola u Můstku | Kuřačka 18,12 | 19,12 | loďka 18,11 (u boku mola) |
 
 Přestup dál: loďka ze zatopeného Václaváku Jindřišskou a Panskou na Staromák, scéna s prvním útržkem o kanálu.
@@ -364,7 +365,7 @@ Zdroj pravdy (polohy postav, přístupy, rekvizity) je `src/places/malastrana.js
 | Malostranské náměstí, start | pod chrámem sv. Mikuláše | vymahači |
 | Dům U Dvou slunců | Nerudovka, horní část | paní z Nerudovky |
 | Německé velvyslanectví | Vlašská, zahrada | Trabant, velvyslanec |
-| Zámecké schody | mezi Nerudovkou a Hradem | holubi |
+| Zámecké schody (schodiště k brance pod Hradem, cedule na Hrad) | mezi Nerudovkou a Hradem, 44,53 | holubi na patě schodů |
 | Brána Ke Hradu | horní konec Nerudovky | stráž, Kastelán |
 | Kampa, loďka | zpět dole, Čertovka | Kuřačka |
 

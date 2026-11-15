@@ -41,7 +41,7 @@ const CLUTTER_WALL = ['sut_1', 'sut_2', 'sut_3', 'cihly_1', 'cihly_2', 'sut_2', 
 // Velké skvrny přes víc dlaždic na dlažbě a silnici: rozbíjejí opakování vzoru.
 const STAINS = ['skvrna_tma_1', 'skvrna_tma_2', 'skvrna_tma_3', 'skvrna_prach_1', 'skvrna_prach_2', 'skvrna_rez_1', 'skvrna_tma_2', 'skvrna_prach_1'];
 
-const ODDITY_SCALE = { mlok: 2, stalin_hlava: 2, kafka: 2, miminko: 2, kun_lucerna: 2, metronom: 2 };
+const ODDITY_SCALE = { kafka: 2, miminko: 2, kun_lucerna: 2, metronom: 2 };
 
 export class WorldScene extends Phaser.Scene {
     constructor() {
@@ -109,6 +109,9 @@ export class WorldScene extends Phaser.Scene {
         this.drawShadows();
         this.placeLights();
         this.placeLife();
+        // zvuky místa (vítr, oheň, voda) jedou z update; s koncem scény utichnou
+        this.bellState = null;
+        this.events.once('shutdown', () => { const s = this.registry.get('sound'); s?.wind(false); s?.fire(9); s?.water(0); s?.hum(0); });
         this.edgeFog();
         this.refreshGates();
         // Příchod: z jiného místa na jeho přestupní dlaždici (arrivals), jinak na start místa.
@@ -383,7 +386,7 @@ export class WorldScene extends Phaser.Scene {
                 if (!spot) return;
                 placed.push({ ...spot, key });
                 const thing = this.placeThing(key, spot.a, spot.b, { anim: true, block: g.block !== false, flip: ISO.hash(spot.a, spot.b, 99) < 0.5 });
-                // obří věci (mlok, hlavy, socha, ručička metronomu) jsou dvojnásobné, celým násobkem kvůli pixelům
+                // obří věci (Kafkova hlava, miminko, kůň, ručička metronomu) jsou dvojnásobné, celým násobkem kvůli pixelům
                 if (ODDITY_SCALE[key]) thing.setScale(ODDITY_SCALE[key]);
                 const said = ODDITY_LINES[key];
                 if (said) this.talkingOddities.push({ sprite: thing, lines: [...said.lines, ...(ODDITY_GROUPS[said.group] ?? [])], next: 0, tile: { a: spot.a, b: spot.b } });
@@ -426,7 +429,7 @@ export class WorldScene extends Phaser.Scene {
         const cover = () => [...this.houses, ...(this.roofs ?? []), ...(this.canopies ?? [])];
         // malá věc (kuriozita, rekvizita) má přednost před stavbou za ní, ze staveb ta nejvíc vpředu
         const hits = (this.talkingOddities ?? []).filter((o) => o.sprite.active && (o.exact
-            ? this.solidAt(o.sprite, x, y) && !(o.sprite.mask && this.holeZone?.contains(x, y)) && !cover().some((c) => c.depth > o.sprite.depth && c.alpha > 0.9 && this.solidAt(c, x, y))
+            ? this.solidAt(o.sprite, x, y) && !(o.sprite.mask && this.inHole(x, y)) && !cover().some((c) => c.depth > o.sprite.depth && c.alpha > 0.9 && this.solidAt(c, x, y))
             : o.sprite.getBounds().contains(x, y)));
         return hits.find((o) => !o.exact) ?? hits.sort((p, q) => q.sprite.depth - p.sprite.depth)[0];
     }
@@ -545,7 +548,15 @@ export class WorldScene extends Phaser.Scene {
             if (this.map.ground[a][b] !== 'n' || (a >= rule.outside[0] && a <= rule.outside[1])) continue;
             // přístřešky nad perony mimo haly (až po konec peronů), stožáry na peronech mezi nimi
             if (a <= (rule.until ?? this.map.len)) { const c = this.placeThing('canopy', a, b, { block: false }); c.setDepth(ISO.depthOf(a, b, 6)); c.tile = { a, b }; this.canopies.push(c); }
-            if (a % rule.mastEvery === 2 && (a < rule.outside[0] - 1 || a > rule.outside[1] + 3)) this.placeThing('catenary', a, b);
+            const mast = (m) => m % rule.mastEvery === 2 && (m < rule.outside[0] - 1 || m > rule.outside[1] + 3);
+            if (!mast(a)) continue;
+            const pole = this.placeThing('catenary', a, b);
+            // trolej od výložníku k dalšímu stožáru na stejném peronu; každá čtvrtá je utržená a visí k zemi
+            const next = a + rule.mastEvery;
+            const torn = ISO.hash(b, a, 5) < 0.3;
+            if (!torn && !(next < this.map.len && this.map.ground[next][b] === 'n' && mast(next))) continue;
+            const key = torn ? 'trolej_utrzena' : 'trolej', f = this.textures.getFrame('atlas', key);
+            this.add.image(pole.x + 36, pole.y - 120, 'atlas', key).setOrigin(2 / f.width, torn ? 4 / f.height : 1 - 4 / f.height).setDepth(ISO.depthOf(torn ? a : next, b + (torn ? 0 : 3), 7));   // výš než střechy přístřešků, drát vede nad nimi
         }
     }
 
@@ -709,6 +720,7 @@ export class WorldScene extends Phaser.Scene {
     // Animovaný sprite na stěně domu z mapy (neon Ecomailu na domě Na Můstku): house je roh kvádru (a0, b0), u podél
     // stěny k +b od spodního rohu, v výška nad zemí; side: 'left' je stěna k −a (sprite se zrcadlí). say dá domu hlášku.
     placeOverlays() {
+        this.humSpot = null;
         (this.def?.overlays ?? []).forEach(({ key, atlas: still, house, landmark, at, u = 0, v = 0, side, say, center, scale = 1 }) => {
             const sprite = this.houses.find((h) => (landmark ? h.lmKey === landmark : h.box.a0 === house[0] && h.box.b0 === house[1]));
             if (!sprite) { this.problems.push(`overlay ${key}: dům ${landmark ?? house} na mapě není`); return; }
@@ -719,6 +731,7 @@ export class WorldScene extends Phaser.Scene {
                 const { atlas, frames } = this.idleAnim(key);
                 this.add.sprite(x, y, atlas, frames[0]).setOrigin(left ? 1 : 0, 1).setFlipX(left).setDepth(sprite.depth + 0.5).play(`${key}_idle`);
             }
+            if (key === 'obalka_neon') this.humSpot = { x, y: sprite.y };
             if (say) this.lookAt(sprite, say, { a: sprite.box.a0, b: sprite.box.b0 });
         });
     }
@@ -808,6 +821,49 @@ export class WorldScene extends Phaser.Scene {
         return { a: e.tile.a + d[0], b: e.tile.b + d[1] };
     }
 
+    // Zvuky místa podle toho, kde hrdinka stojí (jednou za 300 ms): vítr všude, praskání nejbližšího ohně do 600 bodů,
+    // šplouchání vody do 5 dlaždic.
+    // Krok hrdinky: zvuk podle povrchu dlaždice (prkna lávky, tráva a hlína, dlažba), v halách místa (echo) a v podchodu s ozvěnou.
+    stepSound(echo = false) {
+        const { a, b, L } = this.tile;
+        const g = L === 0 && this.inside(a, b) ? this.map.ground[a][b] : 'p';
+        const hall = echo || (this.def?.echo ?? []).some((r) => (r.L ?? 0) === L && a >= r.a[0] && a <= r.a[1] && b >= r.b[0] && b <= r.b[1]);
+        this.registry.get('sound')?.step(g === 'm' ? 'wood' : 'gf'.includes(g) ? 'soft' : 'stone', hall);
+    }
+
+    // Zvony místa (bells v src/places): if + every = bije, jakmile podmínka začne platit, a pak po every ms; near = jednou,
+    // když hrdinka přijde na near dlaždic. Hlasitost podle vzdálenosti.
+    updateBells(sound, step) {
+        (this.def?.bells ?? []).forEach((bell, i) => {
+            const st = (this.bellState ??= [])[i] ??= { was: !bell.if || holds(this.state, bell.if), t: 0, rung: false };
+            const dist = Math.abs(bell.a - this.tile.a) + Math.abs(bell.b - this.tile.b);
+            const k = Math.max(0.15, 1 - dist / 40);
+            const ok = !bell.if || holds(this.state, bell.if);
+            st.t += step;
+            if (ok && ((bell.if && !st.was) || (bell.every && st.t >= bell.every) || (bell.near && !st.rung && dist <= bell.near))) { sound.toll(k); st.t = 0; st.rung = true; }
+            st.was = ok;
+        });
+    }
+
+    updateAmbience(delta) {
+        if ((this.ambT = (this.ambT ?? 0) - delta) > 0) return;
+        this.ambT = 300;
+        const sound = this.registry.get('sound');
+        if (!sound) return;
+        sound.wind(true);
+        const fire = Math.min(...(this.fireSpots ?? []).map((f) => Math.hypot(f.x - this.player.x, (f.y - this.player.y) * 2)), Infinity);
+        sound.fire(fire / 600);
+        let wet = 9;
+        for (let da = -5; da <= 5; da++) for (let db = -5; db <= 5; db++) {
+            const a = this.tile.a + da, b = this.tile.b + db;
+            if (this.inside(a, b) && this.map.ground[a][b] === 'w') wet = Math.min(wet, Math.abs(da) + Math.abs(db));
+        }
+        sound.water(Math.max(0, 1 - (wet - 1) / 5));
+        sound.hum(this.humSpot ? 1 - Math.hypot(this.humSpot.x - this.player.x, (this.humSpot.y - this.player.y) * 2) / 900 : 0);
+        this.updateBells(sound, 300);
+        this.markStopHoles();
+    }
+
     updateLife(delta) {
         if (!this.life) return;
         if (this.life.dogSpawn && this.tile) { this.life.dogSpawn(this.tile); this.life.dogSpawn = null; }
@@ -850,7 +906,7 @@ export class WorldScene extends Phaser.Scene {
             }
             const scared = near(r.tile, 2);
             if (!scared && (r.wait -= delta) > 0) return;
-            if (r.steps <= 0) r.steps = scared ? 6 : 2 + Math.floor(Math.random() * 4);
+            if (r.steps <= 0) { r.steps = scared ? 6 : 2 + Math.floor(Math.random() * 4); if (scared) this.registry.get('sound')?.squeak(); }
             if (scared) { const da = Math.sign(r.tile.a - this.tile.a), db = Math.sign(r.tile.b - this.tile.b); r.dir = da ? [da, 0] : [0, db || 1]; }
             const next = this.lifeStep(r, scared ? 14 : 6);
             if (!next) { r.wait = 1200; r.steps = 0; return; }
@@ -908,6 +964,7 @@ export class WorldScene extends Phaser.Scene {
             }
             if (!near(f.tile, 2)) return;
             f.away = 22000 + Math.random() * 20000;
+            this.registry.get('sound')?.flutter();
             f.birds.forEach(({ s }, i) => {
                 const side = s.x < this.player.x ? -1 : 1;
                 s.play('holoubek_let_walk').setDepth(1e5).setFlipX(side > 0); s.anims.timeScale = 1;
@@ -1260,6 +1317,7 @@ export class WorldScene extends Phaser.Scene {
             return { pool, cond };
         });
         const fires = this.children.list.filter((o) => typeof o.frame?.name === 'string' && o.frame.name.startsWith('barrel_fire'));
+        this.fireSpots = fires.map((f) => ({ x: f.x, y: f.y }));
         fires.forEach((f) => {
             const ground = this.add.image(f.x, f.y - 4, 'light_pool').setDepth(-89000).setBlendMode(Phaser.BlendModes.ADD).setTint(0xff7a2a).setAlpha(0.85).setScale(1.8);
             const near = this.add.image(f.x, f.y - 30, 'light_pool').setDepth(f.depth + 0.5).setBlendMode(Phaser.BlendModes.ADD).setTint(0xff8a3a).setAlpha(0.28).setScale(0.7, 1.1);
@@ -1314,7 +1372,7 @@ export class WorldScene extends Phaser.Scene {
         // (přechod v textuře masky), elipsa vznikne protažením kruhové textury.
         const hx = this.player.x, hy = this.player.y - 40, rx = 220, ry = 250;
         this.holeZone = new Phaser.Geom.Rectangle(hx - rx, hy - ry, rx * 2, ry * 2);
-        this.holeImage.setPosition(hx, hy).setDisplaySize(rx * 2, ry * 2);
+        this.holeAt = { x: hx, y: hy, rx, ry };
         (this.roofs ?? []).forEach((r) => {
             const { a0, b0, w, dpt } = r.box;
             const under = t.L === 0 && t.a >= a0 - 1 && t.a < a0 + w + 1 && t.b >= b0 && t.b < b0 + dpt + 1;
@@ -1336,11 +1394,42 @@ export class WorldScene extends Phaser.Scene {
             // za ním není, i když má dlouhý kvádr hloubku větší než ona a obdélník jeho spritu do otvoru sahá.
             const { a0, b0, dpt } = house.box;
             const behind = t.b < b0 + dpt && t.a >= a0;
-            const covers = behind && house.depth > this.player.depth && Phaser.Geom.Rectangle.Overlaps(house.getBounds(), this.holeZone);
+            const covers = house.stopHole || (behind && house.depth > this.player.depth && Phaser.Geom.Rectangle.Overlaps(house.getBounds(), this.holeZone));
             if (covers && house.mask !== this.hole) house.setMask(this.hole);
             else if (!covers && house.mask) house.clearMask();
             house.setAlpha(1);
         });
+    }
+
+    // Otvory v domech před postavami zastavení: které domy postavu zakrývají (stejné pravidlo jako u hrdinky) a kde otvor je.
+    markStopHoles() {
+        this.houses.forEach((h) => { h.stopHole = false; });
+        this.stopHoles = [];
+        Object.values(this.stops ?? {}).forEach((stop) => {
+            // postava a rekvizity s hláškou (vrak Tatry u Muzea Policie)
+            const things = [[stop.sprite, stop.npc], ...(stop.propSprites ?? []).map((sp, i) => [sp, stop.props[i]]).filter(([, q]) => q?.say)];
+            things.forEach(([sp, at]) => {
+                if (!sp || !sp.visible || sp.alpha < 0.5 || (at.L ?? 0) !== 0) return;
+                const zone = new Phaser.Geom.Rectangle(sp.x - 60, sp.y - 130, 120, 150);
+                const front = this.houses.filter((h) => at.b < h.box.b0 + h.box.dpt && at.a >= h.box.a0 && h.depth > sp.depth && Phaser.Geom.Rectangle.Overlaps(h.getBounds(), zone));
+                if (!front.length) return;
+                front.forEach((h) => { h.stopHole = true; });
+                this.stopHoles.push({ x: sp.x, y: sp.y - 44 });
+            });
+        });
+        this.fadeHouses();
+    }
+
+    inHole(x, y) {
+        return this.holeZone?.contains(x, y) || (this.stopHoles ?? []).some((h) => Math.abs(x - h.x) < 70 && Math.abs(y - h.y) < 100);
+    }
+
+    drawHoles() {
+        const rt = this.holeImage, v = this.cameras.main.worldView, size = 256;
+        if (!rt || !this.holeAt) return;
+        rt.setPosition(v.x, v.y).clear();
+        rt.stamp('hole', undefined, this.holeAt.x - v.x, this.holeAt.y - v.y, { scaleX: this.holeAt.rx * 2 / size, scaleY: this.holeAt.ry * 2 / size });
+        this.stopHoles.forEach((h) => { if (v.contains(h.x, h.y)) rt.stamp('hole', undefined, h.x - v.x, h.y - v.y, { scaleX: 200 / size, scaleY: 280 / size }); });
     }
 
     spawnPlayer(tile) {
@@ -1356,8 +1445,11 @@ export class WorldScene extends Phaser.Scene {
             ctx.fillRect(0, 0, size, size);
             tex.refresh();
         }
-        this.holeImage = this.make.image({ key: 'hole', add: false });
+        // Maska je plátno přes celý výřez kamery: do něj se každý snímek otiskne otvor kolem hrdinky a menší otvory kolem
+        // postav zastavení, které stojí za domem (drawHoles), aby byly vidět už z dálky a ne až tři dlaždice od hrdinky.
+        this.holeImage = this.make.renderTexture({ x: 0, y: 0, width: this.scale.width, height: this.scale.height, add: false }).setOrigin(0);
         this.hole = this.holeImage.createBitmapMask();
+        this.stopHoles = [];
         this.hole.invertAlpha = true;
         this.tile = { L: 0, ...tile };
         const { x, y } = this.pos(this.tile.a, this.tile.b, this.tile.L);
@@ -1396,7 +1488,8 @@ export class WorldScene extends Phaser.Scene {
             this.oddityBubble(odd, odd.exact ? world : null);
             // voříšek po hlášce odběhne (WorldScene.updateLife)
             const d = this.life?.dog;
-            if (odd.dog && d && d.mode !== 'flee') { d.mode = 'flee'; d.wait = 1300; d.steps = 12; d.run = false; d.bubble = this.bubble; }
+            if (odd.dog) { const line = odd.lines[(odd.next - 1) % odd.lines.length], s = this.registry.get('sound'); if (/Haf/.test(line)) { s?.bark(); if (/Haf\. Haf/.test(line)) this.time.delayedCall(260, () => s?.bark()); } else if (/Vrrr/.test(line)) s?.growl(); }
+            if (odd.dog && d && d.mode !== 'flee') { d.mode = 'flee'; d.wait = 900 + 45 * odd.lines[(odd.next - 1) % odd.lines.length].length; d.steps = 12; d.run = false; d.bubble = this.bubble; }
             return;
         }
         const through = this.doorAt(world.x, world.y);
@@ -1618,6 +1711,13 @@ export class WorldScene extends Phaser.Scene {
     update(time, delta) {
         if (!this.player) return;
         this.updateLife(delta);
+        this.updateAmbience(delta);
+        this.drawHoles();
+        // Výhledy (views v src/places): na vyjmenovaných dlaždicích kamera plynule popojede (dy v bodech), aby byla vidět
+        // vysoká stavba nad hrdinkou (nárožní věž paláce Koruna z mola u bufetu).
+        const view = (this.def?.views ?? []).find((v) => this.tile.a >= v.a[0] && this.tile.a <= v.a[1] && this.tile.b >= v.b[0] && this.tile.b <= v.b[1]);
+        const cam = this.cameras.main, want = view ? -view.dy : 0;
+        if (Math.abs(cam.followOffset.y - want) > 0.5) cam.setFollowOffset(0, cam.followOffset.y + (want - cam.followOffset.y) * Math.min(1, delta / 400));
         // světlo jde s hrdinkou: na zemi pod stíny a věcmi, na mostě a na magistrále těsně pod ní
         const lit = this.player.visible && this.shadow.visible, raised = this.tile.L === 1 || this.height(this.tile.a, this.tile.b, this.tile.L) > 0;
         this.halo.setPosition(this.player.x, this.player.y).setDepth(raised ? this.player.depth - 2 : -89000).setVisible(lit);
@@ -1660,7 +1760,7 @@ export class WorldScene extends Phaser.Scene {
                 this.shadow.setVisible(!hidden).setPosition(this.player.x, this.player.y).setAlpha(this.player.alpha);
                 const depth = this.playerDepth(m.t >= 0.6 ? m.tile : this.tile);
                 this.player.setDepth(depth); this.shadow.setDepth(depth - 1);
-                if (m.t >= 1) { this.tile = { ...m.tile }; this.moving = null; this.player.setAlpha(1); this.shadow.setVisible(true).setAlpha(1); this.registry.get('sound')?.step(); }
+                if (m.t >= 1) { this.tile = { ...m.tile }; this.moving = null; this.player.setAlpha(1); this.shadow.setVisible(true).setAlpha(1); this.stepSound(true); }
                 // otvor v domech kolem hrdinky hned, jak se vynoří na druhé straně, ne až po dalším kroku
                 if (m.t >= 0.6) this.fadeHouses();
                 return;
@@ -1695,7 +1795,7 @@ export class WorldScene extends Phaser.Scene {
                     this.player.clearTint();
                     if (this.tile.L === 1) m.climb.sprite.setAlpha(1);
                     this.shadow.setVisible(true);
-                    this.registry.get('sound')?.step();
+                    this.stepSound();
                     this.fadeHouses();
                 }
                 return;
@@ -1708,7 +1808,7 @@ export class WorldScene extends Phaser.Scene {
             if (m.t >= 1) {
                 this.tile = { ...m.tile };
                 this.moving = null;
-                this.registry.get('sound')?.step();
+                this.stepSound();
             }
             const depth = this.playerDepth(t);
             this.player.setDepth(depth);

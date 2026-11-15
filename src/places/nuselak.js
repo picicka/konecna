@@ -35,6 +35,8 @@ export const NUSELAK = {
         // stanice Vyšehrad: sloupek s céčkem na silnici u díry nad halou (nusle.station)
         vysehrad: { npc: { key: 'metro_totem_c', a: 82, b: 20, flip: false }, approach: { a: 82, b: 19 }, props: [] },
     },
+    // vozovka nad halou stanice Vyšehrad duní: kroky s ozvěnou (WorldScene.stepSound)
+    echo: [{ a: [81, 89], b: [17, 20] }],
     // lachtani a racci v zatopeném údolí, racci na mostovce, zatopené střechy (art/kuriozity.px.js, nusle-postavy)
     oddities: [
         { on: 'w', keys: ['lachtan', 'lachtan_lezi', 'lachtan', 'lachtan_lezi', 'lachtan', 'racek_let', 'lachtan', 'racek_let', 'mlok_maly_1'] },

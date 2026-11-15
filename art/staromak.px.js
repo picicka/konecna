@@ -609,3 +609,4 @@ const uliceCedule = (name, ulice, kam, carka = null) => sprite(name, { w: 52, h:
 uliceCedule("cedule_mostecka", "MOSTECKA", "M.STRANA", 40)
 uliceCedule("cedule_nerudova", "NERUDOVA", "M.STRANA")
 uliceCedule("cedule_kampa", "MOSTECKA", "K.MOST", 40)
+uliceCedule("cedule_schody", "ZAM.SCH.", "HRAD")   // Zámecké schody na Malé Straně: zkratka na Hrad mimo bránu

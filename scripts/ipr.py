@@ -443,6 +443,15 @@ for g in GROUPS:
         out = np.nonzero(~f)[0]
         if len(out) and ts[out[0]] <= 12 and (~f[out[0]:out[0] + 10]).mean() >= 0.8: votes += 1
     g['front'] = votes >= 2
+# Otočená průčelí (trik z Václaváku po pádu): domy na straně náměstí blíž k divákovi mají uliční fasádu na odvrácené
+# stěně, takže by z nich byly vidět jen dvorní zdi. Řez k divákovi (+b) za hranou `turn` (řádek b v dlaždicích) se proto
+# kreslí jako průčelí domu: recept, parter, nápis, římsa.
+TURN = {'vaclavak': 16.5}
+if name in TURN:
+    turned = 0
+    for g in GROUPS:
+        if g['cap'] and g['nh'][1] > 0.7 and g['off'] > TURN[name] * TILE and not g.get('front'): g['front'] = True; g['turned'] = True; turned += 1
+    print('otočených průčelí', turned, flush=True)
 print('řezů na straně do ulice', sum(1 for g in GROUPS if g.get('front')), 'z', sum(1 for g in GROUPS if g['cap']), flush=True)
 
 # ---------------------------------------------------------------- měření fasád z fotorealistické sítě
@@ -701,6 +710,16 @@ def hsh(i, j, s):
     return (h & 0xffff) / 65536.0
 
 
+def neon_sign(tex, mask, r, runs, top, left, rnd):
+    """Střešní neon z Václaváku po pádu (LUXOR, FÉNIX, LIGNA): písmena pod římsou na tmavém pásu, část zhaslá."""
+    if not r.get('neon') or left: return
+    wide = max(runs, key=lambda x: x[1] - x[0]); tw = len(r['neon']) * 7
+    if wide[1] - wide[0] < tw + 12: return
+    u0 = wide[0] + (wide[1] - wide[0] - tw) // 2; v0 = top - 19
+    sl = tex[max(0, v0 - 2):v0 + 11, u0 - 3:u0 + tw + 2]; sl[mask[max(0, v0 - 2):v0 + 11, u0 - 3:u0 + tw + 2]] = K_('k')
+    for i, ch in enumerate(r['neon']): text57(tex, mask, u0 + i * 7, v0, ch, 'V' if rnd() < 0.3 else r.get('neonColor', '7'))
+
+
 def facade_house(g, q, tex, mask, cols, topv, rnd, full):
     """Fasáda domu podle receptu typu house (variant burgher, tenement, palais, church, tower): pevný rytmus polí,
     okna s šambránami přes window(), parter podle druhu domu, římsy, pilastry, nárožní bosáž a špína s příčinou."""
@@ -764,11 +783,15 @@ def facade_house(g, q, tex, mask, cols, topv, rnd, full):
         bay = max(9.0, (r.get('bay') or q['cw']) * su)
         arcade = r.get('arcade', var == 'burgher' and name == 'staromak' and q['seed'] % 3 > 0)
         kinds = {'burgher': ('frame', 'frame'), 'tenement': ('lintel', 'frame'), 'palais': (r.get('win', 'lintel' if q['seed'] % 2 else 'arch'), 'frame')}[var]
+        if r.get('arched'): kinds = ('arch', 'arch')
+        PANEL = ['V', 'o', 'Q', 'b', 'y']
         for r0, r1 in runs:
             if r1 - r0 < 9: continue
             n = max(1, int(round((r1 - r0) / bay))); bw = (r1 - r0) / n
             portal = (n // 2 if var == 'palais' else int(rnd() * n)) if (r0, r1) == wide and gf and not arcade else -1
             ww = int(max(3, min(1.2 * su, bw * 0.5)))
+            nb = r.get('bays', 0) if (r0, r1) == wide and n >= 4 and nf >= 3 else 0
+            bays = {n // 2} if nb == 1 else {max(1, n // 4), n - 1 - max(1, n // 4)} if nb >= 2 else set()
             for c in range(n):
                 b0 = int(r0 + c * bw); b1 = int(r0 + (c + 1) * bw); uc = (b0 + b1) // 2; u0 = uc - ww // 2; u1 = u0 + ww
                 if gf > 30:
@@ -801,7 +824,14 @@ def facade_house(g, q, tex, mask, cols, topv, rnd, full):
                     v0 = int(f0 + (fh - wh) * 0.42); v1 = v0 + wh
                     if not full(u0 - 3, u1 + 3, v0 - 4, v1 + 6): continue
                     sta = state(); window(tex, rnd, u0, u1, v0, v1, kinds[0] if f == 0 else 'plain' if small else kinds[1], light, dark, base, sta, var == 'burgher' and q['seed'] % 4 == 0)
-                    if f == 0 and var in ('palais', 'tenement') and ww >= 5 and full(u0 - 2, u1 + 2, v1 + 2, v1 + 7):   # frontonek nad oknem
+                    if r.get('panels') and f > 0 and v0 - int(f0) >= 9 and full(u0 - 1, u1 + 1, int(f0) + 1, v0 - 3):   # panel pod oknem: malba (Wiehl), nebo sgrafito
+                        p0, p1 = int(f0) + 2, v0 - 4
+                        P(u0 - 1, u1 + 1, p0 - 1, p1 + 1, light)
+                        if r['panels'] == 'paint':
+                            P(u0, u1, p0, p1, PANEL[int(rnd() * len(PANEL))]); P(uc, uc + 1, p0 + 1, p1 - 1, 'i' if rnd() < 0.6 else light)
+                        else:
+                            P(u0, u1, p0, p1, dark); tex[p0:p1, u0:u1][(uu[p0:p1, u0:u1] + vv[p0:p1, u0:u1]) % 3 == 0] = K_(light)
+                    if (f == 0 or r.get('ornament')) and var in ('palais', 'tenement') and ww >= 5 and full(u0 - 2, u1 + 2, v1 + 2, v1 + 7):   # frontonek nad oknem (se štuky na každém patře)
                         for k in range(3): P(u0 - 1 + k * (ww // 6 + 1), u1 + 1 - k * (ww // 6 + 1), v1 + 3 + k, v1 + 4 + k, light)
                     if sta == 'broken' and rnd() < 0.4:   # saze nad vyhořelým oknem
                         for k in range(int(6 + rnd() * 10)): P(u0 + int(rnd() * 2), u1 - int(rnd() * 2), v1 + 2 + k, v1 + 3 + k, 'k' if k < 3 else dark)
@@ -809,6 +839,10 @@ def facade_house(g, q, tex, mask, cols, topv, rnd, full):
                         d0 = u0 + int(rnd() * ww)
                         for d in range(int(3 + rnd() * 11)):
                             if tex[max(0, v0 - 3 - d), d0] == K_(base): P(d0, d0 + 1, v0 - 3 - d, v0 - 2 - d, dark)
+                if c in bays:   # arkýř: vystupuje od druhého patra pod poslední, světlá hrana vlevo, stín vpravo a pod ním krakorce
+                    va = int(gf + 3 + fh); vb = int(gf + 3 + (nf - 1) * fh)
+                    P(b0 + 1, b0 + 2, va, vb, light); P(b1 - 2, b1, va, vb, dark); P(b0 + 1, b1 - 1, vb, vb + 2, light); P(b0, b1, vb + 2, vb + 3, dark)
+                    P(b0 + 1, b1 - 1, va - 2, va, light); P(b0 + 3, b1 - 3, va - 4, va - 2, dark); P(b0 + 5, b1 - 5, va - 6, va - 4, dark)
                 if var == 'palais' and bw >= 13 and c > 0: P(b0 - 1, b0 + 1, gf + 2, top - 7, light); P(b0 + 1, b0 + 2, gf + 2, top - 7, dark); P(b0 - 2, b0 + 3, top - 10, top - 7, light)
             if var != 'palais' and r1 - r0 > 44 and (var == 'tenement' or q['seed'] % 5 < 2):   # nárožní bosáž
                 for v in range(gf + 4, top - 8, 8):
@@ -820,12 +854,17 @@ def facade_house(g, q, tex, mask, cols, topv, rnd, full):
             else: P(0, W, 0, 7, dark)                                                                                           # sokl
             P(0, W, gf - 3, gf - 1, light); P(0, W, gf - 4, gf - 3, dark)
             if var == 'tenement' and nf >= 3: v = int(gf + 3 + (nf - 1) * fh); P(0, W, v - 2, v, light); P(0, W, v - 3, v - 2, dark)
+        if r.get('balcony') and gf > 30 and nf > r['balcony']:   # průběžný balkon přes celé průčelí (Melantrich): deska, zábradlí, stín
+            v = int(gf + 3 + r['balcony'] * fh)
+            P(wide[0] + 3, wide[1] - 3, v, v + 2, light); P(wide[0] + 4, wide[1] - 4, v - 2, v, dark); P(wide[0] + 3, wide[1] - 3, v + 8, v + 9, 'k')
+            for u in range(wide[0] + 3, wide[1] - 3, 2): P(u, u + 1, v + 2, v + 8, 'k')
         if r.get('sign') and not left and gf > 30:
             tw = len(r['sign']) * 6
             if wide[1] - wide[0] > tw + 16:
                 u0 = wide[0] + (wide[1] - wide[0] - tw) // 2
                 P(u0 - 3, u0 + tw + 2, gf + 2, gf + 13, dark); text57(tex, mask, u0, gf + 4, r['sign'], r.get('signColor', 'y'))
     # hlavní římsa se zubořezem; nad ní štít nebo atika: holá omítka s okénkem
+    neon_sign(tex, mask, r, runs, top, left, rnd)
     P(0, W, top - 2, top + 1, light); tex[mask & (vv >= top - 5) & (vv < top - 2) & (uu % 3 != 0)] = K_(light); tex[mask & (vv == top - 6)] = K_(dark)
     for r0, r1 in runs:
         hi = int(topv[r0:r1].max())
@@ -842,8 +881,150 @@ def facade_house(g, q, tex, mask, cols, topv, rnd, full):
     return tex, mask
 
 
+def facade_named(g, q, tex, mask, cols, topv, rnd):
+    """Domy, které se mají poznat podle fotky: hotel = Jalta (travertin, okna se zábradlím, dvě osy kamenných balkonů,
+    lodžie nad parterem, atika s pilíři a písmeny pod těžkou římsou), fins = The Flow Building / Primark (skleněná stěna
+    za bílými vlnitými lamelami, bílé pásy stropů). tex[v, u], v od země nahoru."""
+    r = q['recipe']; W, H = g['W'], g['H']; su = g['su']; left = g['left']
+    st = STYLES[q['style']]
+    base, light, dark = (st[2], st[0], 'P') if left else (st[0], st[1], st[2])
+    glass, glint, bar = ('N', 'n', 'k') if left else ('n', 'L', 'S')
+    vv, uu = np.mgrid[0:H, 0:W]
+    top = int(min(q['eave'] * PXM, topv[cols].max()))
+    if not q.get('said'): q['said'] = True; print(f"  recept {r['name']}: římsa {q['eave']:.1f} m = {int(q['eave'] * PXM)} px", flush=True)
+    gf = int(r['parter'] * PXM); nf = r['floors']
+    runs = []; s0 = cols[0]
+    for a, b2 in zip(cols[:-1], cols[1:]):
+        if b2 != a + 1: runs.append((s0, a + 1)); s0 = b2
+    runs.append((s0, cols[-1] + 1))
+    def P(u0, u1, v0, v1, c):
+        u0, u1, v0, v1 = max(0, int(u0)), max(0, int(u1)), max(0, int(v0)), max(0, int(v1))
+        tex[v0:v1, u0:u1] = np.where(mask[v0:v1, u0:u1], K_(c), tex[v0:v1, u0:u1])
+    def pane(u0, u1, v0, v1):   # okno po roce: většina tmavé sklo s odleskem, část vybitá nebo zatlučená
+        roll = rnd()
+        P(u0, u1, v0, v1, 'k' if roll < 0.14 else glass)
+        if roll < 0.14:
+            for k in range(int(u0), int(u1)):
+                if rnd() < 0.45: P(k, k + 1, v0, v0 + 1 + int(rnd() * 4), glass)
+        elif roll < 0.24:
+            P(u0, u1, v0, v1, 'H' if left else 'h')
+            for v in range(int(v0) + 3, int(v1), 5): P(u0, u1, v, v + 1, 'k')
+        else:
+            for d in range(max(0, int(v1 - v0) - 3)): P(u0 + 1 + d * max(1, int(u1 - u0) - 2) // max(1, int(v1 - v0)), u0 + 2 + d * max(1, int(u1 - u0) - 2) // max(1, int(v1 - v0)), v0 + 1 + d, v0 + 2 + d, glint)
+        return roll >= 0.14
+    tex[mask] = K_(base)
+    if r['type'] == 'hotel':
+        attic = int(3.3 * PXM); band = 5; fh = (top - attic - band - 6 - gf) / nf; mid = gf // 2
+        unit = max(14.0, r['bay'] * su)
+        for r0, r1 in runs:
+            n = max(1, int(round((r1 - r0) / unit))); uw = (r1 - r0) / n
+            wide = {1, n - 3} if n >= 8 else set()          # osy s dvojoknem a kamenným balkonem (levý sloupec dvojice)
+            # parter: výlohy mezi pilíři, nad nimi pás balkonu lodžie s mřížkou a lodžie se sloupy
+            for c in range(n):
+                b0 = int(r0 + c * uw); b1 = int(r0 + (c + 1) * uw)
+                P(b0 + 2, b1 - 2, 3, mid - 4, glass)
+                if rnd() < 0.3: P(b0 + 3, b1 - 3, 5, mid - 8, 'k')
+                P((b0 + b1) // 2, (b0 + b1) // 2 + 1, 3, mid - 4, bar)
+                P(b0 + 2, b1 - 2, mid + 9, gf - 5, 'k' if left else 'N')
+                if c % 2 == 0: P(b0, b0 + 3, mid + 9, gf - 5, light)
+            P(r0, r1, mid - 4, mid - 2, dark); P(r0, r1, mid - 2, mid + 9, light); P(r0, r1, mid + 9, mid + 10, dark)
+            lat = mask & (vv >= mid) & (vv < mid + 8) & (uu >= r0) & (uu < r1) & ((uu + vv) % 4 == 0)
+            tex[lat] = K_(dark)
+            if r.get('sign') and not left and r1 - r0 > len(r['sign']) * 6 + 30:
+                u0 = (r0 + r1 - len(r['sign']) * 6) // 2; P(u0 - 3, u0 + len(r['sign']) * 6 + 2, mid - 1, mid + 9, light); text57(tex, mask, u0, mid, r['sign'], 'k')
+            # patra: okna ve světlém rámu, od druhého řádku zábradlí nebo balkon
+            for f in range(nf):
+                f0 = int(gf + 3 + f * fh); wh = int(min(2.2 * PXM, fh - 12)); v0 = f0 + int((fh - wh) / 2) + 1
+                c = 0
+                while c < n:
+                    b0 = int(r0 + c * uw)
+                    if c in wide:
+                        b1 = int(r0 + (c + 2) * uw); ww = int(1.25 * su); uc = (b0 + b1) // 2
+                        P(uc - ww - 2, uc + ww + 2, v0 - 1, v0 + wh + 1, light)
+                        pane(uc - ww - 1, uc - 1, v0, v0 + wh); pane(uc + 1, uc + ww + 1, v0, v0 + wh)
+                        if f > 0:   # kamenný balkon s prolamovanou mřížkou, pod ním stín a stékance
+                            k0, k1 = uc - ww - 5, uc + ww + 5; kh = int(1.0 * PXM)
+                            P(k0, k1, v0 - 3, v0 - 3 + kh, light); P(k0, k1, v0 - 5, v0 - 3, dark)
+                            lat = mask & (vv >= v0 - 1) & (vv < v0 - 5 + kh) & (uu > k0 + 1) & (uu < k1 - 2) & ((uu + vv) % 4 < 1) | mask & (vv >= v0 - 1) & (vv < v0 - 5 + kh) & (uu > k0 + 1) & (uu < k1 - 2) & ((uu - vv) % 4 < 1)
+                            tex[lat] = K_(dark)
+                            for d in range(int(rnd() * 12)): P(k0 + 3, k0 + 4, v0 - 6 - d, v0 - 5 - d, dark)
+                        c += 2
+                    else:
+                        b1 = int(r0 + (c + 1) * uw); ww = max(4, int(1.2 * su)); u0 = (b0 + b1 - ww) // 2
+                        P(u0 - 1, u0 + ww + 1, v0 - 1, v0 + wh + 1, light)
+                        whole = pane(u0, u0 + ww, v0, v0 + wh)
+                        if whole: P(u0 + ww // 2, u0 + ww // 2 + 1, v0, v0 + wh, bar)
+                        if f > 0:   # kované zábradlí francouzského okna na krakorci
+                            rh = int(0.9 * PXM)
+                            P(u0 - 2, u0 + ww + 2, v0 + rh, v0 + rh + 1, 'k'); P(u0 - 2, u0 + ww + 2, v0 - 1, v0, 'k')
+                            for u in range(u0 - 2, u0 + ww + 2, 2): P(u, u + 1, v0, v0 + rh, 'k')
+                            P(u0 - 1, u0 + ww + 1, v0 - 3, v0 - 1, light); P(u0 + ww // 2 - 1, u0 + ww // 2 + 2, v0 - 5, v0 - 3, dark)
+                        for d in range(int(rnd() * 9)): P(u0 + 1, u0 + 2, v0 - 6 - d, v0 - 5 - d, dark)
+                        c += 1
+            # atika: ozdobný pás, ustupující stěna s okny mezi pilíři, na pilířích písmena, nahoře těžká římsa se stínem
+            a0 = top - attic - band - 6
+            P(r0, r1, a0, a0 + band, light); tex[mask & (vv >= a0 + 1) & (vv < a0 + band - 1) & (uu >= r0) & (uu < r1) & ((uu + (vv - a0) * 2) % 6 < 2)] = K_(dark)
+            P(r0, r1, a0 + band, top - 6, dark)
+            pw = max(7, int(uw * 0.36)); word = r.get('letters', '') if n >= 7 and not left else ''
+            first = (n - len(word)) // 2 + 1
+            for c in range(n + 1):
+                uc = int(r0 + c * uw)
+                if c < n: P(uc + pw // 2 + 2, int(r0 + (c + 1) * uw) - pw // 2 - 2, a0 + band + 6, top - 12, 'k' if rnd() < 0.3 else glass)
+                P(uc - pw // 2, uc + pw // 2 + 1, a0 + band, top - 6, light); P(uc + pw // 2, uc + pw // 2 + 1, a0 + band, top - 6, base)
+                P(uc - pw // 2 - 1, uc + pw // 2 + 2, a0 + band, a0 + band + 4, light)
+                i = c - first
+                if 0 <= i < len(word): text57(tex, mask, uc - 2, a0 + band + (attic - 7) // 2 + 2, word[i], 'k')
+            P(r0, r1, top - 6, top - 3, 'k' if left else dark); P(r0, r1, top - 3, top + 1, light)
+        # spáry travertinových desek: vodorovně po metru, jen na holé stěně
+        stone = mask & (tex == K_(base)) & (vv > gf) & (vv < top - attic - band - 6)
+        tex[stone & (vv % 12 == 0) & ((uu * 7 + vv) % 5 != 0)] = K_(dark)
+        P(0, W, gf - 5, gf - 2, light); P(0, W, gf - 2, gf, dark)
+    else:
+        white, shade = ('w', 'v') if left else ('W', 'w')
+        fh = (top - gf - 4) / nf; step = max(6.0, r.get('fin', 1.5) * su); amp = step * 0.42
+        tex[mask] = K_(glass)
+        for r0, r1 in runs:
+            n = max(1, int(round((r1 - r0) / step))); sw = (r1 - r0) / n
+            # parter přes dvě podlaží: sklo za rovnými bílými sloupky, v půli pás stropu
+            for c in range(n):
+                b0 = int(r0 + c * sw); b1 = int(r0 + (c + 1) * sw)
+                pane(b0 + 1, b1, 3, gf // 2 - 2); pane(b0 + 1, b1, gf // 2 + 2, gf - 4)
+                if c % 2 == 0: P(b0, b0 + 2, 0, gf, white)
+            P(r0, r1, gf // 2 - 2, gf // 2 + 2, white); P(r0, r1, gf // 2 - 3, gf // 2 - 2, shade)
+            # patra: tabule skla, vybité a zatlučené, bílý pás stropu
+            for f in range(nf):
+                f0 = int(gf + f * fh); f1 = int(gf + (f + 1) * fh)
+                for c in range(n): pane(int(r0 + c * sw) + 1, int(r0 + (c + 1) * sw), f0 + 4, f1)
+                P(r0, r1, f0, f0 + 3, white); P(r0, r1, f0 + 3, f0 + 4, shade)
+            # vlnité lamely: sousední se vlní proti sobě, takže mezi nimi vznikají čočky; pár jich chybí nebo je ulomených
+            for c in range(n + 1):
+                roll = rnd(); v_from = gf + 2; v_to = top
+                if roll < 0.08: continue
+                if roll < 0.2: v_to = gf + int((0.3 + rnd() * 0.5) * (top - gf))
+                for v in range(v_from, v_to):
+                    u = r0 + c * sw + amp * np.sin(np.pi * (v - gf) / fh + (c % 2) * np.pi)
+                    P(u, u + 2, v, v + 1, white)
+            P(r0, r1, top - 4, top, white)
+        # rez a špína stékají z pásů stropů po skle
+        for u in cols:
+            if rnd() < 0.1:
+                f0 = int(gf + int(rnd() * nf) * fh); P(u, u + 1, f0 - int(3 + rnd() * 18), f0, 'U' if rnd() < 0.5 else 'S')
+    # nad římsou (ustupující patro): tmavší stěna s řadou nízkých oken
+    over = mask & (vv > top)
+    if over.any():
+        tex[over] = K_(dark if r['type'] == 'hotel' else glass)
+        if r['type'] == 'hotel':
+            for u in range(cols[0] + 6, cols[-1] - 6, max(8, int(r['bay'] * su))): P(u, u + max(3, int(0.9 * su)), top + 7, top + 21, glass)
+    P(0, W, 0, 4, 'k' if left else dark)
+    for u in cols:
+        if rnd() < 0.12 and r['type'] == 'hotel': P(u, u + 1, top - 7 - int(4 + rnd() * 26), top - 6, dark)
+        t = topv[u]; tex[t, u] = K_(light)
+    return tex, mask
+
+
 def facade_recipe(g, q, tex, mask, cols, topv, rnd):
     """Fasáda podle receptu. tex[v, u], v od země nahoru; šířky v metrech × su, výšky v metrech × PXM."""
+    if q['recipe']['type'] in ('hotel', 'fins'): return facade_named(g, q, tex, mask, cols, topv, rnd)
     r = q['recipe']; W, H = g['W'], g['H']; su = g['su']; left = g['left']
     st = STYLES[q['style']]
     base, light, dark = (st[2], st[0], {'P': 'a', '6': 'P', 'e': 'O'}.get(st[2], 'P')) if left else (st[0], st[1], st[2])
@@ -968,6 +1149,7 @@ def facade_recipe(g, q, tex, mask, cols, topv, rnd):
     if r.get('sign') and not left:
         wide = max(runs, key=lambda x: x[1] - x[0]); tw = len(r['sign']) * 6
         if wide[1] - wide[0] > tw + 20: P(wide[0] + 11, wide[0] + 17 + tw, gf + 1, gf + 12, dark); text57(tex, mask, wide[0] + 14, gf + 3, r['sign'], r.get('signColor', 'y'))
+    neon_sign(tex, mask, r, runs, top, left, rnd)
     # nad římsou (ustupující patro, mansarda): tmavší kámen s řadou nízkých oken
     over = mask & (vv > top)
     if over.any():
@@ -1114,9 +1296,11 @@ def facade(g, valid):
     integ = np.zeros((H + 1, W + 1), np.int32); integ[1:, 1:] = np.cumsum(np.cumsum(mask, 0), 1)
     full = lambda u0, u1, v0, v1: u0 >= 0 and v0 >= 0 and u1 <= W and v1 <= H and integ[v1, u1] - integ[v0, u1] - integ[v1, u0] + integ[v0, u0] == (u1 - u0) * (v1 - v0)
 
+    # průčelí nad ustoupeným parterem (The Flow: stěna začíná 4 m nad zemí) se kreslí podle receptu jako stěna od země
+    if q.get('recipe', {}).get('type') == 'fins' and botv[cols].min() <= 70: grounded = True
     rear = g['cap'] and not g.get('front')   # řez uříznutým domem: dvorní fasáda bez parteru a ozdob, víc opadané omítky
     if q.get('recipe', {}).get('type') in ('house', 'classic') and not rear and grounded and not q['tall']: return facade_house(g, q, tex, mask, cols, topv, rnd, full)
-    if q.get('recipe', {}).get('type') in ('grid', 'palace', 'curtain', 'ribbon', 'museum') and not rear and grounded: return facade_recipe(g, q, tex, mask, cols, topv, rnd)
+    if q.get('recipe', {}).get('type') in ('grid', 'palace', 'curtain', 'ribbon', 'museum', 'hotel', 'fins') and not rear and grounded: return facade_recipe(g, q, tex, mask, cols, topv, rnd)
     # holá zeď jen u věže a u nízkého štítu nad sousední střechou; vyšší zeď, která začíná nad zemí (za nižším domem),
     # i dvorní zeď na řezu mají okna jako každá jiná, jinak z ulice vypadají jako prázdné plochy
     wall_h = float(topv[cols].max() - botv[cols].min())

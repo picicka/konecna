@@ -6,7 +6,11 @@ export const MALASTRANA = {
     // z Hradu se schází Nerudovou k bráně, kde stojí stráž
     arrivals: { most: { a: 3, b: 16 }, hrad: { a: 63, b: 40 } },
     // chrám svatého Mikuláše uprostřed Malostranského náměstí (půdorys z OSM a 8–17, b 18–23)
-    landmark: [{ atlas: 'landmarks_kostely', key: 'lm_mikulas_ms', a0: 8, w: 10, b0: 18, dpt: 6, say: 'mikulas_ms' }],
+    landmark: [{ atlas: 'landmarks_kostely', key: 'lm_mikulas_ms', a0: 8, w: 10, b0: 18, dpt: 6, say: 'mikulas_ms' },
+        // Zámecké schody: kamenné schodiště k brance pod Hradem; holubi sedí na dlaždici pod prvním stupněm, takže stojí v cestě
+        { atlas: 'landmarks_kuriozity', key: 'lm_zamecke_schody', a0: 45, w: 5, b0: 53, dpt: 1 },
+        // opěrná zeď pod Hradem za horním koncem schodů, branka je nad schodištěm (řádek b 53)
+        { atlas: 'landmarks_kuriozity', key: 'lm_schody_zed', a0: 50, w: 1, b0: 50, dpt: 8 }],
     stops: {
         // cesta zpátky na most: červená uliční cedule Mostecká se směrovkou k mostu
         mostecka_zpet: { npc: { key: 'cedule_kampa', a: 4, b: 15, flip: false }, approach: { a: 3, b: 15 }, props: [] },
@@ -18,8 +22,9 @@ export const MALASTRANA = {
         velvyslanec: { npc: { key: 'velvyslanec', a: 55, b: 6 }, approach: { a: 55, b: 5 }, props: [{ key: 'razitko_stul', a: 54, b: 6 }] },
         trabant: { npc: { key: 'trabant', a: 60, b: 7 }, approach: { a: 59, b: 7 }, props: [] },
         straz: { npc: { key: 'straz', a: 65, b: 39 }, approach: { a: 64, b: 39 }, props: [{ key: 'budka_straz', a: 65, b: 40, say: 'budka_straz' }] },
-        kastelan: { npc: { key: 'kastelan', a: 62, b: 37 }, approach: { a: 61, b: 37 }, props: [] },
-        schody: { npc: { key: 'holub', a: 44, b: 53 }, approach: { a: 44, b: 54 }, props: [] },
+        kastelan: { npc: { key: 'kastelan', a: 60, b: 41 }, approach: { a: 59, b: 41 }, props: [] },
+        // holubi na patě Zámeckých schodů (lm_zamecke_schody), u nich cedule se směrovkou na Hrad
+        schody: { npc: { key: 'holubi_hejno', a: 44, b: 53 }, approach: { a: 44, b: 54 }, props: [{ key: 'cedule_schody', a: 43, b: 53 }] },
     },
     // přisvícená uliční cedule u ústí Mostecké (cesta zpátky na Karlův most a Kampu)
     lights: [{ a: 3, b: 15, scale: 1, alpha: 0.6 }],

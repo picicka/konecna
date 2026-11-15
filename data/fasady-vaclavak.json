@@ -1,5 +1,5 @@
 {
- "_": "Recepty fasád podle fotek a popisů domů z Václaváku po pádu (benefity, scripts/vaclavak-domy.mjs). Klíč je id budovy v OSM (nebo klíč stavby z PLACES.model). Typy (scripts/ipr.py): house = dům s variantou burgher (měšťanský), tenement (činžák), palais (palác), church, tower; grid = kamenný rastr s velkými okny bez dělení nad proskleným parterem; palace = sdružená okna nad prosklenými arkádami; curtain = skleněná stěna; ribbon = pásová okna; museum = novorenesanční palác. style = barva omítky z palety, floors = pater nad parterem, parter a bay v metrech, arcade = loubí, sign = nápis nad parterem, cover = krytina, full = fasáda až po vrch zdi. Dům bez receptu dostane recept house z pravidel (auto_recipe).",
+ "_": "Recepty fasád podle fotek a popisů domů z Václaváku po pádu (benefity, scripts/vaclavak-domy.mjs). Klíč je id budovy v OSM (nebo klíč stavby z PLACES.model). Typy (scripts/ipr.py): house = dům s variantou burgher (měšťanský), tenement (činžák), palais (palác), church, tower; grid = kamenný rastr s velkými okny bez dělení nad proskleným parterem; palace = sdružená okna nad prosklenými arkádami; curtain = skleněná stěna; ribbon = pásová okna; museum = novorenesanční palác; hotel = Jalta (travertin, okna se zábradlím, dvě osy kamenných balkonů, lodžie nad parterem, atika s pilíři a písmeny letters pod těžkou římsou, bay = šířka okenní osy); fins = skleněná stěna za bílými vlnitými lamelami (The Flow Building, fin = rozteč lamel). style = barva omítky z palety, floors = pater nad parterem, parter a bay v metrech, arcade = loubí, sign = nápis nad parterem, cover = krytina, full = fasáda až po vrch zdi. Ozdoby domu typu house podle popisů z benefitů: bays = počet arkýřů, ornament = štuky nad okny všech pater, panels = paint (malované panely pod okny, Wiehl) nebo sgraf (sgrafito, reliéfy), balcony = patro s průběžným balkonem, arched = oblouková okna, neon a neonColor = střešní neon pod římsou (část písmen zhaslá). Dům bez receptu dostane recept house z pravidel (auto_recipe).",
  "173673173": {
   "name": "Dům Na Můstku (dřív ČKD), 1983",
   "foto": "benefity: ckd.jpg",
@@ -27,14 +27,18 @@
   "floors": 5,
   "sign": "ZLATA HUSA",
   "variant": "tenement",
-  "arcade": true
+  "arcade": true,
+  "bays": 1,
+  "ornament": true
  },
  "31776838": {
   "name": "č. 9 Dům s reliéfy",
   "type": "house",
   "style": "white",
   "floors": 5,
-  "variant": "tenement"
+  "variant": "tenement",
+  "bays": 1,
+  "panels": "sgraf"
  },
  "556379484": {
   "name": "č. 25–27 Hotel Evropa a Meran, 1905",
@@ -44,32 +48,37 @@
   "sign": "EVROPA",
   "signColor": "W",
   "variant": "tenement",
-  "arcade": true
+  "arcade": true,
+  "bays": 2,
+  "ornament": true
  },
  "27851229": {
   "name": "č. 39 Činžovní dům",
   "type": "house",
   "style": "ochre",
   "floors": 4,
-  "variant": "tenement"
+  "variant": "tenement",
+  "bays": 1
  },
  "27851381": {
   "name": "č. 45 Hotel Jalta, 1958",
-  "type": "house",
+  "foto": "fotka od uživatele (průčelí do náměstí)",
+  "type": "hotel",
   "style": "travertine",
-  "floors": 6,
+  "floors": 5,
+  "parter": 8.4,
+  "bay": 2.9,
   "sign": "JALTA",
-  "variant": "tenement",
-  "arcade": true
+  "letters": "HOTEL"
  },
  "937253464": {
-  "name": "č. 47 The Flow Building, 2020",
-  "type": "curtain",
-  "style": "grey",
-  "floors": 7,
-  "parter": 5.0,
-  "bay": 6.0,
-  "pane": 1.2
+  "name": "č. 47 The Flow Building (Primark), 2020",
+  "foto": "fotka od uživatele (nároží s Opletalovou)",
+  "type": "fins",
+  "style": "white",
+  "floors": 5,
+  "parter": 9.0,
+  "fin": 1.6
  },
  "31777543": {
   "name": "č. 53 Klasicistní dům, 1839",
@@ -83,14 +92,16 @@
   "type": "house",
   "style": "stone",
   "floors": 4,
-  "variant": "tenement"
+  "variant": "tenement",
+  "ornament": true
  },
  "31777551": {
   "name": "č. 57 Raně novorenesanční dům",
   "type": "house",
   "style": "cream",
   "floors": 4,
-  "variant": "tenement"
+  "variant": "tenement",
+  "arched": true
  },
  "31777549": {
   "name": "č. 59 Hotel Wilson",
@@ -113,7 +124,9 @@
   "type": "house",
   "style": "cream",
   "floors": 5,
-  "variant": "tenement"
+  "variant": "tenement",
+  "ornament": true,
+  "bays": 1
  },
  "27917151": {
   "name": "č. 28 Palác Alfa, 1929",
@@ -138,7 +151,10 @@
   "floors": 5,
   "sign": "LIGNA",
   "signColor": "E",
-  "variant": "tenement"
+  "variant": "tenement",
+  "neon": "LIGNA",
+  "neonColor": "E",
+  "ornament": true
  },
  "27850912": {
   "name": "č. 34 Wiehlův dům, 1896",
@@ -146,14 +162,18 @@
   "style": "ochre",
   "floors": 4,
   "variant": "tenement",
-  "arcade": true
+  "arcade": true,
+  "panels": "paint",
+  "ornament": true,
+  "bays": 1
  },
  "31516051": {
   "name": "č. 48 Měšťanský dům s reliéfy",
   "type": "house",
   "style": "white",
   "floors": 4,
-  "variant": "tenement"
+  "variant": "tenement",
+  "panels": "sgraf"
  },
  "31519088": {
   "name": "č. 56 Palác Fénix, 1930",
@@ -163,28 +183,35 @@
   "parter": 5.0,
   "bay": 5.0,
   "sign": "FENIX",
-  "signColor": "7"
+  "signColor": "7",
+  "neon": "FENIX"
  },
  "31543182": {
   "name": "č. 58 Dům módy, 1956",
   "type": "house",
   "style": "travertine",
   "floors": 6,
-  "variant": "tenement"
+  "variant": "tenement",
+  "sign": "DUM MODY",
+  "balcony": 4
  },
  "31543179": {
   "name": "č. 60 Novorenesanční dům",
   "type": "house",
   "style": "cream",
   "floors": 5,
-  "variant": "tenement"
+  "variant": "tenement",
+  "arched": true,
+  "ornament": true
  },
  "31543176": {
   "name": "č. 64 Novorenesanční dům",
   "type": "house",
   "style": "white",
   "floors": 5,
-  "variant": "tenement"
+  "variant": "tenement",
+  "ornament": true,
+  "bays": 1
  },
  "31543166": {
   "name": "č. 66 Činžovní dům",
@@ -212,5 +239,30 @@
   "bay": 6.0,
   "pane": 1.5,
   "full": true
+ },
+ "31776829": {
+  "name": "č. 11–13 Novobarokní dům (Darex)",
+  "foto": "benefity: vn13.jpg",
+  "type": "house",
+  "style": "cream",
+  "floors": 5,
+  "variant": "tenement",
+  "ornament": true
+ },
+ "31515656": {
+  "name": "č. 50–52 Nízký barokní a novorenesanční dům",
+  "foto": "benefity: vn50.jpg",
+  "type": "house",
+  "style": "cream",
+  "floors": 5,
+  "variant": "tenement",
+  "arched": true
+ },
+ "31776856": {
+  "name": "Haasův obchodní dům, Na Příkopě",
+  "type": "house",
+  "style": "stone",
+  "floors": 5,
+  "variant": "palais"
  }
 }

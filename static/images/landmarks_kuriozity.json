@@ -86,8 +86,8 @@
   },
   "mlok_maly_1": {
    "frame": {
-    "x": 0,
-    "y": 151,
+    "x": 388,
+    "y": 0,
     "w": 56,
     "h": 40
    },
@@ -106,8 +106,8 @@
   },
   "mlok_maly_2": {
    "frame": {
-    "x": 57,
-    "y": 151,
+    "x": 445,
+    "y": 0,
     "w": 56,
     "h": 40
    },
@@ -126,7 +126,7 @@
   },
   "stalin_hlava": {
    "frame": {
-    "x": 114,
+    "x": 0,
     "y": 151,
     "w": 150,
     "h": 120
@@ -146,7 +146,7 @@
   },
   "metronom": {
    "frame": {
-    "x": 265,
+    "x": 151,
     "y": 151,
     "w": 220,
     "h": 96
@@ -166,8 +166,8 @@
   },
   "golem": {
    "frame": {
-    "x": 0,
-    "y": 272,
+    "x": 372,
+    "y": 151,
     "w": 100,
     "h": 130
    },
@@ -186,8 +186,8 @@
   },
   "miminko": {
    "frame": {
-    "x": 101,
-    "y": 272,
+    "x": 473,
+    "y": 151,
     "w": 80,
     "h": 64
    },
@@ -206,8 +206,8 @@
   },
   "kun_lucerna": {
    "frame": {
-    "x": 182,
-    "y": 272,
+    "x": 554,
+    "y": 151,
     "w": 160,
     "h": 110
    },
@@ -226,8 +226,8 @@
   },
   "kafka": {
    "frame": {
-    "x": 343,
-    "y": 272,
+    "x": 715,
+    "y": 151,
     "w": 130,
     "h": 90
    },
@@ -247,7 +247,7 @@
   "labut": {
    "frame": {
     "x": 0,
-    "y": 403,
+    "y": 282,
     "w": 96,
     "h": 72
    },
@@ -267,7 +267,7 @@
   "labut_zla_0": {
    "frame": {
     "x": 97,
-    "y": 403,
+    "y": 282,
     "w": 48,
     "h": 42
    },
@@ -288,7 +288,7 @@
   "labut_zla_1": {
    "frame": {
     "x": 146,
-    "y": 403,
+    "y": 282,
     "w": 48,
     "h": 42
    },
@@ -309,7 +309,7 @@
   "kapr_vana": {
    "frame": {
     "x": 195,
-    "y": 403,
+    "y": 282,
     "w": 96,
     "h": 64
    },
@@ -325,6 +325,214 @@
     "w": 96,
     "h": 64
    }
+  },
+  "skliba_0": {
+   "frame": {
+    "x": 292,
+    "y": 282,
+    "w": 132,
+    "h": 200
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 132,
+    "h": 200
+   },
+   "sourceSize": {
+    "w": 132,
+    "h": 200
+   },
+   "duration": 667
+  },
+  "skliba_1": {
+   "frame": {
+    "x": 425,
+    "y": 282,
+    "w": 132,
+    "h": 200
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 132,
+    "h": 200
+   },
+   "sourceSize": {
+    "w": 132,
+    "h": 200
+   },
+   "duration": 667
+  },
+  "skliba_2": {
+   "frame": {
+    "x": 0,
+    "y": 483,
+    "w": 132,
+    "h": 200
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 132,
+    "h": 200
+   },
+   "sourceSize": {
+    "w": 132,
+    "h": 200
+   },
+   "duration": 667
+  },
+  "skliba_3": {
+   "frame": {
+    "x": 133,
+    "y": 483,
+    "w": 132,
+    "h": 200
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 132,
+    "h": 200
+   },
+   "sourceSize": {
+    "w": 132,
+    "h": 200
+   },
+   "duration": 667
+  },
+  "skliba_4": {
+   "frame": {
+    "x": 266,
+    "y": 483,
+    "w": 132,
+    "h": 200
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 132,
+    "h": 200
+   },
+   "sourceSize": {
+    "w": 132,
+    "h": 200
+   },
+   "duration": 667
+  },
+  "skliba_5": {
+   "frame": {
+    "x": 399,
+    "y": 483,
+    "w": 132,
+    "h": 200
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 132,
+    "h": 200
+   },
+   "sourceSize": {
+    "w": 132,
+    "h": 200
+   },
+   "duration": 667
+  },
+  "skliba_6": {
+   "frame": {
+    "x": 532,
+    "y": 483,
+    "w": 132,
+    "h": 200
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 132,
+    "h": 200
+   },
+   "sourceSize": {
+    "w": 132,
+    "h": 200
+   },
+   "duration": 667
+  },
+  "skliba_7": {
+   "frame": {
+    "x": 665,
+    "y": 483,
+    "w": 132,
+    "h": 200
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 132,
+    "h": 200
+   },
+   "sourceSize": {
+    "w": 132,
+    "h": 200
+   },
+   "duration": 667
+  },
+  "lm_zamecke_schody": {
+   "frame": {
+    "x": 0,
+    "y": 684,
+    "w": 390,
+    "h": 320
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 390,
+    "h": 320
+   },
+   "sourceSize": {
+    "w": 390,
+    "h": 320
+   }
+  },
+  "lm_schody_zed": {
+   "frame": {
+    "x": 391,
+    "y": 684,
+    "w": 580,
+    "h": 480
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 580,
+    "h": 480
+   },
+   "sourceSize": {
+    "w": 580,
+    "h": 480
+   }
   }
  },
  "meta": {
@@ -332,8 +540,8 @@
   "image": "landmarks_kuriozity.png",
   "format": "RGBA8888",
   "size": {
-   "w": 485,
-   "h": 475
+   "w": 971,
+   "h": 1164
   },
   "scale": "1",
   "frameTags": [
@@ -347,6 +555,12 @@
     "name": "labut_zla",
     "from": 13,
     "to": 14,
+    "direction": "forward"
+   },
+   {
+    "name": "skliba",
+    "from": 16,
+    "to": 23,
     "direction": "forward"
    }
   ]

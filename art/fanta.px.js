@@ -403,6 +403,26 @@ sprite("catenary", { w: 80, h: 190 }, (c) => {
   c.line(x + 56, base - 132, x + 56, base - 118, "M"); c.rect(x + 52, base - 118, 8, 2, "m")
 })
 
+// Trolej mezi dvěma stožáry po čtyřech dlaždicích podél a (256 doprava, 128 nahoru): nosné lano s průvěsem, pod ním
+// trolejový drát a věšáky. Počátek (2, h − 4) je konec výložníku bližšího stožáru.
+sprite("trolej", { w: 262, h: 152 }, (c) => {
+  const y0 = 148, at = (x) => y0 - x / 2
+  let prev = null
+  for (let x = 0; x <= 256; x += 8) {
+    const sag = 14 - 11 * Math.sin(Math.PI * x / 256), p = [2 + x, Math.round(at(x) - sag)]
+    if (prev) c.line(prev[0], prev[1], p[0], p[1], "S")
+    if (x % 32 === 16) c.line(p[0], p[1], p[0], Math.round(at(x)), "s")
+    prev = p
+  }
+  c.line(2, y0, 258, at(256), "k"); c.line(2, y0 - 1, 258, at(256) - 1, "M")
+})
+// Utržená trolej: kus drátu visí od výložníku k zemi a na konci se kroutí. Počátek (2, 4) je konec výložníku.
+sprite("trolej_utrzena", { w: 70, h: 124 }, (c) => {
+  const pts = [[2, 4], [10, 8], [22, 30], [30, 62], [34, 92], [40, 108], [50, 114], [58, 110], [60, 102], [54, 100]]
+  for (let i = 1; i < pts.length; i++) { c.line(...pts[i - 1], ...pts[i], "k"); c.line(pts[i - 1][0], pts[i - 1][1] - 1, pts[i][0], pts[i][1] - 1, "M") }
+  c.line(2, 4, 2, 12, "S"); c.px(54, 99, "U"); c.px(53, 100, "U")
+})
+
 // Dveře Fantovy budovy (portál ve střední hale, šířka 36 podél fasády, výška 46): animace otevírání, 4 snímky.
 // Počátek (2, h − 2) je spodní levý roh dveří na fasádě (FR(0, 0)), ve hře se kotví na bod fasády.
 anim("door_fanta", { w: 44, h: 72, frames: 4, fps: 8 }, (c) => {

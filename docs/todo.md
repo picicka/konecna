@@ -45,9 +45,3 @@ se dokreslí. Doplňovat sem.
 - „Sherwood vládne“
 - „Konečná. Nevystupovat.“
 - „Pískej konec“
-
-## Další
-
-- Trolejové dráty mezi trakčními stožáry.
-- Přestup metrem na Václavák (krok 1 plánu).
-- Rozhovory s volbami a questy na Hlaváku (krok 2 plánu).

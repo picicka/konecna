@@ -267,3 +267,14 @@ sprite("muzeum_pokladna", { w: 64, h: 92, outline: "k" }, (c) => {
   c.rect(8, 80, 5, 3, "x"); c.rect(50, 80, 4, 2, "p")
 })
 
+
+// Pult bufetu v Koruně vynesený na molo: plechový pult na bednách, na něm plata chlebíčků pod igelitem a cedulka s cenou.
+sprite("pult_chlebicky", { w: 64, h: 44, outline: "k" }, (c) => {
+  c.poly([4, 26, 32, 12, 60, 26, 32, 40], "m"); c.poly([4, 26, 32, 40, 32, 43, 4, 29], "M"); c.poly([60, 26, 32, 40, 32, 43, 60, 29], "S")
+  c.rect(10, 29, 8, 12, "H"); c.rect(46, 29, 8, 12, "h"); c.rect(28, 40, 8, 4, "H")
+  for (const [x, y] of [[20, 22], [30, 18], [30, 27], [40, 23]]) {
+    c.poly([x - 7, y, x, y - 4, x + 7, y, x, y + 4], "w")
+    for (const [dx, dy] of [[-3, 0], [0, -1], [3, 0], [0, 2]]) { c.px(x + dx, y + dy, "c"); c.px(x + dx + 1, y + dy, "V"); c.px(x + dx, y + dy - 1, (dx + dy) % 2 ? "y" : "W") }
+  }
+  c.rect(27, 4, 11, 8, "W"); c.hline(29, 6, 7, "k"); c.hline(29, 9, 5, "V"); c.vline(32, 12, 3, "H")
+})

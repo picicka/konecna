@@ -183,10 +183,10 @@ anim("racek_let", { w: 22, h: 12, outline: "k", fps: 4, frames: 2 }, (c) => {
 // —— Kotě: zrzavé, sedí, mrská ocasem (2 snímky). ——
 anim("kote", { w: 12, h: 12, outline: "k", fps: 3, frames: 2 }, (c) => {
   const f = c.frame ?? 0
-  c.ellipse(6, 8, 3, 3, "o"); c.px(5, 7, "y"); c.hline(4, 11, 5, "U")
-  c.circ(4, 4, 2, "o"); c.px(2, 2, "o"); c.px(5, 2, "o"); c.px(3, 4, "k"); c.px(5, 4, "k"); c.px(4, 5, "D")
-  c.hline(5, 6, 2, "U")
-  if (f === 0) { c.line(9, 10, 11, 6, "o"); c.px(11, 5, "U") } else { c.line(9, 10, 11, 9, "o"); c.px(11, 8, "U") }
+  c.ellipse(6, 8, 3, 3, "x"); c.px(5, 7, "v"); c.hline(4, 11, 5, "P")
+  c.circ(4, 4, 2, "x"); c.px(2, 2, "x"); c.px(5, 2, "x"); c.px(3, 4, "k"); c.px(5, 4, "k"); c.px(4, 5, "D")
+  c.hline(5, 6, 2, "P")
+  if (f === 0) { c.line(9, 10, 11, 6, "x"); c.px(11, 5, "P") } else { c.line(9, 10, 11, 9, "x"); c.px(11, 8, "P") }
 })
 
 // —— Vrak policejní Tatry 603 (Veřejná bezpečnost): bílá s modrým pruhem, nápis VB, maják na střeše rozbitý,

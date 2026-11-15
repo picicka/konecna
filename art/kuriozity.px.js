@@ -10,7 +10,7 @@
 //   miminko       lezoucí miminko Davida Černého ze Žižkovské věže, spadlé, bez ruky, místo tváře štěrbina
 //   kun_lucerna   kůň z Lucerny (Černý) spadlý ze stropu: leží na zádech, nohy nahoru, svatý Václav sedí na břiše
 //   kafka         Kafkova hlava (Černý): lesklé ocelové plátky rozsypané po zemi
-//   labut         šlapadlo labuť z Vltavy, převrácené na bok, krk zlomený
+//   labut         šlapadlo labuť z Vltavy, uvízlé a nakloněné, krk prasklý
 //   kapr_vana     smaltovaná vana, z ní čouhá ocas obrovského vánočního kapra
 
 // mokrý kruh u paty: tmavá skvrna a pár vlnek, ať věc v bahně i ve vodě „sedí“
@@ -207,18 +207,32 @@ sprite("kafka", { w: 130, h: 90 }, (c) => {
   c.noise(X - 60, Y - 40, 120, 40, "U", 0.04, 51, "Mm")   // rez na hranách
 })
 
-// Šlapadlo labuť: bílý laminát oprýskaný, převrácené na bok, krk s hlavou ulomený a ležící vedle.
+// Šlapadlo labuť z Vltavy: bílý laminátový trup uvízlý v bahně a nakloněný na záď, zvednutý ocas, křídlo na boku,
+// dvě červená sedadla a vpředu vysoký prohnutý krk s hlavou a oranžovým zobákem (prasklý, hlava visí).
 sprite("labut", { w: 96, h: 72 }, (c) => {
   const X = 48, Y = 66
   kuWet(c, X, Y - 4, 40, 7)
-  // trup na boku: dno nahoru ke straně, vidět šlapací kola
-  c.poly([X - 34, Y - 8, X - 30, Y - 30, X - 8, Y - 40, X + 26, Y - 34, X + 34, Y - 14, X + 22, Y - 6], "W")
-  c.poly([X - 30, Y - 30, X - 8, Y - 40, X + 26, Y - 34, X + 10, Y - 30, X - 20, Y - 26], "w")
-  c.noise(X - 34, Y - 40, 70, 34, "x", 0.04, 61, "Ww")
-  c.circ(X + 2, Y - 22, 7, "x"); c.circ(X + 2, Y - 22, 4, "k"); for (let i = 0; i < 6; i++) c.line(X + 2, Y - 22, X + 2 + Math.round(Math.cos(i) * 7), Y - 22 + Math.round(Math.sin(i) * 7), "v")
-  // pahýl krku, hlava se zobákem v bahně
-  c.poly([X - 30, Y - 28, X - 38, Y - 36, X - 34, Y - 40, X - 26, Y - 32], "w"); c.line(X - 37, Y - 38, X - 35, Y - 34, "k")
-  c.line(X + 36, Y - 6, X + 44, Y - 18, "W", 4); c.ellipse(X + 44, Y - 20, 5, 4, "W"); c.poly([X + 48, Y - 20, X + 54, Y - 18, X + 48, Y - 17], "o"); c.px(X + 44, Y - 21, "k")
+  // trup: loďka z boku, příď vpravo výš, záď zabořená
+  c.poly([X - 38, Y - 12, X - 40, Y - 22, X - 30, Y - 24, X + 20, Y - 30, X + 34, Y - 30, X + 36, Y - 20, X + 28, Y - 8, X - 30, Y - 5], "W")
+  c.poly([X - 36, Y - 10, X + 34, Y - 16, X + 28, Y - 8, X - 30, Y - 5], "w")   // spodek ve stínu
+  c.line(X - 36, Y - 11, X + 34, Y - 17, "v")
+  // zvednutý ocas na zádi
+  c.poly([X - 40, Y - 22, X - 46, Y - 36, X - 38, Y - 32, X - 36, Y - 38, X - 30, Y - 24], "W"); c.line(X - 38, Y - 32, X - 34, Y - 24, "v")
+  // křídlo na boku: tři pera
+  c.poly([X - 26, Y - 22, X + 4, Y - 27, X + 14, Y - 22, X + 2, Y - 15, X - 22, Y - 13], "w")
+  for (let k = 0; k < 3; k++) c.line(X - 22 + k * 9, Y - 21 + k, X - 12 + k * 9, Y - 15, "v")
+  // sedadla (červená koženka) a volant
+  c.rect(X - 18, Y - 34, 9, 9, "V"); c.rect(X - 6, Y - 35, 9, 9, "V"); c.hline(X - 18, Y - 34, 9, "7"); c.hline(X - 6, Y - 35, 9, "7")
+  c.line(X + 8, Y - 30, X + 11, Y - 36, "S"); c.hline(X + 9, Y - 37, 5, "S")
+  // krk: od přídě nahoru, esíčko dozadu a dopředu, u hlavy prasklý, hlava visí zobákem dolů
+  c.line(X + 30, Y - 28, X + 34, Y - 44, "W", 6); c.line(X + 34, Y - 44, X + 28, Y - 56, "W", 6); c.line(X + 28, Y - 56, X + 34, Y - 62, "W", 6)
+  c.line(X + 33, Y - 28, X + 37, Y - 44, "w", 2)
+  c.line(X + 30, Y - 50, X + 34, Y - 52, "k")   // prasklina
+  c.ellipse(X + 39, Y - 60, 6, 5, "W"); c.px(X + 40, Y - 61, "k"); c.px(X + 41, Y - 61, "k")
+  c.poly([X + 42, Y - 61, X + 50, Y - 53, X + 44, Y - 53, X + 40, Y - 56], "o"); c.rect(X + 42, Y - 60, 3, 2, "k")
+  // špína: odstřik bahna dole, rezavé stékance, řasy
+  c.noise(X - 38, Y - 18, 74, 12, "h", 0.10, 61, "Ww"); c.noise(X - 40, Y - 36, 80, 30, "x", 0.03, 62, "Ww")
+  c.vline(X + 22, Y - 28, 9, "u"); c.vline(X - 28, Y - 22, 8, "u"); c.vline(X + 33, Y - 40, 6, "x")
 })
 
 // Vana s kaprem: smaltovaná vana na nožkách, oprýskaná na železo, nakloněná; z ní čouhá ocas obřího kapra.
@@ -260,4 +274,108 @@ anim("labut_zla", { w: 46, h: 40, outline: "k", fps: 2, frames: 2 }, (c) => {
   }
 })
 
-sheet("landmarks_kuriozity", ["mlok", "mlok_maly_*", "stalin_hlava", "metronom", "golem", "miminko", "kun_lucerna", "kafka", "labut", "labut_zla", "kapr_vana"], { pad: 1 })
+
+// Kočka Šklíba (Alenka v říši divů) na holém stromě uprostřed Václaváku: mourovatá kočka leží na spodní větvi
+// a šklebí se. 8 snímků: celá kočka, rozplývá se (dithering), zbude jen úsměv a oči, a zase se složí.
+anim("skliba", { w: 132, h: 200, fps: 1.5, frames: 8 }, (c) => {
+  const f = c.frame ?? 0
+  const mode = [0, 0, 0, 1, 2, 2, 2, 1][f]          // 0 celá, 1 napůl, 2 jen úsměv
+  // holý strom jako lípy v aleji (stejné větvení pro všechny snímky) a silná spodní větev doleva
+  const rng = c.rng(23)
+  c.ellipse(66, 194, 30, 6, "A")
+  c.rect(62, 120, 8, 76, "H"); c.rect(62, 120, 3, 76, "K"); c.rect(58, 186, 16, 10, "H")
+  const branch = (x0, y0, len, dir, depth) => {
+    const x1 = Math.round(x0 + Math.cos(dir) * len), y1 = Math.round(y0 - Math.sin(dir) * len)
+    c.line(x0, y0, x1, y1, depth < 2 ? "H" : "K", Math.max(1, 4 - depth))
+    if (depth < 4) for (let i = 0; i < 2; i++) branch(x1, y1, len * 0.68, dir + (rng() - 0.5) * 1.3, depth + 1)
+  }
+  branch(66, 124, 40, Math.PI / 2, 0); branch(66, 140, 30, Math.PI / 2 + 0.8, 1); branch(66, 136, 30, Math.PI / 2 - 0.8, 1)
+  c.rect(20, 153, 44, 4, "H"); c.hline(20, 153, 44, "h"); c.line(20, 154, 12, 146, "H", 2); c.line(30, 153, 26, 144, "K")
+  const ox = 16, oy = 128
+  const cat = (x, y, col) => { if (mode === 0 || (mode === 1 && (x + y) % 2 === 0)) c.px(x + ox, y + oy, col) }
+  // tělo na větvi, pruhy, ocas visí dolů
+  for (let x = 14; x <= 36; x++) for (let y = 13; y <= 24; y++) {
+    const dx = (x - 25) / 11.5, dy = (y - 18.5) / 6
+    if (dx * dx + dy * dy <= 1) cat(x, y, (x % 4 === 0 && y < 22) ? "P" : y > 21 ? "v" : "x")
+  }
+  for (let i = 0; i < 12; i++) { const x = 36 + Math.round(Math.sin(i / 3) * 2), y = 21 + i; cat(x, y, i % 4 < 2 ? "x" : "P"); cat(x + 1, y, i % 4 < 2 ? "x" : "P") }
+  // hlava, uši
+  for (let x = 4; x <= 18; x++) for (let y = 7; y <= 21; y++) {
+    const dx = (x - 11) / 7.5, dy = (y - 14) / 7
+    if (dx * dx + dy * dy <= 1) cat(x, y, y < 10 && x % 3 === 0 ? "P" : "x")
+  }
+  for (let k = 0; k < 4; k++) { for (let x = 4 + k; x <= 7; x++) cat(x, 8 - k, "x"); for (let x = 15; x <= 18 - k; x++) cat(x, 8 - k, "x") }
+  cat(6, 7, "r"); cat(16, 7, "r")
+  // oči a úsměv zůstávají i bez kočky
+  c.rect(ox + 7, oy + 12, 3, 2, "y"); c.rect(ox + 13, oy + 12, 3, 2, "y")
+  for (const x of [8, 14]) { c.px(ox + x, oy + 12, "k"); c.px(ox + x, oy + 13, "k") }
+  c.px(ox + 5, oy + 15, "W"); c.px(ox + 17, oy + 15, "W")
+  c.hline(ox + 5, oy + 16, 13, "W"); c.hline(ox + 6, oy + 17, 11, "W"); c.hline(ox + 8, oy + 18, 7, "W")
+  for (let x = 6; x <= 16; x += 2) c.px(ox + x, oy + 17, "k")
+  c.px(ox + 11, oy + 14, "V")
+})
+
+// Zámecké schody na Malé Straně (landmark, půdorys 5 × 1 podél a): kamenné schodiště mezi zídkami stoupá doprava nahoru
+// k brance v opěrné zdi (lm_schody_zed, stojí hned za horním koncem). Počátek je spodní roh půdorysu (a0 − ½, b0 + ½); holubi sedí na dlaždici pod prvním stupněm.
+sprite("lm_zamecke_schody", { w: 390, h: 320 }, (c) => {
+  const H = 318, Q = (ua, vb, z) => [64 + 64 * ua - 64 * vb, H - 32 * ua - 32 * vb - z]
+  const quad = (pts, col) => c.poly(pts.flat(), col)
+  const N = 22, U0 = 0.15, U1 = 4.1, ZT = 92, zs = (i) => Math.round(ZT * i / N), us = (i) => U0 + (U1 - U0) * i / N
+  // zadní zídka (za schody, vyšší) a zeď s brankou na horním konci
+  quad([Q(0, 1, 0), Q(U1, 1, ZT), Q(U1, 1, ZT + 16), Q(0, 1, 16)], "P")
+  quad([Q(U1, 1, ZT), Q(5, 1, ZT), Q(5, 1, ZT + 16), Q(U1, 1, ZT + 16)], "P")
+  // stupně: nášlap světlý, čelo stupně tmavší (kouká k divákovi doleva dolů)
+  for (let i = 0; i < N; i++) {
+    quad([Q(us(i), 0, zs(i)), Q(us(i), 1, zs(i)), Q(us(i), 1, zs(i + 1)), Q(us(i), 0, zs(i + 1))], i % 5 === 3 ? "A" : "P")
+    quad([Q(us(i), 0, zs(i + 1)), Q(us(i + 1), 0, zs(i + 1)), Q(us(i + 1), 1, zs(i + 1)), Q(us(i), 1, zs(i + 1))], i % 3 ? "q" : "v")
+  }
+  quad([Q(U1, 0, ZT), Q(5, 0, ZT), Q(5, 1, ZT), Q(U1, 1, ZT)], "q")
+  // přední bok schodiště (stěna k divákovi) s nízkou zídkou podél stupňů a spárami kvádrů
+  const side = [Q(0, 0, 0)]
+  for (let i = 0; i <= N; i++) side.push(Q(us(i), 0, zs(i) + 7))
+  side.push(Q(5, 0, ZT + 7), Q(5, 0, 0))
+  quad(side, "p")
+  for (let i = 0; i < N; i++) { const [x0, y0] = Q(us(i), 0, zs(i) + 7), [x1, y1] = Q(us(i + 1), 0, zs(i + 1) + 7); c.line(x0, y0, x1, y1, "q", 2) }
+  { const [x0, y0] = Q(U1, 0, ZT + 7), [x1, y1] = Q(5, 0, ZT + 7); c.line(x0, y0, x1, y1, "q", 2) }
+  for (let z = 12; z < ZT; z += 12) { const ua = U0 + (U1 - U0) * (z + 4) / ZT; if (ua < 5) { const [x0, y0] = Q(ua, 0, z), [x1, y1] = Q(5, 0, z); c.line(x0, y0, x1, y1, "P") } }
+  for (let k = 0; k < 26; k++) { const ua = 1 + (k * 37 % 40) / 10, z = (k * 53) % Math.max(4, Math.round(ZT * (ua - U0) / (U1 - U0)) - 6); const [x, y] = Q(Math.min(4.9, ua), 0, z); c.px(x, y, k % 3 ? "P" : "G"); c.px(x + 1, y, k % 4 ? "P" : "g") }
+  // mech u paty, trus od holubů na spodních stupních
+  for (let k = 0; k < 14; k++) { const [x, y] = Q(0.2 + k * 0.33, 0, 1 + (k % 3)); c.px(x, y, "G"); c.px(x + 1, y - 1, "g") }
+  for (let k = 0; k < 9; k++) { const [x, y] = Q(0.3 + k * 0.17, 0.2 + (k * 7 % 6) / 10, zs(Math.round((0.3 + k * 0.17 - U0) / (U1 - U0) * N)) + 1); c.px(x, y, "W") }
+  quad([Q(0, 0, 0), Q(0, 0, 9), Q(0, 1, 16), Q(0, 1, 0)], "P")
+  { const [x, y] = Q(0, 0, 0); c.rect(x - 3, y - 14, 7, 14, "p"); c.rect(x - 4, y - 16, 9, 3, "q") }
+})
+
+// Opěrná zeď pod Hradem za horním koncem Zámeckých schodů (landmark, půdorys 1 × 8 podél b): vysoká kamenná zeď
+// s cimbuřím, v ní branka s lucernou přesně nad schodištěm (řádek b = b0 + 3), nahoře ochoz. Počátek je spodní roh
+// půdorysu (a0 − ½, b0 + dpt − ½).
+sprite("lm_schody_zed", { w: 580, h: 480 }, (c) => {
+  const H = 478, D = 8, HW = 170, ZT = 92
+  const R = (ua, vb, z) => [512 + 64 * ua - 64 * vb, H - 32 * ua - 32 * vb - z]
+  const quad = (pts, col) => c.poly(pts.flat(), col)
+  // čelo k náměstí (kouká doleva dolů, ve stínu), bok k divákovi a ochoz nahoře
+  quad([R(0, 0, 0), R(0, D, 0), R(0, D, HW), R(0, 0, HW)], "P")
+  quad([R(0, 0, 0), R(1, 0, 0), R(1, 0, HW), R(0, 0, HW)], "p")
+  quad([R(0, 0, HW), R(1, 0, HW), R(1, D, HW), R(0, D, HW)], "q")
+  // kvádry: vodorovné spáry po 14 bodech, svislé na střídačku
+  for (let z = 14; z < HW; z += 14) {
+    { const [x0, y0] = R(0, 0, z), [x1, y1] = R(0, D, z); c.line(x0, y0, x1, y1, "A") }
+    { const [x0, y0] = R(0, 0, z), [x1, y1] = R(1, 0, z); c.line(x0, y0, x1, y1, "P") }
+    for (let vb = ((z / 14) % 2) * 0.25; vb < D; vb += 0.5) { const [x0, y0] = R(0, vb, z), [x1, y1] = R(0, vb, z - 14); c.line(x0, y0, x1, y1, "A") }
+  }
+  // cimbuří na hraně k náměstí
+  for (let vb = 0; vb < D; vb += 0.5) quad([R(0, vb, HW), R(0, vb + 0.3, HW), R(0, vb + 0.3, HW + 10), R(0, vb, HW + 10)], "P")
+  for (let vb = 0; vb < D; vb += 0.5) { const [x0, y0] = R(0, vb, HW + 10), [x1, y1] = R(0, vb + 0.3, HW + 10); c.line(x0, y0, x1, y1, "q", 2) }
+  // branka nad schodištěm: tmavý oblouk od výšky podesty, práh, lucerna
+  const g0 = 4.22, g1 = 4.78
+  quad([R(0, g0, ZT), R(0, g1, ZT), R(0, g1, ZT + 46), R(0, g0, ZT + 46)], "k")
+  { const [x, y] = R(0, 4.5, ZT + 50); c.circ(x, y, 17, "k") }
+  quad([R(0, g0 - 0.06, ZT - 3), R(0, g1 + 0.06, ZT - 3), R(0, g1 + 0.06, ZT), R(0, g0 - 0.06, ZT)], "q")
+  { const [x, y] = R(0, 4.5, ZT + 76); c.rect(x - 3, y - 6, 6, 9, "S"); c.rect(x - 1, y - 4, 2, 4, "f"); c.px(x, y - 8, "S") }
+  // mech, stékance a břečťan
+  for (let k = 0; k < 60; k++) { const vb = (k * 0.37) % D, z = (k * 29) % 40; const [x, y] = R(0, vb, z); c.px(x, y, k % 3 ? "G" : "g") }
+  for (let k = 0; k < 14; k++) { const vb = 0.3 + (k * 0.61) % (D - 0.5), n = 10 + (k * 17) % 46; const [x, y] = R(0, vb, HW - 2); c.vline(x, y, n, "A") }
+  for (let k = 0; k < 40; k++) { const vb = 6.2 + (k % 8) * 0.2, z = 20 + (k * 13) % 110; const [x, y] = R(0, vb, z); c.rect(x, y, 2, 2, k % 2 ? "G" : "g") }
+})
+
+sheet("landmarks_kuriozity", ["mlok", "mlok_maly_*", "stalin_hlava", "metronom", "golem", "miminko", "kun_lucerna", "kafka", "labut", "labut_zla", "kapr_vana", "skliba", "lm_zamecke_schody", "lm_schody_zed"], { pad: 1 })

@@ -241,3 +241,25 @@ liaFace("vaclav", LIA_VACLAV, (c) => {
   ;[[12, 18], [13, 19], [40, 17], [39, 18], [33, 9], [34, 10]].forEach(([x, y]) => c.px(x, y, "u"))
   c.px(20, 28, "U"); c.vline(12, 42, 4, "O"); c.vline(28, 49, 4, "O")
 })
+
+// —— Bufetářka z Koruny: paní v bílém plášti a šátku, na dlani tác s chlebíčky ——
+const LIA_BUFETARKA = {
+  build: "stout", height: 44, female: true, age: "old", skin: "normal",
+  hair: { style: "bun", col: "grey" },
+  hat: { kind: "scarf", col: "white" },
+  top: { kind: "coat", col: "white", long: true },
+  legs: { kind: "skirt", col: "ash" },
+  shoes: { kind: "shoes", col: "dark" },
+  items: ["dirt"],
+}
+liaIdle("bufetarka", LIA_BUFETARKA, (c, g) => {
+  const [hx, hy] = g.hand
+  // tác na dlani: plech, na něm tři chlebíčky (veka, salám, kolečko vejce)
+  c.hline(hx - 5, hy + 1, 9, "m"); c.hline(hx - 4, hy + 2, 7, "M")
+  for (let i = 0; i < 3; i++) { c.px(hx - 4 + i * 3, hy, "c"); c.px(hx - 3 + i * 3, hy, "V"); c.px(hx - 4 + i * 3, hy - 1, i === 1 ? "y" : "W") }
+})
+liaFace("bufetarka", LIA_BUFETARKA, (c) => {
+  // tác s chlebíčky v rohu
+  c.rect(36, 50, 20, 3, "m"); c.hline(36, 53, 20, "M")
+  for (let i = 0; i < 3; i++) { c.rect(38 + i * 6, 46, 5, 4, "c"); c.rect(38 + i * 6, 45, 5, 2, "V"); c.px(40 + i * 6, 44, i === 1 ? "y" : "W") }
+})

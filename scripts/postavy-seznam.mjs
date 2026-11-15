@@ -27,6 +27,9 @@ export const ROSTER = [
         about: 'Tři zdivočelí psi na severní pěšině, vůdce má na krku Fantovu stužku.',
         look: 'Vychrtlí kříženci, špinavá srst, jeden s obojkem a stužkou.', now: 'Jednoduchý pes 48 × 36 se dvěma snímky.' },
     // —— Václavák ——
+    { place: 'vaclavak', sprite: 'bufetarka', face: 'face_bufetarka', dialog: 'bufet', faction: 'neutrální',
+        about: 'Bufetářka z automatu Koruna. Pult vynesla na molo pod nárožní věž a prodává chlebíčky za jízdenky.',
+        look: 'Starší žena v bílém plášti a šátku, na dlani plech s chlebíčky.', now: SWAP },
     { place: 'vaclavak', sprite: 'dispecerka', face: 'face_dispecerka', dialog: 'dispecerka', faction: 'metro',
         about: 'Hlas lidí z metra. Sedí ve stanici Muzeum a mluví k náměstí rozhlasem. Řád znamená, že všechno je zapsané.',
         look: 'Žena kolem padesáti v šedé uniformě DPP, sluchátka s mikrofonem, desky s evidencí pod paží, přísný drdol.', now: SWAP },
@@ -103,7 +106,7 @@ export const ROSTER = [
     { place: 'malastrana', sprite: 'kastelan', face: 'face_kastelan', dialog: 'kastelan', faction: 'Hrad · tržiště',
         about: 'Chodí z Hradu dolů nakupovat: sochy, jídlo, umění. Jediný, kdo bránou projde oběma směry.',
         look: 'Muž v tmavém saku se svazkem obrovských klíčů, nákupní taška z Fantova tržiště, lakované boty od bláta.', now: SWAP },
-    { place: 'malastrana', sprite: 'holub', dialog: 'holubi', name: 'Holubi ze Zámeckých schodů', faction: 'boj',
+    { place: 'malastrana', sprite: 'holubi_hejno', dialog: 'holubi', name: 'Holubi ze Zámeckých schodů', faction: 'boj',
         about: 'Hlídají cestu po Zámeckých schodech k bráně.',
         look: 'Hejno vypasených pražských holubů, jeden kulhá a je nejagresivnější.', now: 'Zástupný sprite.' },
     // —— Hrad ——

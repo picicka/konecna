@@ -34,25 +34,32 @@ anim("krysa", { w: 16, h: 8, outline: "k", fps: 8, frames: 2 }, (c) => {
   c.line(10, 5, 15, f ? 4 : 6, "i")
   c.px(f ? 4 : 5, 7, "H"); c.px(f ? 8 : 7, 7, "H")
 })
-// Voříšek: toulavý pes, který se k hrdince na chvíli přidá. Kouká doleva (doprava se zrcadlí), 4 snímky běhu
-// (nohy se střídají, ocas a ucho poskakují) a sed se zvednutou hlavou (2 snímky: vrtí ocasem).
+// Voříšek: toulavý pes, který se k hrdince na chvíli přidá. Bílý se zrzavými a černými fleky (májový ořech).
+// Kouká doleva (doprava se zrcadlí), 4 snímky běhu (nohy se střídají, ocas a ucho poskakují) a sed se zvednutou
+// hlavou (2 snímky: vrtí ocasem).
 function voriHead(c, x, y) {
-  c.rect(x, y, 8, 7, "u"); c.rect(x - 4, y + 3, 5, 4, "i"); c.px(x - 4, y + 3, "k"); c.rect(x + 1, y, 6, 2, "h")
+  c.rect(x, y, 8, 7, "W"); c.rect(x - 4, y + 3, 5, 4, "W"); c.hline(x - 3, y + 6, 4, "w"); c.px(x - 4, y + 3, "k")
+  c.rect(x + 3, y, 5, 4, "o"); c.px(x + 2, y + 1, "o")        // zrzavý flek přes oko a půl hlavy
   c.px(x + 1, y + 2, "k"); c.px(x - 2, y + 6, "V")
-  c.rect(x + 5, y - 2, 3, 4, "H"); c.px(x + 2, y - 1, "u")   // jedno ucho stojí, druhé je klopené
+  c.rect(x + 5, y - 2, 3, 4, "A"); c.px(x + 2, y - 1, "o")   // černé ucho stojí, zrzavé je klopené
 }
 anim("voricek", { w: 32, h: 22, outline: "k", fps: 8, frames: 4 }, (c) => {
   const f = c.frame ?? 0, bob = f % 2
-  c.rect(9, 9 + bob, 16, 7, "u"); c.rect(9, 9 + bob, 16, 2, "h"); c.rect(11, 14 + bob, 10, 2, "i"); c.rect(15, 9 + bob, 5, 4, "H")
+  c.rect(9, 9 + bob, 16, 7, "W"); c.rect(11, 14 + bob, 12, 2, "w")
+  c.rect(14, 9 + bob, 5, 4, "o"); c.px(13, 10 + bob, "o"); c.hline(15, 13 + bob, 3, "o")   // zrzavý flek na hřbetě
+  c.rect(21, 9 + bob, 4, 3, "A"); c.px(20, 9 + bob, "A"); c.px(22, 12 + bob, "A")          // černý flek na zadku
+  c.px(11, 13 + bob, "A"); c.px(12, 13 + bob, "A")
   voriHead(c, 5, 4 + bob)
-  c.line(25, 10 + bob, 29, 5 + (f < 2 ? 0 : 2), "u", 2); c.px(29, 4 + (f < 2 ? 0 : 2), "W")
+  c.line(25, 10 + bob, 29, 5 + (f < 2 ? 0 : 2), "A", 2); c.px(29, 4 + (f < 2 ? 0 : 2), "W"); c.px(28, 5 + (f < 2 ? 0 : 2), "W")
   const legs = [[10, 13, 20, 23], [8, 14, 19, 25], [11, 12, 21, 22], [12, 9, 24, 19]][f]
-  legs.forEach((x, i) => { c.line(i < 2 ? 11 + i : 21 + i - 2, 16, x, 21, i % 2 ? "H" : "u", 2) })
+  legs.forEach((x, i) => { c.line(i < 2 ? 11 + i : 21 + i - 2, 16, x, 21, i === 1 ? "o" : i % 2 ? "w" : "W", 2) })
 })
 anim("voricek_sed", { w: 26, h: 26, outline: "k", fps: 4, frames: 2 }, (c) => {
   const f = c.frame ?? 0
-  c.poly([8, 10, 15, 9, 21, 16, 22, 25, 9, 25], "u"); c.poly([8, 12, 12, 12, 13, 25, 9, 25], "i"); c.rect(15, 20, 7, 5, "h")
-  c.rect(8, 18, 2, 7, "u"); c.rect(11, 19, 2, 6, "H"); c.hline(7, 25, 16, "H")
+  c.poly([8, 10, 15, 9, 21, 16, 22, 25, 9, 25], "W"); c.poly([8, 12, 12, 12, 13, 25, 9, 25], "w")
+  c.rect(15, 12, 4, 5, "o"); c.px(14, 13, "o"); c.px(19, 15, "o")                          // zrzavý flek na hřbetě
+  c.rect(17, 20, 5, 5, "A"); c.px(16, 22, "A")                                             // černé stehno
+  c.rect(8, 18, 2, 7, "W"); c.rect(11, 19, 2, 6, "o"); c.hline(7, 25, 16, "v")
   voriHead(c, 6, 2)
-  c.line(22, 23, f ? 25 : 24, f ? 21 : 17, "u", 2)
+  c.line(22, 23, f ? 25 : 24, f ? 21 : 17, "A", 2); c.px(f ? 25 : 24, f ? 21 : 17, "W")
 })

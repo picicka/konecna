@@ -82,6 +82,7 @@ const changeTrust = (state, key, n) => {
 // Nová úroveň: bod do vlastnosti podle volby hráčky (Ruka, Ústa, Oko), u každé obrázek a k čemu je.
 const levelUp = async (world, levelled) => {
     for (let i = 0; i < levelled; i++) {
+        world.registry.get('sound')?.level();
         // čísla i s výbavou, jako na liště (Oko 5 → 6, ne holé 4 → 5)
         const pick = await world.hud.choose(`${HUD.levelUp} ${world.state.level - levelled + i + 1}`, HUD.levelPrompt, ATTRIBUTES.map((a) => ({ label: `${ATTRIBUTE_NAMES[a]} ${attrOf(world.state, a)} → ${attrOf(world.state, a) + 1}: ${ATTRIBUTE_INFO[a]}`, icon: ATTRIBUTE_ICONS[a] })));
         world.state.attributes[ATTRIBUTES[pick]] += 1;
@@ -229,11 +230,13 @@ async function converse(world, id, dialog, speaker, face) {
             state.failed = { ...state.failed, [failKey(id, choice)]: attrOf(state, check.a) };
             const cost = choice.fail ?? (check.a === 'usta' && dialog.faction && FACTIONS.list[dialog.faction]?.perks ? { trust: { [dialog.faction]: -1 } } : CHECK.cost[check.a]);
             const r = apply(world, cost);
+            world.registry.get('sound')?.wrong();
             await hud.say(speaker, choice.failReply ?? CHECK.fail[check.a], face);
             notify(world, [...r.notes, CHECK.retry(ATTRIBUTE_NAMES[check.a])]);
             last = nodeId;
             continue;
         }
+        if (check && chanceOf(state, id, choice) < 1) world.registry.get('sound')?.pass();
         if (choice.once) state.asked[id] = [...(state.asked[id] ?? []), choice.id];
         const { fight, travel, ending, film, rope, ...now } = choice.do ?? {};
         const before = entryNode(state, dialog);

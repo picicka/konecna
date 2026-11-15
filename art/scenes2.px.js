@@ -540,3 +540,35 @@ scene("cs_muzeum", { w: 640, h: 360 }, (c) => {
   c.ellipse(308, 257, 12, 2, "k")
 })
 
+
+// Poslední snímek každého konce: nádražní hodiny zblízka, ručičky na 14:37. Tmavá hala, ciferník zažloutlý a popraskaný,
+// na konzole sedí holub. Jediné světlo je slabý odlesk na skle.
+scene("cs_hodiny", { w: 640, h: 360 }, (c) => {
+  c.rect(0, 0, 640, 360, "N")
+  // klenba haly: žebra a tmavá okna
+  for (let i = 0; i < 9; i++) { c.line(i * 80, 0, i * 80 - 60, 360, "n", 3) }
+  for (let y = 40; y < 360; y += 70) c.hline(0, y, 640, "n")
+  c.noise(0, 0, 640, 360, "k", 0.05, 91)
+  // konzola od stropu a rám
+  c.rect(312, 0, 16, 60, "S"); c.rect(316, 0, 4, 60, "s"); c.rect(250, 52, 140, 10, "S"); c.rect(250, 52, 140, 2, "s")
+  const X = 320, Y = 196, R = 118
+  c.circ(X, Y, R + 14, "k"); c.circ(X, Y, R + 10, "S"); c.circ(X, Y, R + 4, "s"); c.circ(X, Y, R, "c")
+  c.noise(X - R, Y - R, R * 2, R * 2, "C", 0.10, 92, "c"); c.noise(X - R, Y - R, R * 2, R * 2, "W", 0.03, 93, "c")
+  // čárky: hodinové tlusté, minutové tečky
+  for (let i = 0; i < 60; i++) {
+    const a = i * Math.PI / 30, s = Math.sin(a), k = -Math.cos(a)
+    if (i % 5 === 0) c.line(X + Math.round(s * (R - 22)), Y + Math.round(k * (R - 22)), X + Math.round(s * (R - 6)), Y + Math.round(k * (R - 6)), "k", i % 15 === 0 ? 5 : 3)
+    else c.px(X + Math.round(s * (R - 8)), Y + Math.round(k * (R - 8)), "K")
+  }
+  // prasklina ve skle a rezavý stékanec
+  c.line(X - 70, Y - 80, X - 30, Y - 20, "e"); c.line(X - 30, Y - 20, X - 44, Y + 30, "e"); c.vline(X + 60, Y + 70, 40, "u")
+  // ručičky: 14:37
+  const hour = (14 + 37 / 60) % 12 / 12 * Math.PI * 2, minute = 37 / 60 * Math.PI * 2
+  c.line(X, Y, X + Math.round(Math.sin(hour) * 62), Y - Math.round(Math.cos(hour) * 62), "k", 7)
+  c.line(X, Y, X + Math.round(Math.sin(minute) * 98), Y - Math.round(Math.cos(minute) * 98), "k", 4)
+  c.circ(X, Y, 7, "k"); c.circ(X, Y, 3, "V")
+  // odlesk na skle
+  c.line(X + 40, Y - 96, X + 84, Y - 56, "W"); c.line(X + 50, Y - 98, X + 90, Y - 62, "W")
+  // holub na konzole
+  c.ellipse(372, 46, 9, 6, "M"); c.rect(378, 36, 6, 7, "S"); c.px(385, 39, "y"); c.px(381, 38, "k"); c.line(363, 46, 356, 50, "S", 2)
+})

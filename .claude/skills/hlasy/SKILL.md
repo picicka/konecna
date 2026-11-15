@@ -43,6 +43,7 @@ a pár postavám, kterým patří.
 | Dispečerka | řeč rozhlasu, trpný rod; mimo roli unavená a prosí | únava, víra v zápis | ne |
 | Václav na směny | brblá, šeptá drby, bolí ho nohy | únava | ano |
 | Revizor | suchý úřední, k hrdince rozpačitě něžný | něha po dvaceti letech přes sklo | jedna |
+| Bufetářka | řeč od pultu: „Další!“, výčty zboží, věty bez sloves | stesk po frontě, která spěchala | ne |
 | Kuřačka | úsečná, obecná čeština, věty o třech slovech | klid, občas závist | ano, krátké |
 | Strážmistr Kulhánek | služební fráze, které se mu rozpadají v půlce | samota, něha ke koťatům | ne |
 | Lanař | nadšenec, reklamní hesla, vykřičníky | nadšení z výšky | ano |
@@ -62,7 +63,9 @@ a pár postavám, kterým patří.
 | Průvodkyně | nacvičený výklad, veselost na hraně zhroucení | samota | ano, z výkladu |
 | Ochranka | otrávení, mluví jako odboráři | únava | ano |
 | Ředitel | hladký jazyk tiskových zpráv, žádný vtip | přesvědčení | nikdy |
+| Kočka Šklíba (strom na Václaváku, bublina po klepnutí) | tyká, klidně a pobaveně, hádankou; vždycky měří lidi psem | klid toho, kdo může kdykoli zmizet | ano, jedna na hlášku |
 | Trabant | řve z výfuku, nadává | vztek | ano |
+| Voříšek (ruch, bublina po klepnutí) | obecná čeština, tyká, mluví jako člověk, který má odehrát psa a nejde mu to | strach z bouřky | ano, on je gag; po každé větě odběhne |
 | Vypravěč (popisy, filmečky, věci) | suchý, věcný, krátké věty | – | ano, tady je doma |
 
 Nová postava dostane řádek v tabulce dřív, než dostane první repliku. Když se její hlas dá zaměnit s jiným

@@ -27,7 +27,7 @@ export class BootScene extends Phaser.Scene {
         const v = `?v=${art.version}`;
         this.load.atlas('atlas', `${options.images}/atlas.png${v}`, `${options.images}/atlas.json${v}`);
         ['landmarks', 'landmarks2', 'landmarks3', 'landmarks4', 'landmarks_vaclavak', 'landmarks_staromak', 'landmarks_hrad', 'landmarks_sm_tyn', 'landmarks_sm_radnice', 'landmarks_sm_namesti', 'landmarks_most', 'landmarks_mostovka', 'landmarks_svah', 'landmarks_kuriozity', 'landmarks_nusle', 'landmarks_nusle_most', 'landmarks_kostely'].forEach((key) => this.load.atlas(key, `${options.images}/${key}.png${v}`, `${options.images}/${key}.json${v}`));
-        const images = new Set([...Object.values(CUTSCENES).flat(), ...Object.values(ENDINGS).flatMap((e) => e.shots ?? []), ...EPILOG].map((shot) => shot.image).filter(Boolean));
+        const images = new Set([...Object.values(CUTSCENES).flat(), ...Object.values(ENDINGS).flatMap((e) => e.shots ?? []), ENDINGS.last, ...EPILOG].map((shot) => shot.image).filter(Boolean));
         images.forEach((key) => this.load.image(key, `${options.images}/${key}.png${v}`));
         this.load.on('loaderror', (file) => body(this, WIDTH / 2, HEIGHT / 2 + 60, `Nejde načíst ${file.key}`, { color: CRT.red }).setOrigin(0.5, 0));
     }

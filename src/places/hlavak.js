@@ -34,6 +34,8 @@ export const HLAVAK = {
     ].flatMap(({ b0, segs }) => segs.map((k, i) => ({ key: k === 'gable' ? 'lm_shed_gable' : k === 'a' ? 'lm_shed_a' : k === 'b' ? 'lm_shed_b' : null, a0: 25 + i * 4, b0, w: 4, dpt: 6 })).filter((s) => s.key)),
     // Nástupištní přístřešky a trakční stožáry mimo haly (a < 25 a a > 56).
     canopies: { outside: [25, 56], until: 68, mastEvery: 4 },
+    // pod halovými loděmi se kroky vracejí ozvěnou (WorldScene.stepSound)
+    echo: [{ a: [25, 56], b: [0, 10] }],
     ribs: [0, 5].flatMap((b0) => [26, 30, 34, 38, 42, 46, 50, 54].map((a) => ({ key: 'rib_7', a, b0, span: 7 }))),
     stops: {
         metro: { npc: { key: 'strojvedouci', a: 36, b: 21 }, approach: { a: 36, b: 22 }, props: [{ key: 'metro_totem_c', a: 30, b: 22 }] },

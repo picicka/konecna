@@ -152,6 +152,20 @@ anim("holub", { w: 54, h: 34, outline: "k", fps: 3 }, (c) => {
   c.px(22, 32, "W"); c.px(46, 31, "W")
 }, frame(), frame())
 
+// Celé hejno na patě Zámeckých schodů (zastavení schody na Malé Straně): čtyři holubi na dlažbě a tři na spodních
+// stupních schodiště lm_zamecke_schody (stojí o dlaždici dál podél a, proto jsou vpravo výš). 2 snímky kývání.
+anim("holubi_hejno", { w: 270, h: 110, outline: "k", fps: 3 }, (c) => {
+  const f = c.frame ?? 0
+  hrPigeon(c, 234, 35, f ? 0 : -2, 0)
+  hrPigeon(c, 202, 32, f ? -2 : 0, f ? 0 : 2)
+  hrPigeon(c, 196, 55, f ? -1 : 1, 0)
+  hrPigeon(c, 116, 84, f ? 0 : -2, 0)
+  hrPigeon(c, 152, 90, f ? -2 : 0, 0)
+  hrPigeon(c, 100, 97, f ? -1 : 1, f ? 2 : 0)
+  hrPigeon(c, 130, 99, f ? 1 : -1, 0)
+  for (const [x, y] of [[110, 108], [142, 107], [160, 100], [122, 95], [188, 66], [224, 46]]) c.px(x, y, "W")
+}, frame(), frame())
+
 // Stavební buňka metra E na třetím nádvoří: šedomodrý vlnitý kontejner, logo metra a fialový čtverec linky E,
 // rozsvícené okno (jediné světlo v Praze), dveře se schůdkem, kabely ke generátoru. Půdorys a 0–128 (2 dlaždice) ×
 // b −40–0; přední roh je spodní střed plátna, střed půdorysu je 42 bodů nad spodním okrajem a vodorovně uprostřed.

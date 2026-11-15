@@ -1,13 +1,13 @@
 // Václavák: ručně určené prvky nad mapou z OSM (data/vaclavak.json). Souřadnice jsou dlaždice (a od Můstku k Muzeu,
-// b napříč, náměstí je b 10–16). Spodní polovina (a ≤ 49) je pod vodou, středem vede molo (b 12–13) až k domu Na Můstku (a 11).
+// b napříč, náměstí je b 10–16). Spodní polovina (a ≤ 49) je pod vodou, středem vede molo (b 12–13) až k domu Na Můstku (a 11), odbočka (a 17–18) k paláci Koruna.
 // Příběh a postavy: docs/pribeh.md, místo 2.
 // - landmark: Národní muzeum (půdorys z OSM a 112–123, b 7–21);
 // - stops: zastavení s postavou, přístupem a rekvizitami;
 // - gates: dlaždice, které jsou neprůchozí, dokud neplatí podmínka (revizor pouští na molo);
 // - props: druhy stromů a rozsev harampádí.
 export const VACLAVAK = {
-    // Souprava zastavila mezi stanicemi, pošťačka vylezla nouzovým výlezem na magistrálu před Muzeem.
-    start: { a: 107, b: 12 },
+    // Souprava zastavila mezi stanicemi, pošťačka došla tunelem do stanice Muzeum a vyšla vstupem u dispečerky.
+    start: { a: 105, b: 12 },
     // zpátky loďkou s Kuřačkou (z Nuslí, ze Staromáku) se přijede k molu, ne k Muzeu
     arrivals: { nuselak: { a: 19, b: 12 }, staromak: { a: 19, b: 12 } },
     // Národní muzeum a roh bývalého Federálního shromáždění jsou z 3D modelu budov (real: klíč v data/domy-vaclavak.json
@@ -23,17 +23,26 @@ export const VACLAVAK = {
         { key: 'koruna_vez', atlas: 'landmarks_vaclavak', house: [14, 6], u: 55, v: -8, center: true },
         // hlavní kupole muzea na středním pavilonu modelu (landmark: klíč stavby, at: posun od kotvy spritu v bodech)
         { key: 'muzeum_kupole', atlas: 'landmarks_vaclavak', landmark: 'muzeum', at: [-368, -871], center: true }],
+    // na odbočce mola ke Koruně kamera vyjede nahoru, aby byla vidět celá nárožní věž s korunou
+    views: [{ a: [17, 18], b: [9, 11], dy: -170 }],
     lights: [{ a: 10, b: 13, scale: 1.1, tint: 0x3ff2d6, alpha: 0.4 }],
     stops: {
-        vylez: { npc: { key: 'vylez', a: 108, b: 11 }, approach: { a: 107, b: 11 }, props: [] },
-        // pokladna u paty pravého schodiště: odsud se vchází do muzea za kostrou plejtváka (filmeček muzeum)
-        muzeum: { npc: { key: 'muzeum_pokladna', a: 109, b: 17 }, approach: { a: 108, b: 17 }, props: [] },
-        dispecerka: { npc: { key: 'dispecerka', a: 102, b: 10 }, approach: { a: 102, b: 11 }, props: [{ key: 'metro_entrance', a: 103, b: 9 }] },
+        // vstup do stanice Muzeum (schody se zábradlím a sloupkem) na volné dlažbě vedle dispečerky, aby byl vidět; tudy se
+        // jezdí zpátky na Hlavák. Betonová budka výlezu tu dřív stála moc blízko pokladny muzea.
+        vylez: { npc: { key: 'metro_entrance', a: 104, b: 10 }, approach: { a: 104, b: 11 },
+            // kočka Šklíba na holém stromě níž na náměstí (dlážděný ostrůvek uprostřed): klepnutím říká, že voříšek je v pořádku
+            // a potrhlí jsou ostatní
+            props: [{ key: 'skliba', a: 90, b: 13, anim: true, say: 'skliba' }] },
+        // pokladna u paty levého schodiště (pravé zakrývá dům přes ulici): odsud se vchází do muzea za kostrou plejtváka (filmeček muzeum)
+        muzeum: { npc: { key: 'muzeum_pokladna', a: 109, b: 10 }, approach: { a: 108, b: 10 }, props: [] },
+        dispecerka: { npc: { key: 'dispecerka', a: 102, b: 10 }, approach: { a: 102, b: 11 }, props: [] },
         vaclav: { npc: { key: 'vaclav', a: 100, b: 13 }, approach: { a: 99, b: 13 }, props: [] },
         // nutrie po boji nebo kamínku seskočí z reproduktoru na kraj vody (after, nutrie_pryc)
         reproduktor: { npc: { key: 'reproduktor', a: 53, b: 8 }, approach: { a: 53, b: 9 }, props: [],
             after: { if: { flag: 'nutrie_pryc' }, npc: { key: 'reproduktor_prazdny', a: 53, b: 8 }, props: [{ key: 'nutrie_breh', a: 50, b: 4, anim: true, flip: true, from: 'npc', jump: 146, say: 'nutrie_breh' }] } },
         revizor: { npc: { key: 'revizor', a: 50, b: 11 }, approach: { a: 51, b: 12 }, props: [] },
+        // bufet automatu Koruna na odbočce mola pod nárožní věží: chlebíčky za jízdenky (pult leží před bufetářkou)
+        bufet: { npc: { key: 'bufetarka', a: 18, b: 9 }, approach: { a: 17, b: 9 }, props: [{ key: 'pult_chlebicky', a: 18, b: 10 }] },
         kuracka: { npc: { key: 'kuracka', a: 18, b: 12 }, approach: { a: 19, b: 12 }, props: [{ key: 'lodka', a: 18, b: 11 }] },
     },
     // Na molo pustí revizor jen se zápisem z evidence, jako úřední osobu, za zaplacení nebo když pošťačka zná cestu

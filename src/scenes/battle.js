@@ -65,8 +65,10 @@ export class BattleScene extends Phaser.Scene {
         const enemyFrame = frames.length ? frames.sort()[0] : this.def.sprite;
         this.enemy = this.add.image(WIDTH - 340, 320, 'atlas', enemyFrame).setOrigin(0.5, 1).setScale(this.def.scale ?? 3);
         this.hero = this.add.image(320, 330, 'atlas', 'hero_0').setOrigin(0.5, 1).setScale(4);
-        this.heroHp = body(this, 160, 340, '', { fontSize: '28px', color: CRT.text });
-        this.foeHp = body(this, WIDTH - 520, 340, '', { fontSize: '28px', color: CRT.text });
+        this.add.image(160, 356, 'atlas', 'ico_heart').setScale(2).setOrigin(0, 0.5);
+        this.add.image(WIDTH - 520, 356, 'atlas', 'ico_heart').setScale(2).setOrigin(0, 0.5);
+        this.heroHp = body(this, 200, 340, '', { fontSize: '28px', color: CRT.text });
+        this.foeHp = body(this, WIDTH - 480, 340, '', { fontSize: '28px', color: CRT.text });
         this.foeNerve = body(this, WIDTH - 520, 372, '', { fontSize: '28px', color: CRT.amber });
         panel(this, 40, 430, WIDTH - 80, 120);
         this.logText = body(this, 64, 440, '', { fontSize: '28px', color: CRT.bright, wordWrap: { width: WIDTH - 140 }, lineSpacing: -4 });
@@ -99,8 +101,8 @@ export class BattleScene extends Phaser.Scene {
         const pick = this.supply();
         this.buttons[3].caption.setText(`4. ${BATTLE.bag}\n${pick ? BATTLE.bagHint(ITEMS[pick].name, this.state.supplies[pick], ITEMS[pick].use.heal) : BATTLE.bagEmpty}`);
         const bar = (n, max, full = '■', empty = '□') => `${full.repeat(Math.max(0, n))}${empty.repeat(Math.max(0, max - n))}`;
-        this.heroHp.setText(`${BATTLE.hp} ${bar(this.state.hp, maxHp(this.state))} ${this.state.hp}/${maxHp(this.state)}`);
-        this.foeHp.setText(`${BATTLE.hp} ${bar(this.enemyHp, this.def.hp)} ${this.enemyHp}/${this.def.hp}`);
+        this.heroHp.setText(`${bar(this.state.hp, maxHp(this.state))} ${this.state.hp}/${maxHp(this.state)}`);
+        this.foeHp.setText(`${bar(this.enemyHp, this.def.hp)} ${this.enemyHp}/${this.def.hp}`);
         this.foeNerve.setText(this.def.nerve ? `${BATTLE.nerve} ${bar(this.enemyNerve, this.def.nerve, '◆', '◇')} ${this.enemyNerve}/${this.def.nerve}` : '');
     }
 
@@ -126,19 +128,20 @@ export class BattleScene extends Phaser.Scene {
             this.enemyHp = Math.max(0, this.enemyHp - dmg);
             this.say(`${prefix} ${dmg}. ${this.def.hurt}`);
             this.shake(this.enemy);
-            sound?.click();
+            sound?.hit();
         };
         let dodging = false;
         let free = false;
         if (action === 'attack') {
             if (this.def.special === 'dodge' && rand() < 0.25) this.say(this.def.dodge);
             else if (rand() < o.hit) strike(BATTLE.hit);
-            else this.say(BATTLE.miss);
+            else { this.say(BATTLE.miss); sound?.swish(); }
         } else if (action === 'talk') {
             const n = roll(o.talk);
             this.enemyNerve = Math.max(0, this.enemyNerve - n);
             this.say(`${this.def.shout} ${BATTLE.shout} −${n}.`);
             this.shake(this.enemy);
+            sound?.shout();
         } else if (action === 'defend') {
             dodging = true;
             this.say(BATTLE.guard);
@@ -167,7 +170,7 @@ export class BattleScene extends Phaser.Scene {
                 this.state.hp = Math.max(DEBUG.god ? 1 : 0, this.state.hp - dmg);
                 this.say(i === 1 ? `${this.def.twice} −${dmg}` : `${this.def.hit} −${dmg}`);
                 this.shake(this.hero);
-                sound?.wrong();
+                sound?.hurt();
             } else if (i === 0) this.say(this.def.miss);
             if (this.state.hp <= 0) break;
         }
@@ -180,6 +183,7 @@ export class BattleScene extends Phaser.Scene {
     finish(result) {
         this.over = true;
         this.buttons.forEach((b) => { b.disabled = true; });
+        if (result === 'win') this.registry.get('sound')?.win(); else if (result === 'dead') this.registry.get('sound')?.lose();
         this.time.delayedCall(1400, () => {
             this.scene.stop();
             this.onDone?.(result);
