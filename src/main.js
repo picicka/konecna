@@ -69,5 +69,9 @@ const start = () => {
 };
 
 // Pixelová písma musí být načtená dřív, než je Phaser poprvé vykreslí do textury.
-const fonts = document.fonts ? Promise.all([document.fonts.load("16px 'Press Start 2P'"), document.fonts.load('28px VT323')]).catch(() => null) : Promise.resolve();
+// Písma jsou rozdělená na části podle znaků a česká písmena s háčky (č, ř, ě, š, ž, ů, ď, ť, ň) jsou v jiné části než
+// základní latinka. Prohlížeč ji stahuje, až když ty znaky potká v textu stránky; text kreslený do plátna ho k tomu
+// nedonutí a Safari pak místo nich kreslí náhradní znak. Proto se obě části vyžádají výslovně s českou abecedou.
+const CZECH = 'ěščřžýáíéúůďťňóĚŠČŘŽÝÁÍÉÚŮĎŤŇÓ„“–…';
+const fonts = document.fonts ? Promise.all(["16px 'Press Start 2P'", '28px VT323'].flatMap((font) => [document.fonts.load(font), document.fonts.load(font, CZECH)])).catch(() => null) : Promise.resolve();
 fonts.then(start);
