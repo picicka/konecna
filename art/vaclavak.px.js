@@ -278,3 +278,116 @@ sprite("pult_chlebicky", { w: 64, h: 44, outline: "k" }, (c) => {
   }
   c.rect(27, 4, 11, 8, "W"); c.hline(29, 6, 7, "k"); c.hline(29, 9, 5, "V"); c.vline(32, 12, 3, "H")
 })
+
+// Zříceniny v prolukách Václaváku (landmark, půdorys w × 1 podél a): z domu zbyl parter s otvory, kusy zdí do prvního
+// a druhého patra (nároží stojí nejdéle), zadní zeď s prázdnými okny a hromada suti s trámy vysypaná do ulice.
+// Počátek je spodní roh půdorysu (a0 − ½, b0 + ½); přední stěna kouká k divákovi (+b), bok doleva (−a).
+const zricenina = (name, w, seed, [base, light, dark], floors) => sprite(name, { w: 64 + 64 * w + 8, h: 250 }, (c) => {
+  const H = 246, rng = c.rng(seed)
+  const R = (ua, vb, z) => [Math.round(64 + 64 * ua - 64 * vb), Math.round(H - 32 * ua - 32 * vb - z)]
+  const quad = (pts, col) => c.poly(pts.flat(), col)
+  const FH = 44, GF = 50
+  // výška zdi podél a: nároží vysoká, uprostřed propadlá, zubatý lom po krocích čtvrt dlaždice
+  const prof = (lo, hi, bias) => { const out = []; for (let i = 0; i <= w * 4; i++) { const t = i / (w * 4), edge = Math.abs(t - bias) * 2; out.push(Math.round(lo + (hi - lo) * Math.min(1, edge * edge + rng() * 0.35))) } return out }
+  const back = prof(GF + 20, GF + FH * floors, 0.35 + rng() * 0.3), front = prof(18, GF + FH * (floors - 1), 0.4 + rng() * 0.3)
+  const wall = (vb, hs, col, shade) => {
+    for (let i = 0; i < w * 4; i++) {
+      const u0 = i / 4, u1 = (i + 1) / 4, h0 = hs[i], h1 = hs[i + 1], hm = Math.min(h0, h1) - (rng() < 0.4 ? 5 : 0)
+      quad([R(u0, vb, 0), R(u1, vb, 0), R(u1, vb, Math.max(4, hm)), R(u0, vb, Math.max(4, h0 > h1 ? hm : h0))], col)
+      if (i % 2 === 0) { const [x, y] = R(u0, vb, hm); c.vline(x, y, Math.min(hm, 6 + Math.floor(rng() * 20)), shade) }
+    }
+  }
+  // zadní zeď (vnitřní líc ve stínu) s prázdnými okny, kterými je vidět tma
+  wall(1, back, dark, "k")
+  for (let f = 0; f < floors; f++) for (let i = 0; i < w * 2; i++) {
+    const u = 0.25 + i * 0.5, z = GF + 8 + f * FH
+    if (back[Math.round(u * 4)] > z + 30 && back[Math.round(u * 4) + 1] > z + 30) quad([R(u - 0.09, 1, z), R(u + 0.09, 1, z), R(u + 0.09, 1, z + 24), R(u - 0.09, 1, z + 24)], "k")
+  }
+  // bok k −a: zbytek štítové zdi, klesá od zadní zdi k přední
+  quad([R(0, 0, 0), R(0, 1, 0), R(0, 1, back[0]), R(0, 0.5, Math.round((back[0] + front[0]) / 2) - 8), R(0, 0, front[0])], dark)
+  { const [x0, y0] = R(0, 1, back[0]), [x1, y1] = R(0, 0, front[0]); c.line(x0, y0, x1, y1, "k") }
+  // podlaha uvnitř: suť
+  quad([R(0, 0, 0), R(w, 0, 0), R(w, 1, 0), R(0, 1, 0)], "P")
+  for (let k = 0; k < 40 * w; k++) { const [x, y] = R(rng() * w, rng(), 0); c.px(x, y, rng() < 0.5 ? "x" : rng() < 0.5 ? "R" : "p") }
+  // přední stěna: omítka, parter s otvory, okna v patrech, obnažené cihly u lomu
+  wall(0, front, base, light)
+  for (let i = 0; i < w * 2; i++) {
+    const u = 0.25 + i * 0.5, h = Math.min(front[Math.round(u * 4)], front[Math.round(u * 4) + 1])
+    if (h > 38) { quad([R(u - 0.13, 0, 3), R(u + 0.13, 0, 3), R(u + 0.13, 0, 34), R(u - 0.13, 0, 34)], "k"); if (rng() < 0.5) { const [x0, y0] = R(u - 0.13, 0, 20), [x1, y1] = R(u + 0.13, 0, 20); c.line(x0, y0, x1, y1, "H") } }
+    for (let f = 0; f < floors - 1; f++) { const z = GF + 8 + f * FH; if (h > z + 30) quad([R(u - 0.09, 0, z), R(u + 0.09, 0, z), R(u + 0.09, 0, z + 24), R(u - 0.09, 0, z + 24)], rng() < 0.3 ? "N" : "k") }
+  }
+  for (let i = 0; i <= w * 4; i++) { const u = i / 4, [x, y] = R(Math.min(u, w - 0.02), 0, front[i]); for (let k = 0; k < 5; k++) c.rect(x + Math.floor(rng() * 12) - 6, y + 1 + k * 3, 5, 2, rng() < 0.6 ? "R" : "r") }
+  for (let i = 0; i < w * 4; i++) if (front[i] > GF) { const [x0, y0] = R(i / 4, 0, GF - 4), [x1, y1] = R((i + 1) / 4, 0, GF - 4); c.line(x0, y0, x1, y1, light, 2) }
+  { const [x0, y0] = R(0, 0, 0), [x1, y1] = R(w, 0, 0); c.line(x0, y0 - 1, x1, y1 - 1, dark, 3) }
+  // hromada suti vysypaná ven před dům, trámy a cihly
+  const m = 0.6 + rng() * (w - 1.4), mw = 0.9 + rng() * 0.5
+  const heap = []
+  for (let i = 0; i <= 10; i++) { const t = i / 10, [x, y] = R(m - mw / 2 + mw * t, -0.18, 0); heap.push(x, y - Math.round(Math.sin(Math.PI * t) * (26 + rng() * 8))) }
+  { const [x0, y0] = R(m + mw / 2, -0.3, 0), [x1, y1] = R(m - mw / 2, -0.3, 0); heap.push(x0, y0 + 4, x1, y1 + 4) }
+  c.poly(heap, "P")
+  const [hx, hy] = R(m, -0.2, 0)
+  for (let k = 0; k < 46; k++) { const dx = Math.floor((rng() - 0.5) * mw * 60), dy = -Math.floor(rng() * 26 * (1 - Math.abs(dx) / (mw * 34))); c.rect(hx + dx, hy + dy, 3 + Math.floor(rng() * 3), 2, ["x", "p", "R", "r", "q", base][Math.floor(rng() * 6)]) }
+  c.line(hx - 22, hy - 4, hx + 14, hy - 30, "H", 3); c.line(hx - 4, hy - 2, hx + 30, hy - 14, "K", 2); c.line(hx - 30, hy - 12, hx - 8, hy - 22, "H", 2)
+  // plevel na koruně zdi
+  for (let k = 0; k < 6 * w; k++) { const i = Math.floor(rng() * w * 4), [x, y] = R(i / 4 + 0.1, 0, front[i]); c.px(x, y - 1, "G"); c.px(x + 1, y - 2, "g") }
+})
+zricenina("zricenina_a", 3, 11, ["C", "c", "e"], 3)
+zricenina("zricenina_b", 3, 23, ["t", "z", "T"], 2)
+zricenina("zricenina_c", 3, 37, ["c", "W", "e"], 3)
+zricenina("zricenina_d", 2, 41, ["p", "q", "P"], 2)
+
+// Střechy, podle kterých se náměstí pozná (overlays v src/places/vaclavak.js, počátek dole uprostřed, sedí na hlavní římse).
+// Hotel Evropa: secesní štít s oblým vrcholem, zlacené sousoší a lucerna.
+sprite("strecha_evropa", { w: 96, h: 96, outline: "k" }, (c) => {
+  c.poly([6, 95, 90, 95, 90, 70, 78, 62, 70, 40, 48, 26, 26, 40, 18, 62, 6, 70], "y")
+  c.poly([10, 95, 30, 95, 30, 44, 20, 62, 10, 70], "Y")
+  c.ellipse(48, 62, 12, 16, "n"); c.rect(36, 62, 25, 20, "n"); c.vline(48, 46, 36, "S"); c.hline(36, 66, 25, "S")
+  c.rect(4, 68, 88, 3, "W"); c.rect(14, 90, 68, 3, "W")
+  c.rect(42, 14, 12, 14, "y"); c.circ(48, 10, 5, "y"); c.rect(46, 2, 4, 5, "f"); c.px(47, 0, "f")
+  c.rect(30, 24, 8, 10, "y"); c.circ(34, 21, 3, "y"); c.rect(58, 24, 8, 10, "y"); c.circ(62, 21, 3, "y")
+  for (const [x, y] of [[22, 52], [72, 50], [40, 34], [60, 40]]) { c.px(x, y, "O"); c.px(x + 1, y + 1, "O") }
+  c.vline(20, 70, 22, "O"); c.vline(74, 72, 18, "O")
+})
+// Palác Fénix: červený střešní neon na ocelové konstrukci, půlka písmen zhaslá.
+sprite("strecha_fenix", { w: 132, h: 44 }, (c) => {
+  c.rect(4, 38, 124, 3, "S"); for (let x = 6; x < 128; x += 12) { c.vline(x, 8, 31, "S"); c.line(x, 38, x + 12, 8, "s") }
+  c.rect(4, 6, 124, 2, "S")
+  const L = (x, on, strokes) => strokes.forEach(([x0, y0, x1, y1]) => c.line(x + x0, 10 + y0, x + x1, 10 + y1, on ? "7" : "V", 3))
+  L(10, true, [[0, 0, 0, 22], [0, 0, 14, 0], [0, 10, 10, 10]])
+  L(34, true, [[0, 0, 0, 22], [0, 0, 14, 0], [0, 10, 10, 10], [0, 22, 14, 22]])
+  L(58, false, [[0, 0, 0, 22], [0, 0, 14, 22], [14, 0, 14, 22]])
+  L(82, true, [[4, 0, 4, 22]])
+  L(98, false, [[0, 0, 14, 22], [14, 0, 0, 22]])
+  c.px(40, 4, "7"); c.px(41, 3, "7")
+})
+// Palác České banky (Ligna): válcová nárožní věž s měděnou kupolí a lucernou.
+sprite("strecha_ligna", { w: 72, h: 118, outline: "k" }, (c) => {
+  c.rect(12, 78, 48, 40, "p"); c.rect(12, 78, 12, 40, "P"); c.rect(46, 78, 14, 40, "q")
+  for (const x of [18, 30, 42, 52]) { c.rect(x, 86, 5, 22, "n"); c.hline(x - 1, 85, 7, "W") }
+  c.ellipse(36, 78, 28, 6, "W"); c.ellipse(36, 116, 24, 4, "P")
+  c.clip([6, 30, 60, 48], () => { c.ellipse(36, 78, 27, 46, "Q"); c.clip([36, 30, 30, 48], () => c.ellipse(36, 78, 27, 46, "j")) })
+  for (const dx of [-18, -8, 4, 14]) c.line(36 + dx, 76, 36 + Math.round(dx * 0.25), 34, "k")
+  c.rect(31, 18, 10, 16, "Q"); c.rect(36, 18, 5, 16, "j"); c.rect(29, 16, 14, 3, "j"); c.poly([30, 16, 42, 16, 36, 6], "Q"); c.vline(36, 0, 7, "y"); c.px(36, 0, "f")
+  for (const [x, y] of [[20, 60], [28, 44], [46, 52]]) c.vline(x, y, 9, "A")
+})
+// Hotel Zlatá Husa: stupňovitý art deco štít se zlatou špicí.
+sprite("strecha_husa", { w: 96, h: 84, outline: "k" }, (c) => {
+  c.poly([4, 83, 92, 83, 92, 64, 80, 64, 80, 46, 66, 46, 66, 28, 30, 28, 30, 46, 16, 46, 16, 64, 4, 64], "c")
+  c.poly([4, 83, 16, 83, 16, 64, 4, 64], "e"); c.poly([16, 64, 30, 64, 30, 46, 16, 46], "e")
+  for (const [x, y, w] of [[4, 62, 12], [16, 44, 14], [30, 26, 36], [66, 44, 14], [80, 62, 12]]) c.rect(x, y, w, 3, "W")
+  c.rect(40, 40, 16, 26, "n"); c.vline(48, 40, 26, "S"); c.hline(40, 52, 16, "S"); c.rect(38, 66, 20, 2, "W")
+  c.rect(22, 68, 8, 10, "n"); c.rect(66, 68, 8, 10, "k")
+  c.rect(45, 12, 6, 16, "y"); c.poly([42, 12, 54, 12, 48, 0], "y"); c.px(48, 0, "f")
+  c.vline(34, 30, 18, "e"); c.vline(70, 48, 12, "e")
+})
+// Wiehlův dům: novorenesanční stupňovitý štít s volutami a nárožní věžička s bání.
+sprite("strecha_wiehl", { w: 108, h: 100, outline: "k" }, (c) => {
+  c.poly([30, 99, 104, 99, 104, 78, 94, 78, 94, 60, 84, 60, 84, 42, 50, 42, 50, 60, 40, 60, 40, 78, 30, 78], "C")
+  for (const [x, y, w] of [[30, 76, 10], [40, 58, 10], [50, 40, 34], [84, 58, 10], [94, 76, 10]]) c.rect(x, y, w, 3, "W")
+  c.circ(40, 76, 4, "c"); c.circ(94, 76, 4, "c"); c.circ(50, 58, 4, "c"); c.circ(84, 58, 4, "c")
+  c.rect(58, 52, 8, 16, "n"); c.rect(70, 52, 8, 16, "n"); c.rect(56, 72, 24, 12, "V"); c.rect(58, 74, 6, 8, "o"); c.rect(66, 74, 6, 8, "Q"); c.rect(73, 74, 5, 8, "y")
+  c.poly([62, 42, 72, 42, 67, 28], "C"); c.vline(67, 20, 9, "y")
+  c.rect(4, 58, 20, 41, "C"); c.rect(4, 58, 6, 41, "e"); c.rect(9, 68, 5, 12, "n"); c.rect(16, 68, 5, 12, "n"); c.rect(2, 56, 24, 3, "W")
+  c.clip([2, 30, 24, 27], () => { c.ellipse(14, 56, 12, 24, "Q"); c.clip([14, 30, 12, 27], () => c.ellipse(14, 56, 12, 24, "j")) })
+  c.rect(12, 22, 4, 9, "j"); c.vline(14, 12, 10, "y"); c.px(14, 11, "f")
+})

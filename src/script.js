@@ -22,7 +22,7 @@ export const ABOUT = {
         'Autor: picicka. Zdrojový kód: github.com/picicka/konecna.',
         'Mapová data: přispěvatelé OpenStreetMap, licence ODbL.',
         'Výšky domů, terén a střechy: ČÚZK, laserové skenování (DMP 1G) a ortofoto, licence CC BY 4.0.',
-        'Tvary domů a střech: 3D model budov, data base © IPR Praha, licence CC BY 4.0.',
+        'Tvary domů a střech: 3D model budov © IPR Praha, licence CC BY 4.0.',
         'Barvy omítek, výšky pater a rozteče oken domů: Fotorealistický 3D model Prahy (léto 2023), © IPR Praha, licence CC BY 4.0.',
         'Značení metra podle Jiřího Rathouského. Stavby jsou kreslené podle fotek z Wikimedia Commons, jen jako předloha.',
         'Běží na Phaseru 3. Grafika je nakreslená kódem v pxl, zvuk se skládá v prohlížeči.',
@@ -46,7 +46,6 @@ export const HUD = {
     quests: 'Deník',
     bag: 'Taška',
     map: 'Mapa',
-    tickets: 'jízdenek',
     level: 'ÚROVEŇ',
     hero: 'POŠŤAČKA',
     places: { hlavak: 'HLAVÁK', vaclavak: 'VÁCLAVÁK', nuselak: 'NUSELÁK', staromak: 'STAROMÁK', most: 'KARLŮV MOST', malastrana: 'MALÁ STRANA', hrad: 'HRAD' },
@@ -61,8 +60,8 @@ export const HUD = {
     questUpdate: 'Deník:',
     weapon: 'Zbraň:',
     equipped: 'Na sobě:',
-    hurt: (n) => `−${n} srdce`,
-    healed: (n) => `+${n} srdce`,
+    hurt: (n) => `−${hearts(n)}`,
+    healed: (n) => `+${hearts(n)}`,
     trustUp: 'věří vám víc', trustDown: 'věří vám méně', perkOpen: 'Otevřelo se:', perkClosed: 'Zavřelo se:',
 };
 
@@ -87,7 +86,7 @@ export const CHECK = {
         usta: 'Nepovedlo se. Tímhle jste si nepomohla, spíš naopak.',
         oko: 'Nepovedlo se. Přehlédla jste to a zakopla.',
     },
-    retry: (name) => `Znovu to půjde zkusit, až budete mít ${name} víc.`,
+    retry: (name) => `Znovu to půjde zkusit, až budete mít vyšší ${name === 'Ruka' ? 'Ruku' : name}.`,
 };
 // Karta postavy vedle rozhovoru: celá postava, skupina, vlastnosti (stats u DIALOGS) a kdo to je (about).
 export const CARD = {
@@ -113,7 +112,7 @@ export const CREATE = {
 // až hrdinka někoho z ní potká (members), a co chce, až to zjistí (want.flag, stačí jedna z vlajek).
 export const FACTIONS = {
     title: 'Kdo vám věří',
-    intro: 'Kdo vám věří, pomůže. Kdo ne, zavře dveře. A komu nakonec dáte krabičku, tak Praha dopadne.',
+    intro: 'Kdo vám věří, pomůže. Kdo ne, zavře dveře. Jak Praha dopadne, rozhodne krabička a ti, kdo vám na konci věří nejvíc.',
     unknown: 'Zatím vás nikdo nezná.',
     metLabel: 'Znáte:',
     nextLabel: 'Když vám budou věřit víc:',
@@ -124,7 +123,7 @@ export const FACTIONS = {
             want: { flag: ['robin_tajemstvi', 'met_netere'], text: 'Fanta prodal krabičku dvakrát, Hradu a Admirálovi. Dostane ji, kdo dá víc.' },
             perks: [[2, 'Kastelán vás vezme na Hrad jako zboží pana Fanty.'], [3, 'Neteř dá za krabičku čtyři sta a vymahači vás nechají být.']] },
         metro: { name: 'Metro', members: [['strojvedoucí', 'met_strojvedouci'], ['dispečerka', 'met_dispecerka'], ['revizor', 'met_revizor'], ['potápěčka', 'met_potapecka']],
-            want: { flag: ['zapsano', 'odmitla', 'utrzek2'], text: 'V krabičce je záznam jejich razicího štítu. Chtějí ho pustit lidem do rozhlasu.' },
+            want: { flag: ['zapsano', 'utrzek2'], text: 'V krabičce je záznam jejich razicího štítu. Chtějí ho pustit lidem do rozhlasu.' },
             perks: [[2, 'Revizor vás pustí na molo a souprava vás sveze zpátky zadarmo.'], [4, 'Hradní stráž pustí každého, za koho ručí metro.']] },
         lodkari: { name: 'Loďkaři', members: [['Kuřačka', 'met_kuracka'], ['kormidelník', 'met_kormidelnik'], ['Admirál', 'met_admiral'], ['Pilař', 'met_pilar']],
             want: { flag: 'admiral_videl', text: 'Admirál má na krabičku zálohu. Chce ji hodit do proudu jako oběť kanálu.' },
@@ -135,6 +134,8 @@ export const FACTIONS = {
 };
 
 // Měna: jízdenky na 90 minut. Skloňování podle počtu.
+// srdce (životy) s číslem: 1–4 srdce, od pěti srdcí
+export const hearts = (n) => `${n} ${n >= 5 ? 'srdcí' : 'srdce'}`;
 export const tickets = (n) => `${n} ${n === 1 ? 'jízdenka' : n >= 2 && n <= 4 ? 'jízdenky' : 'jízdenek'}`;
 
 export const QUEST = {
@@ -153,6 +154,8 @@ export const QUEST = {
 export const ODDITY_LINES = {
     // voříšek z ruchu (WorldScene.placeLife): po každé hlášce odběhne. Mluví, ale snaží se dělat psí věci.
     voricek: { lines: [
+        // jednou k něčemu je: dokud psi ze Sherwoodu lezou do tunelu, prozradí díru v plotě (vlajka pes_dira otevře volbu u smečky)
+        { first: true, if: { quest: { psi: 'nest' }, noFlag: ['psi_ok', 'pes_dira'] }, flag: 'pes_dira', text: '„Ti tři lezou do tunelu dírou v plotě, za keřem. Vím to, chodím tudy taky. Zatarasíš ji plechem a máš klid. Ode mě to nemáš.“' },
         '„Ty musíš bejt dobře chycená, že mluvíš se psem.“',
         '„Haf?“',
         '„Počkej, teď mám vrtět ocasem. Vydrž. Jo, takhle.“',
@@ -161,6 +164,19 @@ export const ODDITY_LINES = {
         '„Jdu očuchat támhleten roh. Nezajímá mě, ale čeká se to ode mě.“',
         '„Když zahřmí, lezu pod tramvaj. To nehraju.“',
         '„Haf. Haf haf. Tak, odštěkáno, mám padla.“',
+    ] },
+    // kočka Šklíba podruhé, na stromě na Hradě: říká jen to, co platí (if), o lidech a rozhodnutích z cesty; pořád měří psem
+    skliba_hrad: { lines: [
+        '„Tak jsi došla. Dole se sázeli, že ne. Pes nesázel, pes šel kus s tebou.“',
+        { if: { item: 'zasilka' }, text: '„Pořád ji neseš. Každý ti řekl, komu ji dát, a nikdo, co v ní je. Pes by si nejdřív čuchnul.“' },
+        { if: { flag: 'dala_admiralovi' }, text: '„Krabičku má Admirál. Hodí ji do vody a bude z toho svátek. Pes by ji aspoň zakopal.“' },
+        { if: { flag: 'prodala' }, text: '„Prodala jsi ji neteři. Strýc ji prodá potřetí. Pes jednu kost dvakrát neprodá.“' },
+        { if: { flag: 'zapsano' }, text: '„Nechala ses zapsat. Teď jsi úřední osoba. Pes zapsaný není a pustí ho všude.“' },
+        { if: { flag: 'odmitla' }, text: '„Dispečerce jsi řekla ne. To si jinak dovolí jen pes k pošťačce.“' },
+        { if: { quest: { kote: 'done' } }, text: '„Kotě jsi vrátila. Správně. O kočkách tu rozhoduju já.“' },
+        { if: { flag: 'apostolove' }, text: '„Apoštolové zase chodí. Dvanáct mokrých pánů dokola a říká se tomu přesný čas.“' },
+        { if: { flag: 'psi_ok' }, text: '„Robinovi psi jsou u ohně. Vidíš, s těmi se domluvit dalo. Zkus to tady nahoře s lidmi.“' },
+        '„V buňce sedí pán, který všechno podepsal. Pes nepodepsal nikdy nic a nikdo se na něj nezlobí.“',
     ] },
     // kočka Šklíba na stromě uprostřed Václaváku (rekvizita zastavení se say): voříšek je jediný v pořádku, potrhlí jsou ostatní
     skliba: { lines: [
@@ -181,7 +197,7 @@ export const ODDITY_LINES = {
     labut_zla: { lines: [
         'Labuť syčí. Čertovka je její a vy jste na špatném břehu.',
         'Roztáhne křídla a udělá se dvakrát větší. Funguje to.',
-        'Rok ji nikdo nekrmil rohlíkem. Bere to osobně a bere to vám.',
+        'Rohlík jí nikdo nehodil, ani nepamatuje. Natahuje krk po vaší tašce, kdyby tam nějaký byl.',
         'Syčí dál. Z okna nad vodou někdo volá: „Nechte ji, ona je tu správcová.“',
         'Labuť se otočí zády a pleskne křídlem o hladinu. Audience skončila.',
     ] },
@@ -303,7 +319,7 @@ export const ODDITY_LINES = {
 };
 export const ODDITY_GROUPS = {
     cerny: [
-        'Černý dělal sochy, aby se lidi ptali proč. Já se ptám, kdo je platil.',
+        'Černý dělal sochy, aby se lidi ptali proč. Praha se ptá, kdo je platil.',
         'Na podstavci měla být cedulka: David Černý, idiot. Nikdo ji ale nepřišrouboval.',
         'Říkalo se, že Černý je génius. Říkali to hlavně lidi, co to nemuseli uklízet.',
         'Kdyby Černý dělal metro, jezdilo by vzhůru nohama a pozpátku.',
@@ -316,7 +332,7 @@ export const CUTSCENES = {
     // Dvorana Národního muzea (Václavák): kostra plejtváka myšoka pod stropem, pouští ho volba Vejít dovnitř (účinek film).
     muzeum: [
         { image: 'cs_muzeum', lines: [
-            'Dvorana je tmavá, světlo padá jen dírou v kupoli. Pod stropem visí na lanech kostra plejtváka myšoka. Přes dvacet metrů obratlů a žeber, čelisti delší než tramvajová zastávka.',
+            'Dvorana je tmavá, světlo padá jen dírou v kupoli. Pod stropem visí na lanech kostra plejtváka myšoka. Přes dvacet metrů obratlů a žeber, čelisti delší než osobní auto.',
             'Vitríny kolem jsou vybité a prázdné, vycpaniny někdo rozebral na kožichy. Na plejtváka nikdo nedosáhl.',
             'Jednu čelist podpírá lešenářská trubka a na ní visí cedulka s datem poslední kontroly. Kostra se v průvanu pomalu otáčí.',
         ] },
@@ -336,7 +352,7 @@ export const CUTSCENES = {
             'Vltava teče jinudy, Nuselák je na dva kusy a na Hradě se svítí. O tom, kdo tam sedí, se mluví jen potichu.',
         ] },
         { image: 'cs_city', lines: [
-            'Praha se rozpadla na tři tábory. Pan Fanta a jeho tržiště prodají všechno, i to, co nemají. Metro drží jízdní Řád, jízdenky a evidenci. Loďkaři vládnou vodě na Starém Městě.',
+            'Praha se rozpadla na tři tábory. Pan Fanta a jeho tržiště prodají všechno, i to, co nemají. Metro drží jízdní řád, jízdenky a evidenci. Loďkaři vládnou vodě na Starém Městě.',
             'Každý z nich bude chtít to, co ponesete. Kdo vám věří a co z toho máte, uvidíte v deníku.',
         ] },
         { image: 'cs_metro', toll: true, lines: [
@@ -356,15 +372,15 @@ export const CUTSCENES = {
     // Přestupy po vodě a pěšky: klíč cesta_<odkud>_<kam> (WorldScene.travel), jinak metro_<kam>.
     cesta_vaclavak_staromak: [
         { image: 'cs_voda', lines: [
-            'Stavidlo na Můstku se zvedne, sotva Kuřačka mávne. Loďka se protáhne do Melantrichovy, mezi zatopenými výlohami a lucernami, které čouhají z vody.',
-            'Okna přízemí jsou pod vodou, v prvním patře visí prádlo. Z vody trčí sloup tramvajového vedení.',
-            'Kuřačka kormidluje jednou rukou a druhou kouří. Na Rytířské trčí z vody střecha tramvaje.',
+            'Stavidlo na Můstku se zvedne, sotva Kuřačka mávne. Loďka přejede Rytířskou a protáhne se do Melantrichovy, mezi zatopenými výlohami a lucernami, které čouhají z vody.',
+            'Okna přízemí jsou pod vodou, v prvním patře visí prádlo. Z vody trčí cedule směnárny, kurz už neplatí.',
+            'Kuřačka kormidluje jednou rukou a druhou kouří. U Havelského trhu trčí z vody střechy stánků.',
         ] },
         { image: 'cs_staromak', lines: ['Staroměstské náměstí. Dvě věže Týna nad hladinou, Hus jako ostrov a na něm muž v záchranné vestě.'] },
     ],
     cesta_vaclavak_nuselak: [
         { image: 'cs_voda', lines: [
-            'Z Můstku Vodičkovou, Ječnou a dolů ke Karlovu. Ulice jsou kanály, okna přízemí pod vodou.',
+            'Z Můstku novým korytem přes Nové Město a údolím Botiče do Nuslí. Ulice jsou kanály, okna přízemí pod vodou.',
             'Za Karlovem se město propadne. Nuselské údolí je jezero a nad ním visí Nuselák, uprostřed zlomený.',
         ] },
         { image: 'cs_nusle', lines: [
@@ -378,13 +394,13 @@ export const CUTSCENES = {
     cesta_nuselak_staromak: [
         { image: 'cs_nusle', lines: [
             'Kormidelník odrazí od mola. Loďka proklouzne mezi pilíři Nuseláku, lachtani se potopí a vynoří o kus dál.',
-            'Údolím dolů k Vyšehradu, kolem skály po novém korytě, pak proti proudu na Staré Město.',
+            'Údolím dolů k Vyšehradu, kolem skály po novém korytě, pak po proudu na Staré Město.',
         ] },
         { image: 'cs_staromak', lines: ['Staroměstské náměstí. Dvě věže Týna nad hladinou, Hus jako ostrov a na něm muž v záchranné vestě.'] },
     ],
     cesta_most_nuselak: [
         { image: 'cs_nusle', lines: [
-            'Flotila vyplouvá od Kampy. Pilař vede, Admirál na přídi drží proslov ke břehům.',
+            'Flotila vyplouvá ze Starého Města. Pilař vede, Admirál na přídi drží proslov ke břehům.',
             'Kolem Vyšehradu do zatopených Nuslí. Pod zlomeným mostem flotila zakotví. Kormidelník mává od jižního mola.',
         ] },
     ],
@@ -433,14 +449,14 @@ export const ENDINGS = {
     trziste: { title: 'Všechno je na prodej', text: 'Zásilka změnila majitele. Hlavák má nový stánek a vy slevu.',
         shots: [{ image: 'cs_hrad', lines: ['Krabička zmizí v šuplíku ředitelova stolu. Šuplík cvakne jako pokladna.', 'Fanta má, co chtěl, ředitel má, co chtěl, a vy máte jízdenky a slevu na všechno na Hradě. Nic se tam neprodává.', 'Záznam zůstane v šuplíku. Kanál se kope dál. Ředitel už plánuje druhou větev.'] }] },
     metro: { title: 'Řád', text: 'Souprava zase staví podle jízdního řádu. Na Hradě se přestalo svítit.',
-        shots: [{ image: 'cs_ctecka', lines: ['Zelená obrazovka naskočí. Ze všech reproduktorů metra, které ještě fungují, se ozve hlas: „Štít stojí. Geologové hlásí vodu. Pokyn z Kanceláře kanálu: razit dál. Podepsáno.“', 'Dispečerka to pustí znovu. A znovu. Slyší to náměstí, molo i stráž u hradní brány.'] },
+        shots: [{ image: 'cs_ctecka', lines: ['Zelená obrazovka naskočí. Ze všech reproduktorů metra, které ještě fungují, se ozve hlas: „Štít stojí. Geologové hlásí vodu. Pokyn z Kanceláře kanálu: razit dál. Podepsáno.“', 'Ředitel vyběhne od stolu k buňce, ale linku do metra vypnout neumí. Natáhli ji jeho lidé.', 'Dispečerka to pustí znovu. A znovu. Slyší to náměstí, molo i stráž u hradní brány.'] },
             { image: 'cs_hrad', lines: ['Ochranka odejde, zase bez výplaty. Řediteli dojde v generátoru nafta a nikdo mu nepřinese novou.', 'Souprava zase staví podle jízdního řádu. Ve 14:37, každý den.'] }] },
     metro_bez: { title: 'Řád bez důkazu', text: 'Čtečka mlčí, ředitel se usmívá. Metro má řád, ale ne důkaz.',
         shots: [{ image: 'cs_ctecka', lines: ['Obrazovka zabliká a zhasne. Čtečka nemá co přehrát. Rozhlas chvíli šumí naprázdno.', 'Ředitel se usmívá. „Vidíte? Nic tam není. Nikdy nic nebylo.“', 'Dispečerka vás zapíše jako úřední osobu, která nic nedovezla. I to je zápis.'] }] },
-    lodkari: { title: 'Po vodě', text: 'Z loďky je vidět zlomený Nuselák. Vyšehrad svítí. Praha je najednou docela malá.',
+    lodkari: { title: 'Po vodě', text: 'Z loďky je vidět zlomený Nuselák a nad ním skála Vyšehradu. Praha je najednou docela malá.',
         shots: [{ image: 'cs_vysehrad', lines: ['Kormidelník vede flotilu ze zatopených Nuslí pod zlomeným mostem, kolem skály až pod Vyšehrad.', 'Nuselák visí nad vodou na dva kusy. Pod skálou flotila zakotví. Admirál domluví, sundá čepici a zvedne krabičku nad hlavu.', 'Pak hodí krabičku do proudu. Oběť kanálu. Voda ji vezme bez poděkování.'] }] },
     // poslední snímek každého konce (kromě smrti), až za epilogem: 14:37 zůstává a nikdo neví proč
-    last: { image: 'cs_hodiny', lines: ['A kolik je vlastně hodin? 14:37. Bylo včera, je dnes a zítra bude nejspíš zase.', 'Hodiny, které jdou, na tom nic nemění. Od teď bude asi už jen 14:37. Proč zrovna tolik, neví nikdo.'] },
+    last: { image: 'cs_hodiny', lines: ['A kolik je vlastně hodin? 14:37. Bylo včera, je dnes a zítra bude nejspíš zase.', 'Hodiny, které jdou, na tom nic nemění. Odteď bude asi už jen 14:37. Proč zrovna tolik, neví nikdo.'] },
     death: { title: 'Konečná', text: 'Praha si vás nechala. Někdo si vezme boty, někdo zásilku.', shots: [] },
     again: 'Hrát znovu',
     resume: 'Zpátky na poslední místo',
@@ -448,17 +464,18 @@ export const ENDINGS = {
 
 // Epilog ve stylu Falloutu: po konci snímek za každé místo, kde hráčka něco změnila (podmínka nad stavem).
 export const EPILOG = [
-    { if: { flag: 'podstrcila' }, ending: 'lodkari', image: 'cs_vysehrad', line: 'Krabička nejde ke dnu. Je prázdná, a tak plave. Admirál na ni zírá a flotila poprvé mlčí. Od té doby se jí říká bóje Kanceláře kanálu.' },
-    { if: { quest: { hodiny: 'done' } }, image: 'cs_metro', line: 'Na Hlaváku jdou hodiny. Výpravčí každý den ve 14:37 zvedne ruku, i když nemá plácačku. Souprava jede.' },
-    { if: { flag: 'psi_ok' }, image: 'cs_city', line: 'Robinovi psi chodí s ním na tržiště. Fanta jim dává guláš a tvrdí, že jsou jeho.' },
-    { if: { quest: { rozhlas: 'done' } }, image: 'cs_city', line: 'Reproduktor u Jindřišské řve až k vodě. Dispečerka hlásí i počasí. Nikdo neví, odkud ho bere.' },
-    { if: { quest: { kun: 'done' } }, image: 'cs_city', line: 'Václav z podstavce slezl dolů a vodí prohlídky po střechách. Jízdenka do přilby.' },
-    { if: { flag: 'apostolove' }, image: 'cs_staromak', line: 'Na orloji zase vycházejí apoštolové, mokří, ale celí. Orlojník prodává přesný čas. Turisté nejsou, kupují ho loďkaři.' },
-    { if: { flag: 'zarovka' }, image: 'cs_most', line: 'Žárovka na Kampě svítí každou noc. Pod mostem se k ní chodí jako k ohni. Na zdi stojí jediné slovo: PROUD.' },
-    { if: { flag: 'trabantem' }, image: 'cs_malastrana', line: 'Trabant na nohách chodí každý den po Nerudovce nahoru a dolů a nadává na Černého. Benzínu má dost.' },
-    { if: { flag: 'duchod_zeptala' }, image: 'cs_city', line: 'Trafikantce přišel dopis z Hradu. Důchod ne, jen odpověď. Nosí ji v igelitce s jízdenkami.' },
-    { if: { quest: { kote: 'done' } }, image: 'cs_nusle', line: 'Strážmistr Kulhánek hlídá Muzeum Policie dál. Mourek spí ve vitríně s pouty. Kdo jde kolem, dostane pokutu a smí si ho pohladit.' },
-    { if: { flag: 'vyhlidka' }, image: 'cs_vysehrad', line: 'Z vyhlídky Na Opyši je vidět celé nové koryto. Průvodkyně tam vodí všechny skupiny. Zatím přišla jedna.' },
+    { if: { flag: 'dopis_brno' }, image: 'ep_brno', line: 'Dopis do Brna nosíte v tašce dál. Na cestu jste se ptala v metru, u loďkařů i na Hradě. Kde je Brno, neví nikdo. Průvodkyně si myslí, že je to pověst.' },
+    { if: { flag: 'podstrcila' }, ending: 'lodkari', image: 'ep_boje', line: 'Krabička nejde ke dnu. Je prázdná, a tak plave. Admirál na ni zírá a flotila poprvé mlčí. Od té doby se jí říká bóje Kanceláře kanálu.' },
+    { if: { quest: { hodiny: 'done' } }, image: 'ep_hodiny', line: 'Na Hlaváku jdou hodiny. Výpravčí každý den ve 14:37 zvedne ruku, i když nemá plácačku. Souprava jede.' },
+    { if: { flag: 'psi_ok' }, image: 'ep_psi', line: 'Robinovi psi chodí s ním na tržiště. Fanta jim dává guláš a tvrdí, že jsou jeho.' },
+    { if: { quest: { rozhlas: 'done' } }, image: 'ep_rozhlas', line: 'Reproduktor u Jindřišské řve až k vodě. Dispečerka hlásí i počasí. Nikdo neví, odkud ho bere.' },
+    { if: { quest: { kun: 'done' } }, image: 'ep_vaclav', line: 'Václav z podstavce slezl dolů a vodí prohlídky po střechách. Jízdenka do přilby.' },
+    { if: { flag: 'apostolove' }, image: 'ep_orloj', line: 'Na orloji zase vycházejí apoštolové, mokří, ale celí. Orlojník prodává přesný čas. Turisté nejsou, kupují ho loďkaři.' },
+    { if: { flag: 'zarovka' }, image: 'ep_zarovka', line: 'Žárovka na Kampě svítí každou noc. Pod mostem se k ní chodí jako k ohni. Na zdi stojí jediné slovo: PROUD.' },
+    { if: { flag: 'trabantem' }, image: 'ep_trabant', line: 'Trabant na nohách chodí každý den po Nerudovce nahoru a dolů a nadává na Černého. Benzínu má dost.' },
+    { if: { flag: 'duchod_zeptala' }, image: 'ep_duchod', line: 'Trafikantce přišel dopis z Hradu. Důchod ne, jen odpověď. Nosí ji v igelitce s jízdenkami.' },
+    { if: { quest: { kote: 'done' } }, image: 'ep_mourek', line: 'Strážmistr Kulhánek hlídá Muzeum Policie dál. Mourek spí ve vitríně s pouty. Kdo jde kolem, dostane pokutu a smí si ho pohladit.' },
+    { if: { flag: 'vyhlidka' }, image: 'ep_vyhlidka', line: 'Z vyhlídky Na Opyši je vidět celé nové koryto. Průvodkyně tam vodí všechny skupiny. Zatím přišla jedna.' },
 ];
 
 
@@ -466,15 +483,16 @@ export const EPILOG = [
 // nebo úderu (weapon); v každém slotu je nejvýš jedna věc. Zásoby mají use (heal) a počítají se kusy (state.supplies).
 // Kde se co sežene, je v DIALOGS (obchody za jízdenky) a v BATTLES (loot po výhře).
 export const ITEMS = {
-    dopis: { name: 'Dopis pro výpravčího', text: 'Nedoručený od toho dne. Adresát: výpravčí, Hlavní nádraží. Obálka Českých drah.' },
-    kote: { name: 'Mourek', text: 'Zrzavé kotě strážmistra z Muzea Policie. Přede v tašce mezi dopisy.' },
+    dopis: { name: 'Dopis pro výpravčího', text: 'Nedoručený od toho dne. Adresát: výpravčí, Hlavní nádraží. Obálka Správy železnic.' },
+    dopis_brno: { name: 'Dopis do Brna', text: 'Od paní z Nerudovky synovi. Do Brna zatím nic nejede, ale dopis je podaný.' },
+    kote: { name: 'Mourek', text: 'Mourovaté kotě strážmistra z Muzea Policie. Přede v tašce, kde bývaly dopisy.' },
     zasilka: { name: 'Krabička od Fanty', text: 'Velká jako powerbank, těžká jako svědomí. Co je uvnitř, Fanta neřekl.' },
     hodinky: { name: 'Hodinky z tržiště', text: 'Jdou. Na Hlaváku nejvzácnější zboží.' },
     lahev: { name: 'Lahev slivovice', text: 'Z tržiště. Robin ji pozná po zátce.' },
     vypis: { name: 'Výpis z evidence', text: 'S razítkem metra: náklad zapsán, osoba prověřena.' },
     falesna: { name: 'Krabička od lovce značek', text: 'Vypadá přesně jako zásilka. Je prázdná. Prázdné věci jsou nejbezpečnější.' },
     kolo: { name: 'Ozubené kolo', text: 'Malé, švýcarské, z hodinek z butiku. Pro Orlojníka.' },
-    smes: { name: 'Benzínová směs', text: 'Jedna ku pětadvaceti, do pily. Nebo do trabantu na nohách.' },
+    smes: { name: 'Benzínová směs', text: 'Jedna ku pětadvaceti, do pily. Trabant chce slabší, ale nestěžuje si. Jen víc kouří.' },
     desticka: { name: 'Destička pro štěstí', text: 'Bronzová, osahaná do lesku. Patří k Nepomuckému.' },
     propustka: { name: 'Diplomatická propustka', text: 'Razítko státu, který se rok neozval. Stráž salutuje.' },
     jidlo: { name: 'Kanapky z recepce', text: 'Rok staré, diplomatické. Nezkazí se, jen ztvrdnou.' },
@@ -500,18 +518,18 @@ export const ITEMS = {
 // Taška (T): výbava ve slotech, zásoby a věci. Řádek výbavy ukazuje, co věc dává.
 export const BAG = {
     title: 'Taška', gear: 'Výbava', supplies: 'Zásoby', items: 'Věci', things: 'Výbava v tašce',
-    tabs: { bag: 'Taška', quests: 'Úkoly', trust: 'Kdo vám věří' }, tabHint: 'Šipky doleva a doprava přepínají. Q deník, T taška, Esc zavře.', xp: (n) => `Do další úrovně: ${n} zkušeností`,
+    tabs: { bag: 'Taška', quests: 'Úkoly', trust: 'Kdo vám věří' }, tabHint: 'Šipky doleva a doprava přepínají. Q deník, T taška, Esc zavře.', xp: (n) => `Do další úrovně: ${n} ${n === 1 ? 'zkušenost' : n <= 4 ? 'zkušenosti' : 'zkušeností'}`,
     slots: { zbran: 'Zbraň', odev: 'Oděv', talisman: 'Talisman' },
     empty: 'nic', noSupplies: 'Žádné zásoby. Obvazy a jídlo prodávají na tržišti a u stánků.', noThings: 'Nic dalšího.',
     use: 'Použít', worn: 'na sobě', wear: 'Vzít si', takeOff: 'Sundat', full: 'Srdce máte plné.',
-    weapon: (n) => `úder +${n}`, hp: (n) => `srdce +${n}`, heal: (n) => `+${n} srdce`,
+    weapon: (n) => `úder +${n}`, hp: (n) => `srdce +${n}`, heal: (n) => `+${hearts(n)}`,
     hint: 'Klepnutím si věc vezmete, nebo ji sundáte. Zásoby se dají použít i v boji.',
 };
 
 // Obchod: volba s shop: true otevře zboží postavy (DIALOGS[id].shop). Řádek ukazuje, co věc dělá a kolik stojí;
 // na co nejsou jízdenky, je vidět, ale nejde koupit.
 export const SHOP = {
-    prompt: (n) => `Máte ${tickets(n)}. Co si vezmete?`,
+    prompt: (n) => `Máte ${n === 1 ? '1 jízdenku' : tickets(n)}. Co si vezmete?`,
     ware: (name, slot, stats) => `${name}${slot ? ` (${slot})` : ''}: ${stats}`,
     missing: (n) => `chybí ${n}`,
     leave: 'Nic, díky.',
@@ -525,7 +543,7 @@ export const QUESTS = {
     odjezd: { title: 'Dál soupravou', steps: { nest: 'Strojvedoucí u vstupu do metra chce jízdenku a pravdu o tom, co vezete.', done: 'Souprava odjela. Kde zastaví, ví jen strojvedoucí.' } },
     hodiny: { title: 'Hodiny na nástupišti', steps: { nest: 'Sehnat něco, co jde (Fanta prodává hodinky), aby výpravčí mohl nařídit hodiny.', done: 'Hodiny jdou. Souprava jede ve 14:37 a kdo to ví, jezdí zadarmo.' } },
     psi: { title: 'Psi ze Sherwoodu', steps: { nest: 'Psi lezou do tunelu a strojvedoucí kvůli nim nevyjede. Porazit je, zahnat, zatarasit jim díru v plotě, nebo donést Robinovi něco dobrého od Fanty.', done: 'Psi dají pokoj a souprava může jet.' } },
-    duchod: { title: 'Důchod', steps: { nest: 'Na Hradě se zeptat, kdy přijde důchod. Slíbila jste to trafikantce.' } },
+    duchod: { title: 'Důchod', steps: { nest: 'Na Hradě se zeptat, kdy přijde důchod. Slíbila jste to trafikantce.', done: 'Zeptala jste se. Důchod prý přijde, až bude hotový kanál. Trafikantka aspoň dostane odpověď.' } },
     evidence: { title: 'Evidence', steps: { nest: 'Dispečerka u stanice Muzeum chce zásilku zapsat.', done: 'Zapsáno. Výpis z evidence je v tašce.', odmitnuto: 'Odmítla jste. Revizor u vody o tom ví.' } },
     rozhlas: { title: 'Rozhlas', steps: { nest: 'Zesílit reproduktor u Jindřišské. Sedí na něm nutrie.', hlasite: 'Reproduktor řve. Říct to dispečerce.', done: 'Dispečerka vás ohlásila jako úřední osobu.' } },
     kun: { title: 'Pravý kůň', steps: { nest: 'Zjistit, kam se poděla socha svatého Václava. Zeptat se dole u mola.', stopa: 'Sochy nakládá Kuřačka. Říct to Václavovi na podstavci.', done: 'Václav dal jízdenky z přilby a radu: kdo kupuje bronz po kusech, bydlí vysoko. Zlatá ulička na Hradě.' } },
@@ -565,8 +583,8 @@ export const BATTLES = {
         win: 'Vůdce zafuní a odvede tlupu přes lávku pod platany. Dvůr je volný.', yield: 'Kanci couvnou a táhnou přes lávku pod platany. Cesta ke kolu je volná.', flee: 'Utečete za roh mlýna. Kanci ryjí dál.' },
     vymahaci: { name: 'Tržištní vymahači', sprite: 'vymahac', scale: 4, hp: 13, nerve: 7, attack: [1, 2], special: 'twice', loot: { give: 'baseballka' }, talk: 'Domluvit jim',
         intro: 'Jeden vytáhne řetěz, druhý baseballku s Fantovou cenovkou. „Nic osobního.“',
-        hit: 'Baseballka dopadne.', twice: 'Řetěz švihne.', miss: 'Vymahač se netrefí.', hurt: 'Vymahač zaklení.', shout: 'Vymahač se ohlédne po kolegovi.',
-        win: 'Vymahači si sednou na schod morového sloupu a počítají zuby. „Panu Fantovi řekneme, že jste byla rychlá.“', yield: '„Nic osobního,“ řekne ten větší a schová řetěz. Sednou si k morovému sloupu a dál se nedívají.', flee: 'Utečete zpátky na most. Vymahači zůstávají v ústí Mostecké.' },
+        hit: 'Baseballka dopadne.', twice: 'Řetěz švihne.', miss: 'Vymahač se netrefí.', hurt: 'Vymahač zakleje.', shout: 'Vymahač se ohlédne po kolegovi.',
+        win: 'Vymahači si sednou na obrubník u Mostecké a počítají zuby. „Panu Fantovi řekneme, že jste byla rychlá.“', yield: '„Nic osobního,“ řekne ten větší a schová řetěz. Sednou si na obrubník a dál se nedívají.', flee: 'Utečete zpátky na most. Vymahači zůstávají v ústí Mostecké.' },
     holubi: { name: 'Holubi ze Zámeckých schodů', sprite: 'holub', scale: 4, hp: 6, nerve: 3, attack: [1, 1], special: 'dodge', talk: 'Mávnout taškou',
         intro: 'Hejno se zvedne. Kulhavý vůdce letí přímo na vás.',
         hit: 'Holub klovne.', miss: 'Holub mine.', hurt: 'Peří letí.', dodge: 'Holub uhne.', shout: 'Hejno zaváhá.',
@@ -579,7 +597,7 @@ export const BATTLES = {
 // Souboj: tlačítka s obrázkem vlastnosti a nápovědou, kolik to dává (počítá src/scenes/battle.js).
 export const BATTLE = {
     attack: 'Udeřit', defend: 'Uhnout', flee: 'Utéct', bag: 'Taška',
-    bagHint: (name, n, heal) => `${name} ×${n}, +${heal} srdce`, bagEmpty: 'žádné zásoby', bagUsed: (name, n) => `${name}: +${n} srdce.`,
+    bagHint: (name, n, heal) => `${name} ×${n}, +${hearts(heal)}`, bagEmpty: 'žádné zásoby', bagUsed: (name, n) => `${name}: +${hearts(n)}.`,
     attackHint: (p, lo, hi) => `zásah ${p} %, zranění ${lo}–${hi}`,
     talkHint: (lo, hi) => `vůle −${lo}–${hi}`,
     defendHint: (p) => `uhnete na ${p} %, pak vrátíte ránu`,
@@ -641,7 +659,7 @@ export const DIALOGS = {
                     reply: ['Zásilka. Víc vědět nepotřebujete, víc vědět nechcete. Hlavně ji neotvírejte a nikomu neukazujte.', 'Do metra se jde dole na plácku. Strojvedoucí se bude ptát, co vezete. Řekněte mu cokoli, jen ne pravdu.'], next: 'hub' },
                 { id: 'vic', label: 'Dvacet je málo. Třicet, nebo si to neste sám.', check: 'usta', if: { noItem: 'zasilka', questNot: { zakazka: 'nest' } }, else: 'Usmlouvat Fantu chce Ústa 3 (jako má on).', do: { give: 'zasilka', tickets: 30, quest: { zakazka: 'nest' }, trust: { trziste: 1 }, xp: 2 },
                     reply: ['Třicet. Vy byste prodala i vlastní uniformu. Beru vás.', 'Krabičku neotvírejte a nikomu neukazujte. Do metra se jde dole na plácku. Strojvedoucímu řekněte cokoli, jen ne pravdu.'], next: 'hub' },
-                { id: 'pozdeji', label: 'Rozmyslím si to.', reply: ['Rozmýšlejte rychle. Na Hrad se nejezdí každý den. Vlastně se nejezdí vůbec.'], end: true },
+                { id: 'pozdeji', label: 'Rozmyslím si to.', reply: ['Rozmýšlejte rychle. Na Hrad se nejezdí každej den. Vlastně se nejezdí vůbec.'], end: true },
             ] },
             hub: { say: ['Tak co to bude, pošto?'], choices: [
                 { id: 'zakazka', label: 'Ta zakázka na Hrad…', if: { noItem: 'zasilka', questNot: { zakazka: 'nest' } }, else: 'Jen dokud zakázku nemáte.', next: 'nabidka' },
@@ -653,7 +671,7 @@ export const DIALOGS = {
     nastupiste: { stats: { ruka: 1, usta: 1, oko: 2 }, about: 'Hlásí vlaky, které nejedou. Chce jediné: aby nádražní hodiny zase šly.', name: 'Výpravčí', face: 'face_vypravci',
         entry: [{ if: { noFlag: 'met_vypravci' }, node: 'prvni' }, { node: 'hub' }],
         nodes: {
-            prvni: { say: ['Rychlík Hungaria má zpoždění čtyři sta dvanáct dní. Cestující prosíme o shovívavost.'], do: { flag: 'met_vypravci' }, next: 'hub' },
+            prvni: { say: ['EuroCity Hungaria má zpoždění čtyři sta dvanáct dní. Cestující prosíme o shovívavost.'], do: { flag: 'met_vypravci' }, next: 'hub' },
             hub: { say: ['Prosím? Vlak nejede. Žádný.'], choices: [
                 { id: 'dopis', label: 'Nesu vám dopis. Nedoručený od toho dne.', if: { item: 'dopis' }, else: 'Jen s dopisem v tašce.', do: { take: 'dopis', quest: { vypoved: 'done', hodiny: 'nest' }, xp: 2 },
                     reply: ['Ukažte… České dráhy. Výpověď. Datovaná den předtím.', 'Tak já tu stojím celou dobu zadarmo. Nevadí. Stál bych stejně. Aspoň že pošta jede.', 'Děkuju, že jste ji donesla. Hodiny tu stojí na 14:37 a dokud nejdou, nemůžu nic vypravit. Sežeňte mi něco, co jde, a řeknu vám, kdy souprava doopravdy jede.'] },
@@ -688,7 +706,7 @@ export const DIALOGS = {
                 { id: 'lahev', label: 'Nesu lahev. Od Fanty.', if: { item: 'lahev' }, else: 'Jen s lahví z tržiště.', do: { take: 'lahev', flag: ['psi_ok', 'robin_tajemstvi'], quest: { psi: 'done' }, xp: 3 },
                     reply: ['Fantova slivovice! Nejlepší ročník. Budeme říkat, že je kradená.', 'Psi vám dají pokoj. Hej, ke mně! A něco za něco: tu krabičku, co Fanta posílá na Hrad, prodal dvakrát. Jednou Hradu. Podruhý Admirálovi na Staromáku a ten už zaplatil zálohu.'] },
                 { id: 'psi', label: 'Co ti psi?', if: { noFlag: 'psi_ok' }, else: 'Dokud psi nedají pokoj.', once: true, do: { quest: { psi: 'nest' } }, reply: ['Hlídají pěšinu a lezou do tunelu, tam je teplo. Strojvedoucí kvůli nim nadává. Doneste mi něco dobrýho od Fanty a odvolám je.'] },
-                { id: 'tajemstvi', label: 'Víš, co Fanta prodává?', if: { flag: 'psi_ok', noFlag: 'robin_tajemstvi' }, else: 'Robin to řekne jen tomu, kdo prošel kolem psů.', do: { flag: 'robin_tajemstvi', xp: 1 }, reply: ['Kdo prošel kolem mejch psů, zaslouží si pravdu. Fanta prodal tu krabičku dvakrát. Hradu a Admirálovi na Staromáku. Jeden z nich bude zklamanej.'] },
+                { id: 'tajemstvi', label: 'Víš, co Fanta prodává?', if: { flag: 'psi_ok', noFlag: 'robin_tajemstvi' }, else: 'Robin to řekne jen té, která prošla kolem psů.', do: { flag: 'robin_tajemstvi', xp: 1 }, reply: ['Kdo prošel kolem mejch psů, zaslouží si pravdu. Fanta prodal tu krabičku dvakrát. Hradu a Admirálovi na Staromáku. Jeden z nich bude zklamanej.'] },
             ] },
         } },
     psi: { stats: { ruka: 2, usta: 1, oko: 3 }, about: 'Tři zdivočelí psi na pěšině. Vůdce má na krku Fantovu stužku.', name: 'Smečka', face: null,
@@ -698,8 +716,9 @@ export const DIALOGS = {
             utekli: { say: ['Psi vzali čáru k Robinovi. Pěšina je volná a od ohně je slyšet jen kňučení.'] },
             stoji: { flee: true, say: ['První pes vrčí. Druhý vrčí hlasitěji. Třetí kouká na vaši tašku, jako by věděl, co v ní je.'], choices: [
                 { id: 'boj', label: 'Probít se.', do: { fight: 'psi' }, win: { flag: 'psi_ok', quest: { psi: 'done' }, xp: 3 }, next: 'utekli' },
+                { id: 'plot_pes', label: 'Zatarasit díru v plotě, kterou prozradil voříšek.', if: { flag: 'pes_dira' }, else: 'Kde díra je, by musel někdo prozradit.', do: { flag: 'psi_ok', quest: { psi: 'done' }, xp: 2 }, reply: ['Za keřem je v plotě díra a za ní šachta do tunelu, přesně jak říkal. Zatarasíte ji plechem z boudy. Psi čuchají, nechápou a nakonec se odloudají k Robinovu ohni.'], end: true },
                 { id: 'plot', label: 'Najít díru, kudy lezou do tunelu, a zatarasit ji.', if: { attr: { oko: 2 } }, else: 'Díru v plotě najde jen Oko 2.', do: { flag: 'psi_ok', quest: { psi: 'done' }, xp: 2 }, reply: ['Za keřem je v plotě díra a za ní šachta do tunelu. Zatarasíte ji plechem z boudy. Psi čuchají, nechápou a nakonec se odloudají k Robinovu ohni.'], end: true },
-                { id: 'obojek', label: 'Chytit vůdce za obojek a odtáhnout ho k Robinovi.', check: 'ruka', else: 'Udržet vůdce smečky chce Ruku 2.', do: { flag: 'psi_ok', quest: { psi: 'done' }, xp: 2 }, failReply: ['Vůdce se vysmekne a chňapne vás po ruce. Smečka štěká.'], reply: ['Vůdce se vzpírá, ale obojek drží. Ostatní dva jdou za ním. Robin je uváže u ohně a tvrdí, že to byl jeho nápad.'], end: true },
+                { id: 'obojek', label: 'Chytit vůdce za stužku na krku a odtáhnout ho k Robinovi.', check: 'ruka', else: 'Udržet vůdce smečky chce Ruku 2.', do: { flag: 'psi_ok', quest: { psi: 'done' }, xp: 2 }, failReply: ['Vůdce se vysmekne a chňapne vás po ruce. Smečka štěká.'], reply: ['Vůdce se vzpírá, ale stužka drží. Ostatní dva jdou za ním. Robin je uváže u ohně a tvrdí, že to byl jeho nápad.'], end: true },
                 { id: 'zarvat', label: 'Zařvat na ně jako pošťačka na psa.', if: { attr: { usta: 2 } }, else: 'Zahnat psy hlasem chce Ústa 2.', do: { flag: 'psi_ok', quest: { psi: 'done' }, xp: 2 }, reply: ['Každý pes na světě zná pošťačku, která už toho má dost. Psi stáhnou ocasy, odplíží se k Robinovu ohni a lehnou si k němu.'], end: true },
             ] },
         } },
@@ -718,7 +737,7 @@ export const DIALOGS = {
             dvere: { say: ['Schody do stanice Muzeum. Dole ve tmě čeká souprava a z tunelu fouká.'], choices: [
                 { id: 'zpet', label: 'Sjet soupravou zpátky na Hlavák. (1 jízdenka)', if: { tickets: 1, noFlag: 'jizdni_rad' }, else: 'Zpátky se jezdí za jízdenku.', do: { tickets: -1, travel: 'hlavak' } },
                 { id: 'zpet_rad', label: 'Sjet zpátky na Hlavák. Znám jízdní řád.', if: { flag: 'jizdni_rad' }, else: 'Zadarmo jen se znalostí jízdního řádu.', do: { travel: 'hlavak' } },
-                { id: 'zpet_metro', label: 'Sjet zpátky na Hlavák. Strojvedoucí mě zná.', if: { trust: { metro: 2 }, noFlag: 'jizdni_rad' }, else: 'Zadarmo jen tomu, komu metro věří (2).', do: { travel: 'hlavak' } },
+                { id: 'zpet_metro', label: 'Sjet zpátky na Hlavák. Strojvedoucí mě zná.', if: { trust: { metro: 2 }, noFlag: 'jizdni_rad' }, else: 'Zadarmo jen té, které metro věří (2).', do: { travel: 'hlavak' } },
             ] },
         } },
     bufet: { stats: { ruka: 2, usta: 2, oko: 1 }, about: 'Čtyřicet let za pultem automatu Koruna. Pult vynesla na molo a prodává dál, jen už nikdo nestojí frontu.', name: 'Bufetářka', face: 'face_bufetarka',
@@ -730,6 +749,9 @@ export const DIALOGS = {
             prvni: { say: ['Další! Vlašák, šunkový, vajíčkový. Platí se jízdenkou, vrací se taky jízdenkou.', 'Automat Koruna. Dole je voda po strop, tak jsem pult vynesla sem pod věž. Chlebíček se jí vestoje, to se nezměnilo.'], do: { flag: 'met_bufet' }, next: 'hub' },
             hub: { say: ['Další! Co to bude?'], choices: [
                 { id: 'obchod', label: 'Chlebíček, prosím.', shop: true },
+                { id: 'smlouvat', label: 'Dvacet let jsem u vás stála frontu. Jeden na účet podniku?', check: 'usta', once: true, else: 'Usmlouvat bufetářku chce Ústa 2 (jako má ona).', do: { supply: { chlebicek: 1 }, xp: 1 }, reply: ['Na účet podniku. To jsem neslyšela, co podnik je pod vodou. Tady máte, šunkový. A nikomu ani slovo, další!'], failReply: ['Frontu stál každý. Dvě jízdenky. Další!'] },
+                { id: 'bedny', label: 'Ty bedny s vekou vám přenesu nahoru na pult.', check: 'ruka', once: true, else: 'Unést bedny s vekou chce Ruku 2 (jako má ona).', do: { supply: { chlebicek: 1 }, tickets: 1, xp: 1 }, reply: ['Postavte to sem. Ne tam, sem. Tak. Tady máte chlebíček a jízdenku, v Koruně se za práci vždycky platilo hned.'], failReply: ['Bedna sklouzne a vezme vás přes holeň. Veka plave. Bufetářka ji vyloví sběračkou a nic neřekne.'] },
+                { id: 'kraj', label: 'Vzít si chlebíček z kraje plata, když se otočí.', check: 'oko', once: true, else: 'Vzít si nepozorovaně chce Oko 1 (jako má ona).', do: { supply: { chlebicek: 1 } }, reply: ['Bufetářka se otočí pro ubrousky. Když se otočí zpátky, na platě je o jeden míň a vy se díváte na věž.'], failReply: ['„Ruce pryč od plata. Čtyřicet let hlídám plata.“ Plácne vás sběračkou přes prsty.'] },
                 { id: 'z_ceho', label: 'Z čeho je ten vlašák?', once: true, reply: ['Brambory z Letné, majonéza z vajec od holubů. Salám je Fantův lančmít nakrájený natenko. Recept je stejný, jen suroviny si dělají, co chtějí.'] },
                 { id: 'fronta', label: 'Kde máte frontu?', once: true, reply: ['V poledne tu stávalo třicet lidí a všichni spěchali. Teď přijde za den šest a žádný nespěchá. Chybí mi, jak na mě křičeli, ať dělám.'] },
                 { id: 'vez', label: 'Co je to za korunu nahoře?', once: true, reply: ['Věž s korunou z perel. Svítívala. Když je jasno, stejně si pod ni lidi chodí stoupnout, jako by pod ní pořád bylo světlo.'] },
@@ -742,9 +764,9 @@ export const DIALOGS = {
                 do: { flag: 'met_dispecerka', quest: { evidence: 'nest', molo: 'nest' } }, next: 'hub' },
             hub: { say: ['Stanice Muzeum, dispečink. Mluvte do mikrofonu, slyší vás půl náměstí.'], choices: [
                 { id: 'zapis', label: 'Zapište mě. I tu krabičku.', if: { noFlag: 'evidence_hotova', item: 'zasilka' }, else: 'Zapsat se dá jen jednou a jen se zásilkou v tašce.', do: { flag: ['zapsano', 'evidence_hotova'], give: 'vypis', trust: { metro: 1 }, quest: { evidence: 'done' }, xp: 2 },
-                    reply: ['Náklad: krabička, černá, velikosti powerbanku. Odesílatel: tržiště. Adresát: Hrad.', '…Počkat. Tohle je datový záznamník razicího štítu. To výrobní číslo znám, je to náš štít z éčka. Půjčili jsme ho a zpátky se nevrátil.', 'Zapsáno. Výpis si nechte, revizor dole u vody vás s ním pustí. A doneste ho celý, prosím. Co v něm je, patří do evidence, ne do cizího šuplíku.'] },
+                    reply: ['Náklad: krabička, černá, velikosti powerbanku. Odesílatel: tržiště. Adresát: Hrad.', '…Počkat. Tohle je datový záznamník razicího štítu. To výrobní číslo znám, je to náš štít z éčka. Půjčili jsme ho a zpátky se nevrátil.', 'Zapsáno. Výpis si nechte, revizor dole u vody vás s ním pustí. A záznamník doneste celý tam, kde ho jde přečíst. Čtečka zůstala na stavbě na Hradě. Co v něm je, patří do evidence, ne do cizího šuplíku.'] },
                 { id: 'odmitnout', label: 'Listovní tajemství, paní kolegyně. Nic zapisovat nebudeme.', check: 'usta', if: { noFlag: 'evidence_hotova' }, else: 'Odmítnout dispečerku chce Ústa 2.', do: { flag: ['evidence_hotova', 'odmitla'], trust: { trziste: 1 }, quest: { evidence: 'odmitnuto' } }, reply: ['Tajemství. Dobře. Zapíšu si, že jste odmítla. Revizor si to přečte taky.'] },
-                { id: 'rozhlas', label: 'Můžu pro vás něco udělat?', if: { questNot: { rozhlas: ['nest', 'hlasite', 'done'] } }, else: 'Jen dokud úkol s rozhlasem nemáte.', do: { quest: { rozhlas: 'nest' } }, reply: ['Reproduktor u Jindřišské je slabý, k vodě nedolehne. Stačí na něm zesílit knoflík. Jenže na reproduktoru sedí nutrie a ta mě neposlouchá.'] },
+                { id: 'rozhlas', label: 'Můžu pro vás něco udělat?', if: { questNot: { rozhlas: ['nest', 'hlasite', 'done'] } }, else: 'Jen dokud úkol s rozhlasem nemáte.', do: { quest: { rozhlas: 'nest' } }, reply: ['Reproduktor u Jindřišské je slabý, k vodě nedolehne. Stačí na něm otočit knoflíkem. Jenže na reproduktoru sedí nutrie a ta mě neposlouchá.'] },
                 { id: 'rozhlas_hotovo', label: 'Reproduktor u Jindřišské řve.', if: { quest: { rozhlas: 'hlasite' } }, else: 'Až bude reproduktor řvát.', do: { give: 'pistalka', quest: { rozhlas: 'done', molo: 'done' }, flag: ['uredni_osoba', 'molo'], xp: 3 }, reply: ['Teď mě slyší i u vody. Pozor, pozor. Osoba v uniformě České pošty je úřední osoba. Revizore, pusťte ji na molo bez placení.', 'A vezměte si moji píšťalku. Kdo ji slyší, zmlkne. Mně už stačí rozhlas.'] },
                 { id: 'voda', label: 'Odkud se tu vzala voda?', once: true, reply: ['Mimořádná událost. Voda vnikla do sítě ze směru, kde síť nemáme. Ve stanici Můstek vystoupala na povrch.', 'Metro přišlo o půlku linek a náměstí o půlku délky. Příčina není zapsaná. Co není zapsané, to do rozhlasu neříkám.'] },
             ] },
@@ -766,10 +788,10 @@ export const DIALOGS = {
         nodes: {
             prvni: { say: ['Svatý Václav na směny. Dneska sloužím já. Socha zmizela a někdo tu stát musí, jinak by se náměstí rozuteklo.', 'Lidi mi hážou jízdenky a já jim za to povím, co se na náměstí šustne. Stojím tu od rána a nohy mám jako ten kůň: pryč.'], do: { flag: 'met_vaclav' }, next: 'hub' },
             hub: { say: ['Jízdenku do přilby, informaci do ucha.'], choices: [
-                { id: 'socha', label: 'Kam se poděla socha?', if: { questNot: { kun: ['nest', 'stopa', 'done'] } }, else: 'Jen dokud se po soše neptáte.', do: { quest: { kun: 'nest' } }, reply: ['To bych taky rád věděl. Jednou ráno tu nebyla, zůstala jen kopyta. Kdo vozí těžký věci po vodě? Zeptejte se dole u mola.'] },
+                { id: 'socha', label: 'Kam se poděla socha?', if: { questNot: { kun: ['nest', 'stopa', 'done'] } }, else: 'Jen dokud se po soše neptáte.', do: { quest: { kun: 'nest' } }, reply: ['To bych taky rád věděl. Jednou ráno tu nebyla, zůstal jen podstavec. Kdo vozí těžký věci po vodě? Zeptejte se dole u mola.'] },
                 { id: 'stopa', label: 'Sochy nakládá Kuřačka. Po kusech.', if: { quest: { kun: 'stopa' } }, else: 'Až to budete vědět od Kuřačky.', do: { quest: { kun: 'done' }, tickets: 3, xp: 3 },
                     reply: ['Loďkaři, jasně. Vozí je na Karlův most a tam je prodávají po kusech. Kdo je kupuje, to zjistíte na místě.', 'Za to vám dám, co mi lidi naházeli do přilby. A radu navíc: kdo kupuje bronz po kusech, ten bydlí vysoko. Až budete na Hradě, koukněte do Zlaté uličky.'] },
-                { id: 'kun', label: 'A ten kůň v Lucerně?', once: true, reply: ['Visí hlavou dolů a lidi z metra se hádají, který kůň je ten pravý. Já to vím: ani jeden.'] },
+                { id: 'kun', label: 'A ten kůň z Lucerny?', once: true, reply: ['Spadl ze stropu a leží na zádech za náměstím. Lidi z metra se hádají, který kůň je ten pravý. Já to vím: ani jeden.'] },
                 { id: 'info', label: 'Co se šustne? (2 jízdenky)', if: { tickets: 2 }, else: 'Informace stojí dvě jízdenky.', once: true, do: { tickets: -2 }, reply: ['Revizor u vody pustí každého, kdo má výpis z evidence. Kdo ho nemá, platí pět. Kdo nemá pět, plave.'] },
             ] },
         } },
@@ -777,7 +799,7 @@ export const DIALOGS = {
         entry: [{ if: { flag: 'molo' }, node: 'volno' }, { node: 'kontrola' }],
         nodes: {
             volno: { say: ['Máte to vyřízené, paní kolegyně. Molo je vaše. A… dávejte na sebe na vodě pozor.'], choices: [] },
-            kontrola: { do: { flag: 'met_revizor' }, say: ['Jízdenky a náklad ke kontrole. Bez zápisu na molo nikdo nejde. Leda za tarif.', '…Pošťačka z Jindřišské. Já seděl naproti v předprodeji. Dvacet let jsme na sebe koukali přes dvě skla.'], choices: [
+            kontrola: { do: { flag: 'met_revizor' }, say: ['Jízdenky a náklad ke kontrole. Bez zápisu na molo nikdo nejde. Leda za tarif.', '…Pošťačka z Jindřišské. Já seděl naproti v předprodeji. Léta jsme na sebe koukali přes dvě skla.'], choices: [
                 { id: 'vypis', label: 'Tady je výpis z evidence.', if: { item: 'vypis' }, else: 'Jen s výpisem od dispečerky.', do: { flag: 'molo', quest: { molo: 'done' } }, reply: ['Razítko sedí. Zapsaná osoba, zapsaný náklad. Projděte.'], end: true },
                 { id: 'uredni', label: 'Dispečerka mě ohlásila.', if: { flag: 'uredni_osoba' }, else: 'Až vás dispečerka ohlásí rozhlasem.', do: { flag: 'molo', quest: { molo: 'done' } }, reply: ['Slyšel jsem. Celé náměstí slyšelo. Úřední osoba, projděte.'], end: true },
                 { id: 'zaplatit', label: 'Zaplatím. (5 jízdenek)', if: { tickets: 5, noFlag: 'odmitla' }, else: 'Stojí to pět jízdenek.', do: { tickets: -5, flag: 'molo', quest: { molo: 'done' }, trust: { trziste: 1 } }, reply: ['Pět. Označeno. Projděte. A příště s výpisem.'], end: true },
@@ -797,17 +819,17 @@ export const DIALOGS = {
                 { id: 'voda', label: 'Odkud je tolik vody?', once: true, do: { flag: 'utrzek1' }, reply: ['Admirál říká, že je to největší vodní dílo od Zemana. Já říkám, že je to hodně vody.', 'Odkud, to se na vodě neřeší. Přišla, zůstala, vozí. Zeptejte se někoho, kdo se potápí.'] },
                 { id: 'cigareta', label: 'Vezmu si cigaretu.', once: true, do: { trust: { lodkari: 1 } }, reply: ['Připálím vám od svý. Na vodě se nekouří sám. To je jediný pravidlo, co máme.'] },
                 { id: 'prevoz', label: 'Vezmete mě na Staromák? (3 jízdenky)', if: { tickets: 3, noFlag: 'nusle_prijezd' }, else: 'Převoz stojí tři jízdenky; kdo už jel, jezdí zadarmo.', do: { tickets: -3, trust: { lodkari: 1 }, travel: 'nuselak' }, reply: ['Nasedněte. Motor chytne napotřetí, jako vždycky. Admirál říká, že to je tradice.'] },
-                { id: 'prevoz_kamaradka', label: 'Kouřily jsme spolu. Hodíte mě na Staromák?', if: { trust: { lodkari: 1 }, noFlag: 'nusle_prijezd' }, else: 'Zadarmo jen té, komu loďkaři věří (1), třeba po společné cigaretě.', do: { travel: 'nuselak' }, reply: ['S kým kouřím, toho vozím. To je druhý pravidlo, co máme. Nasedněte.'] },
-                { id: 'prevoz_prace', label: 'Na převoz nemám. Můžu si ho odpracovat?', if: { poor: 3, noFlag: 'nusle_prijezd' }, else: 'Odpracovat se dá jen tomu, kdo nemá tři jízdenky.', do: { travel: 'nuselak' }, reply: ['Loďka teče. Tady je plechovka. Cestou ji vylejete celou a nebudete si stěžovat.', 'Stěžovat si stejně nebudete. Budete mít plné ruce.'] },
-                { id: 'prevoz_znovu', label: 'Do Nuslí, jako minule.', if: { flag: 'nusle_prijezd' }, else: 'Zadarmo jen ten, kdo už jednou jel.', do: { travel: 'nuselak' } },
-                { id: 'prevoz_rovnou', label: 'Rovnou na Staromák.', if: { flag: 'met_admiral' }, else: 'Rovnou přes stavidlo jen ta, koho zná Admirál.', reply: ['Admirál vás zná, stavidlo vás pustí. Melantrichovou, rovnou.'], do: { travel: 'staromak' } },
+                { id: 'prevoz_kamaradka', label: 'Kouřily jsme spolu. Hodíte mě na Staromák?', if: { trust: { lodkari: 1 }, noFlag: 'nusle_prijezd' }, else: 'Zadarmo jen té, které loďkaři věří (1), třeba po společné cigaretě.', do: { travel: 'nuselak' }, reply: ['S kým kouřím, toho vozím. To je druhý pravidlo, co máme. Nasedněte.'] },
+                { id: 'prevoz_prace', label: 'Na převoz nemám. Můžu si ho odpracovat?', if: { poor: 3, noFlag: 'nusle_prijezd' }, else: 'Odpracovat si ho může jen ta, která nemá tři jízdenky.', do: { travel: 'nuselak' }, reply: ['Loďka teče. Tady je plechovka. Cestou ji vylejete celou a nebudete si stěžovat.', 'Stěžovat si stejně nebudete. Budete mít plný ruce.'] },
+                { id: 'prevoz_znovu', label: 'Do Nuslí, jako minule.', if: { flag: 'nusle_prijezd' }, else: 'Zadarmo jen ta, která už jednou jela.', do: { travel: 'nuselak' } },
+                { id: 'prevoz_rovnou', label: 'Rovnou na Staromák.', if: { flag: 'met_admiral' }, else: 'Rovnou přes stavidlo jen ta, kterou zná Admirál.', reply: ['Admirál vás zná, stavidlo vás pustí. Melantrichovou, rovnou.'], do: { travel: 'staromak' } },
             ] },
         } },
     // —— Nuselák ——
     kuracka_nusle: { stats: { ruka: 2, usta: 2, oko: 3 }, about: 'Loďkařská hlídka. Cigareta, motorový člun a přesvědčení, že suchá země se přeceňuje.', faction: 'lodkari', name: 'Kuřačka', face: 'face_kuracka',
         entry: [{ if: { noFlag: 'nusle_prijezd' }, node: 'prijezd' }, { node: 'hub' }],
         nodes: {
-            prijezd: { say: ['Nusle. Dál pod most nejedu, visí tam beton a v něm souprava.', 'Na Staromák vás sveze kormidelník od jižního mola. Jenže to je na druhé straně a most je uprostřed zlomenej. Přes mezeru vede lano. Lanař za to chce dvě jízdenky. Nebo odvahu.'], do: { flag: 'nusle_prijezd', quest: { lodka: 'nusle', lano: 'nest' } }, next: 'hub' },
+            prijezd: { say: ['Nusle. Dál pod most nejedu, visí tam beton a v něm souprava.', 'Na Staromák vás sveze kormidelník od jižního mola. Jenže to je na druhý straně a most je uprostřed zlomenej. Přes mezeru vede lano. Lanař za to chce dvě jízdenky. Nebo odvahu.'], do: { flag: 'nusle_prijezd', quest: { lodka: 'nusle', lano: 'nest' } }, next: 'hub' },
             hub: { say: ['Loďka stojí. Cigareta hoří. Kam?'], choices: [
                 { id: 'most', label: 'Co se stalo s mostem?', once: true, reply: ['Prasknul ve 14:37, jako všechno. Podloží si sedlo, říká kormidelník. Uvnitř zrovna jela souprava céčka a tam taky zůstala.'] },
                 { id: 'lachtani', label: 'Odkud jsou tu lachtani?', once: true, reply: ['Ze zoo. Trója byla první pod vodou. Lachtani plavou, kam se jim zachce, a nikdo jim nevybírá jízdenky. Závidím jim.'] },
@@ -822,9 +844,9 @@ export const DIALOGS = {
                 { id: 'kocky', label: 'Proč máte v kapse kotě?', if: { noFlag: 'kote_zadano' }, else: 'Jen poprvé.', do: { flag: 'kote_zadano', quest: { kote: 'nest' } }, reply: ['Koťata jsou jediná, která mě ještě poslechnou. Řeknu stát a stojí. Aspoň ta, co spí.', 'Jedno mi utíká. Mourek. Lezl za racky po mostě až za zlom. Já přes lano nejdu, mám služební předpisy a strach z výšek. Přinesete mi ho?'] },
                 { id: 'mourek', label: 'Tady je Mourek.', if: { item: 'kote' }, else: 'Jen s Mourkem v tašce.', do: { take: 'kote', quest: { kote: 'done' }, give: 'odznak', xp: 3 }, reply: ['Mourku! Ty jeden… Přijmi pokutu za opuštění služebny. Sto granulí. Podmínečně.', 'A vám děkuju, pošto. Vezměte si můj odznak. Pravomoci nedává, ale lidi při pohledu na něj pořád ztichnou. Zvyk je silnější než zákon.'] },
                 { id: 'most', label: 'Co se stalo s mostem?', once: true, do: { flag: 'utrzek6', xp: 1 }, reply: ['Tři dny předtím jsem sepsal protokol: v troubě mostu praská beton a pilíře v údolí stojí v mokru, kde dřív žádné nebylo. Odnesl jsem ho na Kancelář kanálu.', 'Vrátil se mi s razítkem VYŘÍZENO. Pak byla 14:37 a vyřízený byl celý most.'] },
-                { id: 'uznat', label: 'Pro mě jste pořád policie.', check: 'usta', else: 'Udělat radost strážmistrovi chce Ústa 2.', once: true, do: { tickets: 3, xp: 2 }, reply: ['Policie… Řekněte to ještě jednou. Ne, neříkejte, rozbrečel bych se před exponáty. Na, tady máte jízdenky z depozitáře. Byly to doličné předměty, ale případ je promlčený.', 'Kdyby vám někdo ubližoval, řekněte mu, že jste pod ochranou Muzea Policie. A pak utíkejte sem, uvařím čaj.'] },
+                { id: 'uznat', label: 'Pro mě jste pořád policie.', check: 'usta', else: 'Udělat radost strážmistrovi chce Ústa 1.', once: true, do: { tickets: 3, xp: 2 }, reply: ['Policie… Řekněte to ještě jednou. Ne, neříkejte, rozbrečel bych se před exponáty. Na, tady máte jízdenky z depozitáře. Byly to doličné předměty, ale případ je promlčený.', 'Kdyby vám někdo ubližoval, řekněte mu, že jste pod ochranou Muzea Policie. A pak utíkejte sem, uvařím čaj.'] },
                 { id: 'pokuta', label: 'Dáte mi pokutu?', once: true, do: { xp: 1 }, reply: ['Za co? …Za chůzi po vozovce. Sto korun. Koruny už nejsou, tak napomenutí. Buďte na sebe opatrná.'] },
-                { id: 'tatra', label: 'Čí je ta Tatra před muzeem?', once: true, reply: ['Služební. Tatra 603, Veřejná bezpečnost. Exponát. Ve 14:37 jsem v ní seděl a poslouchal vysílačku. Volali všichni najednou a nikdo nevěděl, kam jet.'] },
+                { id: 'tatra', label: 'Čí je ta Tatra před muzeem?', once: true, reply: ['Služební. Tatra 613, Veřejná bezpečnost. Exponát. Ve 14:37 jsem v ní seděl a poslouchal vysílačku. Volali všichni najednou a nikdo nevěděl, kam jet.'] },
             ] },
             doma: { say: ['Mourek spí ve vitríně s pouty. Já hlídám jeho. Tak to má být.'], choices: [
                 { id: 'most', label: 'Co se stalo s mostem?', once: true, do: { flag: 'utrzek6', xp: 1 }, reply: ['Tři dny předtím jsem sepsal protokol: v troubě mostu praská beton a pilíře v údolí stojí v mokru, kde dřív žádné nebylo. Odnesl jsem ho na Kancelář kanálu.', 'Vrátil se mi s razítkem VYŘÍZENO. Pak byla 14:37 a vyřízený byl celý most.'] },
@@ -840,8 +862,8 @@ export const DIALOGS = {
                 { id: 'ruce', label: 'Přeručkuju to bez postroje.', if: { attr: { ruka: 2 }, noFlag: 'lano_ok' }, else: 'Bez postroje to chce Ruku 2.', do: { flag: 'lano_ok', quest: { lano: 'done' }, xp: 2, rope: 'jih' }, reply: ['Bez postroje? Pan Fanta by vám dal slevu na pohřeb. Tak jo, ukažte.'] },
                 { id: 'postroj', label: 'Pod bednou máte druhý postroj.', if: { attr: { oko: 2 }, noFlag: 'lano_ok' }, else: 'Druhý postroj uvidí jen Oko 2.', do: { flag: 'lano_ok', quest: { lano: 'done' }, xp: 2, rope: 'jih' }, reply: ['Všímavá. Ten postroj je pro rodinu. Dneska jste rodina.'] },
                 { id: 'posta', label: 'Pošta má přednost. I na laně.', check: 'usta', if: { noFlag: 'lano_ok' }, else: 'Ukecat lanaře chce Ústa 2.', do: { flag: 'lano_ok', quest: { lano: 'done' }, xp: 2, rope: 'jih' }, reply: ['Pošta… Pan Fanta říká, že pošta je konkurence. Ale pan Fanta tu nevisí. Jděte.'] },
-                { id: 'prace', label: 'Nemám na to. Odpracuju si to.', if: { poor: 2, noFlag: 'lano_ok' }, else: 'Odpracovat si to může jen ten, kdo nemá dvě jízdenky.', do: { flag: 'lano_ok', quest: { lano: 'done' }, rope: 'jih' }, reply: ['Vezmete mi na druhou stranu bednu s karabinami. Na zádech. Když spadne, spadnete s ní, tak ať nespadne.'] },
-                { id: 'znovu', label: 'Přes lano, jako minule.', if: { flag: 'lano_ok' }, else: 'Zadarmo jen ten, kdo už jednou přešel.', do: { rope: 'jih' } },
+                { id: 'prace', label: 'Nemám na to. Odpracuju si to.', if: { poor: 2, noFlag: 'lano_ok' }, else: 'Odpracovat si to může jen ta, která nemá dvě jízdenky.', do: { flag: 'lano_ok', quest: { lano: 'done' }, rope: 'jih' }, reply: ['Vezmete mi na druhou stranu bednu s karabinami. Na zádech. Když spadne, spadnete s ní, tak ať nespadne.'] },
+                { id: 'znovu', label: 'Přes lano, jako minule.', if: { flag: 'lano_ok' }, else: 'Zadarmo jen ta, která už jednou přešla.', do: { rope: 'jih' } },
                 { id: 'kdo', label: 'Kdo to lano natáhl?', once: true, reply: ['Já. Den po tom. Pan Fanta dal lano, já dal ruce. Teď je to franšíza a ruce mám pořád svoje.'] },
             ] },
         } },
@@ -856,15 +878,15 @@ export const DIALOGS = {
         entry: [{ node: 'hub' }],
         nodes: {
             hub: { say: ['Z betonové trouby mostu trčí čelo soupravy céčka. Kabina visí nakloněná nad vodou, sklo je vyražené. Na pultu leží služební kniha.'], choices: [
-                { id: 'kniha', label: 'Přečíst služební knihu.', once: true, do: { flag: 'utrzek7', xp: 2 }, reply: ['Poslední zápis: „14.35 Vyšehrad, odjezd. Dispečink hlásí, že trouba mostu pracuje. Pokyn Kanceláře kanálu: provoz nezastavovat.“', '„14.37 —“ Dál nic. Jen kroužek od kafe.'] },
+                { id: 'kniha', label: 'Přečíst služební knihu.', once: true, do: { flag: 'utrzek7', xp: 2 }, reply: ['Poslední zápis: „14:35 Vyšehrad, odjezd. Dispečink hlásí, že trouba mostu pracuje. Pokyn Kanceláře kanálu: provoz nezastavovat.“', '„14:37“. Dál nic. Jen kroužek od kafe.'] },
                 { id: 'kabina', label: 'Prohledat kabinu.', if: { attr: { oko: 2 } }, else: 'Co v kabině zůstalo, uvidí jen Oko 2.', once: true, do: { supply: { obvaz: 1 }, tickets: 2, xp: 1 }, reply: ['Pod sedadlem strojvedoucího lékárnička a v kapse uniformy dvě jízdenky. Strojvedoucí už je nepotřebuje. Kde je, kniha neříká.'] },
             ] },
         } },
     kote: { name: 'Mourek', face: null,
         entry: [{ node: 'hub' }],
         nodes: {
-            hub: { say: ['Na betonu u soupravy sedí zrzavé kotě a pozoruje racky. Na obojku má cedulku: MOUREK, MUZEUM POLICIE.'], choices: [
-                { id: 'vzit', label: 'Vzít Mourka do tašky.', if: { quest: { kote: 'nest' } }, else: 'Kotě je něčí. Nejdřív se zeptat u Muzea Policie.', do: { give: 'kote', flag: 'kote_mam', quest: { kote: 'nese' } }, reply: ['Mourek se nechá. Do tašky se vejde mezi dopisy. Předení je jediný zvuk na celém mostě.'] },
+            hub: { say: ['Na betonu u soupravy sedí mourovaté kotě a pozoruje racky. Na obojku má cedulku: MOUREK, MUZEUM POLICIE.'], choices: [
+                { id: 'vzit', label: 'Vzít Mourka do tašky.', if: { quest: { kote: 'nest' } }, else: 'Kotě je něčí. Nejdřív se zeptat u Muzea Policie.', do: { give: 'kote', flag: 'kote_mam', quest: { kote: 'nese' } }, reply: ['Mourek se nechá. V tašce po dopisech má místa dost. Předení je jediný zvuk na celém mostě.'] },
                 { id: 'pohladit', label: 'Pohladit ho.', once: true, do: { heal: 1 }, reply: ['Kotě se nechá pohladit a dál pozoruje racky. Je vám o kousek líp.'] },
             ] },
         } },
@@ -904,27 +926,27 @@ export const DIALOGS = {
             prvni: { say: ['Pošta! Na mé vodě! Vítejte ve flotile Staroměstské. Jsem Admirál.', 'Kanál, má milá! O tom snil už pan prezident Zeman, a my ho máme. Pán Bůh dal Vltavě koryto, kancelář jí dala lepší. Že vede přes Staré Město? Každé dílo něco stojí.'], do: { flag: 'met_admiral' }, next: 'hub' },
             hub: { say: ['Co vás vede přes moji vodu?'], choices: [
                 { id: 'posta', label: 'Nesu poštu na Hrad. Potřebuju na Karlův most.', if: { item: 'zasilka', noFlag: 'admiral_videl' }, else: 'Jen se zásilkou v tašce a jen poprvé.', do: { flag: 'admiral_videl' }, next: 'ukazat' },
-                { id: 'prazdna', label: 'Potřebuju na Karlův most.', if: { noItem: 'zasilka', noFlag: 'admiral_hotovo' }, else: 'Jen bez zásilky.', do: { flag: ['admiral_hotovo', 'admiral_prevoz'] }, reply: ['S prázdnou taškou? Pošta, která nic neveze, je turistka. Turisty vozíme zadarmo, z nostalgie. Loďka čeká u Karlovy.'] },
+                { id: 'prazdna', label: 'Potřebuju na Karlův most.', if: { noItem: 'zasilka', noFlag: 'admiral_hotovo' }, else: 'Jen bez zásilky.', do: { flag: ['admiral_hotovo', 'admiral_prevoz'] }, reply: ['S prázdnou taškou? Tak to jste turistka. Turisty vozíme zadarmo, z nostalgie. Loďka čeká u Karlovy.'] },
                 { id: 'ukazat_znovu', label: 'Ještě k té krabičce…', if: { flag: 'admiral_videl', item: 'zasilka', noFlag: 'admiral_hotovo' }, else: 'Dokud se o zásilce nerozhodlo.', next: 'ukazat' },
                 { id: 'kanal', label: 'Kdo kanál podepsal?', once: true, reply: ['Kancelář kanálu! Lidé s vizí. Nastěhovali se na Hrad, odkud je na vodu nejlíp vidět. Já je obdivuju odsud, z Husa. Výhled mám horší, ale jsem blíž vodě.'] },
                 { id: 'rucitele', label: 'Loďkaři za mě ručí. Zeptejte se Kuřačky.', if: { trust: { lodkari: 2 }, noFlag: 'admiral_hotovo' }, else: 'Jen když vám loďkaři věří (2).', do: { flag: ['admiral_hotovo', 'admiral_prevoz'], quest: { admiral: 'rucitele' }, xp: 1 }, reply: ['Kuřačka o vás mluvila. Za koho ručí ona, za toho ručí voda. Loďka u Karlovy čeká, krabičku si nechte. Zatím.'], next: 'potom' },
                 { id: 'hus', label: 'Proč zrovna Hus?', once: true, reply: ['Protože ještě stojí. Pravda vítězí, říká se. Tady vítězí ten, kdo stojí nejvýš nad hladinou.'] },
             ] },
             ukazat: { say: ['Poštu na Hrad? Krabičku od pana Fanty? Tu jsem si zamluvil já, pan Fanta ode mě dostal zálohu. Ukažte mi ji a loďka vás doveze Karlovou na most. Zadarmo. Z úcty k instituci.'], choices: [
-                { id: 'dat', next: 'potom', label: 'Ukážu. (Podat mu krabičku.)', do: { take: 'zasilka', flag: ['admiral_hotovo', 'admiral_prevoz', 'dala_admiralovi'], trust: { lodkari: 2 }, quest: { admiral: 'dala', zakazka: 'ztracena' }, xp: 2 },
+                { id: 'dat', next: 'potom', label: 'Dát mu ji. (Krabička zůstane Admirálovi.)', do: { take: 'zasilka', flag: ['admiral_hotovo', 'admiral_prevoz', 'dala_admiralovi'], trust: { lodkari: 2 }, quest: { admiral: 'dala', zakazka: 'ztracena' }, xp: 2 },
                     reply: ['…Záznamník štítu. Já to věděl. Já to cítil v kříži.', 'Tohle se nedoručuje, tohle se obětuje. Až vyjede flotila na Vyšehrad, hodím ho do proudu, ať kanál ví, že ho máme rádi.', 'Loďka u Karlovy je vaše. Pošta posloužila vodě. Flotila vám to nezapomene!'] },
                 { id: 'podstrcit', next: 'potom', label: 'Ukážu. (Podat mu krabičku od lovce značek.)', if: { item: 'falesna', attr: { usta: 2 } }, else: 'Podstrčit falešnou krabičku chce krabičku od lovce značek a Ústa 2.', do: { take: 'falesna', flag: ['admiral_hotovo', 'admiral_prevoz', 'podstrcila'], trust: { lodkari: 1 }, quest: { admiral: 'podstrceno' }, xp: 3 },
                     reply: ['…Záznamník štítu. Lehčí, než jsem myslel. To z něj asi vyprchala data.', 'Na Vyšehradě ho hodím do proudu, jako oběť kanálu. Loďka u Karlovy je vaše.'] },
                 { id: 'odmitnout', next: 'potom', label: 'Listovní tajemství. Neukážu.', do: { flag: ['admiral_hotovo', 'admiral_odmitla'], trust: { trziste: 1, lodkari: -1 }, quest: { admiral: 'odmitnuto' }, xp: 1 },
                     reply: ['Tajemství. Na mé vodě. Dobře, pošto, voda si to zapamatuje a já taky.', 'Loďka vás nepoveze. Na most se dostanete leda po střechách Klementina, a kdo tam nezná cestu, ten plave.'] },
-                { id: 'tradice', next: 'potom', label: 'Pošta nic neukazuje, pane admirále. To je tradice, jako váš motor.', check: 'usta', else: 'Ukecat Admirála chce Ústa 3.', do: { flag: ['admiral_hotovo', 'admiral_prevoz', 'admiral_ukecala'], quest: { admiral: 'ukecala' }, xp: 3 },
+                { id: 'tradice', next: 'potom', label: 'Pošta nic neukazuje, pane admirále. To je tradice.', check: 'usta', else: 'Ukecat Admirála chce Ústa 3.', do: { flag: ['admiral_hotovo', 'admiral_prevoz', 'admiral_ukecala'], quest: { admiral: 'ukecala' }, xp: 3 },
                     reply: ['Tradice… Motor chytá napotřetí, pošta nic neukazuje. Na tom stojí svět, i ten mokrý.', 'Loďka u Karlovy je vaše. Krabičku si vyřídím s panem Fantou, zálohu mi vrátí.'] },
             ] },
             potom: { say: ['Pošta. Flotila zdraví. Loďka u Karlovy čeká na ty, kdo si ji zasloužili.'], choices: [
                 { id: 'kanal', label: 'Kdo kanál podepsal?', once: true, reply: ['Kancelář kanálu! Lidé s vizí. Nastěhovali se na Hrad, odkud je na vodu nejlíp vidět.'] },
             ] },
         } },
-    orlojnik: { stats: { ruka: 1, usta: 2, oko: 3 }, about: 'Natahuje Orloj ručně, z loďky, každou hodinu. Prodává přesný čas.', name: 'Orlojník', face: 'face_orlojnik',
+    orlojnik: { stats: { ruka: 1, usta: 2, oko: 3 }, about: 'Natahuje orloj ručně, z loďky, každou hodinu. Prodává přesný čas.', name: 'Orlojník', face: 'face_orlojnik',
         entry: [{ if: { noFlag: 'met_orlojnik' }, node: 'prvni' }, { node: 'hub' }],
         nodes: {
             prvni: { say: ['Pst. Za minutu bude celá. Smrtka zatáhne za zvonec a apoštolové… nevyjdou. Zase.', 'Orloj natahuju ručně, z loďky, každou hodinu. Přesný čas nemá nikdo jiný, tak ho prodávám. Jenže apoštolové od čtrnáct třicet sedm nevyšli ani jednou. Tehdy se zastavilo všechno. Soukolí pod hladinou rezaví.'], do: { flag: 'met_orlojnik', quest: { apostolove: 'nest' } }, next: 'hub' },
@@ -932,7 +954,7 @@ export const DIALOGS = {
                 { id: 'vytahnout', label: 'Vytáhnu to soukolí nad hladinu.', if: { attr: { ruka: 2 }, quest: { apostolove: 'nest' } }, else: 'Vytáhnout soukolí z vody chce Ruku 2.', do: { quest: { apostolove: 'done' }, flag: 'apostolove', tickets: 5, xp: 3 },
                     reply: ['Opatrně… ještě… mám ho!', 'Tik. Tak. Smrtka zvoní a apoštolové vycházejí. Mokří, ale celí. Všech dvanáct, spočítal jsem je.', 'Za to vám řeknu, co nikdo neví: Admirál odjíždí na obhlídku každou celou hodinu a jeho loďka u Karlovy zůstává bez dozoru. Kdo zná čas, sveze se. A tady jízdenky. Vybral jsem je od turistů za poslední odbíjení a vrátit je už nemám komu.'] },
                 { id: 'kolo', label: 'Tady je ozubené kolo z hodinek.', if: { item: 'kolo', quest: { apostolove: 'nest' } }, else: 'Jen s ozubeným kolem od lovce značek.', do: { take: 'kolo', quest: { apostolove: 'done' }, flag: 'apostolove', tickets: 5, xp: 3 },
-                    reply: ['Švýcarské. Malé, ale švýcarské. Pasuje!', 'Tik. Tak. Apoštolové vycházejí. Mokří, ale celí.', 'Admirál odjíždí každou celou hodinu na obhlídku a jeho loďka u Karlovy zůstává bez dozoru. Kdo zná čas, sveze se. A tady jízdenky. Vybral jsem je od turistů za poslední odbíjení a vrátit je už nemám komu.'] },
+                    reply: ['Švýcarské. Malé, ale švýcarské. Pasuje!', 'Tik. Tak. Apoštolové vycházejí. Kape z nich, ale je jich dvanáct.', 'Admirál odjíždí každou celou hodinu na obhlídku a jeho loďka u Karlovy zůstává bez dozoru. Kdo zná čas, sveze se. A tady jízdenky. Vybral jsem je od turistů za poslední odbíjení a vrátit je už nemám komu.'] },
                 { id: 'cas', label: 'Kolik je hodin? (1 jízdenka)', if: { tickets: 1 }, else: 'Čas stojí jízdenku.', once: true, do: { tickets: -1 }, reply: ['Čtyři sta dvanáct dní, pár hodin a sedmnáct minut po čtrnácté třicet sedm. Jinak se tu čas nepočítá.'] },
                 { id: 'klementinum', label: 'Jak se dostanu po střechách na most?', once: true, reply: ['Přes Klementinum. Z Karlovy po lešení na střechu, kolem hvězdárny a dolů ke Křižovníkům. Kdo nemá dobré oči, spadne do Karlovy. Kdo má, je na mostě.'] },
             ] },
@@ -943,10 +965,10 @@ export const DIALOGS = {
             prvni: { say: ['Pařížská, nejdražší vodní cesta v Evropě. Kabáty, kabelky, hodinky, všechno originál. Mokrý originál je pořád originál.', 'Jenže mi támhle ve výloze uvízl hák. A ve výloze hnízdí nutrie, v kožiších. Mají lepší vkus než já.'], do: { flag: 'met_lovec', quest: { hak: 'nest' } }, next: 'hub' },
             hub: { say: ['Kupujete, nebo jen koukáte? Koukání je zadarmo, a taky podle toho vypadá.'], choices: [
                 { id: 'hak', label: 'Hák je venku.', if: { flag: 'hak_venku', quest: { hak: 'nest' } }, else: 'Až bude hák z výlohy venku.', do: { quest: { hak: 'done' }, give: ['falesna', 'kabat'], xp: 2 },
-                    reply: ['Můj hák! Vy jste poklad. Tady, za odměnu.', 'Kabát, originál. Nepromokavý, mokřejší už nebude. A tahle krabička: vylovil jsem ji v butiku s elektronikou a vypadá jako ta vaše. Kdyby ji po vás někdo chtěl, dejte mu tuhle. Pozná to, až ji otevře.'] },
+                    reply: ['Můj hák! Vy jste poklad. Tady, za odměnu.', 'Kabát, originál. Nepromokavý, mokřejší už nebude. A tahle krabička: vylovil jsem ji v butiku s elektronikou. Černá, velká jako powerbanka. Po jedné takové se teď v Praze ptá kdekdo. Kdyby ji někdo chtěl po vás, dejte mu tuhle. Pozná to, až ji otevře.'] },
                 { id: 'kolo', label: 'Máte ozubené kolo? Pro Orlojníka. (3 jízdenky)', if: { tickets: 3, noItem: 'kolo', quest: { apostolove: 'nest' } }, else: 'Kolo má smysl kupovat pro Orlojníka a za tři jízdenky.', do: { tickets: -3, give: 'kolo' }, reply: ['Z hodinek z butiku, švýcarské. Hodinky jsou mokré, kolečko suché. Vodotěsné, to je ten luxus.'] },
                 { id: 'kolo_hak', label: 'Nemáte ozubené kolo? Pro Orlojníka. Za ten hák.', if: { noItem: 'kolo', quest: { hak: 'done', apostolove: 'nest' } }, else: 'Kolo za hák dá lovec, až mu ho vrátíte, a jen pro Orlojníka.', do: { give: 'kolo' }, reply: ['Za hák? Za hák bych vám dal i ty hodinky, jenže jsou mokré. Tady je kolečko, švýcarské, suché.'] },
-                { id: 'krabicka', label: 'Ta krabička… vypadá jako moje.', if: { item: 'zasilka' }, else: 'Jen se zásilkou v tašce.', once: true, reply: ['Vidím. Kdo nosí takovou krabičku v poštovní tašce, nenosí ji jen tak. Moje je prázdná. Prázdné věci jsou nejbezpečnější, kvůli nim nikdo nezabíjí.'] },
+                { id: 'krabicka', label: 'Ta vaše krabička vypadá jako moje.', if: { item: ['zasilka', 'falesna'] }, else: 'Jen když máte v tašce zásilku i krabičku od lovce.', once: true, reply: ['Vidím. Kdo nosí takovou krabičku v poštovní tašce, nenosí ji jen tak. Moje je prázdná. Prázdné věci jsou nejbezpečnější, kvůli nim nikdo nezabíjí.'] },
             ] },
         } },
     vyloha: { name: 'Výloha butiku', face: null,
@@ -954,7 +976,7 @@ export const DIALOGS = {
         nodes: {
             hotovo: { say: ['Hnízdo z kožichů je prázdné. Nutrie sedí venku na lávce a hlídají ho odtamtud.'], choices: [] },
             spi: { say: ['Nutrie spí dál, zabalené v kašmíru. Po háku zbyla v kožiších díra.'], choices: [] },
-            nutrie: { say: ['Ve výloze mezi figurínami je hnízdo z kožichů. Kouká z něj nutrie. A další. Z hnízda trčí lovcův hák.'], choices: [
+            nutrie: { say: ['Ve výloze mezi figurínami je hnízdo z kožichů. Spí v něm nutrie. A další. Z hnízda trčí lovcův hák.'], choices: [
                 { id: 'boj', label: 'Vyhnat je.', do: { fight: 'nutrie2' }, win: { flag: ['nutrie2_pryc', 'nutrie_venku'], xp: 2 }, next: 'hak' },
                 { id: 'mriz', label: 'Vyrazit mříž a vytrhnout hák, než se proberou.', if: { attr: { ruka: 3 } }, else: 'Vyrazit mříž chce Ruku 3.', do: { flag: ['nutrie2_pryc', 'hak_venku'], xp: 2 }, reply: ['Mříž povolí na první kopnutí. Hák jde ven i s kusem norka. Nutrie se ani nestačí probudit.'], end: true },
                 { id: 'jinudy', label: 'Vytáhnout hák zezadu, dírou ve stropě.', if: { attr: { oko: 3 } }, else: 'Díru ve stropě butiku najde jen Oko 3.', do: { flag: ['nutrie2_pryc', 'hak_venku'], xp: 2 }, reply: ['Z patra butiku vede do výlohy díra po lustru. Hák jde ven, nutrie spí dál, zabalené v kašmíru.'], end: true },
@@ -985,7 +1007,7 @@ export const DIALOGS = {
                 { id: 'lodka', label: 'Loďkou na Karlův most.', if: { flag: 'admiral_prevoz' }, else: 'Loďka jede jen s Admirálovým svolením.', do: { travel: 'most' } },
                 { id: 'lodka_hodina', label: 'Loďkou, dokud je Admirál na obhlídce.', if: { flag: 'apostolove', noFlag: 'admiral_prevoz' }, else: 'Kdy loďka zůstává bez dozoru, ví jen Orlojník.', do: { trust: { lodkari: -1 }, travel: 'most' }, reply: ['Celá hodina. Admirál odplouvá na obhlídku, jeho loďka se houpe u lávky. Nikdo se nedívá.'] },
                 { id: 'strechy', label: 'Po střechách Klementina.', if: { attr: { oko: 2 } }, else: 'Cestu po střechách najde jen Oko 2.', do: { flag: 'klementinum', xp: 2, travel: 'most' }, reply: ['Po lešení nahoru, po střechách Klementina k hvězdárenské věži s Atlasem. Dole Karlova jako černé zrcadlo. Ke Křižovníkům dolů po hromosvodu.'] },
-                { id: 'plavat', label: 'Přeplavat Karlovu ke Křižovníkům.', if: { attr: { ruka: 3 } }, else: 'Přeplavat Karlovu chce Ruku 3.', do: { xp: 2, travel: 'most' }, reply: ['Voda je studená a černá a pod ní jsou výlohy. Plavete kolem Klementina, Atlas na věži se dívá jinam. Ke Křižovníkům dolezete mokrá, ale celá.'] },
+                { id: 'plavat', label: 'Přeplavat Karlovu ke Křižovníkům.', if: { attr: { ruka: 3 } }, else: 'Přeplavat Karlovu chce Ruku 3.', do: { xp: 2, travel: 'most' }, reply: ['Voda je studená a černá a pod ní jsou výlohy. Plavete kolem Klementina, Atlas na věži se dívá jinam. Ke Křižovníkům dolezete promočená a bez dechu.'] },
             ] },
         } },
     // —— Karlův most a Kampa ——
@@ -999,15 +1021,15 @@ export const DIALOGS = {
         nodes: {
             prvni: { say: ['Pozor, práší se. Svatá Luitgarda, po kouskách. Vcelku se do loďky nevejde, svatí jsou neskladní.', 'Vezete něco pro Admirála?'], do: { flag: 'met_pilar' }, next: 'admiral' },
             admiral: { say: ['Tak co, pošto?'], choices: [
-                { id: 'dala', label: 'Už to má.', if: { any: [{ flag: 'dala_admiralovi' }, { flag: 'podstrcila' }] }, else: 'Jen když Admirál krabičku dostal.', do: { trust: { lodkari: 1 } }, reply: ['Tak to jste naše. Mávnu na vás z každé loďky.'], next: 'hub' },
+                { id: 'dala', label: 'Už to má.', if: { any: [{ flag: 'dala_admiralovi' }, { flag: 'podstrcila' }] }, else: 'Jen když Admirál krabičku dostal.', do: { trust: { lodkari: 1 } }, reply: ['Tak to jste naše. Mávnu na vás z každý loďky.'], next: 'hub' },
                 { id: 'odmitla', label: 'Ne. Nesu to na Hrad.', if: { flag: 'admiral_odmitla' }, else: 'Jen když jste Admirála odmítla.', reply: ['Admirálovi se neodmítá. Zapamatuju si vás. Nejsem zlej, mám jen dobrou paměť a pilu.'], next: 'hub' },
                 { id: 'tradice', label: 'Admirál mě veze z tradice.', if: { flag: 'admiral_ukecala' }, else: 'Jen když jste Admirála ukecala.', reply: ['Tradice. To je u Admirála víc než krabička. Tak jo.'], next: 'hub' },
                 { id: 'nic', label: 'Nevezu nic.', reply: ['To říká každej, kdo má tašku.'], next: 'hub' },
             ] },
             hub: { say: ['Pila jede, benzínu mám dost. Co chcete?'], choices: [
                 { id: 'obchod', label: 'Co prodáváte?', shop: true },
-                { id: 'smes_zadarmo', label: 'Dáte mi trochu benzínu?', if: { trust: { lodkari: 2 }, noItem: 'smes' }, else: 'Zadarmo jen tomu, komu loďkaři věří (2).', do: { give: 'smes' }, reply: ['Pro naše zadarmo. Jedna ku pětadvaceti, nepolejte se.'] },
-                { id: 'kdo', label: 'Kdo kupuje ty sochy?', check: 'usta', if: { noFlag: 'utrzek3' }, else: 'Pilař to vyklopí jen tomu, kdo má Ústa 2.', do: { flag: 'utrzek3', xp: 1 }, reply: ['Vám se špatně odmítá. Hrad. Kastelán chodí dolů a platí bez smlouvání. Kdo dneska kupuje sochy, má na všechno. Mně je to jedno, já jen řežu.'] },
+                { id: 'smes_zadarmo', label: 'Dáte mi trochu benzínu?', if: { trust: { lodkari: 2 }, noItem: 'smes' }, else: 'Zadarmo jen té, které loďkaři věří (2).', do: { give: 'smes' }, reply: ['Pro naše zadarmo. Jedna ku pětadvaceti, nepolejte se.'] },
+                { id: 'kdo', label: 'Kdo kupuje ty sochy?', check: 'usta', if: { noFlag: 'utrzek3' }, else: 'Pilař to vyklopí jen té, která má Ústa 2.', do: { flag: 'utrzek3', xp: 1 }, reply: ['Vám se špatně odmítá. Hrad. Kastelán chodí dolů a platí bez smlouvání. Kdo dneska kupuje sochy, má na všechno. Mně je to jedno, já jen řežu.'] },
                 { id: 'vysehrad', label: 'Jedu s flotilou na Vyšehrad.', if: { trust: { lodkari: 0 }, any: [{ flag: 'dala_admiralovi' }, { flag: 'podstrcila' }] }, else: 'Na Vyšehrad veze Pilař jen ty, kdo dali Admirálovi, co chtěl.', do: { flag: 'flotila', travel: 'nuselak' }, reply: ['Flotila vyráží. Nasedněte, svatá Luitgarda se uhne.', 'Sraz je v Nuslích pod zlomeným mostem. Tam se nalodí všichni, kormidelník zná cestu kolem skály.'] },
                 { id: 'zpet', label: 'Svezete mě na Staromák?', if: { trust: { lodkari: 0 } }, else: 'Kdo naštval loďkaře, toho Pilař nesveze.', reply: ['Nasedněte. A nešlapte na Luitgardu, je naložená na přídi.'], do: { travel: 'staromak' } },
             ] },
@@ -1017,7 +1039,7 @@ export const DIALOGS = {
         nodes: {
             prvni: { say: ['Galerie na mostě, otevřeno nonstop. Sochy vcelku i po kusech, ceny na podstavcích. Strýc Fanta vás pozdravuje.', 'A vím, co nesete. Strýc to prodal dvakrát, Hradu a Admirálovi, a teď počítá, kdo dá víc. Tak to chce zpátky.'], do: { flag: 'met_netere', quest: { netere: 'nest' } }, next: 'hub' },
             hub: { say: ['Obchod je obchod. Co si dáme?'], choices: [
-                { id: 'nabidka', label: 'Kolik dáte za krabičku?', if: { item: 'zasilka', noFlag: 'netere_hotovo', trust: { trziste: 0 } }, else: 'Jen se zásilkou v tašce a jen jednou.', next: 'nabidka' },
+                { id: 'nabidka', label: 'Kolik dáte za krabičku?', if: { item: 'zasilka', noFlag: 'netere_hotovo', trust: { trziste: 0 } }, else: 'Jen se zásilkou v tašce, jen jednou a jen dokud vám tržiště nepřestalo věřit.', next: 'nabidka' },
                 { id: 'kdo', label: 'Kdo kupuje sochy? (5 jízdenek)', if: { tickets: 5, noFlag: 'utrzek3' }, else: 'Informace stojí pět jízdenek.', do: { tickets: -5, flag: 'utrzek3', xp: 1 }, reply: ['Hrad. Kastelán platí na místě a na nic se neptá. Kdo si dneska kupuje svaté, má jízdenek na rozdávání. Odkud, to se neptejte.'] },
                 { id: 'desticka', label: 'Destička od Nepomuckého. (5 jízdenek)', if: { tickets: 5, noItem: 'desticka', quest: { desticka: 'nest' } }, else: 'Destičku má smysl kupovat pro hlídače a za pět jízdenek.', do: { tickets: -5, give: 'desticka' }, reply: ['Bronz, originál, osahaná do lesku. Štěstí s certifikátem.'] },
                 { id: 'desticka_oko', label: 'Z bedny trčí bronzový roh. Vzít si ho, když se nedívá.', check: 'oko', if: { noItem: 'desticka', quest: { desticka: 'nest' } }, else: 'Destičku v bednách uvidí jen Oko 2.', do: { give: 'desticka', trust: { trziste: -1 }, xp: 1 }, reply: ['Neteř přepisuje cenovky. Destička je teplá od slunce a těžší, než vypadá. Nikdo nic neviděl.'] },
@@ -1025,7 +1047,7 @@ export const DIALOGS = {
             ] },
             nabidka: { say: ['Tři sta jízdenek, na místě. Strýc si to koupí zpátky a prodá tomu, kdo dá víc. Vy budete mít klid a lehčí tašku.'], choices: [
                 { id: 'prodat', next: 'hub', label: 'Prodám.', do: { take: 'zasilka', tickets: 300, flag: ['netere_hotovo', 'prodala'], trust: { trziste: 2 }, quest: { netere: 'done', zakazka: 'prodana' }, xp: 2 }, reply: ['Obchod! Strýc bude rád a já budu mít provizi. Hrad už vás nemusí zajímat, pošto. Leda jako turistku.', 'Turisty pouští stráž s razítkem. Propustky vydává velvyslanec na Malé Straně, jízdenky na to teď máte.'] },
-                { id: 'prodat_vic', next: 'hub', label: 'Pro vás čtyři sta. Strýc mi věří.', if: { trust: { trziste: 3 } }, else: 'Čtyři sta dá neteř jen tomu, komu tržiště věří (3).', do: { take: 'zasilka', tickets: 400, flag: ['netere_hotovo', 'prodala'], trust: { trziste: 1 }, quest: { netere: 'done', zakazka: 'prodana' }, xp: 2 }, reply: ['Strýc o vás mluví hezky, a to on nedělá. Čtyři sta, ani jízdenku navíc.', 'Na Hrad teď leda jako turistka. Propustky vydává velvyslanec na Malé Straně.'] },
+                { id: 'prodat_vic', next: 'hub', label: 'Pro vás čtyři sta. Strýc mi věří.', if: { trust: { trziste: 3 } }, else: 'Čtyři sta dá neteř jen té, které tržiště věří (3).', do: { take: 'zasilka', tickets: 400, flag: ['netere_hotovo', 'prodala'], trust: { trziste: 1 }, quest: { netere: 'done', zakazka: 'prodana' }, xp: 2 }, reply: ['Strýc o vás mluví hezky, a to on nedělá. Čtyři sta, ani jízdenku navíc.', 'Na Hrad teď leda jako turistka. Propustky vydává velvyslanec na Malé Straně.'] },
                 { id: 'odmitnout', next: 'hub', label: 'Nesu to na Hrad. Doručím.', do: { flag: ['netere_hotovo', 'odmitla_netere'], quest: { netere: 'odmitnuto' }, trust: { metro: 1 } }, reply: ['Doručit. Jak staromódní. Strýc se to dozví a na Malé Straně vás budou čekat kluci z tržiště. Strýc tomu říká reklamace.'] },
             ] },
         } },
@@ -1044,7 +1066,7 @@ export const DIALOGS = {
         entry: [{ if: { flag: 'kanci_ok' }, node: 'klid' }, { node: 'ryji' }],
         nodes: {
             klid: { say: ['Kanci ryjí pod platany na Kampě a vás si nevšímají. Vůdce funí, jako by si stěžoval na počasí.'], choices: [] },
-            pryc: { say: ['Kanci se táhnou přes lávku pod platany. Dvůr mlýna je volný.'] },
+            pryc: { say: ['Kanci táhnou přes lávku pod platany. Dvůr mlýna je volný.'] },
             ryji: { flee: true, say: ['Na dvoře mlýna ryjí kanci z Petřína, přesně mezi vámi a kolem. Vůdce zvedne rypák a dívá se na vás jako na lanýž.'], choices: [
                 { id: 'boj', label: 'Prorazit si cestu.', do: { fight: 'kanci' }, win: { flag: 'kanci_ok', xp: 3 }, next: 'pryc' },
                 { id: 'srot', label: 'Odlákat je šrotem pod platany.', if: { attr: { oko: 2 } }, else: 'Prasklý pytel šrotu u dveří mlýna uvidí jen Oko 2.', do: { flag: ['kanci_ok', 'kanci_srot'], xp: 2 }, reply: ['U dveří mlýna stojí prasklý pytel šrotu. Nasypete z něj cestičku přes lávku až pod platany na Kampě.', 'Vůdce zvedne rypák, zafuní a celá tlupa jde po šrotu za ním. Dvůr je volný.'], end: true },
@@ -1064,7 +1086,7 @@ export const DIALOGS = {
                 { id: 'sila', label: 'Uvolním to kolo.', if: { attr: { ruka: 2 }, quest: { proud: 'nest' } }, else: 'Odvalit, co v kole vězí, chce Ruku 2.', next: 'kolo' },
                 { id: 'hraz', label: 'Přehradím Čertovku, ať se dá kolo vyprostit.', if: { attr: { oko: 2 }, quest: { proud: 'nest' } }, else: 'Kde přehradit proud, uvidí jen Oko 2.', next: 'kolo' },
                 { id: 'obchod', label: 'Prodáte něco?', shop: true },
-                { id: 'zed', label: 'Proč jste přemaloval Lennonovu zeď?', once: true, reply: ['Potmě ji stejně nikdo neviděl. Teď je na ní jediný nápis: PROUD. Až žárovka zase svítí, přečte si ho celá Kampa.'] },
+                { id: 'zed', label: 'Proč jste přemaloval Lennonovu zeď?', once: true, reply: ['Potmě ji stejně nikdo neviděl. Teď je na ní jediný nápis: PROUD. Až bude žárovka zase svítit, přečte si ho celá Kampa.'] },
             ] },
             // po opravě kola (úkol proud hotový): mlynář už nevítá větou o stojícím kole
             sviti: { say: ['Slyšíte ho? Točí se. A ona svítí. Co pro vás můžu udělat?'], choices: [
@@ -1102,8 +1124,8 @@ export const DIALOGS = {
             prvni: { say: ['Osmdesát let bydlím tady, U Dvou slunců. Pamatuju tři povodně, tohle je čtvrtá. Do Nerudovky nedošla ani jedna, tak se dívám z okna.', 'Hrad zavřeli už podruhé za můj život. A u brány pořád stojí ti samí kluci, jen zhubli.'], do: { flag: 'met_pani' }, next: 'hub' },
             hub: { say: ['Sedněte si, holka. Dáte si meltu? Kafe došlo, melta ne.'], choices: [
                 { id: 'noc', label: 'Co se stalo tu noc předtím?', once: true, do: { flag: 'utrzek4', xp: 1 }, reply: ['V noci jela nahoru kolona. Černé dodávky, na dveřích znak s vlnou a šipkou a nápis Kancelář kanálu.', 'Ráno se Hrad zavřel. A odpoledne ve 14:37 přišla voda. Já to viděla z okna, mám dobré oči a nic jiného na práci.'] },
-                { id: 'dopis', label: 'Nemáte tu pro mě něco k doručení?', once: true, do: { tickets: 3 }, reply: ['Dopis synovi do Brna. Nosím ho v zástěře, ať ho mám po ruce, kdyby šla pošta. A vidíte, jde. Tady máte na známku.'] },
-                { id: 'straz', label: 'Jak se dostanu na Hrad?', once: true, reply: ['Bránou ne, kluci nikoho nepustí. Kastelán chodí dolů nakupovat, s ním byste prošla. Velvyslanec dole v paláci vydává razítka a kluci salutují všemu, co má razítko. A ten zlatý trabant, co mi kope do popelnic, vyleze nahoru, když má benzín.'] },
+                { id: 'dopis', label: 'Nemáte tu pro mě něco k doručení?', once: true, do: { tickets: 3, give: 'dopis_brno', flag: 'dopis_brno' }, reply: ['Dopis synovi do Brna. Nosím ho v zástěře, ať ho mám po ruce, kdyby šla pošta. A vidíte, jde. Tady máte na známku.'] },
+                { id: 'straz', label: 'Jak se dostanu na Hrad?', once: true, reply: ['Bránou ne, kluci nikoho nepustí. Kastelán chodí dolů nakupovat, s ním byste prošla. Velvyslanec dole v paláci vydává razítka a na razítko kluci slyší. A ten zlatý trabant, co mi kope do popelnic, vyleze nahoru, když má benzín.'] },
             ] },
         } },
     velvyslanec: { stats: { ruka: 1, usta: 3, oko: 3 }, about: 'Velvyslanec státu, který se neozývá. Razítko má pořád.', name: 'Velvyslanec bez země', face: 'face_velvyslanec',
@@ -1135,7 +1157,7 @@ export const DIALOGS = {
             prvni: { say: ['Stůj, kdo jde! …Nikdo nejde. Rozkaz zní: nikoho nepouštět.', 'Prosím vás, nechoďte blíž. Nevíme, co máme dělat, když někdo přijde blíž. To v rozkazu není.'], do: { flag: 'met_straz', quest: { straz: 'nest' } }, next: 'hub' },
             hub: { say: ['Brána je zavřená. Pro poštu taky.'], choices: [
                 { id: 'propustka', label: 'Mám propustku s razítkem.', if: { item: 'propustka' }, else: 'Jen s propustkou od velvyslance.', do: { flag: 'propustkou', travel: 'hrad' }, reply: ['Razítko. Diplomatické. Salutovat! …Projděte. Rozkaz neříká nic o razítkách.'] },
-                { id: 'uredni', label: 'Jsem úřední osoba, zapsaná v evidenci metra.', if: { item: 'vypis', flag: 'uredni_osoba' }, else: 'Úřední osobou je jen ta, koho dispečerka ohlásila a zapsala.', do: { flag: 'propustkou', trust: { metro: 1 }, travel: 'hrad' }, reply: ['Výpis z evidence a úřední osoba. Na to rozkaz nemyslel. Projděte, kolegyně.'] },
+                { id: 'uredni', label: 'Jsem úřední osoba, zapsaná v evidenci metra.', if: { item: 'vypis', flag: 'uredni_osoba' }, else: 'Úřední osobou je jen ta, kterou dispečerka ohlásila a zapsala.', do: { flag: 'propustkou', trust: { metro: 1 }, travel: 'hrad' }, reply: ['Výpis z evidence a úřední osoba. Na to rozkaz nemyslel. Projděte, kolegyně.'] },
                 { id: 'metro', label: 'Metro za mě ručí. Zavolejte si dispečink.', if: { trust: { metro: 4 } }, else: 'Jen když vás metro bere za svou (4).', do: { flag: 'propustkou', travel: 'hrad' }, reply: ['Dispečink? Ten rozhlas, co je slyšet až sem? …Rozkaz nemyslel na metro. Projděte.'] },
                 { id: 'jidlo', label: 'Nesu vám jídlo.', if: { item: 'jidlo' }, else: 'Jen s jídlem od velvyslance.', do: { take: 'jidlo', quest: { straz: 'done' }, flag: ['straz_info', 'cesta_schody'], xp: 2 }, reply: ['Kanapky! Honzo, kanapky! …Promiňte. Děkujeme.', 'Za to vám řekneme: Kastelán chodí dolů každé ráno a nahoru, když nakoupí. A v poledne si měníme místa, na minutu se nikdo nedívá na Zámecké schody. To jsme vám neřekli.'] },
                 { id: 'hlad', label: 'Nemáte hlad?', once: true, reply: ['Máme. Jíme bagety z automatu na třetím nádvoří a automat je skoro prázdný. Co bude potom, to v rozkazu taky není.'] },
@@ -1146,8 +1168,8 @@ export const DIALOGS = {
         nodes: {
             prvni: { say: ['Kastelán Pražského hradu. Nakupuji. Sochy, jídlo, umění, dobré zprávy. Platím jízdenkami, nahoře jich máme dost.', 'Vy jste pošťačka s krabičkou. Pan Fanta ji slíbil panu řediteli a pan ředitel nerad čeká.'], do: { flag: 'met_kastelan' }, next: 'hub' },
             hub: { say: ['Mám naspěch, nahoře se svítí a světlo je drahé.'], choices: [
-                { id: 'nahoru', label: 'Vezmete mě nahoru?', if: { item: 'zasilka', any: [{ flag: 'met_netere' }, { attr: { usta: 3 } }, { trust: { trziste: 2 } }] }, else: 'Kastelán vezme nahoru jen pošťačku se zásilkou, a to když už potkala Fantovu neteř, nebo když má Ústa 3.', do: { flag: 'kastelanem', trust: { trziste: 1 }, travel: 'hrad' }, reply: ['Vezmu vás jako zásilku. Pan ředitel čeká krabičku, ne pošťačku, tak cestou mlčte. A salutujte, když salutují.'] },
-                { id: 'bez', label: 'Vezmete mě nahoru i bez krabičky?', if: { noItem: 'zasilka' }, else: 'Jen když krabičku nemáte.', once: true, reply: ['Bez krabičky jste turistka a turisty nevozím. Turisty pouští stráž, když mají propustku. Propustky razítkuje velvyslanec dole v paláci.'] },
+                { id: 'nahoru', label: 'Vezmete mě nahoru?', if: { item: 'zasilka', any: [{ flag: 'met_netere' }, { attr: { usta: 3 } }, { trust: { trziste: 2 } }] }, else: 'Kastelán vezme nahoru jen pošťačku se zásilkou, a to když už potkala Fantovu neteř, když má Ústa 3, nebo když jí tržiště věří (2).', do: { flag: 'kastelanem', trust: { trziste: 1 }, travel: 'hrad' }, reply: ['Vezmu vás jako zásilku. Pan ředitel čeká krabičku, ne pošťačku, tak cestou mlčte. A salutujte, když salutují.'] },
+                { id: 'bez', label: 'Vezmete mě nahoru i bez krabičky?', if: { noItem: 'zasilka' }, else: 'Jen když krabičku nemáte.', once: true, reply: ['Bez krabičky pro mě nejste nic a nemám na vás čas. Zkuste stráž, pouští toho, kdo má propustku. Propustky razítkuje velvyslanec dole v paláci.'] },
                 { id: 'sochy', label: 'Proč Hrad kupuje sochy?', once: true, reply: ['Pan ředitel má rád umění. Hlavně takové, které nikdo jiný nemá. Ve Zlaté uličce máme sochami plné domečky.'] },
             ] },
         } },
@@ -1160,7 +1182,7 @@ export const DIALOGS = {
                 { id: 'proklouznout', label: 'Proklouznout, když se dívají jinam.', if: { attr: { oko: 2 } }, else: 'Proklouznout mezi holuby chce Oko 2.', do: { flag: 'holubi_pryc', xp: 1 }, next: 'nahore' },
             ] },
             nahore: { say: ['Nahoře na schodech je zídka a za ní Hradčanské náměstí. Stráž stojí u brány, bokem k vám.'], choices: [
-                { id: 'poledne', label: 'Počkat na poledne a přelézt.', if: { flag: 'cesta_schody' }, else: 'Kdy se nikdo nedívá, ví hlídač Nepomuckého nebo stráž sama.', do: { flag: 'schody_cesta', xp: 2, travel: 'hrad' }, reply: ['Poledne. Stráž si mění místa a na minutu se nikdo nedívá. Přes zídku, přes náměstí a Matyášovou branou dovnitř.'] },
+                { id: 'poledne', label: 'Počkat na poledne a přelézt.', if: { flag: 'cesta_schody' }, else: 'Kdy se nikdo nedívá, ví hlídač Nepomuckého nebo stráž sama.', do: { flag: 'schody_cesta', xp: 2, travel: 'hrad' }, reply: ['Poledne. Stráž si mění místa a na minutu se nikdo nedívá. Přes zídku, přes náměstí a Matyášovou bránou dovnitř.'] },
             ] },
         } },
     mostecka_zpet: { name: 'Mostecká ulice', face: null,
@@ -1180,16 +1202,16 @@ export const DIALOGS = {
                 { id: 'dotazy', label: 'Mám dotazy na závěr.', if: { quest: { prohlidka: 'nest' } }, else: 'Dotazy jsou jen jednou.', next: 'kviz1' },
                 { id: 'duchod', label: 'Kdy přijde důchod?', if: { quest: { duchod: 'nest' } }, else: 'Jen když jste to slíbila trafikantce.', do: { quest: { duchod: 'done' }, flag: 'duchod_zeptala', xp: 1 }, reply: ['Důchod? To se ptejte pana ředitele, ale ten řekne, že až dokončí kanál. Vyřiďte tomu, kdo se ptá, že se pošta zeptala. Za celou dobu se nikdo jiný nezeptal.'] },
             ] },
-            kviz1: { say: ['Výborně! Otázka první: co dělají apoštolové na Orloji?'], choices: [
-                { id: 'a1', label: 'Vycházejí mokří.', if: { flag: 'apostolove' }, else: 'To ví jen ten, kdo pomohl Orlojníkovi.', next: 'kviz2' },
+            kviz1: { say: ['Výborně! Otázka první: co dělají apoštolové na orloji?'], choices: [
+                { id: 'a1', label: 'Vycházejí mokří.', if: { flag: 'apostolove' }, else: 'To ví jen ta, která pomohla Orlojníkovi.', next: 'kviz2' },
                 { id: 'a1x', label: 'Nevím.', reply: ['Škoda. Prohlídka pokračuje bez vyhlídky.'], do: { quest: { prohlidka: 'done' } }, end: true },
             ] },
             kviz2: { say: ['Otázka druhá: kde je kůň svatého Václava?'], choices: [
-                { id: 'a2', label: 'Ve Zlaté uličce, s cenovkou.', if: { any: [{ quest: { kun: ['stopa', 'done'] } }, { flag: 'zlata_videla' }] }, else: 'To ví jen ten, kdo pátral po soše.', next: 'kviz3' },
+                { id: 'a2', label: 'Ve Zlaté uličce, s cenovkou.', if: { any: [{ quest: { kun: 'done' } }, { flag: 'zlata_videla' }] }, else: 'To ví jen ta, která koně našla.', next: 'kviz3' },
                 { id: 'a2x', label: 'Nevím.', reply: ['Škoda. Prohlídka pokračuje bez vyhlídky.'], do: { quest: { prohlidka: 'done' } }, end: true },
             ] },
             kviz3: { say: ['Otázka třetí: proč na mostě zůstal Nepomucký?'], choices: [
-                { id: 'a3', label: 'Je přišroubovaný.', if: { flag: 'met_hlidac' }, else: 'To ví jen ten, kdo mluvil s hlídačem na mostě.', do: { quest: { prohlidka: 'done' }, flag: 'vyhlidka_otevrena', xp: 3 }, reply: ['Výborně! Tři ze tří! Promiňte, já… já ty otázky už říkala jen holubům.', 'Za odměnu vám odemknu vyhlídku Na Opyši. Je odtamtud vidět celé nové koryto, od Starého Města po Vyšehrad.'], end: true },
+                { id: 'a3', label: 'Je přišroubovaný.', if: { flag: 'met_hlidac' }, else: 'To ví jen ta, která mluvila s hlídačem na mostě.', do: { quest: { prohlidka: 'done' }, flag: 'vyhlidka_otevrena', xp: 3 }, reply: ['Výborně! Tři ze tří! Promiňte, já… já ty otázky už říkala jen holubům.', 'Za odměnu vám odemknu vyhlídku Na Opyši. Je odtamtud vidět celé nové koryto, od Starého Města po Vyšehrad.'], end: true },
                 { id: 'a3x', label: 'Nevím.', reply: ['Škoda. Prohlídka pokračuje bez vyhlídky.'], do: { quest: { prohlidka: 'done' } }, end: true },
             ] },
         } },
@@ -1212,13 +1234,13 @@ export const DIALOGS = {
                 { id: 'boj', end: true, label: 'Projít silou.', do: { fight: 'ochranka' }, win: { flag: 'ochranka_pryc', xp: 3 } },
             ] },
         } },
-    reditel: { stats: { ruka: 1, usta: 3, oko: 3 }, about: 'Ředitel Kanceláře kanálu. Sedí v buňce na nádvoří a podepisuje.', faction: 'hrad', name: 'Ředitel Kanceláře kanálu', face: 'face_reditel',
+    reditel: { stats: { ruka: 1, usta: 3, oko: 3 }, about: 'Ředitel Kanceláře kanálu. Sedí u stolu před buňkou na nádvoří a podepisuje.', faction: 'hrad', name: 'Ředitel Kanceláře kanálu', face: 'face_reditel',
         entry: [{ if: { noFlag: 'met_reditel' }, node: 'prvni' }, { node: 'hub' }],
         nodes: {
             prvni: { say: ['Pošta! Na Hradě! Pan prezident by měl radost, kdyby tu byl. Já jsem ředitel Kanceláře kanálu. Posaďte se, máme generátor a kafe.', 'Kanál je dílo století. Voda ve Starém Městě je přechodná fáze. Až dokončíme druhou větev, bude Praha přístav. Lidé to zatím nedocenili. Nedocenili ani metro, dokud jezdilo.'], do: { flag: 'met_reditel' }, next: 'hub' },
             hub: { say: ['Nesete mi něco?'], choices: [
                 { id: 'prodat', label: 'Krabičku od pana Fanty. Kolik dáte?', if: { item: 'zasilka' }, else: 'Jen se zásilkou v tašce.', next: 'prodej' },
-                { id: 'podepsal', label: 'Podepsal jste, že před štítem není voda.', if: { any: [{ flag: 'utrzek5' }, { flag: 'utrzek2' }] }, else: 'To ví jen ten, kdo slyšel o štítu od potápěčky nebo od průvodkyně.', once: true, reply: ['Podepsal jsem přijatelné riziko. Riziko se naplnilo, to se rizikům stává. Kdybych nepodepsal, stál by štít dodnes. Odpovědnost znamená rozhodnout. Rozhodl jsem.'] },
+                { id: 'podepsal', label: 'Podepsal jste, že před štítem není voda.', if: { any: [{ flag: 'utrzek5' }, { flag: 'utrzek2' }] }, else: 'To ví jen ta, která slyšela o štítu od potápěčky nebo od průvodkyně.', once: true, reply: ['Podepsal jsem přijatelné riziko. Riziko se naplnilo, to se rizikům stává. Kdybych nepodepsal, stál by štít dodnes. Odpovědnost znamená rozhodnout. Rozhodl jsem.'] },
                 { id: 'duchod', label: 'Kdy přijde důchod?', if: { quest: { duchod: 'nest' } }, else: 'Jen když jste to slíbila trafikantce.', do: { quest: { duchod: 'done' }, flag: 'duchod_zeptala', xp: 1 }, reply: ['Až dokončíme kanál. Napište to tak. Pošta píše, lidi věří.'] },
             ] },
             prodej: { say: ['Dvě stě, jak slíbil pan Fanta. A k tomu sleva na všechno na Hradě. Záznam zůstane v šuplíku, kam patří.'], choices: [
@@ -1230,7 +1252,7 @@ export const DIALOGS = {
         entry: [{ if: { noFlag: 'ochranka_pryc' }, node: 'zavreno' }, { node: 'ctecka' }],
         nodes: {
             zavreno: { say: ['Buňku hlídá ochranka kanálu. Ke čtečce se nedostanete.'], choices: [] },
-            ctecka: { say: ['Ve stavební buňce bliká zelená obrazovka. Konektor čtečky je stejný jako na krabičce. Vedle mikrofon: linka do rozhlasu metra, kterou sem kdysi natáhli kvůli stavbě.'], choices: [
+            ctecka: { say: ['Ve stavební buňce za ředitelovým stolem bliká zelená obrazovka. Konektor čtečky je stejný jako na krabičce. Vedle mikrofon: linka do rozhlasu metra, kterou sem kdysi natáhli kvůli stavbě.'], choices: [
                 { id: 'pustit', label: 'Zapojit krabičku a pustit záznam do rozhlasu.', if: { item: 'zasilka' }, else: 'Bez zásilky není co přehrát.', do: { flag: 'prehrala', ending: 'hrad' } },
                 { id: 'prazdna', label: 'Nemám co zapojit. Zapnout aspoň rozhlas.', if: { noItem: 'zasilka' }, else: 'Jen bez zásilky.', do: { ending: 'hrad' } },
             ] },

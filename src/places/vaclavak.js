@@ -15,14 +15,39 @@ export const VACLAVAK = {
     // rampa se schodišti a kašnou (lm_muzeum_rampa, hloubka za muzeem).
     landmark: [{ atlas: 'landmarks_vaclavak', key: 'lm_muzeum_rampa', a0: 110, w: 14, b0: 8, dpt: 13, depthAt: { a: 121, b: 6 } },
         { real: 'muzeum', a0: 112, w: 12, b0: 7, dpt: 15, lift: 44, say: 'muzeum' },
-        { real: 'fs', a0: 108, w: 10, b0: -6, dpt: 6, say: 'shromazdeni' }],
+        { real: 'fs', a0: 108, w: 10, b0: -6, dpt: 6, say: 'shromazdeni' },
+        // zříceniny v prolukách obou stran náměstí (domy, které po tom dni nezůstaly stát); stojí mimo příčné ulice
+        { atlas: 'landmarks_vaclavak', key: 'zricenina_a', a0: 50, w: 3, b0: 8, dpt: 1 },
+        { atlas: 'landmarks_vaclavak', key: 'zricenina_b', a0: 60, w: 3, b0: 8, dpt: 1 },
+        { atlas: 'landmarks_vaclavak', key: 'zricenina_c', a0: 64, w: 3, b0: 8, dpt: 1 },
+        { atlas: 'landmarks_vaclavak', key: 'zricenina_d', a0: 72, w: 2, b0: 8, dpt: 1 },
+        { atlas: 'landmarks_vaclavak', key: 'zricenina_a', a0: 85, w: 3, b0: 8, dpt: 1 },
+        { atlas: 'landmarks_vaclavak', key: 'zricenina_b', a0: 88, w: 3, b0: 8, dpt: 1 },
+        { atlas: 'landmarks_vaclavak', key: 'zricenina_c', a0: 21, w: 3, b0: 8, dpt: 1 },
+        { atlas: 'landmarks_vaclavak', key: 'zricenina_b', a0: 36, w: 3, b0: 8, dpt: 1 },
+        { atlas: 'landmarks_vaclavak', key: 'zricenina_a', a0: 40, w: 3, b0: 8, dpt: 1 },
+        { atlas: 'landmarks_vaclavak', key: 'zricenina_c', a0: 44, w: 3, b0: 8, dpt: 1 },
+        { atlas: 'landmarks_vaclavak', key: 'zricenina_b', a0: 20, w: 3, b0: 18, dpt: 1 },
+        { atlas: 'landmarks_vaclavak', key: 'zricenina_a', a0: 26, w: 3, b0: 18, dpt: 1 },
+        { atlas: 'landmarks_vaclavak', key: 'zricenina_c', a0: 36, w: 3, b0: 18, dpt: 1 },
+        { atlas: 'landmarks_vaclavak', key: 'zricenina_a', a0: 54, w: 3, b0: 18, dpt: 1 },
+        { atlas: 'landmarks_vaclavak', key: 'zricenina_c', a0: 59, w: 3, b0: 18, dpt: 1 },
+        { atlas: 'landmarks_vaclavak', key: 'zricenina_b', a0: 67, w: 3, b0: 18, dpt: 1 },
+        { atlas: 'landmarks_vaclavak', key: 'zricenina_a', a0: 71, w: 3, b0: 18, dpt: 1 },
+    ],
     // Dům Na Můstku (dřív ČKD) stojí tam, kde ve skutečnosti: za příčnou ulicí pod náměstím (kvádry a 7–10, b 10–12,
     // tvar z modelu budov). Sídlí v něm Ecomail, na stěně mu bzučí neonová obálka (overlays: sprite na stěně domu).
     // Palác Koruna (kvádry z modelu budov, kámen): na nároží náměstí a Na Příkopě má válcovou věž s korunou z perel.
     overlays: [{ key: 'obalka_neon', house: [8, 11], u: 60, v: 150, say: 'mustek' },
         { key: 'koruna_vez', atlas: 'landmarks_vaclavak', house: [14, 6], u: 55, v: -8, center: true },
         // hlavní kupole muzea na středním pavilonu modelu (landmark: klíč stavby, at: posun od kotvy spritu v bodech)
-        { key: 'muzeum_kupole', atlas: 'landmarks_vaclavak', landmark: 'muzeum', at: [-368, -871], center: true }],
+        { key: 'muzeum_kupole', atlas: 'landmarks_vaclavak', landmark: 'muzeum', at: [-368, -871], center: true },
+        // střechy, podle kterých se náměstí pozná: sedí na hlavní římse domu (u podél průčelí, v výška římsy v bodech)
+        { key: 'strecha_husa', atlas: 'landmarks_vaclavak', house: [26, 8], u: 96, v: 372, center: true },
+        { key: 'strecha_evropa', atlas: 'landmarks_vaclavak', house: [57, 8], u: 96, v: 314, center: true },
+        { key: 'strecha_fenix', atlas: 'landmarks_vaclavak', house: [86, 17], u: 128, v: 262, center: true },
+        { key: 'strecha_ligna', atlas: 'landmarks_vaclavak', house: [47, 17], u: 30, v: 300, center: true },
+        { key: 'strecha_wiehl', atlas: 'landmarks_vaclavak', house: [52, 17], u: 64, v: 292, center: true }],
     // na odbočce mola ke Koruně kamera vyjede nahoru, aby byla vidět celá nárožní věž s korunou
     views: [{ a: [17, 18], b: [9, 11], dy: -170 }],
     lights: [{ a: 10, b: 13, scale: 1.1, tint: 0x3ff2d6, alpha: 0.4 }],

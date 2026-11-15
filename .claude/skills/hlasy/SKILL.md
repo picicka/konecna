@@ -63,7 +63,7 @@ a pár postavám, kterým patří.
 | Průvodkyně | nacvičený výklad, veselost na hraně zhroucení | samota | ano, z výkladu |
 | Ochranka | otrávení, mluví jako odboráři | únava | ano |
 | Ředitel | hladký jazyk tiskových zpráv, žádný vtip | přesvědčení | nikdy |
-| Kočka Šklíba (strom na Václaváku, bublina po klepnutí) | tyká, klidně a pobaveně, hádankou; vždycky měří lidi psem | klid toho, kdo může kdykoli zmizet | ano, jedna na hlášku |
+| Kočka Šklíba (strom na Václaváku a podruhé na Hradě, kde komentuje rozhodnutí hrdinky; bublina po klepnutí) | tyká, klidně a pobaveně, hádankou; vždycky měří lidi psem | klid toho, kdo může kdykoli zmizet | ano, jedna na hlášku |
 | Trabant | řve z výfuku, nadává | vztek | ano |
 | Voříšek (ruch, bublina po klepnutí) | obecná čeština, tyká, mluví jako člověk, který má odehrát psa a nejde mu to | strach z bouřky | ano, on je gag; po každé větě odběhne |
 | Vypravěč (popisy, filmečky, věci) | suchý, věcný, krátké věty | – | ano, tady je doma |

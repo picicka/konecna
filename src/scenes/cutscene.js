@@ -22,7 +22,11 @@ export class CutsceneScene extends Phaser.Scene {
 
     create() {
         this.cameras.main.setBackgroundColor(CRT.bg);
-        this.image = this.add.image(WIDTH / 2, IMAGE_Y, this.shots[0]?.image ?? 'cs_city').setOrigin(0.5, 0.5).setScale(2);
+        // obrázek se zvětší na celou šířku plátna: filmečky 640 × 360 dvakrát, bližší záběry epilogu 320 × 180 čtyřikrát
+        const fit = (key) => WIDTH / this.textures.get(key).getSourceImage().width;
+        this.fit = fit;
+        this.image = this.add.image(WIDTH / 2, IMAGE_Y, this.shots[0]?.image ?? 'cs_city').setOrigin(0.5, 0.5);
+        this.image.setScale(fit(this.image.texture.key));
         panel(this, 40, 520, WIDTH - 80, 170).setDepth(2);
         this.caption = body(this, 64, 540, '', { fontSize: '32px', color: CRT.bright, wordWrap: { width: WIDTH - 128 }, lineSpacing: -2 }).setDepth(3);
         this.hint = body(this, WIDTH - 64, 676, `${HUD.next} ▸`, { fontSize: '24px', color: CRT.dim }).setOrigin(1, 1).setDepth(3);
@@ -39,9 +43,11 @@ export class CutsceneScene extends Phaser.Scene {
 
     showShot() {
         const shot = this.shots[this.shotIndex];
-        this.image.setTexture(shot.image).setScale(2).setAlpha(0);
+        this.image.setTexture(shot.image).setScale(this.fit(shot.image)).setAlpha(0);
+        this.tweens.killTweensOf(this.image);
         this.tweens.add({ targets: this.image, alpha: 1, duration: 400 });
-        this.tweens.add({ targets: this.image, scaleX: 2.16, scaleY: 2.16, duration: 9000, ease: 'Sine.easeOut' });
+        const zoom = this.fit(shot.image) * 1.08;   // pomalý nájezd o 8 % (dřív pevně 2,16 pro obrázky 640 × 360)
+        this.tweens.add({ targets: this.image, scaleX: zoom, scaleY: zoom, duration: 9000, ease: 'Sine.easeOut' });
         const sound = this.registry.get('sound');
         if (shot.flash) this.time.delayedCall(300, () => { this.cameras.main.flash(300, 255, 220, 160); sound.boom(); });
         if (shot.toll) this.time.delayedCall(200, () => sound.toll());

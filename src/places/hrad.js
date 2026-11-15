@@ -10,7 +10,9 @@ export const HRAD = {
     stops: {
         // cesta zpátky: uliční cedule u Matyášovy brány, Nerudovou dolů na Malou Stranu (přisvícená, lights)
         brana_dolu: { npc: { key: 'cedule_nerudova', a: 1, b: 19, flip: false }, approach: { a: 2, b: 19 }, props: [] },
-        pruvodkyne: { npc: { key: 'pruvodkyne', a: 11, b: 19 }, approach: { a: 10, b: 19 }, props: [] },
+        pruvodkyne: { npc: { key: 'pruvodkyne', a: 11, b: 19 }, approach: { a: 10, b: 19 },
+            // kočka Šklíba podruhé, na holém stromě u příchodu na nádvoří: hlášky podle toho, co hrdinka cestou udělala
+            props: [{ key: 'skliba', a: 6, b: 21, anim: true, say: 'skliba_hrad' }] },
         // ochranka stojí v jediném průchodu plotem kolem buňky (fences, gates); když ustoupí (ochranka_pryc), jde si
         // sednout k buňce a cedule z průchodu zmizí ke straně
         ochranka: { npc: { key: 'ochranka', a: 18, b: 22 }, approach: { a: 17, b: 22 }, props: [{ key: 'ochranka_cedule', a: 18, b: 23 }],

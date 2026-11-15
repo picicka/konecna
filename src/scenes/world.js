@@ -437,8 +437,15 @@ export class WorldScene extends Phaser.Scene {
     // Bublina s hláškou nad kuriozitou (ODDITY_LINES): každé klepnutí další hláška, po pár vteřinách zmizí.
     oddityBubble(odd, at = null) {
         this.bubble?.destroy();
-        const text = odd.lines[odd.next % odd.lines.length];
-        odd.next++;
+        // hláška může mít podmínku (if), vlajku, kterou nastaví (flag), a přednost (first: řekne se hned, jakmile platí)
+        const pool = odd.lines.filter((l) => typeof l === 'string' || holds(this.state, l.if));
+        const urgent = pool.find((l) => l.first);
+        const rest = pool.filter((l) => !l.first);
+        const entry = urgent ?? rest[odd.next % Math.max(1, rest.length)] ?? '';
+        if (!urgent) odd.next++;
+        const text = typeof entry === 'string' ? entry : entry.text;
+        if (entry.flag) { this.state.flags[entry.flag] = true; this.autosave?.(); }
+        odd.said = text;
         const top = odd.sprite.getBounds();
         const label = body(this, 0, 0, text, { fontSize: '24px', color: CRT.amber, align: 'center', wordWrap: { width: 340 }, lineSpacing: -4 }).setOrigin(0.5, 1);
         const w = label.width + 24, h = label.height + 14;
@@ -1488,8 +1495,8 @@ export class WorldScene extends Phaser.Scene {
             this.oddityBubble(odd, odd.exact ? world : null);
             // voříšek po hlášce odběhne (WorldScene.updateLife)
             const d = this.life?.dog;
-            if (odd.dog) { const line = odd.lines[(odd.next - 1) % odd.lines.length], s = this.registry.get('sound'); if (/Haf/.test(line)) { s?.bark(); if (/Haf\. Haf/.test(line)) this.time.delayedCall(260, () => s?.bark()); } else if (/Vrrr/.test(line)) s?.growl(); }
-            if (odd.dog && d && d.mode !== 'flee') { d.mode = 'flee'; d.wait = 900 + 45 * odd.lines[(odd.next - 1) % odd.lines.length].length; d.steps = 12; d.run = false; d.bubble = this.bubble; }
+            if (odd.dog) { const line = odd.said, s = this.registry.get('sound'); if (/Haf/.test(line)) { s?.bark(); if (/Haf\. Haf/.test(line)) this.time.delayedCall(260, () => s?.bark()); } else if (/Vrrr/.test(line)) s?.growl(); }
+            if (odd.dog && d && d.mode !== 'flee') { d.mode = 'flee'; d.wait = 900 + 45 * odd.said.length; d.steps = 12; d.run = false; d.bubble = this.bubble; }
             return;
         }
         const through = this.doorAt(world.x, world.y);
