@@ -1,43 +1,63 @@
 {
  "frames": {
-  "lm_muzeum": {
+  "lm_muzeum_rampa": {
    "frame": {
     "x": 0,
     "y": 0,
-    "w": 1728,
-    "h": 1404
+    "w": 1792,
+    "h": 986
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 1728,
-    "h": 1404
+    "w": 1792,
+    "h": 986
    },
    "sourceSize": {
-    "w": 1728,
-    "h": 1404
+    "w": 1792,
+    "h": 986
    }
   },
-  "lm_mustek": {
+  "muzeum_kupole": {
    "frame": {
-    "x": 1729,
+    "x": 1793,
     "y": 0,
-    "w": 384,
-    "h": 530
+    "w": 176,
+    "h": 330
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 384,
-    "h": 530
+    "w": 176,
+    "h": 330
    },
    "sourceSize": {
-    "w": 384,
-    "h": 530
+    "w": 176,
+    "h": 330
+   }
+  },
+  "koruna_vez": {
+   "frame": {
+    "x": 0,
+    "y": 987,
+    "w": 92,
+    "h": 508
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 92,
+    "h": 508
+   },
+   "sourceSize": {
+    "w": 92,
+    "h": 508
    }
   }
  },
@@ -46,8 +66,8 @@
   "image": "landmarks_vaclavak.png",
   "format": "RGBA8888",
   "size": {
-   "w": 2113,
-   "h": 1404
+   "w": 1969,
+   "h": 1495
   },
   "scale": "1"
  }

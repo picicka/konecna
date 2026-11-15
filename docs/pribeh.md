@@ -146,7 +146,8 @@ Zdroj pravdy je `src/places/vaclavak.js`, dialogy v `DIALOGS` v `src/script.js
 | Prázdný podstavec pomníku | Václav na směny 100,13 | 99,13 | – |
 | Reproduktor u Jindřišské | nutrie 53,8 | 53,9 | – |
 | Hranice vody, začátek mola | revizor 50,11 | 51,12 | molo je zavřené (49,12 a 49,13), dokud nepustí |
-| Konec mola u Můstku | Kuřačka 18,12 | 19,12 | loďka 17,13 |
+| Pokladna Národního muzea | pokladna 109,17 | 108,17 | vstup do dvorany s kostrou plejtváka (filmeček `muzeum`, vlajka `plejtvak`, +2 zkušenosti) |
+| Konec mola u Můstku | Kuřačka 18,12 | 19,12 | loďka 18,11 (u boku mola) |
 
 Přestup dál: loďka ze zatopeného Václaváku Jindřišskou a Panskou na Staromák, scéna s prvním útržkem o kanálu.
 

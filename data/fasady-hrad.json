@@ -1,0 +1,65 @@
+{
+ "_": "Recepty fasád pojmenovaných domů (scripts/ipr.py, popis klíčů v data/fasady-vaclavak.json). Barvy a druh domu podle skutečnosti, jak je známe; dům bez receptu dostane recept z pravidel.",
+ "r3367557_0": {
+  "name": "Nový královský palác",
+  "type": "house",
+  "variant": "palais",
+  "style": "cream",
+  "win": "lintel",
+  "full": true
+ },
+ "r28649_0": {
+  "name": "Jižní křídlo, Ústav šlechtičen a Rožmberský palác",
+  "type": "house",
+  "variant": "palais",
+  "style": "white",
+  "win": "lintel",
+  "full": true
+ },
+ "r3367881_0": {
+  "name": "Lobkovický palác",
+  "type": "house",
+  "variant": "palais",
+  "style": "cream",
+  "win": "lintel"
+ },
+ "r3367852_0": {
+  "name": "Staré purkrabství",
+  "type": "house",
+  "variant": "burgher",
+  "style": "ochre"
+ },
+ "r3367850_0": {
+  "name": "Černá věž",
+  "type": "house",
+  "variant": "tower",
+  "style": "stone"
+ },
+ "r15317897_0": {
+  "name": "Kapitulní děkanství",
+  "type": "house",
+  "variant": "palais",
+  "style": "cream",
+  "win": "lintel"
+ },
+ "26426929": {
+  "name": "Malý Lobkovický palác",
+  "type": "house",
+  "variant": "palais",
+  "style": "cream",
+  "win": "lintel"
+ },
+ "26426928": {
+  "name": "U Zeleného ořechu",
+  "type": "house",
+  "variant": "burgher",
+  "style": "green"
+ },
+ "182671144": {
+  "name": "Klášter theatinů (kajetánů)",
+  "type": "house",
+  "variant": "palais",
+  "style": "cream",
+  "win": "lintel"
+ }
+}

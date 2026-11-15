@@ -1,0 +1,216 @@
+{
+ "_": "Recepty fasád podle fotek a popisů domů z Václaváku po pádu (benefity, scripts/vaclavak-domy.mjs). Klíč je id budovy v OSM (nebo klíč stavby z PLACES.model). Typy (scripts/ipr.py): house = dům s variantou burgher (měšťanský), tenement (činžák), palais (palác), church, tower; grid = kamenný rastr s velkými okny bez dělení nad proskleným parterem; palace = sdružená okna nad prosklenými arkádami; curtain = skleněná stěna; ribbon = pásová okna; museum = novorenesanční palác. style = barva omítky z palety, floors = pater nad parterem, parter a bay v metrech, arcade = loubí, sign = nápis nad parterem, cover = krytina, full = fasáda až po vrch zdi. Dům bez receptu dostane recept house z pravidel (auto_recipe).",
+ "173673173": {
+  "name": "Dům Na Můstku (dřív ČKD), 1983",
+  "foto": "benefity: ckd.jpg",
+  "type": "grid",
+  "style": "travertine",
+  "floors": 4,
+  "parter": 7.6,
+  "bay": 5.6,
+  "win": 3.1
+ },
+ "31776858": {
+  "name": "Palác Koruna, 1914",
+  "foto": "benefity: koruna.jpg",
+  "type": "palace",
+  "style": "stone",
+  "floors": 4,
+  "parter": 8.4,
+  "bay": 4.4,
+  "sign": "KORUNA"
+ },
+ "31776839": {
+  "name": "č. 7 Hotel Zlatá Husa, 1910",
+  "type": "house",
+  "style": "cream",
+  "floors": 5,
+  "sign": "ZLATA HUSA",
+  "variant": "tenement",
+  "arcade": true
+ },
+ "31776838": {
+  "name": "č. 9 Dům s reliéfy",
+  "type": "house",
+  "style": "white",
+  "floors": 5,
+  "variant": "tenement"
+ },
+ "556379484": {
+  "name": "č. 25–27 Hotel Evropa a Meran, 1905",
+  "type": "house",
+  "style": "yellow",
+  "floors": 5,
+  "sign": "EVROPA",
+  "signColor": "W",
+  "variant": "tenement",
+  "arcade": true
+ },
+ "27851229": {
+  "name": "č. 39 Činžovní dům",
+  "type": "house",
+  "style": "ochre",
+  "floors": 4,
+  "variant": "tenement"
+ },
+ "27851381": {
+  "name": "č. 45 Hotel Jalta, 1958",
+  "type": "house",
+  "style": "travertine",
+  "floors": 6,
+  "sign": "JALTA",
+  "variant": "tenement",
+  "arcade": true
+ },
+ "937253464": {
+  "name": "č. 47 The Flow Building, 2020",
+  "type": "curtain",
+  "style": "grey",
+  "floors": 7,
+  "parter": 5.0,
+  "bay": 6.0,
+  "pane": 1.2
+ },
+ "31777543": {
+  "name": "č. 53 Klasicistní dům, 1839",
+  "type": "house",
+  "style": "white",
+  "floors": 4,
+  "variant": "tenement"
+ },
+ "31777545": {
+  "name": "č. 55 Novorenesanční dům",
+  "type": "house",
+  "style": "stone",
+  "floors": 4,
+  "variant": "tenement"
+ },
+ "31777551": {
+  "name": "č. 57 Raně novorenesanční dům",
+  "type": "house",
+  "style": "cream",
+  "floors": 4,
+  "variant": "tenement"
+ },
+ "31777549": {
+  "name": "č. 59 Hotel Wilson",
+  "type": "house",
+  "style": "white",
+  "floors": 5,
+  "variant": "tenement"
+ },
+ "27909062": {
+  "name": "č. 2 Palác Euro, 2002",
+  "type": "curtain",
+  "style": "grey",
+  "floors": 8,
+  "parter": 5.0,
+  "bay": 6.0,
+  "pane": 1.3
+ },
+ "27917160": {
+  "name": "č. 18–20 Dům U Doušů",
+  "type": "house",
+  "style": "cream",
+  "floors": 5,
+  "variant": "tenement"
+ },
+ "27917151": {
+  "name": "č. 28 Palác Alfa, 1929",
+  "type": "ribbon",
+  "style": "grey",
+  "floors": 6,
+  "parter": 5.0,
+  "bay": 5.0
+ },
+ "27916929": {
+  "name": "č. 30 Stýblův dům",
+  "type": "ribbon",
+  "style": "grey",
+  "floors": 6,
+  "parter": 5.0,
+  "bay": 5.0
+ },
+ "27916779": {
+  "name": "č. 32 Palác České banky (Ligna)",
+  "type": "house",
+  "style": "stone",
+  "floors": 5,
+  "sign": "LIGNA",
+  "signColor": "E",
+  "variant": "tenement"
+ },
+ "27850912": {
+  "name": "č. 34 Wiehlův dům, 1896",
+  "type": "house",
+  "style": "ochre",
+  "floors": 4,
+  "variant": "tenement",
+  "arcade": true
+ },
+ "31516051": {
+  "name": "č. 48 Měšťanský dům s reliéfy",
+  "type": "house",
+  "style": "white",
+  "floors": 4,
+  "variant": "tenement"
+ },
+ "31519088": {
+  "name": "č. 56 Palác Fénix, 1930",
+  "type": "ribbon",
+  "style": "brown",
+  "floors": 6,
+  "parter": 5.0,
+  "bay": 5.0,
+  "sign": "FENIX",
+  "signColor": "7"
+ },
+ "31543182": {
+  "name": "č. 58 Dům módy, 1956",
+  "type": "house",
+  "style": "travertine",
+  "floors": 6,
+  "variant": "tenement"
+ },
+ "31543179": {
+  "name": "č. 60 Novorenesanční dům",
+  "type": "house",
+  "style": "cream",
+  "floors": 5,
+  "variant": "tenement"
+ },
+ "31543176": {
+  "name": "č. 64 Novorenesanční dům",
+  "type": "house",
+  "style": "white",
+  "floors": 5,
+  "variant": "tenement"
+ },
+ "31543166": {
+  "name": "č. 66 Činžovní dům",
+  "type": "house",
+  "style": "grey",
+  "floors": 5,
+  "variant": "tenement"
+ },
+ "muzeum": {
+  "name": "Národní muzeum, 1891 (Schulz)",
+  "type": "museum",
+  "style": "ochre",
+  "cover": "med",
+  "floors": 2,
+  "parter": 6.5,
+  "bay": 4.6,
+  "full": true
+ },
+ "fs": {
+  "name": "Bývalé Federální shromáždění, 1973 (Prager), dnes Nová budova Národního muzea",
+  "type": "curtain",
+  "style": "brown",
+  "floors": 5,
+  "parter": 5.0,
+  "bay": 6.0,
+  "pane": 1.5,
+  "full": true
+ }
+}

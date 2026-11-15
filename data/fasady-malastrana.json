@@ -1,0 +1,220 @@
+{
+ "_": "Recepty fasád pojmenovaných domů (scripts/ipr.py, popis klíčů v data/fasady-vaclavak.json). Barvy a druh domu podle skutečnosti, jak je známe; dům bez receptu dostane recept z pravidel.",
+ "7645354": {
+  "name": "Profesní dům jezuitů (Matematicko-fyzikální fakulta)",
+  "type": "house",
+  "variant": "palais",
+  "style": "cream",
+  "win": "lintel"
+ },
+ "26426951": {
+  "name": "Svatomikulášská městská zvonice",
+  "type": "house",
+  "variant": "tower",
+  "style": "yellow"
+ },
+ "30324625": {
+  "name": "Lobkovický palác",
+  "type": "house",
+  "variant": "palais",
+  "style": "cream",
+  "win": "arch"
+ },
+ "30325077": {
+  "name": "Schönbornský palác",
+  "type": "house",
+  "variant": "palais",
+  "style": "white",
+  "win": "lintel"
+ },
+ "32119687": {
+  "name": "Kolowratský palác",
+  "type": "house",
+  "variant": "palais",
+  "style": "pink",
+  "win": "lintel"
+ },
+ "34639878": {
+  "name": "Kostel Panny Marie Matky ustavičné pomoci u Kajetánů",
+  "type": "house",
+  "variant": "church",
+  "style": "cream"
+ },
+ "182671143": {
+  "name": "Thun-Hohenštejnský palác",
+  "type": "house",
+  "variant": "palais",
+  "style": "ochre",
+  "win": "lintel"
+ },
+ "182671144": {
+  "name": "Klášter theatinů (kajetánů)",
+  "type": "house",
+  "variant": "palais",
+  "style": "cream",
+  "win": "lintel"
+ },
+ "183138867": {
+  "name": "Salmovský palác",
+  "type": "house",
+  "variant": "palais",
+  "style": "white",
+  "win": "lintel"
+ },
+ "r69193_0": {
+  "name": "Vratislavský palác",
+  "type": "house",
+  "variant": "palais",
+  "style": "white",
+  "win": "lintel"
+ },
+ "r69197_0": {
+  "name": "Vrtbovský palác",
+  "type": "house",
+  "variant": "palais",
+  "style": "ochre",
+  "win": "lintel"
+ },
+ "r74161_0": {
+  "name": "Palác Smiřických",
+  "type": "house",
+  "variant": "palais",
+  "style": "green",
+  "win": "lintel"
+ },
+ "r74162_0": {
+  "name": "Šternberský palác",
+  "type": "house",
+  "variant": "palais",
+  "style": "salmon",
+  "win": "lintel"
+ },
+ "r75838_0": {
+  "name": "Thunovský palác",
+  "type": "house",
+  "variant": "palais",
+  "style": "cream",
+  "win": "lintel"
+ },
+ "r93061_0": {
+  "name": "Thunovský palác",
+  "type": "house",
+  "variant": "palais",
+  "style": "cream",
+  "win": "lintel"
+ },
+ "r77395_0": {
+  "name": "Jezuitské gymnázium",
+  "type": "house",
+  "variant": "palais",
+  "style": "cream",
+  "win": "lintel"
+ },
+ "r86057_0": {
+  "name": "Hartigovský palác",
+  "type": "house",
+  "variant": "palais",
+  "style": "yellow",
+  "win": "arch"
+ },
+ "r86175_0": {
+  "name": "Lichtenštejnský palác",
+  "type": "house",
+  "variant": "palais",
+  "style": "cream",
+  "win": "lintel",
+  "arcade": true
+ },
+ "r86177_0": {
+  "name": "Morzinský palác",
+  "type": "house",
+  "variant": "palais",
+  "style": "grey",
+  "win": "lintel"
+ },
+ "r86200_0": {
+  "name": "Palác Kinských",
+  "type": "house",
+  "variant": "palais",
+  "style": "pink",
+  "win": "lintel"
+ },
+ "r93062_0": {
+  "name": "Černínský palác",
+  "type": "house",
+  "variant": "palais",
+  "style": "ochre",
+  "win": "lintel"
+ },
+ "r93078_0": {
+  "name": "Šelmberský palác",
+  "type": "house",
+  "variant": "palais",
+  "style": "ochre",
+  "win": "lintel"
+ },
+ "r2432481_0": {
+  "name": "Palác pánů z Hradce",
+  "type": "house",
+  "variant": "palais",
+  "style": "white",
+  "win": "arch"
+ },
+ "r2432483_0": {
+  "name": "Bretfeldovský palác",
+  "type": "house",
+  "variant": "palais",
+  "style": "cream",
+  "win": "lintel"
+ },
+ "r2434264_0": {
+  "name": "Vlašský špitál",
+  "type": "house",
+  "variant": "palais",
+  "style": "ochre",
+  "win": "arch"
+ },
+ "r3367557_0": {
+  "name": "Nový královský palác (křídlo Hradu)",
+  "type": "house",
+  "variant": "palais",
+  "style": "cream",
+  "win": "lintel",
+  "full": true
+ },
+ "r86176_0": {
+  "name": "U Bílého jelena",
+  "type": "house",
+  "variant": "burgher",
+  "style": "white",
+  "arcade": true
+ },
+ "r86058_0": {
+  "name": "U Tří korun",
+  "type": "house",
+  "variant": "burgher",
+  "style": "ochre",
+  "arcade": true
+ },
+ "r85570_0": {
+  "name": "U Zlatého lva",
+  "type": "house",
+  "variant": "burgher",
+  "style": "yellow",
+  "arcade": true
+ },
+ "r8655596_0": {
+  "name": "U Voglů",
+  "type": "house",
+  "variant": "burgher",
+  "style": "cream",
+  "arcade": true
+ },
+ "r85562_0": {
+  "name": "U Červeného jelena",
+  "type": "house",
+  "variant": "burgher",
+  "style": "pink",
+  "arcade": true
+ }
+}

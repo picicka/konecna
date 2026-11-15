@@ -477,3 +477,66 @@ scene("cs_ctecka", { w: 640, h: 360 }, (c) => {
   c.rect(40, 206, 34, 40, "x"); c.rect(40, 206, 34, 4, "v"); c.ellipse(57, 207, 16, 3, "k"); c.box(74, 216, 10, 16, "x"); c.hline(30, 248, 54, "K")
   c.rect(594, 280, 14, 3, "W"); c.px(608, 281, "F")
 }, glow("E", { r: 22, strength: 0.45 }), glow("I", { r: 6, strength: 0.5 }))
+
+// Dvorana Národního muzea s kostrou plejtváka myšoka (filmeček muzeum, pouští ho volba Vejít dovnitř na Václaváku):
+// tmavá hala s arkádami a ochozem, dírou v kupoli padá pruh světla, pod stropem visí na lanech kostra dlouhá přes
+// dvacet metrů (lebka s dlouhými čelistmi vlevo, páteř, žebra, ploutev, ocas vpravo), dole vybité vitríny a pošťačka.
+scene("cs_muzeum", { w: 640, h: 360 }, (c) => {
+  const rng = c.rng(1891)
+  c.rect(0, 0, 640, 360, "k")
+  // zadní stěna: tři vysoké arkády, ochoz s balustrádou
+  c.rect(0, 40, 640, 216, "N")
+  for (const x of [70, 250, 430]) { c.rect(x, 96, 140, 160, "A"); c.clip([x, 40, 140, 60], () => c.ellipse(x + 70, 98, 70, 56, "A")); c.rect(x + 14, 110, 112, 146, "n"); c.clip([x + 14, 56, 112, 56], () => c.ellipse(x + 70, 112, 56, 46, "n")) }
+  c.rect(0, 196, 640, 5, "a"); c.rect(0, 201, 640, 14, "A")
+  for (let x = 4; x < 640; x += 7) c.vline(x, 202, 12, "S")
+  c.hline(0, 215, 640, "a")
+  // sloupy v popředí
+  for (const x of [0, 216, 396, 596]) { c.rect(x, 0, 44, 256, "S"); c.rect(x, 0, 12, 256, "A"); c.rect(x + 34, 0, 10, 256, "s"); c.rect(x - 6, 242, 56, 14, "A"); c.rect(x - 6, 0, 56, 10, "A") }
+  // podlaha: dlažba, suť, kaluž
+  c.rect(0, 256, 640, 104, "A")
+  for (let y = 262; y < 360; y += 9) c.hline(0, y, 640, "k")
+  for (let i = 0; i < 26; i++) { const x = (i * 53 + 17) % 640; c.line(x, 256, x + (x - 320) / 3, 359, "k") }
+  c.ellipse(452, 262, 46, 4, "X"); c.ellipse(446, 262, 26, 2, "Z")
+  // pruh světla z díry v kupoli
+  const shaft = [372, 0, 470, 0, 560, 360, 330, 360]
+  c.clip(shaft, () => { c.noise(300, 0, 280, 360, "x", 0.09, 3); c.noise(300, 0, 280, 360, "W", 0.015, 5) })
+  c.clip([340, 256, 230, 104], () => c.clip(shaft, () => c.noise(330, 256, 240, 104, "c", 0.16, 9)))
+  // lana od stropu
+  for (const [x, y] of [[150, 146], [232, 142], [318, 150], [404, 146], [488, 132], [552, 118]]) c.line(x + 6, 0, x, y, "x")
+  // páteř: obratle od lebky k ocasu, uprostřed prověšená
+  const spine = (t) => [196 + t * 372, 148 + Math.sin(t * Math.PI) * 9 - t * 34]
+  for (let i = 0; i < 44; i++) {
+    const t = i / 43, [x, y] = spine(t), h = Math.round(13 - t * 9)
+    c.rect(Math.round(x), Math.round(y - h / 2), 6, h, i % 2 ? "w" : "W"); c.vline(Math.round(x) + 6, Math.round(y - h / 2) + 1, h - 2, "x")
+    if (i < 30) c.vline(Math.round(x) + 2, Math.round(y - h / 2) - 5 + Math.floor(t * 3), 5, "w")   // trnové výběžky
+    if (i > 24 && i % 2) c.line(Math.round(x) + 3, Math.round(y + h / 2), Math.round(x) - 1, Math.round(y + h / 2) + 6 - Math.floor(t * 3), "v")   // chevrony pod ocasem
+  }
+  // žebra: dlouhé oblouky dolů, k ocasu kratší
+  for (let i = 0; i < 14; i++) {
+    const [x, y] = spine((i + 1.5) / 43), len = 78 - i * 3.6 - (i < 2 ? 14 - i * 7 : 0)
+    c.line(x + 2, y + 5, x - 9, y + len * 0.55, "v", 2); c.line(x - 9, y + len * 0.55, x + 1, y + len, "v", 2)
+    c.line(x + 4, y + 5, x - 6, y + len * 0.55, "W"); c.line(x - 6, y + len * 0.55, x + 4, y + len, "w")
+  }
+  // lebka: dlouhá horní čelist, mozkovna, očnice, pod ní dvě klenuté dolní čelisti
+  c.poly([62, 186, 150, 150, 200, 138, 204, 160, 150, 172, 70, 192], "W")
+  c.poly([62, 186, 70, 192, 150, 172, 150, 166], "w"); c.line(74, 184, 196, 146, "v")
+  c.poly([176, 140, 204, 134, 210, 158, 190, 166], "w"); c.ellipse(190, 152, 6, 4, "k")
+  for (let i = 0; i < 2; i++) { const d = i * 9; c.line(66, 198 + d, 110, 204 + d, i ? "v" : "W", 3); c.line(110, 204 + d, 160, 196 + d, i ? "v" : "W", 3); c.line(160, 196 + d, 204, 172 + d * 0.4, i ? "x" : "w", 3) }
+  // lopatka a kosti ploutve
+  c.poly([212, 168, 240, 166, 246, 190, 226, 200, 210, 188], "w"); c.line(214, 170, 244, 188, "v")
+  c.line(226, 198, 214, 226, "W", 4); c.line(214, 226, 204, 246, "w", 3); c.line(214, 226, 212, 250, "w", 2)
+  for (const [dx, n] of [[-12, 20], [-6, 24], [0, 22], [5, 16]]) c.line(206 + dx / 2, 248, 196 + dx, 248 + n, "v")
+  // lešenářská trubka pod čelistí, cedulka
+  c.line(118, 210, 115, 256, "m", 2); c.line(109, 256, 122, 256, "M", 2); c.rect(105, 226, 22, 12, "c"); c.hline(108, 230, 16, "k"); c.hline(108, 233, 11, "k")
+  // vybité vitríny po stranách
+  for (const [x, w] of [[506, 84]]) {
+    c.rect(x, 206, w, 50, "H"); c.rect(x + 3, 184, w - 6, 24, "n"); c.rect(x, 182, w, 3, "h"); c.vline(x + w / 2, 184, 24, "h")
+    c.poly([x + 6, 208, x + 20, 188, x + 30, 208], "L"); c.line(x + w - 22, 186, x + w - 8, 206, "l")
+    for (let i = 0; i < 9; i++) c.rect(x - 8 + Math.floor(rng() * (w + 16)), 258 + Math.floor(rng() * 8), 3, 2, rng() < 0.5 ? "L" : "x")
+  }
+  // pošťačka se žlutou brašnou, hlava zakloněná nahoru
+  c.rect(300, 218, 12, 26, "c"); c.rect(298, 228, 4, 14, "C"); c.rect(302, 244, 4, 12, "K"); c.rect(308, 244, 4, 12, "K")
+  c.circ(307, 212, 5, "i"); c.rect(302, 206, 9, 4, "K"); c.rect(311, 226, 9, 9, "y"); c.line(304, 220, 314, 226, "O")
+  c.ellipse(308, 257, 12, 2, "k")
+})
+

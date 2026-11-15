@@ -1,134 +1,77 @@
-// Václavák po pádu: Národní muzeum jako landmark, prázdný podstavec svatého Václava s živým Václavem na směny,
-// postavy (dispečerka, revizor, Kuřačka), nutrie na reproduktoru, loďka u mola a nouzový výlez z metra.
-// Geometrie landmarku jako fanta(): počátek v nejbližším spodním rohu, FR podél osy a (pravá stěna, +b), FL napříč
-// (levá stěna, −a). Hlavní průčelí muzea míří dolů do náměstí (−a), je to tedy levá stěna.
+// Václavák: rampa a kupole Národního muzea (samotné muzeum je z 3D modelu budov, scripts/ipr.py), věž paláce Koruna,
+// neonová obálka, prázdný podstavec svatého Václava s živým Václavem na směny, postavy (dispečerka, revizor, Kuřačka),
+// nutrie na reproduktoru, loďka u mola a nouzový výlez z metra.
 
-// Národní muzeum (Josef Schulz, 1891): neorenesanční palác z pískovce, střední rizalit se sloupy a atikou, nárožní
-// pavilony s kopulkami, uprostřed velká kupole s lucernou. Po pádu: stopy po kulkách (jako po roce 1968), propadlý kus
-// kupole, saze z oken, sprej na soklu. Půdorys 12 × 15 dlaždic (a 112–123, b 7–21), viz src/places/vaclavak.js.
-function muzeum(name, o) {
-  const w = o.w, dpt = o.dpt
-  const lenR = FT * w, lenL = FT * dpt
-  const H = 280, HP = 320, HR = 360
-  const W = FT * (w + dpt), Hc = 32 * (w + dpt) + 540
-  const ox = FT * dpt, oy = Hc - 1
-  const stone = "c", light = "W", shade = "e", dark = "C"
-  sprite(name, { w: W, h: Hc }, (c) => {
-    const rng = c.rng(o.seed ?? 1)
-    const P = (pts, col) => c.poly(Fs(pts, ox, oy), col)
-    const pav = (u) => u < 150 || u > lenL - 150
-    const ris = (u) => u > lenL / 2 - 110 && u < lenL / 2 + 110
-    // levé průčelí: hmota, pavilony a rizalit vyšší
-    P(Fq(FL, 0, lenL, 0, H), stone)
-    P(Fq(FL, 0, 150, 0, HP), stone); P(Fq(FL, lenL - 150, lenL, 0, HP), stone)
-    P(Fq(FL, lenL / 2 - 110, lenL / 2 + 110, 0, HR), stone)
-    // pravá (boční) stěna ve stínu
-    P(Fq(FR, 0, lenR, 0, H), dark); P(Fq(FR, 0, 150, 0, HP), dark); P(Fq(FR, lenR - 150, lenR, 0, HP), dark)
-    // sokl s kvádrováním
-    P(Fq(FL, 0, lenL, 0, 56), dark); P(Fq(FR, 0, lenR, 0, 56), "e")
-    for (let v = 12; v < 56; v += 14) { P(Fq(FL, 0, lenL, v, v + 1), shade); P(Fq(FR, 0, lenR, v, v + 1), "3") }
-    // schodiště před rizalitem (rampa k hlavnímu vchodu)
-    for (let v = 0; v < 48; v += 6) P(Fq(FL, lenL / 2 - 130 + v, lenL / 2 + 130 - v, v, v + 3), v % 12 ? "q" : light)
-    // okna: dvě řady na průčelí i boku, s rámem a půlkruhovým nadpražím; některá vybitá, některá zatlučená
-    const win = (F, u, v, wd, ht) => {
-      P(Fq(F, u - 3, u + wd + 3, v - 3, v + ht + 3), light)
-      const roll = rng(), col = roll < 0.18 ? "k" : roll < 0.3 ? "h" : "n"
-      P(Fq(F, u, u + wd, v, v + ht), col)
-      P([...F(u - 3, v + ht + 3), ...F(u + wd + 3, v + ht + 3), ...F(u + wd / 2, v + ht + 14)], light)
-      if (col === "h") for (let k = 4; k < ht; k += 8) P(Fq(F, u, u + wd, v + k, v + k + 2), "H")
-      // saze nad vybitým oknem
-      if (col === "k") P([...F(u, v + ht + 14), ...F(u + wd, v + ht + 14), ...F(u + wd - 2, v + ht + 40), ...F(u + 2, v + ht + 34)], "x")
+// Rampa před Národním muzeem (podle fotek z Wikimedia Commons, jen předloha): muzeum stojí na terase 44 px nad
+// náměstím, k ní stoupají ze stran dvě rampy s balustrádou, uprostřed je stěna kašny se třemi nikami a suchou nádrží
+// a po jejích stranách dvě schodiště podél fasády. Půdorys a 110–124, b 7–21 (14 × 14 dlaždic), počátek ve spodním
+// rohu; samotné muzeum je z 3D modelu budov a kreslí se nad terasou (src/places/vaclavak.js, lift 44).
+{
+  const RW = 14, RD = 14, RH = 44, bx = 64 * RD, hC = 32 * (RW + RD) + 90, by = hC - 1
+  sprite("lm_muzeum_rampa", { w: 64 * (RW + RD), h: hC }, (c) => {
+    const rng = c.rng(77)
+    // bod: ta dlaždic od a 110, tb dlaždic od b 7, v výška v px
+    const pt = (ta, tb, v = 0) => [Math.round(bx + 64 * ta - 64 * (RD - tb)), Math.round(by - 32 * ta - 32 * (RD - tb) - v)]
+    const poly = (pts, col) => c.poly(pts.flatMap((p) => pt(...p)), col)
+    const line = (p, q, col, w = 1) => c.line(...pt(...p), ...pt(...q), col, w)
+    // terasa: horní plocha, pravý bok (k +b) a čelo (k −a)
+    poly([[1.5, 0, RH], [RW, 0, RH], [RW, RD, RH], [1.5, RD, RH]], "q")
+    poly([[1.5, RD, 0], [RW, RD, 0], [RW, RD, RH], [1.5, RD, RH]], "p")
+    for (let v = 8; v < RH; v += 9) line([1.5, RD, v], [RW, RD, v], "P")
+    for (let t = 1.7; t < RW; t += 0.42) line([t, RD, 0], [t, RD, RH], "P")
+    line([1.5, RD, RH], [RW, RD, RH], "W", 2)
+    poly([[1.5, 0, 0], [1.5, RD, 0], [1.5, RD, RH], [1.5, 0, RH]], "P")
+    for (let v = 8; v < RH; v += 9) line([1.5, 0, v], [1.5, RD, v], "P")
+    // rampy: plocha stoupá od krajů ke středu, zeď rampy v rovině ta 0,8
+    const ramp = (t0, t1) => {   // t0 pata, t1 vrchol
+      poly([[0.8, t0, 0], [1.5, t0, 0], [1.5, t1, RH], [0.8, t1, RH]], "q")
+      for (let k = 1; k < 9; k++) { const t = t0 + (t1 - t0) * k / 9; line([0.8, t, RH * k / 9], [1.5, t, RH * k / 9], "p") }
+      poly([[0.8, t0, 0], [0.8, t1, 0], [0.8, t1, RH]], "6")
+      const n = Math.round(Math.abs(t1 - t0) * 9)
+      for (let k = 2; k < n; k++) { const t = t0 + (t1 - t0) * k / n, h = RH * k / n; if (k % 3 === 0) line([0.8, t, 0], [0.8, t, h], "6"); line([0.8, t, h], [0.8, t, h + 7], k % 2 ? "q" : "6") }
+      line([0.8, t0, 8], [0.8, t1, RH + 8], "W", 2); line([0.8, t0, 0], [0.8, t1, RH], "6")
     }
-    for (let u = 22; u + 22 < lenL - 10; u += 44) {
-      if (ris(u)) continue
-      win(FL, u, 76, 20, 58)
-      win(FL, u, 170, 20, pav(u) ? 70 : 58)
+    ramp(1, 5.5)
+    poly([[0.8, 5.5, RH], [1.5, 5.5, RH], [1.5, 8.6, RH], [0.8, 8.6, RH]], "q")
+    poly([[0.8, 5.5, 0], [0.8, 8.6, 0], [0.8, 8.6, RH], [0.8, 5.5, RH]], "6")
+    ramp(13, 8.6)
+    // schodiště podél fasády: stupně po dvanácti, levé stoupá k +b, pravé k −b
+    const stair = (t0, t1) => {
+      const N = 12, lo = Math.min(t0, t1)
+      const steps = Array.from({ length: N }, (_, i) => ({ t: t0 + (t1 - t0) * i / N, h: RH * (i + 1) / N })).sort((p, q) => Math.min(p.t, p.t + (t1 - t0) / N) - Math.min(q.t, q.t + (t1 - t0) / N))
+      steps.forEach(({ t, h }, i) => { const ta = t, tb2 = t + (t1 - t0) / N; poly([[0.1, ta, h], [0.8, ta, h], [0.8, tb2, h], [0.1, tb2, h]], i % 2 ? "q" : "W"); poly([[0.1, Math.min(ta, tb2), 0], [0.1, Math.max(ta, tb2), 0], [0.1, Math.max(ta, tb2), h], [0.1, Math.min(ta, tb2), h]], "6"); line([0.1, Math.min(ta, tb2), h], [0.1, Math.max(ta, tb2), h], "6") })
+      void lo
     }
-    for (let u = 22; u + 22 < lenR - 10; u += 44) { win(FR, u, 76, 20, 58); win(FR, u, 170, 20, 58) }
-    // rizalit: šest sloupů přes dvě patra, mezi nimi vysoká okna, nad nimi atika s nápisem
-    const r0 = lenL / 2 - 104
-    for (let k = 0; k < 6; k++) {
-      const u = r0 + 8 + k * 38
-      P(Fq(FL, u, u + 12, 60, HR - 70), light); P(Fq(FL, u + 9, u + 12, 60, HR - 70), shade)
-      P(Fq(FL, u - 3, u + 15, HR - 76, HR - 70), light)
-      if (k < 5) { P(Fq(FL, u + 17, u + 33, 90, 250), rng() < 0.3 ? "k" : "n"); P([...FL(u + 15, 250), ...FL(u + 35, 250), ...FL(u + 25, 262)], light) }
+    stair(4.4, 5.8)
+    // stěna kašny: tři niky, zelené stékance, římsa a balustráda
+    poly([[0.1, 5.8, RH], [0.8, 5.8, RH], [0.8, 7.9, RH], [0.1, 7.9, RH]], "q")
+    poly([[0.1, 5.8, 0], [0.1, 7.9, 0], [0.1, 7.9, RH], [0.1, 5.8, RH]], "6")
+    for (const t of [6.0, 6.62, 7.24]) {
+      poly([[0.1, t, 4], [0.1, t + 0.46, 4], [0.1, t + 0.46, 28], [0.1, t + 0.36, 34], [0.1, t + 0.1, 34], [0.1, t, 28]], "k")
+      line([0.1, t + 0.23, 4], [0.1, t + 0.23, 22], "Q"); line([0.1, t + 0.3, 4], [0.1, t + 0.3, 12], "j")
     }
-    P(Fq(FL, r0 - 6, r0 + 214, HR - 70, HR - 58), light)
-    P(Fq(FL, r0, r0 + 208, HR - 58, HR), stone)
-    // NÁRODNÍ MUZEUM na atice písmem do roviny levé stěny; čte se zleva doprava, tedy od vzdálenějšího konce stěny
-    // (velké u) k bližšímu: zrcadlová mapa stěny, aby písmena nebyla obráceně.
-    const FLr = (u, v) => FL(r0 + 200 - u, v)
-    wallText(c, FLr, ox, oy, 4, HR - 32, "NÁRODNÍ MUZEUM", "3", { sc: 3, outline: light })
-    // korunní římsa s balustrádou po celém obvodu
-    ;[[FL, lenL], [FR, lenR]].forEach(([F, len]) => {
-      P(Fq(F, 0, len, H - 16, H), light); P(Fq(F, 0, len, H - 18, H - 16), shade)
-      for (let u = 4; u < len; u += 9) P(Fq(F, u, u + 4, H, H + 14), stone)
-      P(Fq(F, 0, len, H + 14, H + 18), light)
-    })
-    ;[[0, 150], [lenL - 150, lenL]].forEach(([u0, u1]) => { P(Fq(FL, u0, u1, HP - 14, HP), light); for (let u = u0 + 4; u < u1; u += 9) P(Fq(FL, u, u + 4, HP, HP + 12), stone) })
-    // střecha: křídla kolem dvou dvorů (šedý plech s hřebeny a měděnými hranami), střední křídlo nese kupoli.
-    // Bod na rovině střechy: ur podél pravé stěny, ul podél levé, výška Hh.
-    const T = (ur, ul, Hh = H + 18) => [ur - ul, -ur / 2 - ul / 2 - Hh]
-    const roofQ = (r0, r1, l0, l1, col, Hh) => P([...T(r0, l0, Hh), ...T(r1, l0, Hh), ...T(r1, l1, Hh), ...T(r0, l1, Hh)], col)
-    roofQ(0, lenR, 0, lenL, "S")
-    const d = 150, mid0 = lenL / 2 - 90, mid1 = lenL / 2 + 90
-    // hřebeny křídel: čára uprostřed pásu kolem obvodu
-    ;[[d / 2, d / 2, lenR - d / 2, d / 2], [d / 2, lenL - d / 2, lenR - d / 2, lenL - d / 2], [d / 2, d / 2, d / 2, lenL - d / 2], [lenR - d / 2, d / 2, lenR - d / 2, lenL - d / 2], [d / 2, lenL / 2, lenR - d / 2, lenL / 2]]
-      .forEach(([r0, l0, r1, l1]) => c.line(...Fs(T(r0, l0, H + 34), ox, oy), ...Fs(T(r1, l1, H + 34), ox, oy), "m", 2))
-    // dva dvory: otvor ve střeše, v něm hluboko dole tmavá dlažba a vidět jsou jen vzdálenější vnitřní stěny
-    // (ty míří k divákovi); bližší stěny zakrývá okraj střechy, proto se všechno ořízne otvorem.
-    const DEEP = 120
-    ;[[d, lenR - d, d, mid0], [d, lenR - d, mid1, lenL - d]].forEach(([r0, r1, l0, l1]) => {
-      const hole = Fs([...T(r0, l0), ...T(r1, l0), ...T(r1, l1), ...T(r0, l1)], ox, oy)
-      c.clip(hole, () => {
-        P([...T(r0, l0, H - DEEP), ...T(r1, l0, H - DEEP), ...T(r1, l1, H - DEEP), ...T(r0, l1, H - DEEP)], "x")
-        P([...T(r0, l1), ...T(r1, l1), ...T(r1, l1, H - DEEP), ...T(r0, l1, H - DEEP)], "e")
-        P([...T(r1, l0), ...T(r1, l1), ...T(r1, l1, H - DEEP), ...T(r1, l0, H - DEEP)], "C")
-        for (let u = r0 + 20; u < r1 - 20; u += 40) P([...T(u, l1, H - 20), ...T(u + 14, l1, H - 20), ...T(u + 14, l1, H - 60), ...T(u, l1, H - 60)], "n")
-        for (let u = l0 + 20; u < l1 - 20; u += 40) P([...T(r1, u, H - 20), ...T(r1, u + 14, H - 20), ...T(r1, u + 14, H - 60), ...T(r1, u, H - 60)], "n")
-        // stín na dlažbě od bližších stěn
-        P([...T(r0, l0, H - DEEP), ...T(r1, l0, H - DEEP), ...T(r1, l0 + 40, H - DEEP), ...T(r0, l0 + 40, H - DEEP)], "A")
-      })
-    })
-    ;[[0, lenR, 0, 4], [0, 4, 0, lenL]].forEach(([r0, r1, l0, l1]) => roofQ(r0, r1, l0, l1, "j"))
-    // kopulky nárožních pavilonů (dvě viditelné)
-    ;[FL(75, HP + 12), FL(lenL - 75, HP + 12)].forEach((p) => {
-      const [x, y] = Fs(p, ox, oy)
-      c.rect(x - 30, y - 24, 60, 24, stone); c.rect(x - 30, y - 24, 60, 4, light)
-      c.clip([x - 34, y - 80, 68, 56], () => c.ellipse(x, y - 24, 30, 48, "Q"))
-      c.line(x - 10, y - 66, x - 14, y - 26, "j"); c.line(x + 10, y - 66, x + 14, y - 26, "j")
-      c.rect(x - 3, y - 84, 6, 12, "Y")
-    })
-    // velká kupole nad středem půdorysu: buben s okny, kupole s žebry, kus propadlý, lucerna a špice
-    const [cx, cy] = Fs([lenR / 2 - lenL / 2, -lenR / 4 - lenL / 4 - H - 18], ox, oy)
-    const DR = 150, DH = 110
-    c.ellipse(cx, cy, DR, DR / 2, shade)
-    c.rect(cx - DR, cy - DH, DR * 2, DH, stone); c.ellipse(cx, cy, DR, DR / 2 - 4, stone)
-    c.rect(cx - DR, cy - DH, DR * 2, 8, light); c.rect(cx + DR / 2, cy - DH, DR / 2, DH, dark)
-    for (let x = -DR + 14; x < DR - 20; x += 30) { c.rect(cx + x, cy - DH + 22, 14, 60, rng() < 0.25 ? "k" : "n"); c.rect(cx + x - 3, cy - DH + 18, 20, 4, light); c.rect(cx + x + 4, cy - DH + 22, 4, 60, light) }
-    c.clip([cx - DR - 6, cy - DH - 250, DR * 2 + 12, 250], () => c.ellipse(cx, cy - DH, DR - 4, 240, "j"))
-    c.clip([cx + DR / 3, cy - DH - 250, DR, 250], () => c.ellipse(cx, cy - DH, DR - 4, 240, "Q"))
-    for (let k = -4; k <= 4; k++) c.line(cx + k * 34, cy - DH - 2, cx + k * 10, cy - DH - 228, "j")
-    c.line(cx - DR + 8, cy - DH - 50, cx + DR - 8, cy - DH - 50, "j"); c.line(cx - DR + 30, cy - DH - 130, cx + DR - 30, cy - DH - 130, "j")
-    // propadlina v kupoli: tmavá díra s polámanými žebry
-    c.poly([cx + 30, cy - DH - 190, cx + 104, cy - DH - 150, cx + 112, cy - DH - 70, cx + 50, cy - DH - 56, cx + 20, cy - DH - 120], "k")
-    c.line(cx + 44, cy - DH - 184, cx + 64, cy - DH - 60, "S", 2); c.line(cx + 84, cy - DH - 166, cx + 90, cy - DH - 62, "S", 2)
-    c.rect(cx - 26, cy - DH - 290, 52, 56, stone); c.rect(cx - 26, cy - DH - 290, 52, 5, light)
-    for (let x = -18; x < 18; x += 10) c.rect(cx + x, cy - DH - 280, 5, 34, "n")
-    c.ellipse(cx, cy - DH - 292, 28, 14, "Q"); c.rect(cx - 3, cy - DH - 340, 6, 46, "Y"); c.circ(cx, cy - DH - 342, 4, "y")
-    // stopy po kulkách a střepinách, stékance, plevel na římse
-    for (let i = 0; i < 260; i++) {
-      const left = rng() < 0.6, F = left ? FL : FR, len = left ? lenL : lenR
-      const [x, y] = Fs(F(8 + rng() * (len - 16), 60 + rng() * (H - 90)), ox, oy)
-      c.rect(x, y, 2, 2, rng() < 0.5 ? "e" : "3")
-    }
-    for (let i = 0; i < lenL / 7; i++) { const u = 3 + Math.floor(rng() * (lenL - 6)); const [x, y] = Fs(FL(u, H - 16), ox, oy); c.vline(x, y, 20 + Math.floor(rng() * 120), rng() < 0.3 ? "U" : shade) }
-    for (let u = 0; u < lenL; u += 3) if (rng() < 0.4) { const [x, y] = Fs(FL(u, H + 18), ox, oy); c.vline(x, y - 4, 3 + Math.floor(rng() * 4), rng() < 0.5 ? "G" : "Q") }
-    // sprej lidí z metra na soklu boku: ŘÁD JE ZAPSANÝ
-    slant(c, ox, oy, 40, 20, "R^A'D JE ZAPSANY'", "E", 15)
+    line([0.1, 5.8, RH - 6], [0.1, 7.9, RH - 6], "6"); line([0.1, 5.8, RH], [0.1, 7.9, RH], "W", 2)
+    for (let t = 5.85; t < 7.9; t += 0.07) line([0.1, t, RH + 1], [0.1, t, RH + 7], "q")
+    line([0.1, 5.8, RH + 8], [0.1, 7.9, RH + 8], "W", 2)
+    stair(9.3, 7.9)
+    // suchá nádrž před kašnou: kamenný lem, na dně bahno a měděnka
+    poly([[-0.95, 5.9], [-0.95, 7.8], [0.1, 7.8], [0.1, 5.9]], "p")
+    poly([[-0.85, 6.0, 5], [-0.85, 7.7, 5], [0.05, 7.7, 5], [0.05, 6.0, 5]], "q")
+    poly([[-0.75, 6.1, 5], [-0.75, 7.6, 5], [0.0, 7.6, 5], [0.0, 6.1, 5]], "G")
+    poly([[-0.6, 6.4, 5], [-0.6, 7.0, 5], [-0.2, 7.0, 5], [-0.2, 6.4, 5]], "Q")
+    poly([[-0.95, 5.9, 0], [-0.95, 7.8, 0], [-0.95, 7.8, 5], [-0.95, 5.9, 5]], "6")
+    poly([[-0.95, 7.8, 0], [0.1, 7.8, 0], [0.1, 7.8, 5], [-0.95, 7.8, 5]], "p")
+    // dlažba terasy a ramp: spáry desek, vylámané kusy, prach a plevel ve spárách
+    for (let t = 0.4; t < RD; t += 0.5) line([1.5, t, RH], [2.6, t, RH], "p")
+    for (let i = 0; i < 90; i++) { const ta = 0.85 + rng() * 1.6, tb = 0.3 + rng() * 13.4; const onRamp = ta < 1.5, h = !onRamp ? RH : tb < 5.5 ? RH * Math.max(0, tb - 1) / 4.5 : tb > 8.6 ? RH * Math.max(0, 13 - tb) / 4.4 : RH; if (onRamp && (tb < 1 || tb > 13)) continue; const [x, y] = pt(ta, tb, h); const r = rng(); c.rect(x, y, 2 + Math.floor(rng() * 5), 1 + Math.floor(rng() * 2), r < 0.45 ? "p" : r < 0.7 ? "P" : r < 0.85 ? "G" : "W") }
+    for (let i = 0; i < 7; i++) { const tb = 1 + rng() * 12, [x, y] = pt(1.7 + rng() * 0.8, tb, RH); c.line(x, y, x + 8 + Math.floor(rng() * 14), y + 3 + Math.floor(rng() * 5), "P") }
+    // špína: šmouhy pod římsami, plevel a suť u paty
+    for (let i = 0; i < 46; i++) { const t = 1 + rng() * 12, h = 6 + rng() * 22; if (t > 5.5 && t < 8.6) continue; const top = RH * (t < 5.5 ? (t - 1) / 4.5 : (13 - t) / 4.4); if (top > h + 4) line([0.8, t, top - 2], [0.8, t, top - 2 - h * 0.5], "6") }
+    for (let i = 0; i < 30; i++) { const t = 0.2 + rng() * 13.6; const [x, y] = pt(1.5, t, RH - 3); c.vline(x, y, 4 + Math.floor(rng() * 14), "P") }
+    for (let i = 0; i < 40; i++) { const t = 1 + rng() * 12; const [x, y] = pt(0.8, t, 0); c.rect(x - 1, y - 2, 2 + Math.floor(rng() * 3), 2, rng() < 0.5 ? "G" : "g") }
   })
 }
-muzeum("lm_muzeum", { w: 12, dpt: 15, seed: 21 })
+
 
 // Prázdný podstavec pomníku svatého Václava (žula, schody) a na něm Václav na směny: přilba, červený plášť, kopí z tyče
 // od tramvaje. Jeden sprite: postava je součást podstavce (stojí nahoře, nehýbe se).
@@ -207,113 +150,120 @@ anim("nutrie", { w: 48, h: 28, outline: "k", fps: 3 }, (c) => {
   c.line(40, 20, 47, 24, "3", 2)
 }, frame(), frame((c) => { c.line(40, 20, 47, 18, "3", 2); c.px(3, 12, "k") }))
 
-// Dům Na Můstku (dřív ČKD, Šrámková a Šrámek, 1983) na spodním konci náměstí, zatopený po mezanin: světlý kamenný
-// rastr s velkými čtvercovými okny, prosklené nárožní schodiště, na ploché střeše skleněná valená klenba s kulatými
-// hodinami v čele (stojí na 14:37) a figury na atice. Předloha: fotky z Wikimedia Commons, jen předloha. Půdorys
-// 3 × 3 dlaždice, počátek ve spodním rohu u hladiny. Na stěně k +b je tmavý rám pro neonovou obálku (obalka_neon).
+// Neonová obálka Ecomailu (sídlí v domě Na Můstku) jako na titulní obrazovce Václaváku po pádu: tři skleněné trubice
+// na tmavém plexiskle, tyrkysová dvojitá klopa, zelený levý a spodní díl, tyrkysový pravý díl. Kreslí se v rovině
+// stěny k +b (počátek vlevo dole), každá trubice bzučí a občas zhasne zvlášť. Barvy neonu jsou mimo paletu schválně.
 {
-  const MW = 3, MD = 3, MH = 230, mx0 = 64 * MD, mHc = 530, my0 = mHc - 1
-  sprite("lm_mustek", { w: 64 * (MW + MD), h: mHc }, (c) => {
-    const rng = c.rng(48)
-    const rd = Math.round
-    const L = (u, v) => [rd(mx0 - u), rd(my0 - u / 2 - v)], R = (u, v) => [rd(mx0 + u), rd(my0 - u / 2 - v)]
-    const Q = (F, u0, u1, v0, v1) => [...F(u0, v0), ...F(u1, v0), ...F(u1, v1), ...F(u0, v1)]
-    const T = (ua, ub, h = 0) => [rd(mx0 + ua - ub), rd(my0 - MH - ua / 2 - ub / 2 - h)]
-    const lenL = 64 * MD, lenR = 64 * MW, mez = 26, fh = 40
-    // stěny: světlý kámen, stěna k +b ve stínu
-    c.poly(Q(L, 0, lenL, 0, MH), "5"); c.poly(Q(R, 0, lenR, 0, MH), "6")
-    // zatopený mezanin: sklo ve světlých rámech, půlka pod hladinou
-    const mezanin = (F, len) => { for (let u = 22; u + 26 <= len - 4; u += 32) { c.poly(Q(F, u - 2, u + 28, 0, mez - 2), "x"); c.poly(Q(F, u, u + 26, 0, mez - 4), rng() < 0.3 ? "k" : "N"); c.line(...F(u + 13, 0), ...F(u + 13, mez - 4), "M") } }
-    mezanin(L, lenL); mezanin(R, lenR)
-    c.poly(Q(L, 0, lenL, mez - 2, mez + 2), "x"); c.poly(Q(R, 0, lenR, mez - 2, mez + 2), "P")
-    // patra: velká čtvercová okna se světlým rámem, tmavé sklo s odrazem, některá vybitá, některá zatlučená
-    const okna = (F, len, frame) => {
-      for (let f = 0; f < 5; f++) {
-        const v = mez + 4 + f * fh
-        c.line(...F(0, v + fh - 2), ...F(len, v + fh - 2), "x")
-        for (let u = 24; u + 24 <= len - 4; u += 32) {
-          c.poly(Q(F, u - 2, u + 26, v + 4, v + 34), frame)
-          const t = rng(), g = t < 0.16 ? "k" : t < 0.74 ? "n" : t < 0.9 ? "N" : "H"
-          c.poly(Q(F, u, u + 24, v + 6, v + 32), g)
-          if (g === "n") { c.line(...F(u + 3, v + 28), ...F(u + 10, v + 12), "L"); if (rng() < 0.4) c.line(...F(u + 14, v + 30), ...F(u + 20, v + 18), "L") }
-          if (g === "H") for (let k = 0; k < 3; k++) c.line(...F(u, v + 10 + k * 8), ...F(u + 24, v + 12 + k * 8), "U")
-          if (g === "k") { c.line(...F(u, v + 6), ...F(u + 7, v + 14), "l"); c.line(...F(u + 24, v + 32), ...F(u + 18, v + 22), "l") }
-          // šmouha pod parapetem
-          if (rng() < 0.6) c.line(...F(u + 3 + rng() * 18, v + 4), ...F(u + 3 + rng() * 18, v - 4 - rng() * 14), "x")
-        }
-      }
-    }
-    okna(L, lenL, "W"); okna(R, lenR, "w")
-    // rám pro neon na stěně k +b (obálka je zvlášť, bliká)
-    c.poly(Q(R, 84, 176, 112, 176), "k"); c.poly(Q(R, 86, 174, 114, 174), "A")
-    c.line(...R(90, 112), ...R(90, 96), "U"); c.line(...R(168, 112), ...R(168, 100), "U")
-    // prosklené nárožní schodiště přes všechna patra
-    c.poly(Q(L, 0, 18, 0, MH + 4), "n"); c.poly(Q(R, 0, 18, 0, MH + 4), "N")
-    for (const u of [5, 11]) { c.line(...L(u, 0), ...L(u, MH + 4), "M"); c.line(...R(u, 0), ...R(u, MH + 4), "S") }
-    for (let v = mez; v < MH; v += fh / 2) { c.line(...L(0, v), ...L(18, v), "M"); c.line(...R(0, v), ...R(18, v), "S") }
-    c.line(...L(2, 40), ...L(8, 150), "l"); c.line(...L(13, 90), ...L(15, 200), "L")
-    c.poly(Q(L, 18, 20, 0, MH + 4), "W"); c.poly(Q(R, 18, 20, 0, MH + 4), "w")
-    c.poly(Q(L, 6, 12, 150, 172), "k"); c.poly(Q(R, 6, 12, 60, 84), "k")
-    // atika
-    c.poly(Q(L, 0, lenL, MH - 5, MH), "W"); c.poly(Q(R, 0, lenR, MH - 5, MH), "w")
-    // špína: stékance pod atikou, rez, mokrý pruh a řasy nad hladinou
-    for (let i = 0; i < 26; i++) { const u = 22 + rng() * (lenL - 26); c.line(...L(u, MH - 6), ...L(u + (rng() - 0.5) * 2, MH - 12 - rng() * 30), rng() < 0.3 ? "U" : "x") }
-    for (let i = 0; i < 18; i++) { const u = 22 + rng() * (lenR - 26); c.line(...R(u, MH - 6), ...R(u + (rng() - 0.5) * 2, MH - 12 - rng() * 30), rng() < 0.3 ? "U" : "P") }
-    c.clip((x, y) => c.is(x, y, "56xP"), () => { c.poly(Q(L, 0, lenL, 0, 14), "v"); c.poly(Q(R, 0, lenR, 0, 14), "P") })
-    for (let u = 2; u < lenL; u += 3) if (rng() < 0.55) { const [x, y] = L(u, 0); c.vline(x, y - 2 - rd(rng() * 5), 3 + rd(rng() * 4), rng() < 0.5 ? "G" : "Q") }
-    for (let u = 2; u < lenR; u += 3) if (rng() < 0.55) { const [x, y] = R(u, 0); c.vline(x, y - 2 - rd(rng() * 5), 3 + rd(rng() * 4), rng() < 0.5 ? "G" : "Q") }
-    for (let u = 6; u < lenL; u += 14) { const [x, y] = L(u, 0); c.hline(x - 4, y, 6, rng() < 0.5 ? "J" : "Z") }
-    for (let u = 6; u < lenR; u += 14) { const [x, y] = R(u, 0); c.hline(x - 2, y, 6, rng() < 0.5 ? "J" : "Z") }
-    // plochá střecha: lepenka v pásech, skvrny, větrací hlavice, plevel u atiky
-    c.poly([...T(0, 0), ...T(lenR, 0), ...T(lenR, lenL), ...T(0, lenL)], "c")
-    c.poly([...T(5, 5), ...T(lenR - 5, 5), ...T(lenR - 5, lenL - 5), ...T(5, lenL - 5)], "S")
-    for (let ub = 30; ub < lenL - 6; ub += 28) c.line(...T(5, ub), ...T(lenR - 5, ub), "A")
-    for (let i = 0; i < 7; i++) { const ua = 14 + rng() * 40, ub = 20 + rng() * (lenL - 50), r = 6 + rng() * 10; c.poly([...T(ua, ub), ...T(ua + r, ub), ...T(ua + r, ub + r), ...T(ua, ub + r)], rng() < 0.5 ? "A" : "s") }
-    for (const [ua, ub] of [[26, 60], [30, 150], [168, 168]]) { const [vx, vy] = T(ua, ub); c.rect(vx - 3, vy - 10, 6, 10, "M"); c.rect(vx - 3, vy - 10, 2, 10, "m"); c.rect(vx - 5, vy - 13, 10, 3, "x") }
-    for (let i = 0; i < 14; i++) { const [x, y] = T(6 + rng() * 3, 8 + rng() * (lenL - 16)); c.vline(x, y - 3, 3, "g") }
-    c.line(...T(5, 5), ...T(lenR - 5, 5), "A"); c.line(...T(5, 5), ...T(5, lenL - 5), "A")
-    // skleněná valená klenba napříč střechou, v čele k +b kulaté hodiny
-    const va = 108, vr = 36, vb0 = 26, vb1 = 156
-    const arc = (ub, r = vr) => { const p = []; for (let i = 0; i <= 20; i++) { const t = i / 20 * Math.PI; p.push(...T(va + r * Math.cos(t), ub, r * Math.sin(t))) } return p }
-    for (let ub = vb1; ub >= vb0; ub -= 2) c.poly(arc(ub), "L")
-    c.poly(arc(vb1), "n")
-    for (let ub = vb1; ub >= vb0; ub -= 2) c.poly(arc(ub), "L")
-    for (let ub = vb0 + 20; ub < vb1; ub += 22) { const p = arc(ub); for (let i = 0; i + 3 < p.length; i += 2) c.line(p[i], p[i + 1], p[i + 2], p[i + 3], "M") }
-    for (const t of [0.3, 0.5, 0.72]) c.line(...T(va + vr * Math.cos(t * Math.PI), vb0, vr * Math.sin(t * Math.PI)), ...T(va + vr * Math.cos(t * Math.PI), vb1, vr * Math.sin(t * Math.PI)), t === 0.72 ? "l" : "M")
-    // vybité tabule
-    for (const [ub, t] of [[60, 0.6], [104, 0.4], [130, 0.66], [84, 0.8]]) { const a = va + vr * Math.cos(t * Math.PI), h = vr * Math.sin(t * Math.PI); c.poly([...T(a, ub, h), ...T(a, ub + 18, h), ...T(a + 9, ub + 18, h - 5), ...T(a + 9, ub, h - 5)], "N") }
-    c.poly(arc(vb0), "S")
-    { const p = arc(vb0); for (let i = 0; i + 3 < p.length; i += 2) c.line(p[i], p[i + 1], p[i + 2], p[i + 3], "M") }
-    c.line(...T(va - vr, vb0), ...T(va + vr, vb0), "M")
-    const disc = (r) => { const p = []; for (let i = 0; i < 28; i++) { const t = i / 28 * Math.PI * 2; p.push(...T(va + r * Math.cos(t), vb0, 17 + r * Math.sin(t))) } return p }
-    c.poly(disc(15), "k"); c.poly(disc(13), "W")
-    for (let i = 0; i < 12; i++) { const t = i / 12 * Math.PI * 2; c.px(...T(va + 11 * Math.cos(t), vb0, 17 + 11 * Math.sin(t)), "k") }
-    // ručičky stojí na 14:37
-    const hand = (deg, r) => { const t = (90 - deg) * Math.PI / 180; c.line(...T(va, vb0, 17), ...T(va + r * Math.cos(t), vb0, 17 + r * Math.sin(t)), "k") }
-    hand(78.5, 7); hand(222, 11)
-    // figury na atice směrem k Příkopům (tmavé siluety), jedna chybí
-    for (const u of [108, 132, 180]) { const [sx, sy] = L(u, MH); c.rect(sx - 2, sy - 16, 5, 15, "S"); c.circ(sx, sy - 18, 2, "S"); c.rect(sx + 3, sy - 13, 2, 7, "S") }
-    { const [sx, sy] = L(156, MH); c.rect(sx - 2, sy - 4, 5, 3, "S") }
-    // hrany kvádru
-    c.line(...L(0, 0), ...L(0, MH), "k"); c.line(...L(lenL, 0), ...L(lenL, MH), "3"); c.line(...R(lenR, 0), ...R(lenR, MH), "k")
-    c.line(...L(0, MH), ...L(lenL, MH), "x"); c.line(...R(0, MH), ...R(lenR, MH), "k")
-  })
-
-  // Neonová obálka z loga Ecomailu (sídlí v domě Na Můstku) v rovině stěny k +b: tři zelené plochy, bliká a bzučí
-  // jako neon, občas zhasne. Počátek vlevo dole. Barvy loga jsou mimo paletu schválně (neon smí být sytý).
-  const OW = 84, OH = 56, oHc = OH + OW / 2
-  const obalka = [["#a6e61f", "#59bc1c", "#3d942f"], ["#7fb01f", "#46901c", "#2f7026"], ["#2b3a20", "#22301c", "#1b2718"]]
-  const blik = [0, 0, 0, 0, 0, 1, 0, 0, 2, 0, 0, 0, 1, 2, 1, 0]
-  anim("obalka_neon", { w: OW, h: oHc, frames: blik.length, fps: 8 }, (c) => {
-    const [cj, cz, cxx] = obalka[blik[c.frame]]
-    const P = (ex, ey) => [Math.round(ex), Math.round(oHc - 1 - ex / 2 - (OH - ey))]
-    const r = 5
-    const base = [...P(r, 0), ...P(OW - r, 0), ...P(OW, r), ...P(OW, OH - r), ...P(OW - r, OH), ...P(r, OH), ...P(0, OH - r), ...P(0, r)]
-    const mx = OW * 20.884 / 42, my = OH * 18.541 / 28, bx = OW * 31.569 / 42
-    c.poly(base, cj)
-    c.clip(base, () => {
-      c.poly([...P(mx, my), ...P(OW, 0), ...P(OW, OH), ...P(bx, OH)], cz)
-      c.poly([...P(0, 0), ...P(OW, 0), ...P(mx, my)], cxx)
-    })
+  const OW = 84, OH = 56, oHc = OH + OW / 2 + 4, S = 2
+  // [plná, ztlumená, zhaslá] pro každou trubici
+  const TUBES = { flap: ["#3ff2d6", "#249a8a", "#17302c"], left: ["#39ff6b", "#229a44", "#16301e"], right: ["#22e3a0", "#178a64", "#142e24"] }
+  const HALO = { flap: ["#1c6a60", "#143c38", "#10201e"], left: ["#1a6e34", "#143e22", "#102016"], right: ["#146a4c", "#103c2e", "#0e201a"] }
+  // stav trubic po snímcích: 0 svítí, 1 ztlumená, 2 zhaslá
+  const blik = [[0, 0, 0], [0, 0, 0], [0, 1, 0], [0, 0, 0], [0, 0, 0], [1, 0, 0], [0, 0, 0], [0, 0, 2], [0, 0, 0], [0, 0, 0], [0, 0, 1], [2, 0, 0], [0, 0, 0], [0, 1, 0], [0, 2, 0], [0, 0, 0]]
+  anim("obalka_neon", { w: OW + 4, h: oHc, frames: blik.length, fps: 8 }, (c) => {
+    const P = (ex, ey) => [Math.round(2 + ex * S), Math.round(oHc - 3 - ex * S / 2 - (OH - ey * S))]
+    const path = (pts, col, wdt, closed) => { for (let i = 0; i + 1 < pts.length + (closed ? 1 : 0); i++) c.line(...P(...pts[i]), ...P(...pts[(i + 1) % pts.length]), col, wdt) }
+    // plexisklo za neonem
+    c.poly([...P(-1, -1), ...P(43, -1), ...P(43, 29), ...P(-1, 29)], "#0d1412")
+    const [sf, sl, sr] = blik[c.frame]
+    const tubes = [
+      ["flap", sf, [[1, 1], [41, 1], [20.9, 18.5]], true], ["flap", sf, [[4, 3], [38, 3], [20.9, 15.5]], true],
+      ["left", sl, [[1.5, 4], [1.5, 26.5], [31.5, 26.5], [25, 20.5]], false],
+      ["right", sr, [[40.5, 4], [40.5, 26.5], [33.5, 26.5], [22.5, 16.5]], false],
+    ]
+    tubes.forEach(([k, st, pts, closed]) => path(pts, HALO[k][st], 3, closed))
+    tubes.forEach(([k, st, pts, closed]) => path(pts, TUBES[k][st], 1, closed))
   })
 }
+
+// Nárožní věž paláce Koruna (1914, Pfeiffer) na rohu náměstí a Na Příkopě, podle fotky z Wikimedia Commons (jen
+// předloha): kamenný válec od země až nad římsu, v parteru sklo a nápis KORUNA, čtyři patra úzkých sdružených oken,
+// nad římsou buben s okny, prstenec perel a kamenná kupole s korunou. Kreslí se ve skutečné velikosti přes roh domu
+// z modelu budov (overlays v src/places/vaclavak.js), počátek dole uprostřed. Výšky sedí s receptem fasády
+// (parter 97 px, římsa nároží 343 px, data/fasady-vaclavak.json).
+{
+  const TW = 92, TH = 508, cx = 46, rx = 40, GY = TH - 8
+  sprite("koruna_vez", { w: TW, h: TH }, (c) => {
+    const Y = (v) => GY - v
+    // plášť válce: pruhy od stínu ke světlu
+    const bands = [[-rx, -27, "P"], [-27, -8, "p"], [-8, 22, "q"], [22, rx + 1, "p"]]
+    const body = (v0, v1, r = rx) => bands.forEach(([x0, x1, k]) => { const a = Math.max(-r, x0), b = Math.min(r + 1, x1); if (b > a) c.rect(cx + a, Y(v1), b - a, v1 - v0, k) })
+    body(0, 428); c.ellipse(cx, Y(0), rx, 7, "P")
+    for (let v = 108; v < 428; v += 11) c.hline(cx - rx + 1, Y(v), rx * 2 - 1, "P")
+    // parter: tři prosklená pole mezi pilíři, pod hladinou špíny tmavý sokl
+    for (const [x0, w] of [[-33, 17], [-11, 22], [16, 17]]) {
+      c.rect(cx + x0, Y(90), w, 84, "n")
+      for (let x = x0 + 5; x < x0 + w - 1; x += 6) c.vline(cx + x, Y(90), 84, "S")
+      c.hline(cx + x0, Y(48), w, "p"); c.hline(cx + x0, Y(47), w, "P")
+    }
+    c.rect(cx - rx, Y(6), rx * 2 + 1, 6, "P")
+    // pás s nápisem
+    c.rect(cx - rx, Y(108), rx * 2 + 1, 4, "W"); c.rect(cx - rx, Y(104), rx * 2 + 1, 12, "q"); c.rect(cx - rx, Y(93), rx * 2 + 1, 2, "P")
+    c.text(cx - 20, Y(103), "KORUNA", "y")
+    // čtyři patra: trojice úzkých oken, světlá nadokenní římsa
+    for (let f = 0; f < 4; f++) {
+      const v = 120 + f * 60
+      for (const dx of [-27, -17, -4, 6, 19, 28]) { const k = (f * 7 + dx) % 9 === 0 ? "k" : "n"; c.rect(cx + dx, Y(v + 30), 6, 30, k); c.hline(cx + dx, Y(v + 20), 6, "S") }
+      c.rect(cx - 31, Y(v + 33), 63, 2, "W"); c.hline(cx - 31, Y(v - 2), 63, "P")
+    }
+    // hlavní římsa a buben nad ní
+    c.ellipse(cx, Y(348), rx + 4, 8, "P"); c.ellipse(cx, Y(351), rx + 4, 7, "W"); c.ellipse(cx, Y(353), rx, 6, "q")
+    for (const dx of [-24, -8, 8, 22]) { c.rect(cx + dx, Y(408), 7, 40, "n"); c.hline(cx + dx, Y(390), 7, "S"); c.rect(cx + dx - 1, Y(411), 9, 2, "W") }
+    c.ellipse(cx, Y(428), rx + 3, 7, "P"); c.ellipse(cx, Y(431), rx + 3, 6, "W")
+    // kupole z kamene, žebra, prstenec perel a koruna
+    c.clip([cx - rx, Y(476), rx * 2 + 1, 44], () => { c.ellipse(cx, Y(432), rx - 3, 42, "p"); c.clip([cx - 6, Y(476), rx, 44], () => c.ellipse(cx, Y(432), rx - 3, 42, "q")); c.clip([cx - rx, Y(476), 12, 44], () => c.ellipse(cx, Y(432), rx - 3, 42, "P")) })
+    for (const dx of [-22, -9, 5, 19]) c.line(cx + dx, Y(434), cx + Math.round(dx * 0.3), Y(472), "P")
+    for (let i = 0; i < 11; i++) { const t = Math.PI * (0.04 + 0.092 * i), x = Math.round(cx - Math.cos(t) * 15), y = Math.round(Y(476) + Math.sin(t) * 4); c.circ(x, y, 3, "v"); c.circ(x, y - 1, 2, "W") }
+    c.rect(cx - 8, Y(488), 17, 6, "Y"); c.hline(cx - 8, Y(488), 17, "y")
+    for (const dx of [-8, -4, 0, 4, 8]) { c.vline(cx + dx, Y(494), 6, "Y"); c.px(cx + dx, Y(495), "W") }
+    c.vline(cx, Y(499), 5, "Y")
+    // špína: šmouhy pod římsami, odstřik u země
+    for (const [dx, v, n] of [[-30, 346, 26], [-12, 346, 14], [14, 346, 34], [31, 346, 18], [-20, 426, 12], [9, 426, 20]]) c.vline(cx + dx, Y(v) + 2, n, "P")
+  })
+}
+
+// Hlavní kupole Národního muzea s lucernou (podle fotek z Wikimedia Commons, jen předloha): model budov má střední
+// pavilon jen jako hranol, kupole se proto kreslí ručně a sedí na něm (overlays v src/places/vaclavak.js). Kamenný
+// tambur s okny, měděná kupole se žebry a propadlým kusem pláště, lucerna se sloupky a jehlan. Počátek dole uprostřed.
+sprite("muzeum_kupole", { w: 176, h: 330 }, (c) => {
+  const cx = 88, GY = 322, Y = (v) => GY - v, rx = 78
+  // tambur: válec se sloupky a okny
+  c.rect(cx - rx, Y(46), rx * 2 + 1, 46, "C"); c.rect(cx - rx, Y(46), 34, 46, "e"); c.rect(cx + 30, Y(46), rx - 29, 46, "c")
+  c.ellipse(cx, Y(0), rx, 20, "e")
+  for (let i = 0; i < 12; i++) { const x = cx - rx + 8 + i * 13; c.rect(x, Y(40), 6, 30, i % 5 === 2 ? "k" : "n"); c.rect(x - 3, Y(44), 2, 40, "W") }
+  c.ellipse(cx, Y(46), rx + 4, 21, "e"); c.ellipse(cx, Y(50), rx + 4, 20, "W"); c.ellipse(cx, Y(53), rx, 19, "C")
+  // kupole: měď, osluněná strana vpravo, žebra, pásy plechu
+  c.clip([cx - rx, Y(190), rx * 2 + 1, 137], () => {
+    c.ellipse(cx, Y(54), rx - 3, 134, "Q")
+    c.clip([cx + 4, Y(190), rx, 137], () => c.ellipse(cx, Y(54), rx - 3, 134, "j"))
+    c.clip([cx - rx, Y(190), 26, 137], () => c.ellipse(cx, Y(54), rx - 3, 134, "G"))
+  })
+  for (const dx of [-58, -36, -12, 14, 40, 62]) c.line(cx + dx, Y(58), cx + Math.round(dx * 0.22), Y(184), "k")
+  for (const v of [84, 112, 138, 160]) { const w = Math.round((rx - 3) * Math.sqrt(Math.max(0, 1 - ((v - 54) / 134) ** 2))); c.hline(cx - w + 2, Y(v), w * 2 - 3, "G") }
+  // propadlý kus pláště: díra s trámy
+  c.poly([cx + 16, Y(150), cx + 44, Y(140), cx + 50, Y(108), cx + 34, Y(96), cx + 18, Y(112)], "k")
+  c.line(cx + 20, Y(142), cx + 46, Y(112), "H"); c.line(cx + 22, Y(118), cx + 44, Y(134), "H"); c.line(cx + 30, Y(148), cx + 36, Y(100), "h")
+  // lucerna: sloupky, římsa, měděná stříška a jehlan s koulí
+  c.ellipse(cx, Y(186), 22, 7, "e")
+  c.rect(cx - 18, Y(236), 37, 50, "C"); c.rect(cx - 18, Y(236), 9, 50, "e")
+  for (const dx of [-12, -3, 6]) c.rect(cx + dx, Y(230), 6, 38, "n")
+  c.ellipse(cx, Y(238), 23, 7, "W"); c.ellipse(cx, Y(241), 20, 6, "C")
+  c.clip([cx - 20, Y(276), 41, 35], () => { c.ellipse(cx, Y(242), 19, 34, "Q"); c.clip([cx + 2, Y(276), 20, 35], () => c.ellipse(cx, Y(242), 19, 34, "j")) })
+  c.rect(cx - 2, Y(300), 5, 26, "Y"); c.circ(cx, Y(304), 4, "y"); c.vline(cx, Y(318), 12, "Y")
+  // měděnka stéká po tamburu
+  for (const [dx, n] of [[-60, 16], [-41, 9], [-20, 22], [3, 12], [26, 18], [51, 10], [66, 20]]) c.vline(cx + dx, Y(44), n, "Q")
+})
+
+// Pokladna Národního muzea u paty schodiště: dřevěná budka s vybitým okénkem, nad ní cedule se šipkou ke vchodu
+// a křídou připsané „vstup volný“. Zastavení muzeum (src/places/vaclavak.js), odsud se chodí dovnitř za plejtvákem.
+sprite("muzeum_pokladna", { w: 64, h: 92, outline: "k" }, (c) => {
+  c.poly([6, 52, 32, 65, 32, 90, 6, 77], "H"); c.poly([32, 65, 58, 52, 58, 77, 32, 90], "h")
+  c.poly([4, 50, 32, 36, 60, 50, 32, 64], "U"); c.line(4, 50, 32, 64, "u"); c.line(32, 64, 60, 50, "u")
+  c.poly([38, 66, 54, 58, 54, 70, 38, 78], "k"); c.line(40, 76, 46, 66, "L"); c.line(50, 60, 52, 68, "l")
+  c.rect(30, 8, 3, 30, "M")
+  c.rect(10, 4, 44, 18, "3"); c.rect(11, 5, 42, 16, "c")
+  c.text(14, 7, "MUZEUM", "k"); c.line(16, 17, 40, 17, "V"); c.line(40, 17, 36, 14, "V"); c.line(40, 17, 36, 20, "V")
+  c.rect(10, 24, 30, 9, "S"); c.hline(12, 27, 22, "W"); c.hline(12, 30, 15, "W")
+  c.rect(8, 80, 5, 3, "x"); c.rect(50, 80, 4, 2, "p")
+})
+

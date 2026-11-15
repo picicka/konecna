@@ -1,0 +1,113 @@
+{
+ "_": "Recepty fasád pojmenovaných domů (scripts/ipr.py, popis klíčů v data/fasady-vaclavak.json). Barvy a druh domu podle skutečnosti, jak je známe; dům bez receptu dostane recept z pravidel.",
+ "34114711": {
+  "name": "Štorchův dům",
+  "type": "house",
+  "variant": "burgher",
+  "style": "ochre",
+  "arcade": true
+ },
+ "34114716": {
+  "name": "Sixtův dům",
+  "type": "house",
+  "variant": "burgher",
+  "style": "pink",
+  "arcade": true
+ },
+ "391354921": {
+  "name": "Sixtův dům",
+  "type": "house",
+  "variant": "burgher",
+  "style": "pink"
+ },
+ "34114710": {
+  "name": "U Kamenného beránka",
+  "type": "house",
+  "variant": "burgher",
+  "style": "cream",
+  "arcade": true
+ },
+ "r128154_0": {
+  "name": "U Zlatého jednorožce",
+  "type": "house",
+  "variant": "burgher",
+  "style": "ochre",
+  "arcade": true
+ },
+ "30825030": {
+  "name": "U Bílého jednorožce",
+  "type": "house",
+  "variant": "burgher",
+  "style": "salmon",
+  "arcade": true
+ },
+ "30825032": {
+  "name": "Týnská škola",
+  "type": "house",
+  "variant": "burgher",
+  "style": "cream",
+  "arcade": true
+ },
+ "34113022": {
+  "name": "Ministerstvo pro místní rozvoj (Městská pojišťovna, 1901)",
+  "type": "house",
+  "variant": "palais",
+  "style": "cream",
+  "win": "arch"
+ },
+ "34113021": {
+  "name": "Schierův dům",
+  "type": "house",
+  "variant": "tenement",
+  "style": "grey"
+ },
+ "34113019": {
+  "name": "Dům vedle Schierova domu",
+  "type": "house",
+  "variant": "tenement",
+  "style": "cream"
+ },
+ "34113018": {
+  "name": "Klášter paulánů u svatého Salvátora",
+  "type": "house",
+  "variant": "palais",
+  "style": "ochre",
+  "win": "lintel"
+ },
+ "34105751": {
+  "name": "Zlatý kříž",
+  "type": "house",
+  "variant": "tenement",
+  "style": "cream"
+ },
+ "r5652978_0": {
+  "name": "U Čápů",
+  "type": "house",
+  "variant": "burgher",
+  "style": "white"
+ },
+ "r4444475_0": {
+  "name": "U Červené lišky",
+  "type": "house",
+  "variant": "burgher",
+  "style": "pink"
+ },
+ "27859042": {
+  "name": "U Zlatého bažanta",
+  "type": "house",
+  "variant": "burgher",
+  "style": "yellow"
+ },
+ "27859043": {
+  "name": "U Zlatého zvonku",
+  "type": "house",
+  "variant": "burgher",
+  "style": "ochre"
+ },
+ "27859077": {
+  "name": "U Zelené žáby",
+  "type": "house",
+  "variant": "burgher",
+  "style": "green"
+ }
+}

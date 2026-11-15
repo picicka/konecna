@@ -22,7 +22,8 @@ export const ABOUT = {
         'Autor: picicka. Zdrojový kód: github.com/picicka/konecna.',
         'Mapová data: přispěvatelé OpenStreetMap, licence ODbL.',
         'Výšky domů, terén a střechy: ČÚZK, laserové skenování (DMP 1G) a ortofoto, licence CC BY 4.0.',
-        'Tvary domů a střech na Staromáku: 3D model budov, data base © IPR Praha, licence CC BY 4.0.',
+        'Tvary domů a střech: 3D model budov, data base © IPR Praha, licence CC BY 4.0.',
+        'Barvy omítek, výšky pater a rozteče oken domů: Fotorealistický 3D model Prahy (léto 2023), © IPR Praha, licence CC BY 4.0.',
         'Značení metra podle Jiřího Rathouského. Stavby jsou kreslené podle fotek z Wikimedia Commons, jen jako předloha.',
         'Běží na Phaseru 3. Grafika je nakreslená kódem v pxl, zvuk se skládá v prohlížeči.',
         'Hra se ukládá sama do tohoto prohlížeče, i s místem, kde stojíte. „Vystoupit“ na úvodní obrazovce začne znovu a uložení smaže.',
@@ -151,6 +152,8 @@ export const QUEST = {
 // Hlášky po kliknutí na kuriozity (bublina nad věcí, WorldScene.oddityBubble): nejdřív vlastní, pak společné
 // skupiny. Věci od Davida Černého (kůň z Lucerny, miminko, Kafkova hlava) mají společné nadávky na autora.
 export const ODDITY_LINES = {
+    // voříšek z ruchu (WorldScene.placeLife): řekne to a odběhne
+    voricek: { lines: ['Haf?'] },
     // přemalovaná Lennonova zeď u mlýna na Kampě (rekvizita zastavení mlynáře se say)
     zed_lennon: { lines: [
         'Lennonova zeď, přetřená nabílo. Jediný nápis: PROUD. Vedle něj pod barvou prosvítají kulaté brýle.',
@@ -185,9 +188,12 @@ export const ODDITY_LINES = {
     muzeum: { lines: [
         'Národní muzeum. Kupole drží, kašna před ním vyschla. Vstupné nikdo nevybírá.',
     ] },
+    shromazdeni: { lines: [
+        'Bývalé Federální shromáždění. Skleněná krabice na čtyřech nohách, pod ní stará burza. Teď patří muzeu, jako všechno, co nikdo nechce.',
+    ] },
     mustek: { lines: [
-        'Dům Na Můstku. Z vody kouká pět pater a hodiny na střeše. Ukazují 14:37.',
-        'Na fasádě bliká zelená obálka. Někdo tam nahoře pořád rozesílá e-maily. Nechodí nikomu.',
+        'Dům Na Můstku. Z vody kouká pět pater, mezanin zůstal pod hladinou.',
+        'Na fasádě bzučí neonová obálka. Někdo tam nahoře pořád rozesílá e-maily. Nechodí nikomu.',
     ] },
     // Staromák
     hus: { lines: [
@@ -287,6 +293,14 @@ export const ODDITY_GROUPS = {
 
 // Úvodní filmeček: obrázky z art/scenes.px.js (cs_*), repliky se píšou po písmenech.
 export const CUTSCENES = {
+    // Dvorana Národního muzea (Václavák): kostra plejtváka myšoka pod stropem, pouští ho volba Vejít dovnitř (účinek film).
+    muzeum: [
+        { image: 'cs_muzeum', lines: [
+            'Dvorana je tmavá, světlo padá jen dírou v kupoli. Pod stropem visí na lanech kostra plejtváka myšoka. Přes dvacet metrů obratlů a žeber, čelisti delší než tramvajová zastávka.',
+            'Vitríny kolem jsou vybité a prázdné, vycpaniny někdo rozebral na kožichy. Na plejtváka nikdo nedosáhl.',
+            'Jednu čelist podpírá lešenářská trubka a na ní visí cedulka s datem poslední kontroly. Kostra se v průvanu pomalu otáčí.',
+        ] },
+    ],
     // Vyhlídka Na Opyši (Hrad): panoráma se zlomeným Nuselákem, pouští ho volba Dívat se (účinek film).
     vyhlidka: [
         { image: 'cs_opys', lines: [
@@ -667,6 +681,14 @@ export const DIALOGS = {
             ] },
         } },
     // —— Václavák ——
+    muzeum: { name: 'Národní muzeum', face: null,
+        entry: [{ node: 'pokladna' }],
+        nodes: {
+            pokladna: { say: ['Pokladna pod schody je prázdná, okénko vybité. Na ceduli někdo připsal křídou: vstup volný, kostru nechte viset. Dveře nahoře jsou vypáčené.'], choices: [
+                { id: 'dovnitr', label: 'Vejít dovnitř.', if: { noFlag: 'plejtvak' }, else: 'Uvnitř jste už byla.', do: { flag: 'plejtvak', xp: 2, film: 'muzeum' }, reply: ['Venku je zase světlo a prach. Plejtvák visí dál.'] },
+                { id: 'znovu', label: 'Jít se znovu podívat na plejtváka.', if: { flag: 'plejtvak' }, else: 'Nejdřív musíte dovnitř.', do: { film: 'muzeum' }, reply: ['Visí. Otáčí se. Nic víc po vás nechce.'] },
+            ] },
+        } },
     vylez: { name: 'Nouzový výlez', face: null,
         entry: [{ node: 'dvere' }],
         nodes: {

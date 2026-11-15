@@ -7,6 +7,12 @@ import malastrana from '../data/malastrana.json';
 import hrad from '../data/hrad.json';
 import nuselak from '../data/nuselak.json';
 import domyStaromak from '../data/domy-staromak.json';
+import domyHlavak from '../data/domy-hlavak.json';
+import domyVaclavak from '../data/domy-vaclavak.json';
+import domyNuselak from '../data/domy-nuselak.json';
+import domyMost from '../data/domy-most.json';
+import domyHrad from '../data/domy-hrad.json';
+import domyMalastrana from '../data/domy-malastrana.json';
 import { HLAVAK } from './places/hlavak';
 import { VACLAVAK } from './places/vaclavak';
 import { STAROMAK } from './places/staromak';
@@ -21,7 +27,7 @@ import { NUSELAK } from './places/nuselak';
 // Domy ze skutečné geometrie (scripts/ipr.py → data/domy-<místo>.json, listy domy_<místo>_<n>): ke každému kvádru
 // z houses sprite z 3D modelu budov IPR s vlastní kotvou (ox, oy) a výškou (tall). Místo bez souboru jede na houses_.
 const real = (map, domy) => ({ ...map, real: domy });
-export const PLACES = { hlavak, vaclavak, nuselak, staromak: real(staromak, domyStaromak), most, malastrana, hrad };
+export const PLACES = { hlavak: real(hlavak, domyHlavak), vaclavak: real(vaclavak, domyVaclavak), nuselak: real(nuselak, domyNuselak), staromak: real(staromak, domyStaromak), most: real(most, domyMost), malastrana: real(malastrana, domyMalastrana), hrad: real(hrad, domyHrad) };
 // Střed soupravy tramvaje na zemi v plátně spritu tram_t3_<úhel> (art/tram.px.js TRAM_OX/TRAM_OY, +1 px obrys).
 export const TRAM_ORIGIN = { x: 181, y: 171 };
 export const PLACE_DEFS = { hlavak: HLAVAK, vaclavak: VACLAVAK, nuselak: NUSELAK, staromak: STAROMAK, most: MOST, malastrana: MALASTRANA, hrad: HRAD };

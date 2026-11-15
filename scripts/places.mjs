@@ -7,9 +7,12 @@ export const PLACES = {
     // Václavák: osa a od Můstku (a ≈ 0) k Národnímu muzeu (a ≈ 100), b napříč; spodní polovina náměstí je pod vodou
     // až k Jindřišské (water), od hladiny vede k Můstku dřevěné molo (pier). Rozsah se ladí podle exportu.
     vaclavak: { frame: { streets: ['Václavské náměstí', 'Wilsonova', 'Na Můstku', 'Na Příkopě', '28. října'], width: 3.5 }, center: [50.0818, 14.4262], bearing: 137, len: 132, wid: 32, origin: [56, 18],
-        water: { a1: 49 }, pier: { a0: 18, a1: 49, b0: 12, b1: 13 },
+        water: { a1: 49 }, pier: { a0: 11, a1: 49, b0: 12, b1: 13 },
         // Národní muzeum je v OSM relace; jeho půdorys je landmark L (ručně kreslený sprite v src/places/vaclavak.js).
-        skip: ['Historická budova Národního muzea', 'Národní muzeum'] },
+        skip: ['Historická budova Národního muzea', 'Národní muzeum'],
+        // Stavby kreslené z 3D modelu budov jako landmarky (scripts/ipr.py, data/domy-vaclavak.json extras): Národní
+        // muzeum na svém půdorysu L a roh bývalého Federálního shromáždění, které stojí už za okrajem mapy (b < 0).
+        model: [{ key: 'muzeum', a0: 112, b0: 7, w: 12, dpt: 15 }, { key: 'fs', a0: 108, b0: -6, w: 10, dpt: 6 }] },
     // Staromák: jen náměstí s prstencem domů kolem (domy tvoří jeho obrys), osa a na východ (95°), b na jih. Ikonické
     // stavby jsou ručně kreslené landmarky (skip): Týnský chrám, Staroměstská radnice s věží a Orlojem, svatý Mikuláš,
     // palác Kinských, dům U Kamenného zvonu. Ulice (Pařížská, Kaprova, Celetná, Železná, Malé náměstí ke Karlově)

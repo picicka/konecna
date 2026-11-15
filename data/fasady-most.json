@@ -1,0 +1,125 @@
+{
+ "_": "Recepty fasád pojmenovaných domů (scripts/ipr.py, popis klíčů v data/fasady-vaclavak.json). Barvy a druh domu podle skutečnosti, jak je známe; dům bez receptu dostane recept z pravidel.",
+ "28552795": {
+  "name": "Kostel svatého Františka z Assisi",
+  "type": "house",
+  "variant": "church",
+  "style": "cream"
+ },
+ "r74532_0": {
+  "name": "Klášter křižovníků s červenou hvězdou",
+  "type": "house",
+  "variant": "palais",
+  "style": "cream",
+  "win": "lintel"
+ },
+ "r71503_0": {
+  "name": "Colloredo-Mansfeldský palác",
+  "type": "house",
+  "variant": "palais",
+  "style": "cream",
+  "win": "arch"
+ },
+ "r68821_0": {
+  "name": "Lichtenštejnský palác na Kampě",
+  "type": "house",
+  "variant": "palais",
+  "style": "yellow",
+  "win": "lintel"
+ },
+ "r73767_0": {
+  "name": "Buquoyský palác",
+  "type": "house",
+  "variant": "palais",
+  "style": "pink",
+  "win": "lintel"
+ },
+ "r73771_0": {
+  "name": "Malý Buquoyský palác",
+  "type": "house",
+  "variant": "palais",
+  "style": "pink",
+  "win": "lintel"
+ },
+ "r1925084_0": {
+  "name": "Velkopřevorský palác",
+  "type": "house",
+  "variant": "palais",
+  "style": "ochre",
+  "win": "arch"
+ },
+ "r75100_0": {
+  "name": "Komenda řádu maltézských rytířů",
+  "type": "house",
+  "variant": "palais",
+  "style": "ochre",
+  "win": "lintel"
+ },
+ "30789588": {
+  "name": "Hrzánský palác",
+  "type": "house",
+  "variant": "palais",
+  "style": "ochre",
+  "win": "lintel"
+ },
+ "30874525": {
+  "name": "Velkopřevorský mlýn",
+  "type": "house",
+  "variant": "burgher",
+  "style": "white"
+ },
+ "30873149": {
+  "name": "U Tří pštrosů",
+  "type": "house",
+  "variant": "burgher",
+  "style": "ochre"
+ },
+ "r73132_0": {
+  "name": "Saský dům",
+  "type": "house",
+  "variant": "burgher",
+  "style": "white"
+ },
+ "36975859": {
+  "name": "Bellevue",
+  "type": "house",
+  "variant": "tenement",
+  "style": "pink"
+ },
+ "30787746": {
+  "name": "U Zlatého hroznu",
+  "type": "house",
+  "variant": "burgher",
+  "style": "yellow"
+ },
+ "30787747": {
+  "name": "U Modré lišky",
+  "type": "house",
+  "variant": "burgher",
+  "style": "grey"
+ },
+ "30788656": {
+  "name": "U Bílé boty",
+  "type": "house",
+  "variant": "burgher",
+  "style": "white"
+ },
+ "r73753_0": {
+  "name": "U Zlatého lva",
+  "type": "house",
+  "variant": "burgher",
+  "style": "yellow"
+ },
+ "r75095_0": {
+  "name": "U Zlaté hvězdy",
+  "type": "house",
+  "variant": "burgher",
+  "style": "ochre"
+ },
+ "29168944": {
+  "name": "U Černého medvěda",
+  "type": "house",
+  "variant": "burgher",
+  "style": "brown"
+ }
+}

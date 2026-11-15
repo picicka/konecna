@@ -93,6 +93,7 @@ export class WorldScene extends Phaser.Scene {
         this.buildGround();
         this.placeHouses();
         this.placeLandmark();
+        this.placeOverlays();
         this.buildBridge();
         this.buildSlope();
         this.buildNusle();
@@ -107,6 +108,7 @@ export class WorldScene extends Phaser.Scene {
         this.placeClutter();
         this.drawShadows();
         this.placeLights();
+        this.placeLife();
         this.edgeFog();
         this.refreshGates();
         // Příchod: z jiného místa na jeho přestupní dlaždici (arrivals), jinak na start místa.
@@ -704,9 +706,224 @@ export class WorldScene extends Phaser.Scene {
         });
     }
 
+    // Animovaný sprite na stěně domu z mapy (neon Ecomailu na domě Na Můstku): house je roh kvádru (a0, b0), u podél
+    // stěny k +b od spodního rohu, v výška nad zemí; side: 'left' je stěna k −a (sprite se zrcadlí). say dá domu hlášku.
+    placeOverlays() {
+        (this.def?.overlays ?? []).forEach(({ key, atlas: still, house, landmark, at, u = 0, v = 0, side, say, center, scale = 1 }) => {
+            const sprite = this.houses.find((h) => (landmark ? h.lmKey === landmark : h.box.a0 === house[0] && h.box.b0 === house[1]));
+            if (!sprite) { this.problems.push(`overlay ${key}: dům ${landmark ?? house} na mapě není`); return; }
+            const left = side === 'left', x = sprite.x + (at ? at[0] : left ? -u : u), y = sprite.y + (at ? at[1] : -u / 2 - v);
+            // atlas: nehybný sprite z daného listu (věž paláce Koruna, center: počátek dole uprostřed, scale: celý násobek), jinak animace z atlasu
+            if (still) this.add.image(x, y, still, key).setOrigin(center ? 0.5 : left ? 1 : 0, 1).setFlipX(left).setScale(scale).setDepth(sprite.depth + 0.5);
+            else {
+                const { atlas, frames } = this.idleAnim(key);
+                this.add.sprite(x, y, atlas, frames[0]).setOrigin(left ? 1 : 0, 1).setFlipX(left).setDepth(sprite.depth + 0.5).play(`${key}_idle`);
+            }
+            if (say) this.lookAt(sprite, say, { a: sprite.box.a0, b: sprite.box.b0 });
+        });
+    }
+
+    // Ruch (art/ruch.px.js): bezejmenní chodci bloumají po ulicích kolem svého místa, hejna holubů zobou a před hrdinkou
+    // odletí, krysy se od zdí rozbíhají a před hrdinkou utíkají. Nic z toho není zastavení: nemluví, neblokuje dlaždice
+    // a nejde na to klepnout. Počty má místo v `life` (walkers, flocks, rats), jinak podle velikosti mapy; rozmístění
+    // vybírá hash, takže je při každém hraní stejné, pohyb je náhodný.
+    placeLife() {
+        this.life = { walkers: [], flocks: [], rats: [] };
+        if (!this.def) return;
+        const area = this.map.len * this.map.wid, cfg = this.def.life ?? {};
+        const want = { walkers: cfg.walkers ?? Math.min(7, Math.max(2, Math.round(area / 700))), flocks: cfg.flocks ?? Math.min(5, Math.max(1, Math.round(area / 1100))), rats: cfg.rats ?? Math.min(6, Math.max(2, Math.round(area / 900))) };
+        const keep = [this.def.start, ...Object.values(this.def.arrivals ?? {}), ...Object.values(this.def.stops ?? {}).flatMap((s) => [s.approach, s.npc])].filter(Boolean);
+        const far = (a, b, list, d) => list.every((t) => Math.abs(t.a - a) + Math.abs(t.b - b) >= d);
+        // jen tam, kde se hraje: dlaždice dosažitelná ze startu, dál než 4 dlaždice od okraje mapy (tam je tma)
+        // a do 16 dlaždic od některého zastavení nebo příchodu; jinak by ruch bloudil pustinou, kam nikdo nedojde
+        const from = this.def.start ?? startTile(this.map), seen = new Set([ISO.key(from.a, from.b)]), queue = [{ L: 0, ...from }];
+        while (queue.length) for (const nb of this.neighbors(queue.shift())) { if (nb.L) continue; const k = ISO.key(nb.a, nb.b); if (!seen.has(k)) { seen.add(k); queue.push(nb); } }
+        const open = (a, b) => this.free(a, b) && 'prfmg'.includes(this.map.ground[a][b]) && seen.has(ISO.key(a, b))
+            && a >= 4 && b >= 4 && a < this.map.len - 4 && b < this.map.wid - 4 && keep.some((t) => Math.abs(t.a - a) + Math.abs(t.b - b) <= 16);
+        const pickTiles = (n, salt, ok, gap) => {
+            const out = [];
+            const all = [];
+            for (let a = 1; a < this.map.len - 1; a++) for (let b = 1; b < this.map.wid - 1; b++) if (ok(a, b)) all.push({ a, b, h: ISO.hash(a, b, salt) });
+            all.sort((p, q) => p.h - q.h);
+            for (const t of all) { if (out.length >= n) break; if (far(t.a, t.b, out, gap) && far(t.a, t.b, keep, 4)) out.push(t); }
+            return out;
+        };
+        const kinds = ['chodec_a', 'chodec_b', 'chodec_c', 'chodec_d'];
+        kinds.forEach((k) => { ensureWalk(this, k); ensureWalk(this, `${k}_up`); });
+        ensureWalk(this, 'holoubek', 2); ensureWalk(this, 'holoubek_let', 2); ensureWalk(this, 'krysa', 2);
+        const around = (a, b) => [[1, 0], [-1, 0], [0, 1], [0, -1]].every(([da, db]) => open(a + da, b + db));
+        pickTiles(want.walkers, 301, (a, b) => around(a, b) && this.map.ground[a][b] !== 'g', 9).forEach((t, i) => {
+            const key = kinds[Math.floor(ISO.hash(t.a, t.b, 302) * kinds.length)];
+            const p = this.pos(t.a, t.b);
+            const sprite = this.add.sprite(p.x, p.y, 'atlas', `${key}_1`).setOrigin(0.5, 1).setDepth(ISO.depthOf(t.a, t.b));
+            this.life.walkers.push({ sprite, key, tile: { a: t.a, b: t.b }, home: { a: t.a, b: t.b }, dir: [1, 0], wait: 500 + i * 900, move: null, up: false });
+        });
+        pickTiles(want.flocks, 311, (a, b) => around(a, b) && 'pr'.includes(this.map.ground[a][b]), 12).forEach((t) => {
+            const c = this.pos(t.a, t.b), n = 3 + Math.floor(ISO.hash(t.a, t.b, 312) * 3);
+            const birds = Array.from({ length: n }, (_, i) => {
+                const hx = ISO.hash(t.a + i, t.b, 313), hy = ISO.hash(t.a, t.b + i, 314);
+                const x = c.x + (hx - 0.5) * 70, y = c.y + (hy - 0.5) * 30;
+                const s = this.add.sprite(x, y, 'atlas', 'holoubek_0').setOrigin(0.5, 1).setDepth(ISO.depthOf(t.a, t.b)).setFlipX(hx < 0.5).play({ key: 'holoubek_walk', startFrame: i % 2 });
+                s.anims.timeScale = 0.2 + hy * 0.25;
+                return { s, x, y };
+            });
+            this.life.flocks.push({ tile: { a: t.a, b: t.b }, birds, away: 0 });
+        });
+        const byWall = (a, b) => open(a, b) && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([da, db]) => this.inside(a + da, b + db) && 'b.L'.includes(this.map.ground[a + da][b + db]));
+        pickTiles(want.rats, 321, byWall, 8).forEach((t, i) => {
+            const p = this.pos(t.a, t.b);
+            const sprite = this.add.sprite(p.x, p.y - 2, 'atlas', 'krysa_0').setOrigin(0.5, 1).setDepth(ISO.depthOf(t.a, t.b));
+            this.life.rats.push({ sprite, tile: { a: t.a, b: t.b }, home: { a: t.a, b: t.b }, dir: [1, 0], wait: 2000 + i * 1300, steps: 0, move: null });
+        });
+        // Voříšek: jeden na místo, 5 až 10 dlaždic od místa, kam hrdinka přišla (proto až s první dlaždicí hrdinky,
+        // z updateLife), aby ho hráčka potkala. Na rozdíl od zbytku ruchu na něj jde klepnout (hláška `voricek`
+        // v ODDITY_LINES), pak odběhne.
+        if (cfg.dog !== false) this.life.dogSpawn = (hero) => {
+            const dist = (a, b) => Math.abs(a - hero.a) + Math.abs(b - hero.b);
+            const t = pickTiles(1, 331, (a, b) => around(a, b) && dist(a, b) >= 5 && dist(a, b) <= 10, 0)[0]
+                ?? pickTiles(400, 331, around, 0).filter((q) => dist(q.a, q.b) >= 5).sort((p, q) => dist(p.a, p.b) - dist(q.a, q.b))[0];
+            if (t) {
+                ensureWalk(this, 'voricek'); ensureWalk(this, 'voricek_sed', 2);
+                const p = this.pos(t.a, t.b);
+                const sprite = this.add.sprite(p.x, p.y, 'atlas', 'voricek_sed_0').setOrigin(0.5, 1).setDepth(ISO.depthOf(t.a, t.b));
+                this.life.dog = { sprite, tile: { a: t.a, b: t.b }, home: { a: t.a, b: t.b }, dir: [1, 0], wait: 1500, steps: 0, move: null, mode: 'roam', timer: 0, cool: 0 };
+                const said = ODDITY_LINES.voricek;
+                if (said) this.talkingOddities.push({ sprite, lines: said.lines, next: 0, tile: this.life.dog.tile, dog: true });
+            }
+        };
+    }
+
+    // Jeden krok bloudění: nejraději rovně, občas zatočí, nevzdálí se od domova dál než reach dlaždic.
+    lifeStep(e, reach) {
+        const opts = [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(([da, db]) => {
+            const a = e.tile.a + da, b = e.tile.b + db;
+            return this.free(a, b) && 'prfmg'.includes(this.map.ground[a][b]) && Math.abs(a - e.home.a) + Math.abs(b - e.home.b) <= reach && !(a === this.tile.a && b === this.tile.b);
+        });
+        if (!opts.length) return null;
+        const straight = opts.find(([da, db]) => da === e.dir[0] && db === e.dir[1]);
+        const back = (d) => d[0] === -e.dir[0] && d[1] === -e.dir[1];
+        const turn = opts.filter((d) => d !== straight && !back(d));
+        const d = straight && Math.random() < 0.72 ? straight : turn.length ? turn[Math.floor(Math.random() * turn.length)] : straight ?? opts[Math.floor(Math.random() * opts.length)];
+        e.dir = d;
+        return { a: e.tile.a + d[0], b: e.tile.b + d[1] };
+    }
+
+    updateLife(delta) {
+        if (!this.life) return;
+        if (this.life.dogSpawn && this.tile) { this.life.dogSpawn(this.tile); this.life.dogSpawn = null; }
+        const near = (t, d) => this.tile.L === 0 && Math.abs(t.a - this.tile.a) + Math.abs(t.b - this.tile.b) <= d;
+        const advance = (e, ms, lift = 0) => {
+            const m = e.move; m.t += delta / ms;
+            const k = Math.min(1, m.t);
+            e.sprite.setPosition(m.from.x + (m.to.x - m.from.x) * k, m.from.y + (m.to.y - m.from.y) * k - lift);
+            if (k >= 1) { e.tile = m.tile; e.move = null; e.sprite.setDepth(ISO.depthOf(e.tile.a, e.tile.b)); return true; }
+            return false;
+        };
+        const start = (e, next) => {
+            const from = this.pos(e.tile.a, e.tile.b), to = this.pos(next.a, next.b);
+            e.move = { from, to, tile: next, t: 0 };
+            e.sprite.setDepth(Math.max(ISO.depthOf(e.tile.a, e.tile.b), ISO.depthOf(next.a, next.b)));
+            const dx = (next.a + next.b) - (e.tile.a + e.tile.b), dy = (next.b - next.a) - (e.tile.b - e.tile.a);
+            return { dx, up: dy < 0 };
+        };
+        this.life.walkers.forEach((w) => {
+            if (w.move) {
+                if (advance(w, 640) && (w.steps -= 1) <= 0) { w.wait = 1500 + Math.random() * 6000; w.sprite.stop(); w.sprite.setFrame(`${w.key}${w.up ? '_up' : ''}_1`); }
+                return;
+            }
+            if (near(w.tile, 2)) {   // hrdinka je u něj: zastaví se a otočí se k ní
+                if (w.sprite.anims.isPlaying) { w.sprite.stop(); }
+                w.sprite.setFrame(`${w.key}_1`).setFlipX(this.player.x > w.sprite.x); w.up = false; w.wait = Math.max(w.wait, 900); return;
+            }
+            if ((w.wait -= delta) > 0) return;
+            if (w.steps <= 0) w.steps = 2 + Math.floor(Math.random() * 7);
+            const next = this.lifeStep(w, 9);
+            if (!next) { w.wait = 1500; w.steps = 0; return; }
+            const { dx, up } = start(w, next);
+            if (dx) w.sprite.setFlipX(dx > 0);
+            w.up = up; w.sprite.play(`${w.key}${up ? '_up' : ''}_walk`, true);
+        });
+        this.life.rats.forEach((r) => {
+            if (r.move) {
+                if (advance(r, 120, 2) && (r.steps -= 1) <= 0) { r.wait = 2500 + Math.random() * 9000; r.sprite.stop(); }
+                return;
+            }
+            const scared = near(r.tile, 2);
+            if (!scared && (r.wait -= delta) > 0) return;
+            if (r.steps <= 0) r.steps = scared ? 6 : 2 + Math.floor(Math.random() * 4);
+            if (scared) { const da = Math.sign(r.tile.a - this.tile.a), db = Math.sign(r.tile.b - this.tile.b); r.dir = da ? [da, 0] : [0, db || 1]; }
+            const next = this.lifeStep(r, scared ? 14 : 6);
+            if (!next) { r.wait = 1200; r.steps = 0; return; }
+            const { dx } = start(r, next);
+            if (dx) r.sprite.setFlipX(dx > 0);
+            r.sprite.play('krysa_walk', true);
+        });
+        const d = this.life.dog;
+        if (d) {
+            const sit = () => { if (d.sprite.anims.currentAnim?.key !== 'voricek_sed_walk' || !d.sprite.anims.isPlaying) { d.sprite.play('voricek_sed_walk'); d.sprite.anims.timeScale = 0.5; } };
+            const go = (next) => { const { dx } = start(d, next); if (dx) d.sprite.setFlipX(dx > 0); d.sprite.play('voricek_walk', true); d.sprite.anims.timeScale = 1; };
+            const calm = () => { d.mode = 'roam'; d.cool = 30000; d.home = { ...d.tile }; d.steps = 0; d.wait = 2500; };
+            const gap = Math.abs(d.tile.a - this.tile.a) + Math.abs(d.tile.b - this.tile.b);
+            if (d.move) {
+                if (advance(d, d.mode === 'flee' ? 130 : d.mode === 'follow' ? 250 : 420) && (d.steps -= 1) <= 0 && d.mode === 'roam') d.wait = 2000 + Math.random() * 6000;
+            } else if (d.mode === 'flee') {   // po klepnutí: chvíli kouká, pak uteče
+                if ((d.wait -= delta) > 0) { sit(); d.sprite.setFlipX(this.player.x > d.sprite.x); }
+                else {
+                if (d.bubble && this.bubble === d.bubble) { this.bubble.destroy(); this.bubble = null; }
+                d.bubble = null;
+                if (d.steps > 0) {
+                    if (!d.run) { d.run = true; const da = Math.sign(d.tile.a - this.tile.a), db = Math.sign(d.tile.b - this.tile.b); d.dir = da ? [da, 0] : [0, db || 1]; d.home = { ...d.tile }; }
+                    const next = this.lifeStep(d, 30);
+                    if (next) go(next); else d.steps = 0;
+                }
+                if (d.steps <= 0 && !d.move) { d.run = false; calm(); sit(); }
+                }
+            } else if (d.mode === 'follow') {   // jde za hrdinkou, drží se dlaždici za ní; za chvíli ho to přejde
+                d.timer -= delta;
+                if (d.timer <= 0 || gap > 12 || this.tile.L !== 0) { calm(); sit(); }
+                else if (gap <= 2) { sit(); d.sprite.setFlipX(this.player.x > d.sprite.x); }
+                else {
+                    const next = [[1, 0], [-1, 0], [0, 1], [0, -1]].map(([da, db]) => ({ a: d.tile.a + da, b: d.tile.b + db, dir: [da, db] }))
+                        .filter((t) => this.free(t.a, t.b) && 'prfmg'.includes(this.map.ground[t.a][t.b]) && Math.abs(t.a - this.tile.a) + Math.abs(t.b - this.tile.b) < gap)
+                        .sort((p, q) => Math.abs(Math.abs(p.a - this.tile.a) - Math.abs(p.b - this.tile.b)) - Math.abs(Math.abs(q.a - this.tile.a) - Math.abs(q.b - this.tile.b)))[0];
+                    if (next) { d.dir = next.dir; go({ a: next.a, b: next.b }); } else sit();
+                }
+            } else {   // toulá se; když jde hrdinka kolem, přidá se
+                d.cool -= delta;
+                if (d.cool <= 0 && near(d.tile, 4)) { d.mode = 'follow'; d.timer = 10000 + Math.random() * 8000; }
+                else if ((d.wait -= delta) > 0) sit();
+                else {
+                    if (d.steps <= 0) d.steps = 2 + Math.floor(Math.random() * 5);
+                    const next = this.lifeStep(d, 7);
+                    if (next) go(next); else { d.steps = 0; d.wait = 1500; }
+                }
+            }
+        }
+        this.life.flocks.forEach((f) => {
+            if (f.away > 0) {
+                f.away -= delta;
+                if (f.away <= 0 && near(f.tile, 5)) f.away = 4000;   // dokud je hrdinka poblíž, nevracejí se
+                if (f.away <= 0) f.birds.forEach(({ s, x, y }) => { this.tweens.killTweensOf(s); s.setPosition(x, y).setDepth(ISO.depthOf(f.tile.a, f.tile.b)).setAlpha(0).play('holoubek_walk'); s.anims.timeScale = 0.2 + Math.random() * 0.25; this.tweens.add({ targets: s, alpha: 1, duration: 700 }); });
+                return;
+            }
+            if (!near(f.tile, 2)) return;
+            f.away = 22000 + Math.random() * 20000;
+            f.birds.forEach(({ s }, i) => {
+                const side = s.x < this.player.x ? -1 : 1;
+                s.play('holoubek_let_walk').setDepth(1e5).setFlipX(side > 0); s.anims.timeScale = 1;
+                this.tweens.add({ targets: s, x: s.x + side * (120 + Math.random() * 220), y: s.y - 260 - Math.random() * 200, alpha: 0, delay: i * 70, duration: 1500 + Math.random() * 500, ease: 'Sine.easeIn' });
+            });
+        });
+    }
+
     placeLandmark() {
-        (this.def?.landmark ?? []).forEach(({ atlas, key, a0, b0, w, dpt, depthAt, pass, say, overlay }) => {
-            const sprite = this.placeBox(atlas ?? 'landmarks', key, a0, b0, w, dpt, depthAt, pass);
+        (this.def?.landmark ?? []).forEach(({ atlas, key, real, lift, a0, b0, w, dpt, depthAt, pass, say, overlay }) => {
+            // real: stavba z 3D modelu budov (scripts/ipr.py, extras), lift: o kolik bodů stojí nad zemí (terasa)
+            const model = real ? this.map.real?.extras?.[real] : null;
+            if (real && !model) { this.problems.push(`landmark ${real}: v data/domy-${this.map.place}.json není`); return; }
+            const sprite = model ? this.placeBox(`domy_${this.map.place}_${model.sheet}`, model.key, a0, b0, w, dpt, depthAt, pass, model) : this.placeBox(atlas ?? 'landmarks', key, a0, b0, w, dpt, depthAt, pass);
+            if (lift) sprite.y -= lift;
+            sprite.lmKey = real ?? key;
             // say: stavba jen ke koukání (hlášky v ODDITY_LINES); overlay: animovaný sprite na stěně k +b (neon),
             // u podél stěny od spodního rohu, v výška nad zemí, počátek spritu vlevo dole
             if (say) this.lookAt(sprite, say, { a: a0, b: b0 });
@@ -1115,7 +1332,11 @@ export class WorldScene extends Phaser.Scene {
         const inTower = this.towerAt(this.moving?.tile ?? this.tile)?.sprite ?? this.towerAt(this.tile)?.sprite;
         this.houses.forEach((house) => {
             if (house === inTower) { house.setAlpha(0.55); return; }
-            const covers = house.depth > this.player.depth && Phaser.Geom.Rectangle.Overlaps(house.getBounds(), this.holeZone);
+            // Zakrýt ji může jen kvádr, za kterým stojí: před jeho přední hranou (k +b) ani vedle jeho levého boku (k −a)
+            // za ním není, i když má dlouhý kvádr hloubku větší než ona a obdélník jeho spritu do otvoru sahá.
+            const { a0, b0, dpt } = house.box;
+            const behind = t.b < b0 + dpt && t.a >= a0;
+            const covers = behind && house.depth > this.player.depth && Phaser.Geom.Rectangle.Overlaps(house.getBounds(), this.holeZone);
             if (covers && house.mask !== this.hole) house.setMask(this.hole);
             else if (!covers && house.mask) house.clearMask();
             house.setAlpha(1);
@@ -1171,7 +1392,13 @@ export class WorldScene extends Phaser.Scene {
         const hit = Object.values(this.stops).find((stop) => stop.sprite.getBounds().contains(world.x, world.y));
         if (hit) { this.goToStop(hit.id); return; }
         const odd = this.oddAt(world);
-        if (odd) { this.oddityBubble(odd, odd.exact ? world : null); return; }
+        if (odd) {
+            this.oddityBubble(odd, odd.exact ? world : null);
+            // voříšek po hlášce odběhne (WorldScene.updateLife)
+            const d = this.life?.dog;
+            if (odd.dog && d && d.mode !== 'flee') { d.mode = 'flee'; d.wait = 1300; d.steps = 12; d.run = false; d.bubble = this.bubble; }
+            return;
+        }
         const through = this.doorAt(world.x, world.y);
         if (through) { this.goTo(through); return; }
         const target = this.pick(world.x, world.y);
@@ -1390,6 +1617,7 @@ export class WorldScene extends Phaser.Scene {
 
     update(time, delta) {
         if (!this.player) return;
+        this.updateLife(delta);
         // světlo jde s hrdinkou: na zemi pod stíny a věcmi, na mostě a na magistrále těsně pod ní
         const lit = this.player.visible && this.shadow.visible, raised = this.tile.L === 1 || this.height(this.tile.a, this.tile.b, this.tile.L) > 0;
         this.halo.setPosition(this.player.x, this.player.y).setDepth(raised ? this.player.depth - 2 : -89000).setVisible(lit);
