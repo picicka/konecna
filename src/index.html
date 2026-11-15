@@ -4,6 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
     <meta name="theme-color" content="#050806">
+    <!-- Celá obrazovka na mobilu: po přidání na plochu běží hra bez lišt prohlížeče (iPhone Safari jinak celou obrazovku neumí). -->
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Konečná">
+    <link rel="apple-touch-icon" href="icon-180.png">
     <title>Konečná. Nevystupovat.</title>
     <meta name="description" content="Postapokalyptické pixel-artové RPG po Praze. Kurýrka, zásilka z Hlaváku na Hrad a město, které už nikdo nepozná.">
     <meta property="og:type" content="website">
@@ -16,7 +23,7 @@
     <link rel="stylesheet" href="https://fonts.bunny.net/css?family=press-start-2p:400|vt323:400">
     <style>
         /* Jedno místo pro layout: plátno 1280 × 720 centruje CSS, Phaser ho jen škáluje (FIT, bez vlastního centrování). */
-        html, body { margin: 0; height: 100%; background: #050806; color: #9fe8b0; overflow: hidden; font-family: 'VT323', ui-monospace, monospace; }
+        html, body { margin: 0; height: 100%; height: 100dvh; background: #050806; color: #9fe8b0; overflow: hidden; font-family: 'VT323', ui-monospace, monospace; }
         [data-konecna] { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; touch-action: none; }
         [data-konecna] canvas { display: block; image-rendering: pixelated; image-rendering: crisp-edges; }
         [data-fontload] { position: absolute; left: -9999px; top: 0; font-family: 'Press Start 2P'; }

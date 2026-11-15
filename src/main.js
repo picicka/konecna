@@ -25,7 +25,7 @@ const start = () => {
         pixelArt: true,
         roundPixels: true,
         // Plátno centruje CSS rodiče (flex); vlastní centrování Phaseru by se k němu přičetlo (poučení z Václaváku).
-        scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.NO_CENTER },
+        scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.NO_CENTER, fullscreenTarget: element },
         input: { activePointers: 2 },
         scene: [BootScene, TitleScene, CutsceneScene, WorldScene, HudScene, BattleScene, EndingScene],
     });

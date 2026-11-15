@@ -218,12 +218,13 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
 
 ## Pravidla kódu
 
-- Plátno 1280 × 720 bodů zobrazené 1:1 (`src/ui.js` WIDTH/HEIGHT), pixelArt bez vyhlazení, Phaser FIT bez vlastního
+- Na mobilu jde hra na celou obrazovku dvěma cestami: tlačítkem `fullscreenButton` (`ico_cela`, na liště a titulní obrazovce; jen kde to prohlížeč umí) a přidáním na plochu (`static/manifest.webmanifest` s `display: fullscreen`, meta `apple-mobile-web-app-capable`, ikony `static/icon-*.png` z portrétu hrdinky); iPhone umí jen to druhé, proto má na titulní obrazovce radu `TITLE.homescreen`.
+- Plátno 1280 × 720 bodů zobrazené 1:1 (`src/ui.js` WIDTH/HEIGHT), pixelArt bez vyhlazení, Phaser FIT bez vlastního
   centrování (centruje CSS v `index.html`, jedno místo pro layout). Písma Press Start 2P (nadpisy) a VT323 (text),
   resolution 1, celé velikosti; text přes `head()`/`body()` z `ui.js`.
 - Isometrie 2:1, dlaždice 128 × 64: konstanty jen v `src/iso.js` (TW/TH) a `art/tiles.px.js`. Kdyby se po ověření
   přešlo na 96 × 48, mění se jen tam. Souřadnice a podél (doprava nahoru), b napříč (doprava dolů).
-- Hloubka vždy přes `ISO.depthOf(a, b, lift)`, žádné výjimky po jednom. Domy před ulicí zprůhlední, když zakryjí hrdinku. Stejný otvor (menší) dostane dům před postavou zastavení a před rekvizitou s hláškou (`WorldScene.markStopHoles`, `drawHoles`: maska je plátno přes výřez kamery, do kterého se otisknou všechny otvory), aby postava nebyla schovaná za budovou, dokud k ní hrdinka nedojde.
+- Hloubka vždy přes `ISO.depthOf(a, b, lift)`, žádné výjimky po jednom. Domy před ulicí zprůhlední, když zakryjí hrdinku. Stejný otvor (menší) dostane dům před postavou zastavení a před rekvizitou s hláškou (`WorldScene.markStopHoles`, `drawHoles`: tři masky přes výřez kamery, otvor jen kolem hrdinky, jen kolem postav, nebo oba, aby dům zakrývající jen postavu neprůhledněl, když hrdinka stojí před ním). `npm run pruhledy` (`scripts/pruhledy.mjs`, po buildu) to ověří na vzorku dlaždic každého místa měřením bodů obrázku: dům za hrdinkou nesmí mít otvor kolem ní, dům, který ji nebo postavu zastavení zakrývá, ho mít musí; pouští se po změně průhledů, domů nebo zastavení, aby postava nebyla schovaná za budovou, dokud k ní hrdinka nedojde.
 - Kurzor ve světě podle toho, co je pod ním (`WorldScene.hover`, sprity `kurzor_*` v `art/kurzory.px.js`): šipka a na zemi
   kosočtverec dlaždice (`kurzor_dlazdice`, jako šestiúhelník ve Falloutu) kam hrdinka dojde, křížek a červený kosočtverec
   kam ne, bublina u postavy, oko u věci s hláškou, dveře u vchodu. Chůze klepnutím, šipkami i WASD.

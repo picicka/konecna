@@ -432,7 +432,7 @@ export class WorldScene extends Phaser.Scene {
         const cover = () => [...this.houses, ...(this.roofs ?? []), ...(this.canopies ?? [])];
         // malá věc (kuriozita, rekvizita) má přednost před stavbou za ní, ze staveb ta nejvíc vpředu
         const hits = (this.talkingOddities ?? []).filter((o) => o.sprite.active && (o.exact
-            ? this.solidAt(o.sprite, x, y) && !(o.sprite.mask && this.inHole(x, y)) && !cover().some((c) => c.depth > o.sprite.depth && c.alpha > 0.9 && this.solidAt(c, x, y))
+            ? this.solidAt(o.sprite, x, y) && !(o.sprite.mask && this.inHole(x, y, o.sprite.mask)) && !cover().some((c) => c.depth > o.sprite.depth && c.alpha > 0.9 && this.solidAt(c, x, y))
             : o.sprite.getBounds().contains(x, y)));
         return hits.find((o) => !o.exact) ?? hits.sort((p, q) => q.sprite.depth - p.sprite.depth)[0];
     }
@@ -1404,8 +1404,12 @@ export class WorldScene extends Phaser.Scene {
             // za ním není, i když má dlouhý kvádr hloubku větší než ona a obdélník jeho spritu do otvoru sahá.
             const { a0, b0, dpt } = house.box;
             const behind = t.b < b0 + dpt && t.a >= a0;
-            const covers = house.stopHole || (behind && house.depth > this.player.depth && Phaser.Geom.Rectangle.Overlaps(house.getBounds(), this.holeZone));
-            if (covers && house.mask !== this.hole) house.setMask(this.hole);
+            const coversHero = behind && house.depth > this.player.depth && Phaser.Geom.Rectangle.Overlaps(house.getBounds(), this.holeZone);
+            const covers = coversHero || house.stopHole;
+            // tři masky: otvor jen kolem hrdinky, jen kolem postav zastavení, nebo oba. Dům, který zakrývá jen postavu, nesmí
+            // dostat otvor kolem hrdinky, když stojí před ním (jinak by se zprůhlednil dům za ní).
+            const mask = coversHero ? (house.stopHole ? this.holeBoth : this.hole) : house.stopHole ? this.holeStops : null;
+            if (mask && house.mask !== mask) house.setMask(mask);
             else if (!covers && house.mask) house.clearMask();
             house.setAlpha(1);
         });
@@ -1430,16 +1434,21 @@ export class WorldScene extends Phaser.Scene {
         this.fadeHouses();
     }
 
-    inHole(x, y) {
-        return this.holeZone?.contains(x, y) || (this.stopHoles ?? []).some((h) => Math.abs(x - h.x) < 70 && Math.abs(y - h.y) < 100);
+    // Je bod v otvoru masky daného spritu? (klepnutí otvorem projde na to, co je za domem)
+    inHole(x, y, mask = this.holeBoth) {
+        const hero = mask !== this.holeStops && this.holeZone?.contains(x, y);
+        const stops = mask !== this.hole && (this.stopHoles ?? []).some((h) => Math.abs(x - h.x) < 70 && Math.abs(y - h.y) < 100);
+        return Boolean(hero || stops);
     }
 
     drawHoles() {
-        const rt = this.holeImage, v = this.cameras.main.worldView, size = 256;
-        if (!rt || !this.holeAt) return;
-        rt.setPosition(v.x, v.y).clear();
-        rt.stamp('hole', undefined, this.holeAt.x - v.x, this.holeAt.y - v.y, { scaleX: this.holeAt.rx * 2 / size, scaleY: this.holeAt.ry * 2 / size });
-        this.stopHoles.forEach((h) => { if (v.contains(h.x, h.y)) rt.stamp('hole', undefined, h.x - v.x, h.y - v.y, { scaleX: 200 / size, scaleY: 280 / size }); });
+        const v = this.cameras.main.worldView, size = 256;
+        if (!this.holeRts || !this.holeAt) return;
+        const [hero, stops, both] = this.holeRts;
+        this.holeRts.forEach((rt) => rt.setPosition(v.x, v.y).clear());
+        const at = this.holeAt, cfg = { scaleX: at.rx * 2 / size, scaleY: at.ry * 2 / size };
+        [hero, both].forEach((rt) => rt.stamp('hole', undefined, at.x - v.x, at.y - v.y, cfg));
+        this.stopHoles.forEach((h) => { if (v.contains(h.x, h.y)) [stops, both].forEach((rt) => rt.stamp('hole', undefined, h.x - v.x, h.y - v.y, { scaleX: 200 / size, scaleY: 280 / size })); });
     }
 
     spawnPlayer(tile) {
@@ -1457,10 +1466,10 @@ export class WorldScene extends Phaser.Scene {
         }
         // Maska je plátno přes celý výřez kamery: do něj se každý snímek otiskne otvor kolem hrdinky a menší otvory kolem
         // postav zastavení, které stojí za domem (drawHoles), aby byly vidět už z dálky a ne až tři dlaždice od hrdinky.
-        this.holeImage = this.make.renderTexture({ x: 0, y: 0, width: this.scale.width, height: this.scale.height, add: false }).setOrigin(0);
-        this.hole = this.holeImage.createBitmapMask();
+        // tři plátna masek přes výřez kamery: otvor kolem hrdinky (hole), kolem postav zastavení (holeStops), oba (holeBoth)
+        this.holeRts = [0, 1, 2].map(() => this.make.renderTexture({ x: 0, y: 0, width: this.scale.width, height: this.scale.height, add: false }).setOrigin(0));
+        [this.hole, this.holeStops, this.holeBoth] = this.holeRts.map((rt) => { const m = rt.createBitmapMask(); m.invertAlpha = true; return m; });
         this.stopHoles = [];
-        this.hole.invertAlpha = true;
         this.tile = { L: 0, ...tile };
         const { x, y } = this.pos(this.tile.a, this.tile.b, this.tile.L);
         ensureWalk(this, 'hero_go');

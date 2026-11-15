@@ -157,6 +157,15 @@ export const soundButton = (scene, x, y, depth = 50) => {
     return control;
 };
 
+// Celá obrazovka (ikona se čtyřmi rohy): schová lišty prohlížeče. Kde to prohlížeč neumí (iPhone), tlačítko není
+// a vrací se null; tam pomůže přidat hru na plochu (TITLE.homescreen).
+export const fullscreenButton = (scene, x, y, depth = 50) => {
+    if (!scene.scale.fullscreen.available) return null;
+    const control = button(scene, x, y, 44, 36, '', () => scene.scale.toggleFullscreen(), { center: true }).setDepth(depth);
+    control.add(scene.add.image(0, 0, 'atlas', 'ico_cela').setScale(2));
+    return control;
+};
+
 // Okno O hře (texty ABOUT ze src/script.js): zdroje dat, autoři, ukládání. Tmavý podklad bere klepnutí, aby nešla
 // pod ním hra; vrací { close }.
 export const aboutPanel = (scene, texts, onClose, depth = 60) => {

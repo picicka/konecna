@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { TITLE, ABOUT } from '../script';
-import { head, body, button, scanlines, soundButton, aboutPanel, CRT, WIDTH, HEIGHT } from '../ui';
+import { head, body, button, scanlines, soundButton, fullscreenButton, aboutPanel, CRT, WIDTH, HEIGHT } from '../ui';
 import { createState, loadPosition, clearSave } from '../state';
 
 // Titulní obrazovka: tmavá Praha z úvodního filmečku, nad ní nápis KONEČNÁ jako cedule na nástupišti a podtitul.
@@ -28,6 +28,10 @@ export class TitleScene extends Phaser.Scene {
         this.game.events.on('sound-unlocked', hum);
         this.events.once('shutdown', () => { this.game.events.off('sound-unlocked', hum); sound.neon(false); });
         soundButton(this, WIDTH - 100, 36);
+        // celá obrazovka; na iPhonu to prohlížeč neumí, tam místo tlačítka rada přidat hru na plochu
+        const full = fullscreenButton(this, WIDTH - 48, 36);
+        const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        if (!full && ios && !navigator.standalone) body(this, WIDTH / 2, HEIGHT - 28, TITLE.homescreen, { fontSize: '22px', color: CRT.dim, align: 'center' }).setOrigin(0.5, 0.5);
         sound.music('title');
         // (i) O hře: zdroje dat, kdo hru dělá a jak se ukládá
         button(this, WIDTH - 210, 36, 44, 36, ABOUT.button, () => { this.about ??= aboutPanel(this, ABOUT, () => { this.about = null; }); }, { fontSize: 22, center: true }).setDepth(50);

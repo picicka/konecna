@@ -7,7 +7,7 @@ import { JUMP_PLACES, jump } from '../skok';
 
 const MAP_KEY = 'konecna.map';
 const CARD_W = 312;
-import { head, body, panel, button, scanlines, soundButton, aboutPanel, CRT, WIDTH, HEIGHT } from '../ui';
+import { head, body, panel, button, scanlines, soundButton, fullscreenButton, aboutPanel, CRT, WIDTH, HEIGHT } from '../ui';
 
 // Lišta a dialogy nad světem ve stylu Pip-Boye, převzato z Václaváku a zobecněno. Nahoře životy, úroveň a jízdenky;
 // dole dialog s portrétem, jménem a replikou, volby jako číslované řádky. Klávesy: Enter / mezerník potvrdí, 1–9 vyberou,
@@ -31,7 +31,8 @@ export class HudScene extends Phaser.Scene {
             return body(this, x + 38, 26, '', { fontSize: '26px', color: CRT.text }).setOrigin(0, 0.5).setDepth(11);
         });
         this.ticketText = body(this, WIDTH - 24, 26, '', { fontSize: '26px', color: CRT.amber }).setOrigin(1, 0.5).setDepth(11);
-        soundButton(this, 494, 26, 11, 124);
+        soundButton(this, 470, 26, 11);
+        fullscreenButton(this, 518, 26, 11);
         this.questButton = button(this, 622, 26, 116, 36, HUD.quests, () => this.toggleQuests(), { fontSize: 22, center: true }).setDepth(11);
         this.mapButton = button(this, 746, 26, 116, 36, HUD.map, () => this.toggleMap(), { fontSize: 22, center: true }).setDepth(11);
         // (i) O hře: zdroje dat mapy, autoři, ukládání (stejné okno jako na titulní obrazovce)
