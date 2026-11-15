@@ -10,7 +10,7 @@ export const TITLE = {
     resume: 'Pokračovat, kde jsem skončila',
     hint: 'Klepnutím, šipkami nebo WASD chodíte, Enter potvrdí, čísla vybírají. Q deník, T taška, M mapa.',
     // iPhone neumí celou obrazovku z prohlížeče: rada na titulní obrazovce
-    homescreen: 'Na celou obrazovku: Sdílet → Přidat na plochu a\xa0hru spustit z\xa0ikony.',
+    homescreen: 'Na celou obrazovku: v Safari Sdílet → Přidat na plochu a hru spustit z ikony.',
 };
 
 // Okno O hře (tlačítko i na titulní obrazovce a na liště): zdroje dat mapy (licence OpenStreetMap ODbL i ČÚZK CC BY 4.0

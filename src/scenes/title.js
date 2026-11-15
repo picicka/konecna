@@ -31,7 +31,7 @@ export class TitleScene extends Phaser.Scene {
         // celá obrazovka; na iPhonu to prohlížeč neumí, tam místo tlačítka rada přidat hru na plochu
         const full = fullscreenButton(this, WIDTH - 48, 36);
         const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-        if (!full && ios && !navigator.standalone) body(this, WIDTH / 2, HEIGHT - 28, TITLE.homescreen, { fontSize: '22px', color: CRT.dim, align: 'center' }).setOrigin(0.5, 0.5);
+        if (ios && !navigator.standalone) body(this, WIDTH / 2, HEIGHT - 28, TITLE.homescreen, { fontSize: '22px', color: CRT.dim, align: 'center' }).setOrigin(0.5, 0.5);
         sound.music('title');
         // (i) O hře: zdroje dat, kdo hru dělá a jak se ukládá
         button(this, WIDTH - 210, 36, 44, 36, ABOUT.button, () => { this.about ??= aboutPanel(this, ABOUT, () => { this.about = null; }); }, { fontSize: 22, center: true }).setDepth(50);

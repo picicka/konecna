@@ -14,6 +14,7 @@ import { DEBUG } from './debug';
 // zmenšený bez vyhlazení. Boot načte atlas (pxl, art/) → titulek → úvodní filmeček → svět (WorldScene) s lištou a dialogy
 // (HudScene). Boj, mini-hry a filmečky běží jako další scény nad světem. Konec je EndingScene.
 const element = document.querySelector('[data-konecna]');
+const shell = document.querySelector('[data-shell]');
 
 const start = () => {
     const game = new Phaser.Game({
@@ -25,7 +26,7 @@ const start = () => {
         pixelArt: true,
         roundPixels: true,
         // Plátno centruje CSS rodiče (flex); vlastní centrování Phaseru by se k němu přičetlo (poučení z Václaváku).
-        scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.NO_CENTER, fullscreenTarget: element },
+        scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.NO_CENTER, fullscreenTarget: shell },
         input: { activePointers: 2 },
         scene: [BootScene, TitleScene, CutsceneScene, WorldScene, HudScene, BattleScene, EndingScene],
     });
@@ -40,6 +41,22 @@ const start = () => {
             scene.events.on('start', () => { scene.tweens.timeScale = DEBUG.speed; });
         }));
     }
+
+    // Mobil: lišty prohlížeče mění viditelnou část okna (visualViewport) a pevně umístěný prvek pod ně zajíždí, takže by
+    // horní lišta hry byla uříznutá. Obal se proto přichytí přesně k viditelné části a Phaser si plátno přepočítá.
+    // V režimu celé obrazovky se o velikost stará prohlížeč.
+    const viewport = window.visualViewport;
+    const fit = () => {
+        const full = document.fullscreenElement || document.webkitFullscreenElement;
+        if (full || !viewport) { ['left', 'top', 'width', 'height'].forEach((k) => { shell.style[k] = ''; }); }
+        else { shell.style.left = `${viewport.offsetLeft}px`; shell.style.top = `${viewport.offsetTop}px`; shell.style.width = `${viewport.width}px`; shell.style.height = `${viewport.height}px`; }
+        game.scale.refresh();
+    };
+    viewport?.addEventListener('resize', fit);
+    viewport?.addEventListener('scroll', fit);
+    ['resize', 'orientationchange', 'fullscreenchange', 'webkitfullscreenchange'].forEach((type) => window.addEventListener(type, () => { fit(); setTimeout(fit, 350); }));
+    document.addEventListener('fullscreenchange', () => setTimeout(fit, 100));
+    fit();
 
     // Instance hry je na window kvůli ladění a Playwright průchodům (scény jdou řídit z konzole).
     window.konecna = game;

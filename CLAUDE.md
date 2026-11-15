@@ -220,7 +220,7 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
 
 - Na mobilu jde hra na celou obrazovku dvěma cestami: tlačítkem `fullscreenButton` (`ico_cela`, na liště a titulní obrazovce; jen kde to prohlížeč umí) a přidáním na plochu (`static/manifest.webmanifest` s `display: fullscreen`, meta `apple-mobile-web-app-capable`, ikony `static/icon-*.png` z portrétu hrdinky); iPhone umí jen to druhé, proto má na titulní obrazovce radu `TITLE.homescreen`.
 - Plátno 1280 × 720 bodů zobrazené 1:1 (`src/ui.js` WIDTH/HEIGHT), pixelArt bez vyhlazení, Phaser FIT bez vlastního
-  centrování (centruje CSS v `index.html`, jedno místo pro layout). Písma Press Start 2P (nadpisy) a VT323 (text),
+  centrování (centruje CSS v `index.html`, jedno místo pro layout). Hra sedí v obalu `[data-shell]`, který `main.js` na mobilu přichytí k viditelné části okna (`visualViewport`) a jehož okraje respektují výřez displeje (safe-area); Phaser měří vnitřní `[data-konecna]`. Písma Press Start 2P (nadpisy) a VT323 (text),
   resolution 1, celé velikosti; text přes `head()`/`body()` z `ui.js`.
 - Isometrie 2:1, dlaždice 128 × 64: konstanty jen v `src/iso.js` (TW/TH) a `art/tiles.px.js`. Kdyby se po ověření
   přešlo na 96 × 48, mění se jen tam. Souřadnice a podél (doprava nahoru), b napříč (doprava dolů).
