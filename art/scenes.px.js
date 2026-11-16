@@ -24,6 +24,27 @@ const skyline = (c) => {
 }
 scene("cs_city", { w: 640, h: 360 }, (c) => { skyline(c) }, glow("f", { r: 8, strength: 0.5 }))
 
+// Obtížnost Nemožná: stejná noční Praha, jen z pravého horního rohu letí meteorit. Ohnivá stopa přes celé nebe, hlava
+// těsně nad střechami, odlesk na vodě a na hranách střech. Jediný obrázek hry, kde je na nebi něco sytého.
+scene("cs_meteorit", { w: 640, h: 360 }, (c) => {
+  skyline(c)
+  const hx = 372, hy = 150
+  // stopa: od hlavy se rozšiřuje k rohu, tři vrstvy (kouř, oheň, žhavý střed)
+  c.poly([hx - 6, hy + 10, 640, -70, 640, 40], "U")
+  c.poly([hx - 2, hy + 6, 640, -46, 640, 8], "F")
+  c.poly([hx + 2, hy + 2, 640, -30, 640, -12], "f")
+  // odlétající jiskry
+  for (const [x, y] of [[352, 176], [340, 150], [362, 190], [330, 168], [392, 182], [318, 140], [406, 170]]) c.px(x, y, "f")
+  for (const [x, y] of [[346, 164], [384, 196], [324, 156]]) c.rect(x, y, 2, 2, "F")
+  // hlava: kámen v ohni
+  c.circ(hx, hy, 15, "F"); c.circ(hx - 1, hy + 1, 10, "f"); c.circ(hx - 2, hy + 2, 5, "W"); c.poly([hx - 6, hy + 2, hx - 1, hy - 3, hx + 3, hy + 3, hx - 2, hy + 7], "K")
+  // odlesk: hrany střech pod meteoritem a pruhy na vodě
+  for (let x = 252; x < 500; x += 28) c.hline(x, 232 + ((x * 7) % 18), 20, x > 300 && x < 450 ? "F" : "U")
+  c.hline(404, 199, 172, "U"); c.hline(474, 152, 30, "U")
+  for (const [x, y, w] of [[330, 306, 70], [350, 316, 44], [318, 328, 90], [356, 340, 36], [338, 350, 58]]) c.hline(x, y, w, "F")
+  for (const [x, y, w] of [[348, 306, 30], [336, 328, 40]]) c.hline(x, y, w, "f")
+}, glow("fF", { r: 9, strength: 0.55 }))
+
 // Nástupiště: tmavá klenba, obklad, jediná souprava s rozsvícenými okny, cedule KONEČNÁ.
 scene("cs_metro", { w: 640, h: 360 }, (c) => {
   c.rect(0, 0, 640, 360, "N")

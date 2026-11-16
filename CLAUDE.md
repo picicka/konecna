@@ -105,15 +105,19 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
 - Vlastnosti hrdinky jsou Ruka, Ústa a Oko (`ruka`, `usta`, `oko`), všude s obrázkem (`ico_ruka/usta/oko`
   v `art/chars.px.js`): na liště, v deníku, při nové úrovni a na volbě, která na vlastnosti stojí (ikona a požadovaná
   úroveň vpravo na tlačítku). Každá překážka má mít cestu přes Ruku, Ústa i Oko, nebo přes věc či úkol.
-- Zkoušky vlastností (`checkOf`/`chanceOf` v `src/story.js`, texty `CHECK`): volba s `if.attr`, nebo `check: 'usta'`
-  proti vlastnosti postavy z její karty (`stats` u DIALOGS), se ukáže už s bodem pod požadavkem. O bod méně vyjde na 25 %,
-  na požadavek na 50 %, o bod víc na 75 %, o dva a víc vždy (`CHECK.chance`, na tlačítku je šance). Hod je ze `state.seed`. Nepovedená zkouška stojí
-  (Ruka 2 životy, Oko 1, Ústa bod důvěry skupiny postavy, nebo `fail` u volby) a znovu jde až s vyšší vlastností (`state.failed`).
+- Zkoušky vlastností (`checkOf`/`chanceOf`/`diceChance` v `src/story.js`, texty `CHECK`): volba s `if.attr`, nebo `check: 'usta'`
+  proti vlastnosti postavy z její karty (`stats` u DIALOGS). Hází se kostkami: hrdinka má vlastnost + 1k4, protistrana požadavek
+  + 1k4, vyšší součet vyhrává a hod obou stran se hráčce ukáže. Remíza se na lehkou obtížnost hází znovu (o bod méně 23 %,
+  na požadavek 50 %, o bod víc 77 %, o dva 93 %, o tři jistě), na těžkou prohrává (19, 38, 63, 81, 94 %). Volba o dva a víc bodů
+  pod požadavkem se neukáže (`CHECK.hide`), na tlačítku je šance. Hod je ze `state.seed`. Nepovedená zkouška stojí
+  (Ruka 2 životy, Oko 1, Ústa bod důvěry skupiny postavy, nebo `fail` u volby) a znovu jde až s vyšší vlastností (`state.failed`).
 - Výbava a zásoby (`ITEMS`): sloty zbraň, oděv, talisman (`state.equip`), věc dává `weapon`, `hp`, `bonus`. Nová věc
   se sama nasadí do prázdného slotu. Vlastnosti a životy se všude počítají i s výbavou (`attr`, `maxHp` v `src/state.js`).
   Zásoby (`use.heal`, `state.supplies`, účinek `supply`) se spotřebují v tašce (T) i v boji. Obchod je okno se
   zbožím: `shop` u DIALOGS (věc, cena, podmínka, odpověď) a volba s `shop: true` (trafikantka, Fanta, potápěčka, Pilař,
   mlynář). Zboží ukazuje, co dělá, a cenu; na co nejsou jízdenky, je zašedlé. Kořist je `loot` v `BATTLES`. Přestup doléčí jen půlku životů.
+- Každá věc z `ITEMS` má obrázek `vec_<klíč>` (`art/veci.px.js`, 24 × 24 s obrysem, v atlasu): taška ho ukazuje u výbavy
+  a zásob (dva sloupce s tlačítkem) i u ostatních věcí (čtyři sloupce). Nová věc = nový `vec(...)` tamtéž a `npm run art -- atlas`.
 - Karta postavy: při rozhovoru je vpravo celá postava (sprite zastavení zvětšený celým násobkem), skupina s důvěrou,
   její Ruka, Ústa a Oko proti vašim (co vlastnost umí a jak by dopadla zkouška, `CARD`) a `about`. Každá vlastnost
   postavy má být k něčemu: u lidí, kterým se dá postavit, jsou zkoušky Rukou, Ústy i Okem. Mapa (minimapa) se schová
@@ -133,9 +137,21 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
   a `gates` v `src/places/hrad.js`, `WorldScene.placeFences`, dílce `plot_1–3`); co hlídá, nesmí jít obejít.
   Kde mapa nemá úzké místo, je to přepadení: zastavení s `ambush: { until, back }` (vymahači u Mostecké) osloví
   hrdinku samo hned po příchodu a dokud neplatí `until`, vrátí ji každý odchod i útěk na místo `back`.
-- Boj (`src/scenes/battle.js`): nepřítel má životy a vůli. Ruka (Udeřit) bere životy, Ústa (`talk` v `BATTLES`) vůli,
-  Oko (Uhnout) uhne a vrátí ránu, Taška použije obvaz nebo jídlo; útěk vyjde vždy za jednu ránu. Tlačítka ukazují šanci a rozsah. Poražení i usmíření
-  nemizí z mapy, dialog má uzel pro „po boji“ (`psi_ok`, `kanci_ok`, `vymahaci_pryc`, `ochranka_pryc`).
+- Boj (pravidla `src/boj.js`, obrazovka `src/scenes/battle.js`): nepřítel má životy a vůli a stejné tři vlastnosti jako hrdinka
+  (`stats` v `BATTLES`; u nepřátel s kartou je bere i rozhovor přes `stats: BATTLES.<klíč>.stats`, takže zkoušky i boj mluví
+  o téže postavě). Jeho Ruka určuje, jak bolí rána, Ústa, jak těžko se dá rozmluvit, Oko, jak trefuje a uhýbá; šance jdou
+  z rozdílu vlastností obou stran (`RULES`). Nepřítel napřed ukáže, co v tahu udělá: běžný útok, těžkou ránu (vyplatí se Uhnout,
+  kryt ji sníží na půlku), nebo zaváhání (neútočí, Ústa zaberou jistě). Ruka (Udeřit) bere životy, Ústa (`talk`) vůli a mohou
+  nezabrat, Oko (Uhnout) uhne a vrátí ránu, Taška použije obvaz nebo jídlo; útěk vyjde vždy za jednu ránu. Nepřátelé sílí po
+  místech tak, jak roste hrdinka, a prahy zkoušek kolem nich na Malé Straně a Hradě jsou 3–5. `npm run boje` (`scripts/boje.mjs`)
+  odehraje každý boj tisíckrát stejnými pravidly s postavou, jakou hráčka na tom místě zhruba má (`STAGE`), a vypíše výhry,
+  ztracená srdce a tahy pro strategie jedno tlačítko a chytře; čísla v `BATTLES` a `RULES` se ladí podle něj: jedno tlačítko
+  nemá stačit a boj má stát pár srdcí. Poražení i usmíření
+  nemizí z mapy, dialog má uzel pro „po boji“ (`psi_ok`, `kanci_ok`, `vymahaci_pryc`, `ochranka_pryc`).
+- Obtížnost (`DIFFICULTY` ve `src/state.js`, texty `OBTIZNOST`, `HudScene.chooseDifficulty` před tvorbou postavy, `state.difficulty`):
+  Lehká jsou čísla vyladěná simulátorem, Těžká násobí výdrž nepřátel 1,5×, remíza kostek při zkoušce vlastnosti na ní prohrává
+  (`DIFFICULTY.tie`) a útěk z boje stojí dvě rány (`npm run boje -- tezka`). Nemožná není obtížnost, ale vtip: nic
+  nezapíše a pustí konec `ENDINGS.meteorit` (obrázek `cs_meteorit`, bez epilogu). Skok z ladění má `&obtiznost=tezka`.
 - Skupiny (`FACTIONS` v `src/script.js`): Tržiště, Metro, Loďkaři a Kancelář kanálu. Dialog s `faction` ukazuje skupinu
   u jména. Deník („Kdo vám věří“) ukáže skupinu, až hrdinka někoho z ní potká, jmenuje jen potkané lidi
   a co skupina chce, až to hrdinka zjistí. Důvěra mění hru: volby s podmínkou `trust` / `distrust` (výhody `perks`

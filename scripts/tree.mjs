@@ -99,7 +99,7 @@ places.forEach(([num, title, def]) => {
     });
 });
 h(2, '9', 'Boje');
-Object.entries(BATTLES).forEach(([k, b], i) => { h(3, `9.${i + 1}`, `${b.name} (${k})`); p(`Srdce ${b.hp}, vůle ${b.nerve}, útok ${b.attack.join('–')}, zvláštnost ${b.special ?? 'žádná'}, akce Úst: ${b.talk}${b.loot ? `, kořist: ${effect(b.loot)}` : ''}.`, 'where'); lines([b.intro, b.win, b.yield, b.flee]); });
+Object.entries(BATTLES).forEach(([k, b], i) => { h(3, `9.${i + 1}`, `${b.name} (${k})`); p(`Srdce ${b.hp}, vůle ${b.nerve}, Ruka ${b.stats.ruka}, Ústa ${b.stats.usta}, Oko ${b.stats.oko}${b.pack ? ', smečka (útočí dvakrát)' : ''}, akce Úst: ${b.talk}${b.loot ? `, kořist: ${effect(b.loot)}` : ''}.`, 'where'); lines([b.intro, b.heavy, b.waver, b.win, b.yield, b.flee]); });
 
 h(2, '2', 'Konce');
 choices('2', ['trziste', 'metro', 'metro_bez', 'lodkari', 'death'].map((key) => ({ label: ENDINGS[key].title, effect: { trziste: 'prodej Fantově neteři nebo řediteli, nebo čtečka bez záznamu při důvěře tržiště', metro: 'čtečka přehraje záznam nabitý u mlynáře', metro_bez: 'čtečka přehraje vybitý záznam, nebo bez záznamu při důvěře metra', lodkari: 'loďka z Kampy na Vyšehrad (jen kdo dal Admirálovi krabičku)', death: 'prohra v boji; nabídka návratu na poslední místo' }[key], reply: [ENDINGS[key].text, ...(ENDINGS[key].shots ?? []).flatMap((x) => x.lines)].join(' ') })));

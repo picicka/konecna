@@ -77,7 +77,8 @@ export const button = (scene, x, y, width, height, label, onPress, options = {})
     container.add([box, caption]);
     // Ikona vlastnosti (Ruka, Ústa, Oko) vpravo na tlačítku, vedle ní požadovaná úroveň: volba, která na vlastnosti stojí.
     if (options.icon) {
-        const icon = scene.add.image(width / 2 - 12, 0, 'atlas', options.icon).setOrigin(1, 0.5).setScale(2);
+        // iconScale: větší obrázek na vysokém tlačítku (výběr obtížnosti)
+        const icon = scene.add.image(width / 2 - 12, 0, 'atlas', options.icon).setOrigin(1, 0.5).setScale(options.iconScale ?? 2);
         container.add(icon);
         let badgeW = 0;
         if (options.badge !== undefined) {
@@ -87,7 +88,7 @@ export const button = (scene, x, y, width, height, label, onPress, options = {})
             container.add(badge);
             badgeW = badge.width + 12;
         }
-        caption.setWordWrapWidth(width - 28 - 44 - Math.max(badgeW, options.badge !== undefined ? 36 : 0));
+        caption.setWordWrapWidth(width - 28 - Math.max(44, icon.displayWidth + 12) - Math.max(badgeW, options.badge !== undefined ? 36 : 0));
     }
     container.setSize(width, height);
     container.box = box;

@@ -37,6 +37,7 @@
    "metro": 0,
    "lodkari": 0
   },
+  "difficulty": "lehka",
   "seed": 7,
   "pos": {
    "place": "hlavak",
@@ -104,6 +105,7 @@
    "metro": 1,
    "lodkari": 0
   },
+  "difficulty": "lehka",
   "seed": 7,
   "arrival": "hlavak",
   "pos": {
@@ -188,6 +190,7 @@
    "metro": 2,
    "lodkari": 1
   },
+  "difficulty": "lehka",
   "seed": 7,
   "arrival": "vaclavak",
   "pos": {
@@ -294,6 +297,7 @@
    "metro": 2,
    "lodkari": 1
   },
+  "difficulty": "lehka",
   "seed": 7,
   "arrival": "nuselak",
   "pos": {
@@ -420,6 +424,7 @@
    "metro": 3,
    "lodkari": 0
   },
+  "difficulty": "lehka",
   "seed": 7,
   "arrival": "staromak",
   "pos": {
@@ -565,6 +570,7 @@
    "metro": 4,
    "lodkari": 0
   },
+  "difficulty": "lehka",
   "seed": 7,
   "arrival": "most",
   "pos": {
@@ -726,6 +732,7 @@
    "metro": 4,
    "lodkari": 0
   },
+  "difficulty": "lehka",
   "seed": 7,
   "arrival": "malastrana",
   "pos": {

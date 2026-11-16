@@ -18,6 +18,7 @@
         "osm": "node scripts/osm.mjs hlavak && node scripts/osm.mjs vaclavak && node scripts/osm.mjs nuselak && node scripts/osm.mjs staromak && node scripts/osm.mjs most && node scripts/osm.mjs malastrana && node scripts/osm.mjs hrad && npm run art",
         "tree": "node scripts/tree.mjs > docs/rozhodovaci-strom.html",
         "opakovani": "node scripts/opakovani.mjs",
+        "boje": "node scripts/boje.mjs",
         "pruhledy": "node scripts/pruhledy.mjs",
         "slepe": "node --max-old-space-size=8000 scripts/slepe.mjs",
         "postavy": "vite build && node scripts/postavy.mjs"

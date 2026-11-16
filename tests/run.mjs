@@ -123,8 +123,13 @@ try {
     await cutsceneThrough();
     await waitScene('world');
     await waitScene('hud');
-    // Tvorba postavy: kým byla, než se to stalo, Oko +1 (klávesa 3).
+    // Obtížnost: Lehká (klávesa 1); bez ní se tvorba postavy neotevře.
     await page.waitForFunction(() => window.konecna.scene.getScene('hud').panel, null, { timeout: 10000 });
+    await page.waitForTimeout(300);
+    await shot('02a-obtiznost');
+    await page.keyboard.press('1');
+    await page.waitForFunction(() => window.konecna.registry.get('state').difficulty === 'lehka' && window.konecna.scene.getScene('hud').panel, null, { timeout: 10000 });
+    // Tvorba postavy: kým byla, než se to stalo, Oko +1 (klávesa 3).
     await page.waitForTimeout(300);
     await shot('02b-tvorba');
     await page.keyboard.press('3');

@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
-import { ABOUT, LADENI, HUD, QUEST, BAG, CARD, CREATE, DIALOGS, ITEMS, ATTRIBUTE_NAMES, ATTRIBUTE_ICONS, ATTRIBUTE_INFO, FACTIONS, tickets } from '../script';
-import { journal, factions, trustLevel, itemStats } from '../story';
+import { ABOUT, LADENI, HUD, QUEST, BAG, CARD, CREATE, OBTIZNOST, DIALOGS, ITEMS, ATTRIBUTE_NAMES, ATTRIBUTE_ICONS, ATTRIBUTE_INFO, FACTIONS, tickets } from '../script';
+import { journal, factions, trustLevel, itemStats, diceChance, tieLoses } from '../story';
 import { ATTRIBUTES, XP_LEVELS, attr, maxHp, equipItem, useSupply } from '../state';
 import { DEBUG } from '../debug';
 import { JUMP_PLACES, jump } from '../skok';
@@ -71,7 +71,7 @@ export class HudScene extends Phaser.Scene {
         this.createPortrait();
         this.createMinimap();
         this.refresh();
-        if (!this.state.flags.created) this.createHero();
+        if (!this.state.flags.created) this.startHero();
     }
 
     // Portrét hrdinky vlevo nahoře pod lištou: obličej v rámečku Pip-Boye a jméno podle uniformy.
@@ -300,7 +300,7 @@ export class HudScene extends Phaser.Scene {
         const rerender = (msg = '') => { this.refresh(); this.renderJournal(this.tab, msg); };
 
         // —— vlevo pošťačka ——
-        parts.push(head(this, 64, 84, `${HUD.hero} · ${HUD.level} ${st.level}`, { color: CRT.amber, fontSize: '14px' }));
+        parts.push(head(this, 64, 84, `${HUD.hero} · ${HUD.level} ${st.level} · ${OBTIZNOST.options[st.difficulty ?? 'lehka'].name}`, { color: CRT.amber, fontSize: '14px' }));
         parts.push(this.add.image(140, 450, 'atlas', 'hero_0').setOrigin(0.5, 1).setScale(5));
         parts.push(this.add.ellipse(140, 450, 120, 20, 0x000000, 0.4));
         let sy = 116;
@@ -336,38 +336,47 @@ export class HudScene extends Phaser.Scene {
         const col = { x: 484, w: 720, y: 136 };
         const add = (value, style = {}) => { const t = text(col.x, col.y, value, { wordWrap: { width: col.w }, ...style }); col.y += t.height + 2; return t; };
         const title = (value) => { parts.push(head(this, col.x, col.y, value.toUpperCase(), { color: CRT.amber, fontSize: '14px' })); col.y += 24; };
-        const act = (label, x, y, onPress) => parts.push(button(this, x, y, 150, 36, label, onPress, { fontSize: 22, center: true }));
         if (tab === 'bag') {
-            col.w = 520;
+            // obrázek věci (vec_<klíč> z art/veci.px.js, 26 × 26 zvětšený dvakrát); věc bez obrázku má prázdné místo
+            const ICON = 52;
+            const icon = (key, x, y) => { if (this.textures.get('atlas').has(`vec_${key}`)) parts.push(this.add.image(x, y, 'atlas', `vec_${key}`).setOrigin(0, 0).setScale(2)); };
+            const at = (x, y, value, style = {}) => text(x, y, value, { wordWrap: { width: 300 }, ...style });
             title(BAG.things);
             const gearItems = st.items.filter((k) => ITEMS[k]?.slot);
             if (!gearItems.length) add(BAG.noThings, { color: CRT.dim });
-            gearItems.forEach((key) => {
-                const item = ITEMS[key], on = st.equip[item.slot] === key, y = col.y;
-                add(`${item.name}${on ? ` (${BAG.worn})` : ''}`, { color: on ? CRT.bright : CRT.text });
-                add(`${BAG.slots[item.slot]}: ${stats(item)}`, { fontSize: '20px', color: CRT.accent });
-                act(on ? BAG.takeOff : BAG.wear, 1130, y + 22, () => { equipItem(st, key); rerender(); });
-                col.y = Math.max(col.y, y + 50);
+            // výbava ve dvou sloupcích; co má hrdinka na sobě, je světlejší a tlačítko říká Sundat
+            const cell = (key, i, label, sub, color, press, pressLabel) => {
+                const x = col.x + (i % 2) * 364, y = col.y + Math.floor(i / 2) * ICON;
+                icon(key, x, y);
+                at(x + ICON + 10, y + 2, label, { color, wordWrap: { width: 192 } });
+                at(x + ICON + 10, y + 26, sub, { fontSize: '20px', color: CRT.accent, wordWrap: { width: 200 } });
+                parts.push(button(this, x + 308, y + 26, 100, 36, pressLabel, press, { fontSize: 22, center: true }));
+            };
+            gearItems.forEach((key, i) => {
+                const item = ITEMS[key], on = st.equip[item.slot] === key;
+                cell(key, i, item.name, stats(item), on ? CRT.bright : CRT.text, () => { equipItem(st, key); rerender(); }, on ? BAG.takeOff : BAG.wear);
             });
+            col.y += Math.ceil(gearItems.length / 2) * ICON;
             col.y += 8;
             title(BAG.supplies);
             const supplies = Object.entries(st.supplies ?? {}).filter(([, n]) => n > 0);
             if (!supplies.length) add(BAG.noSupplies, { color: CRT.dim });
-            supplies.forEach(([key, n]) => {
-                const y = col.y;
-                add(`${ITEMS[key].name} ×${n} (${stats(ITEMS[key])})`, { color: CRT.text });
-                act(BAG.use, 1130, y + 12, () => {
-                    const healed = useSupply(st, key);
-                    if (healed) this.registry.get('sound')?.coin();
-                    rerender(healed ? HUD.healed(healed) : BAG.full);
-                });
-                col.y = Math.max(col.y, y + 40);
-            });
-            col.y += 8;
-            col.w = 720;
+            supplies.forEach(([key, n], i) => cell(key, i, `${ITEMS[key].name} ×${n}`, stats(ITEMS[key]), CRT.text, () => {
+                const healed = useSupply(st, key);
+                if (healed) this.registry.get('sound')?.coin();
+                rerender(healed ? HUD.healed(healed) : BAG.full);
+            }, BAG.use));
+            col.y += Math.ceil(supplies.length / 2) * ICON + 8;
             title(BAG.items);
+            // ostatní věci ve čtyřech sloupcích: obrázek a název
             const other = st.items.filter((k) => !ITEMS[k]?.slot);
-            add(other.length ? other.map((k) => ITEMS[k]?.name ?? k).join(', ') : BAG.noThings, { fontSize: '20px', color: other.length ? CRT.text : CRT.dim });
+            if (!other.length) add(BAG.noThings, { fontSize: '20px', color: CRT.dim });
+            other.forEach((key, i) => {
+                const x = col.x + (i % 4) * 182, y = col.y + Math.floor(i / 4) * ICON;
+                icon(key, x, y);
+                at(x + ICON + 6, y + 4, ITEMS[key]?.name ?? key, { fontSize: '18px', lineSpacing: -6, wordWrap: { width: 120 } });
+            });
+            col.y += Math.ceil(other.length / 4) * ICON + 4;
             add(tickets(st.tickets), { fontSize: '20px', color: CRT.amber });
         } else if (tab === 'quests') {
             const j = journal(st);
@@ -393,6 +402,41 @@ export class HudScene extends Phaser.Scene {
         const container = this.add.container(0, 0).setDepth(40);
         container.add(parts);
         this.quests = container;
+    }
+
+    // Začátek hry: nejdřív obtížnost (jen když ji stav ještě nemá), pak tvorba postavy.
+    async startHero() {
+        if (!this.state.difficulty && !(await this.chooseDifficulty())) return;
+        this.createHero();
+    }
+
+    // Výběr obtížnosti (OBTIZNOST, čísla v DIFFICULTY ve state.js): stejný panel jako tvorba postavy, klávesy 1–3.
+    // Lehká a Těžká se zapíšou do stavu; Nemožná nic nezapisuje a rovnou pustí konec s meteoritem.
+    chooseDifficulty() {
+        return new Promise((resolve) => {
+            this.closePanel();
+            const parts = [this.add.rectangle(0, 0, WIDTH, HEIGHT, 0x050806, 0.85).setOrigin(0, 0), panel(this, 40, 40, WIDTH - 80, HEIGHT - 80)];
+            parts.push(this.add.image(190, 600, 'atlas', 'hero_0').setOrigin(0.5, 1).setScale(7));
+            parts.push(this.add.ellipse(190, 600, 160, 24, 0x000000, 0.45));
+            parts.push(head(this, 360, 72, OBTIZNOST.title.toUpperCase(), { color: CRT.amber, fontSize: '20px' }));
+            parts.push(body(this, 360, 112, OBTIZNOST.intro, { fontSize: '26px', wordWrap: { width: 840 }, lineSpacing: -4 }));
+            this.buttons = Object.entries(OBTIZNOST.options).map(([key, o], i) => button(this, 780, 250 + i * 116, 840, 104, `${o.name}\n${o.text}`, () => {
+                this.closePanel();
+                if (key === 'nemozna') {
+                    const world = this.scene.get('world');
+                    world.scene.stop('hud');
+                    world.scene.start('ending', { result: 'meteorit' });
+                    resolve(false);
+                    return;
+                }
+                this.state.difficulty = key;
+                resolve(true);
+            }, { index: i + 1, fontSize: 24, icon: o.icon, iconScale: 3 }));
+            const container = this.add.container(0, 0).setDepth(45);
+            container.add([...parts, ...this.buttons]);
+            this.panel = container;
+            this.focus = -1;
+        });
     }
 
     // Tvorba postavy na začátku hry: velká pošťačka a tři volby, kým byla, než se to stalo; vybraná vlastnost +1.
@@ -468,7 +512,8 @@ export class HudScene extends Phaser.Scene {
             const theirs = dialog.stats[a], mine = attr(this.state, a), diff = mine - theirs;
             c.add(this.add.image(x + 16, ry + 16, 'atlas', ATTRIBUTE_ICONS[a]).setScale(2).setOrigin(0, 0.5));
             c.add(body(this, x + 54, ry, String(theirs), { fontSize: '28px', color: CRT.bright }));
-            c.add(body(this, x + 80, ry + 3, `${CARD.you} ${mine} · ${CARD.odds(diff)}`, { fontSize: '22px', color: diff >= 2 ? CRT.accent : diff >= -1 ? CRT.amber : CRT.red }));
+            const p = diceChance(diff, tieLoses(this.state));
+            c.add(body(this, x + 80, ry + 3, `${CARD.you} ${mine} · ${CARD.odds(p)}`, { fontSize: '22px', color: p >= 0.9 ? CRT.accent : p >= 0.1 ? CRT.amber : CRT.red }));
             c.add(body(this, x + 54, ry + 27, CARD.use[a], { fontSize: '18px', color: CRT.dim }));
         });
         c.add(about);

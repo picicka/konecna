@@ -2,7 +2,7 @@
 // Texty sem nepatří; tady je jen logika. WorldScene volá runDialog(world, id) při rozhovoru se zastavením.
 import { DIALOGS, ITEMS, QUESTS, HUD, BATTLES, CHECK, ATTRIBUTE_NAMES, ATTRIBUTE_ICONS, ATTRIBUTE_INFO, FACTIONS, SHOP, BAG, tickets as ticketWord } from './script';
 import { DEBUG } from './debug';
-import { ATTRIBUTES, hasItem, addItem, removeItem, gainXp, resolveEnding, attr as attrOf, maxHp, addSupply } from './state';
+import { difficultyOf, ATTRIBUTES, hasItem, addItem, removeItem, gainXp, resolveEnding, attr as attrOf, maxHp, addSupply } from './state';
 
 const list = (value) => (value === undefined ? [] : [].concat(value));
 
@@ -98,21 +98,41 @@ export const checkOf = (id, choice) => {
     const [a, n] = Object.entries(choice.if?.attr ?? {})[0] ?? [];
     return a ? { a, n } : null;
 };
-// Šance, že zkouška vyjde (CHECK.chance): o bod méně než požadavek 25 %, na požadavek 50 %, o bod víc 75 %, o dva a víc
-// jistě; o dva a víc pod požadavkem se volba neukáže.
+// Zkouška se hází kostkami: hrdinka má vlastnost + 1k4, protistrana (postava, nebo překážka) požadavek + 1k4, vyšší
+// součet vyhrává. Remíza se na lehkou obtížnost hází znovu, na těžkou prohrává (DIFFICULTY.tie). diceChance je přesná
+// šance z 16 kombinací pro rozdíl vlastnost − požadavek: při přehazování −1 → 23 %, 0 → 50 %, +1 → 77 %, +2 → 93 %,
+// +3 jistě; když remíza prohrává −1 → 19 %, 0 → 38 %, +1 → 63 %, +2 → 81 %, +3 → 94 %.
+export const tieLoses = (state) => difficultyOf(state).tie === 'prohra';
+export const diceChance = (diff, loses) => {
+    let win = 0, tie = 0;
+    for (let x = 1; x <= 4; x++) for (let y = 1; y <= 4; y++) { if (diff + x > y) win += 1; else if (diff + x === y) tie += 1; }
+    return loses ? win / 16 : win / (16 - tie);
+};
 export const chanceOf = (state, id, choice) => {
     const c = checkOf(id, choice);
     if (!c) return 1;
-    const diff = attrOf(state, c.a) - c.n;
-    return CHECK.chance[diff] ?? (diff > 0 ? 1 : 0);
+    return diceChance(attrOf(state, c.a) - c.n, tieLoses(state));
 };
-// Hod pro zkoušku: ze semínka hry, volby a hodnoty vlastnosti, takže opakování na stejné úrovni dopadne stejně.
-const rollFor = (state, key, value) => {
+// Hod pro zkoušku: kostky jdou ze semínka hry, volby a hodnoty vlastnosti, takže opakování na stejné úrovni dopadne
+// stejně. Vrací kola hodu (dvojice kostek hrdinka, protistrana; víc kol jen při přehazované remíze) a výsledek.
+const rollDice = (state, key, value, diff, loses) => {
     let h = (state.seed ?? 1) ^ Math.imul(value + 1, 2654435761);
     for (const ch of key) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
-    h ^= h >>> 13; h = Math.imul(h, 0x5bd1e995); h ^= h >>> 15;
-    return (h >>> 0) / 4294967296;
+    const next = () => { h = Math.imul(h ^ (h >>> 13), 0x5bd1e995); h ^= h >>> 15; h = (h + 0x6d2b79f5) | 0; return ((h >>> 0) % 4) + 1; };
+    const rounds = [];
+    for (let i = 0; i < 12; i++) {
+        const x = next(), y = next();
+        rounds.push([x, y]);
+        if (diff + x !== y) return { rounds, win: diff + x > y };
+        if (loses) return { rounds, win: false };
+    }
+    return { rounds, win: false };
 };
+// Výpis hodu pro hráčku: řádek za každé kolo a jak to dopadlo (texty CHECK.dice).
+const diceLines = (roll, mine, theirs, who, loses) => [
+    ...roll.rounds.map(([x, y], i) => `${CHECK.dice.row(mine, x, who, theirs, y)}${mine + x === theirs + y ? ` ${i < roll.rounds.length - 1 || !loses ? CHECK.dice.tie : CHECK.dice.tieLost}` : ''}`),
+    roll.win ? CHECK.dice.won : CHECK.dice.lost,
+].join('\n');
 const failKey = (id, choice) => `${id}.${choice.id}`;
 
 // Volby uzlu, které se mají ukázat: platí podmínka (vlastnosti se zkouškou stačí o bod méně), nejsou vyčerpané (once)
@@ -123,7 +143,8 @@ export const visibleChoices = (state, id, node) => (node.choices ?? []).filter((
     const check = checkOf(id, c);
     if (!check) return holds(state, c.if);
     const { attr: _skip, ...rest } = c.if ?? {};
-    if (!holds(state, rest) || chanceOf(state, id, c) <= 0) return false;
+    // skoro beznadějná zkouška (o dva a víc pod požadavkem, pod CHECK.hide) se neukáže
+    if (!holds(state, rest) || chanceOf(state, id, c) < CHECK.hide) return false;
     const failedAt = state.failed?.[failKey(id, c)];
     return failedAt === undefined || attrOf(state, check.a) > failedAt;
 });
@@ -226,17 +247,23 @@ async function converse(world, id, dialog, speaker, face) {
         if (choice.shop) { await shop(world, id, speaker, face); last = nodeId; continue; }
         // zkouška vlastnosti: nepovedený pokus stojí (CHECK.cost nebo fail), volba zmizí do další úrovně té vlastnosti
         const check = checkOf(id, choice);
-        if (check && !DEBUG.god && rollFor(state, failKey(id, choice), attrOf(state, check.a)) >= chanceOf(state, id, choice)) {
-            state.failed = { ...state.failed, [failKey(id, choice)]: attrOf(state, check.a) };
-            const cost = choice.fail ?? (check.a === 'usta' && dialog.faction && FACTIONS.list[dialog.faction]?.perks ? { trust: { [dialog.faction]: -1 } } : CHECK.cost[check.a]);
-            const r = apply(world, cost);
-            world.registry.get('sound')?.wrong();
-            await hud.say(speaker, choice.failReply ?? CHECK.fail[check.a], face);
-            notify(world, [...r.notes, CHECK.retry(ATTRIBUTE_NAMES[check.a])]);
-            last = nodeId;
-            continue;
+        // jistá zkouška (o tři a víc nad požadavkem) se nehází; jinak padnou kostky a hráčka je uvidí
+        const rolled = check && !DEBUG.god && chanceOf(state, id, choice) < 1;
+        if (rolled) {
+            const mine = attrOf(state, check.a), loses = tieLoses(state);
+            const roll = rollDice(state, failKey(id, choice), mine, mine - check.n, loses);
+            world.registry.get('sound')?.[roll.win ? 'pass' : 'wrong']();
+            await hud.say(CHECK.dice.title(ATTRIBUTE_NAMES[check.a]), diceLines(roll, mine, check.n, choice.check ? dialog.name : CHECK.dice.task, loses), null);
+            if (!roll.win) {
+                state.failed = { ...state.failed, [failKey(id, choice)]: mine };
+                const cost = choice.fail ?? (check.a === 'usta' && dialog.faction && FACTIONS.list[dialog.faction]?.perks ? { trust: { [dialog.faction]: -1 } } : CHECK.cost[check.a]);
+                const r = apply(world, cost);
+                await hud.say(speaker, choice.failReply ?? CHECK.fail[check.a], face);
+                notify(world, [...r.notes, CHECK.retry(ATTRIBUTE_NAMES[check.a])]);
+                last = nodeId;
+                continue;
+            }
         }
-        if (check && chanceOf(state, id, choice) < 1) world.registry.get('sound')?.pass();
         if (choice.once) state.asked[id] = [...(state.asked[id] ?? []), choice.id];
         const { fight, travel, ending, film, rope, ...now } = choice.do ?? {};
         const before = entryNode(state, dialog);

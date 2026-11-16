@@ -22,8 +22,10 @@ export class EndingScene extends Phaser.Scene {
         const ending = ENDINGS[this.result] ?? ENDINGS.death;
         const state = this.registry.get('state');
         if (!this.shown) {
-            const epilog = this.result === 'death' || !state ? [] : EPILOG.filter((e) => (!e.ending || e.ending === this.result) && holds(state, e.if)).map((e) => ({ image: e.image, lines: [e.line] }));
-            const shots = [...(ending.shots ?? []), ...epilog, ...(this.result === 'death' || !state ? [] : [ENDINGS.last])];
+            // smrt a meteorit (bare) jsou konce bez epilogu a bez posledního snímku s hodinami
+            const bare = this.result === 'death' || ending.bare || !state;
+            const epilog = bare ? [] : EPILOG.filter((e) => (!e.ending || e.ending === this.result) && holds(state, e.if)).map((e) => ({ image: e.image, lines: [e.line] }));
+            const shots = [...(ending.shots ?? []), ...epilog, ...(bare ? [] : [ENDINGS.last])];
             if (shots.length) {
                 this.scene.start('cutscene', { shots, music: 'konec', onDone: (cutscene) => cutscene.scene.start('ending', { result: this.result, shown: true }) });
                 return;

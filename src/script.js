@@ -88,12 +88,18 @@ export const ATTRIBUTE_INFO = {
     oko: 'všímavost, míření, najít cestu, uhnout',
 };
 
-// Zkouška vlastnosti: volba, která stojí na vlastnosti, se ukáže, i když hrdince chybí jeden bod, a vyjde jen s šancí
-// (src/story.js). Požadavek je u volby (if.attr), nebo u lidí jejich vlastnost z karty (check: 'usta' → stats postavy).
+// Zkouška vlastnosti: hází se kostkami (src/story.js). Hrdinka má vlastnost + 1k4, protistrana požadavek + 1k4; požadavek
+// je u volby (if.attr), nebo u lidí jejich vlastnost z karty (check: 'usta' → stats postavy). Remíza se na lehkou
+// obtížnost hází znovu, na těžkou prohrává. Volba se šancí pod hide se neukáže (o dva a víc bodů pod požadavkem).
 // Nepovedený pokus něco stojí (cost) a znovu to jde zkusit, až má hrdinka tu vlastnost vyšší (nová úroveň, výbava).
 export const CHECK = {
-    // šance podle rozdílu: vlastnost hrdinky − požadavek    // o dva a víc nad požadavkem jistota, o dva a víc pod ním se volba neukáže
-    chance: { '-1': 0.25, 0: 0.5, 1: 0.75 },
+    hide: 0.1,
+    // výpis hodu: okno se jménem vlastnosti, řádek za každé kolo, pak výsledek
+    dice: {
+        title: (name) => `Zkouška: ${name}`, task: 'Překážka',
+        row: (mine, x, who, theirs, y) => `Vy ${mine} + kostka ${x} = ${mine + x}, ${who} ${theirs} + kostka ${y} = ${theirs + y}.`,
+        tie: 'Remíza, hází se znovu.', tieLost: 'Remíza. Na těžkou obtížnost prohrává.', won: 'Vyšlo to.', lost: 'Nevyšlo to.',
+    },
     cost: { ruka: { hurt: 2 }, oko: { hurt: 1 }, usta: {} },
     fail: {
         ruka: 'Nepovedlo se. Přecenila jste se a bolí to.',
@@ -107,7 +113,7 @@ export const CARD = {
     hint: 'Volby s obrázkem se měří s těmito čísly. Vy proti nim:',
     use: { ruka: 'přetlačit, přeprat, odstrčit', usta: 'přemluvit, usmlouvat, zastrašit', oko: 'obelstít, proklouznout, ukrást' },
     you: 'vy',
-    odds: (diff) => (diff >= 2 ? 'vyjde vždy' : diff === 1 ? 'vyjde na 75 %' : diff === 0 ? 'vyjde na 50 %' : diff === -1 ? 'vyjde na 25 %' : 'nemáte šanci'),
+    odds: (p) => (p >= 1 ? 'vyjde vždy' : p < 0.1 ? 'nemáte šanci' : `vyjde na ${Math.round(p * 100)} %`),
 };
 // Tvorba postavy na začátku: kým byla pošťačka, než se to stalo; vybraná vlastnost dostane +1.
 export const CREATE = {
@@ -121,7 +127,19 @@ export const CREATE = {
     later: 'Další body přidáte s každou novou úrovní. Čísla postav uvidíte na jejich kartě, když s nimi mluvíte.',
 };
 
-// Skupiny Prahy a jak hrdince věří (state.trust). Důvěra otevírá a zavírá cesty: perks jsou výhody od prahu
+// Obtížnost: vybírá se na začátku hry před tvorbou postavy (HudScene.chooseDifficulty). Co která dělá, je v DIFFICULTY
+// ve state.js; Nemožná není obtížnost, ale vtip: pustí konec ENDINGS.meteorit.
+export const OBTIZNOST = {
+    title: 'Jak těžké to má být?',
+    intro: 'Praha vám nic nedaruje. Kolik toho nedaruje, je na vás. Volba platí pro celou hru.',
+    options: {
+        lehka: { icon: 'obt_lehka', name: 'Lehká', text: 'Nepřátelé vydrží, kolik mají. Kdo čte, co chystají, projde.' },
+        tezka: { name: 'Těžká', icon: 'obt_tezka', text: 'Všechno vydrží víc než vy. Remíza je prohra a i útěk bolí dvakrát.' },
+        nemozna: { icon: 'obt_nemozna', name: 'Nemožná', text: 'Tenhle průchod se nedá dokončit. Opravdu ne.' },
+    },
+};
+
+// Skupiny Prahy a jak hrdince věří (state.trust). Důvěra otevírá a zavírá cesty: perks jsou výhody od prahu
 // důvěry (volby s podmínkou trust v DIALOGS) a konec hry vybírá skupina, která věří nejvíc. V deníku se skupina ukáže,
 // až hrdinka někoho z ní potká (members), a co chce, až to zjistí (want.flag, stačí jedna z vlajek).
 export const FACTIONS = {
@@ -477,6 +495,9 @@ export const ENDINGS = {
         shots: [{ image: 'cs_vysehrad', lines: ['Kormidelník vede flotilu ze zatopených Nuslí pod zlomeným mostem, kolem skály až pod Vyšehrad.', 'Nuselák visí nad vodou na dva kusy. Pod skálou flotila zakotví. Admirál domluví, sundá čepici a zvedne krabičku nad hlavu.', 'Pak hodí krabičku do proudu. Oběť kanálu. Voda ji vezme bez poděkování.'] }] },
     // poslední snímek každého konce (kromě smrti), až za epilogem: 14:37 zůstává a nikdo neví proč
     last: { image: 'cs_hodiny', lines: ['A kolik je vlastně hodin? 14:37. Bylo včera, je dnes a zítra bude nejspíš zase.', 'Hodiny, které jdou, na tom nic nemění. Odteď bude asi už jen 14:37. Proč zrovna tolik, neví nikdo.'] },
+    // obtížnost Nemožná (DIFFICULTY): hra skončí hned na začátku, bez epilogu (bare)
+    meteorit: { title: 'Nemožná', text: 'Tenhle průchod se opravdu nedal dokončit. Bylo to na tlačítku.', bare: true,
+        shots: [{ image: 'cs_meteorit', lines: ['Stojíte na Hlavním nádraží s dopisem pro výpravčího v tašce. Dvacet let na poště, tohle zvládnete.', 'Nad Žižkovem se rozsvítí nebe. Chvíli to vypadá jako svítání, jen ze špatné strany a moc rychle.', 'Meteorit. Po tom všem ještě meteorit. Dopis zůstane nedoručený a výpravčí se to nikdy nedozví.'] }] },
     death: { title: 'Konečná', text: 'Praha si vás nechala. Někdo si vezme boty, někdo zásilku.', shots: [] },
     again: 'Hrát znovu',
     resume: 'Zpátky na poslední místo',
@@ -581,37 +602,42 @@ export const QUESTS = {
     kote: { title: 'Mourek', steps: { nest: 'Strážmistrovi z Muzea Policie utekl Mourek. Lezl za racky po mostě až za zlom.', nese: 'Mourek je v tašce. Odnést ho strážmistrovi k Muzeu Policie.', done: 'Mourek je doma. Strážmistr má zase koho kontrolovat.' } },
 };
 
-// Boje: nepřítel má životy (bere je Ruka) a vůli (berou ji Ústa); komu dojde jedno, nebo druhé, prohrál. Útok od–do,
-// zvláštnost twice (útočí dvakrát) nebo dodge (uhýbá úderům). talk je popisek akce Úst proti tomuto nepříteli, win text
-// po porážce a yield po ztrátě vůle, loot účinek po výhře (věc nebo zásoby); poražení zůstávají na mapě (dialog má uzel pro „po boji“). Mechanika: src/scenes/battle.js.
+// Boje: nepřítel má životy (bere je Ruka) a vůli (berou ji Ústa); komu dojde jedno, nebo druhé, prohrál. Jak mu boj jde,
+// říkají jeho vlastnosti stats (Ruka: jak bolí jeho rána, Ústa: jak těžko se dá rozmluvit, Oko: jak trefuje a uhýbá);
+// u nepřátel s kartou postavy je bere i jejich rozhovor (DIALOGS: stats: BATTLES.<klíč>.stats), takže zkoušky v rozhovoru
+// a boj mluví o téže postavě. pack = smečka, v běžném tahu útočí dvakrát slabší ranou. Nepřátelé sílí po místech stejně,
+// jako roste hrdinka (ladí se podle npm run boje, scripts/boje.mjs). talk je popisek akce Úst, heavy věta, kterou nepřítel
+// ohlásí těžkou ránu, waver věta, když váhá, dodge věta, když úder mine (jinak BATTLE.miss), win text po porážce a yield
+// po ztrátě vůle, loot účinek po výhře (věc nebo zásoby); poražení zůstávají na mapě (dialog má uzel pro „po boji“).
+// Pravidla: src/boj.js, obrazovka: src/scenes/battle.js.
 export const BATTLES = {
-    psi: { name: 'Smečka ze Sherwoodu', sprite: 'dog', scale: 4, hp: 8, nerve: 6, attack: [1, 1], special: 'twice', talk: 'Zařvat na ně',
+    psi: { name: 'Smečka ze Sherwoodu', sprite: 'dog', scale: 4, hp: 8, nerve: 7, stats: { ruka: 2, usta: 1, oko: 2 }, pack: true, talk: 'Zařvat na ně',
         intro: 'Tři psi vystoupí z křoví. Vůdce smečky má na krku Fantovu stužku.',
-        hit: 'Pes chňapne.', twice: 'Druhý pes se přidá.', miss: 'Pes cvakne naprázdno.', hurt: 'Pes zakňučí.', shout: 'Psi stáhnou ocasy.',
+        heavy: 'Vůdce se přikrčí ke skoku.', waver: 'Psi se ohlížejí jeden po druhém.', hit: 'Pes chňapne.', twice: 'Druhý pes se přidá.', miss: 'Pes cvakne naprázdno.', hurt: 'Pes zakňučí.', shout: 'Psi stáhnou ocasy.',
         win: 'Vůdce si olízne tlapu a odkulhá k Robinovu ohni. Ostatní dva jdou za ním. Pěšina je volná.', yield: 'Psi couvnou a odklušou k Robinovu ohni. Vůdce se ještě ohlédne, ale už nevrčí.', flee: 'Couvnete. Psi štěkají, ale nejdou za vámi.' },
-    nutrie: { name: 'Nutrie z Vltavy', sprite: 'nutrie', scale: 4, hp: 5, nerve: 4, attack: [1, 1], special: 'dodge', talk: 'Zasyčet na ni',
+    nutrie: { name: 'Nutrie z Vltavy', sprite: 'nutrie', scale: 4, hp: 6, nerve: 5, stats: { ruka: 1, usta: 2, oko: 3 }, talk: 'Zasyčet na ni',
         intro: 'Nutrie se postaví na zadní a cení oranžové zuby. Je větší, než vypadala.',
-        hit: 'Nutrie kousne.', miss: 'Nutrie syčí.', hurt: 'Nutrie zapiští.', dodge: 'Nutrie uskočí.', shout: 'Nutrie se přikrčí.',
+        heavy: 'Nutrie se nahrbí a zacvaká zuby.', waver: 'Nutrie se ohlédne po vodě.', hit: 'Nutrie kousne.', miss: 'Nutrie syčí.', hurt: 'Nutrie zapiští.', dodge: 'Nutrie uskočí.', shout: 'Nutrie se přikrčí.',
         win: 'Nutrie sleze z reproduktoru, odplave tři tempa a vyleze na kraj vody.', yield: 'Nutrie sleze z reproduktoru a sedne si na kraj vody. Zuby schová.', flee: 'Ustoupíte. Nutrie si sedne zpátky na reproduktor.' },
-    nutrie2: { name: 'Nutrie z výlohy', sprite: 'nutrie', scale: 4, hp: 8, nerve: 5, attack: [1, 2], special: 'twice', loot: { supply: { obvaz: 1 } }, talk: 'Zasyčet na ně',
+    nutrie2: { name: 'Nutrie z výlohy', sprite: 'nutrie', scale: 4, hp: 10, nerve: 8, stats: { ruka: 2, usta: 2, oko: 3 }, pack: true, loot: { supply: { obvaz: 1 } }, talk: 'Zasyčet na ně',
         intro: 'Z hnízda kožichů vylezou dvě nutrie. Jedna má na krku hedvábný šátek.',
-        hit: 'Nutrie kousne.', twice: 'Druhá nutrie se přidá.', miss: 'Nutrie syčí.', hurt: 'Nutrie zapiští.', shout: 'Nutrie couvnou do kožichů.',
+        dodge: 'Nutrie uskočí.', heavy: 'Nutrie se šátkem se nahrbí ke skoku.', waver: 'Nutrie se ohlížejí po díře ve skle.', hit: 'Nutrie kousne.', twice: 'Druhá nutrie se přidá.', miss: 'Nutrie syčí.', hurt: 'Nutrie zapiští.', shout: 'Nutrie couvnou do kožichů.',
         win: 'Nutrie vyskáčou rozbitým sklem na lávku. Hák nechají hákem.', yield: 'Nutrie couvnou, protáhnou se rozbitým sklem ven a sednou si na lávku. Hák zůstane trčet bez stráže.', flee: 'Ustoupíte. Nutrie se zavrtají zpátky do kašmíru.' },
-    kanci: { name: 'Kanci z Kampy', sprite: 'kanec', scale: 4, hp: 14, nerve: 8, attack: [2, 3], special: null, talk: 'Zařvat na ně',
+    kanci: { name: 'Kanci z Kampy', sprite: 'kanec', scale: 4, hp: 18, nerve: 15, stats: { ruka: 4, usta: 3, oko: 1 }, talk: 'Zařvat na ně',
         intro: 'Vůdce tlupy zafuní a sklopí kly. Za ním další dva, menší a stejně naštvaní.',
-        hit: 'Kanec vás nabere.', miss: 'Kanec proletí kolem.', hurt: 'Kanec zakvičí.', shout: 'Kanec zaváhá.',
+        heavy: 'Vůdce hrabe kopytem a bere rozběh.', waver: 'Kanci funí a přešlapují na místě.', hit: 'Kanec vás nabere.', miss: 'Kanec proletí kolem.', hurt: 'Kanec zakvičí.', shout: 'Kanec zaváhá.',
         win: 'Vůdce zafuní a odvede tlupu přes lávku pod platany. Dvůr je volný.', yield: 'Kanci couvnou a táhnou přes lávku pod platany. Cesta ke kolu je volná.', flee: 'Utečete za roh mlýna. Kanci ryjí dál.' },
-    vymahaci: { name: 'Tržištní vymahači', sprite: 'vymahac', scale: 4, hp: 13, nerve: 7, attack: [1, 2], special: 'twice', loot: { give: 'baseballka' }, talk: 'Domluvit jim',
+    vymahaci: { name: 'Tržištní vymahači', sprite: 'vymahac', scale: 4, hp: 18, nerve: 15, stats: { ruka: 4, usta: 3, oko: 2 }, pack: true, loot: { give: 'baseballka' }, talk: 'Domluvit jim',
         intro: 'Jeden vytáhne řetěz, druhý baseballku s Fantovou cenovkou. „Nic osobního.“',
-        hit: 'Baseballka dopadne.', twice: 'Řetěz švihne.', miss: 'Vymahač se netrefí.', hurt: 'Vymahač zakleje.', shout: 'Vymahač se ohlédne po kolegovi.',
+        heavy: 'Větší se rozpřáhne baseballkou přes hlavu.', waver: 'Menší hledá v seznamu, jestli tam opravdu jste.', hit: 'Baseballka dopadne.', twice: 'Řetěz švihne.', miss: 'Vymahač se netrefí.', hurt: 'Vymahač zakleje.', shout: 'Vymahač se ohlédne po kolegovi.',
         win: 'Vymahači si sednou na obrubník u Mostecké a počítají zuby. „Panu Fantovi řekneme, že jste byla rychlá.“', yield: '„Nic osobního,“ řekne ten větší a schová řetěz. Sednou si na obrubník a dál se nedívají.', flee: 'Utečete zpátky na most. Vymahači zůstávají v ústí Mostecké.' },
-    holubi: { name: 'Holubi ze Zámeckých schodů', sprite: 'holub', scale: 4, hp: 6, nerve: 3, attack: [1, 1], special: 'dodge', talk: 'Mávnout taškou',
+    holubi: { name: 'Holubi ze Zámeckých schodů', sprite: 'holub', scale: 4, hp: 12, nerve: 10, stats: { ruka: 2, usta: 2, oko: 4 }, talk: 'Mávnout taškou',
         intro: 'Hejno se zvedne. Kulhavý vůdce letí přímo na vás.',
-        hit: 'Holub klovne.', miss: 'Holub mine.', hurt: 'Peří letí.', dodge: 'Holub uhne.', shout: 'Hejno zaváhá.',
+        heavy: 'Kulhavý vůdce nabírá výšku.', waver: 'Hejno zobe něco mezi schody.', hit: 'Holub klovne.', miss: 'Holub mine.', hurt: 'Peří letí.', dodge: 'Holub uhne.', shout: 'Hejno zaváhá.',
         win: 'Hejno se rozletí po střechách. Kulhavý vůdce odskáče po zídce poslední.', yield: 'Hejno se zvedne a přesedne na římsu. Schody jsou volné.', flee: 'Couvnete. Holubi si sednou zpátky na schody.' },
-    ochranka: { name: 'Ochranka kanálu', sprite: 'ochranka', scale: 4, hp: 16, nerve: 5, attack: [2, 3], loot: { supply: { obvaz: 2 } }, special: null, talk: 'Mluvit o výplatě',
+    ochranka: { name: 'Ochranka kanálu', sprite: 'ochranka', scale: 4, hp: 20, nerve: 16, stats: { ruka: 5, usta: 3, oko: 2 }, loot: { supply: { obvaz: 2 } }, talk: 'Mluvit o výplatě',
         intro: 'Ochranka vytáhne obušky. „Tohle jsme si mohli odpustit, paní.“',
-        hit: 'Obušek dopadne.', miss: 'Ochranka mine.', hurt: 'Reflexní vesta se zmuchlá.', shout: 'Ochranka svěsí obušky.',
+        heavy: 'Oba zvednou obušky najednou.', waver: 'Jeden z nich si potřebuje zapálit.', hit: 'Obušek dopadne.', miss: 'Ochranka mine.', hurt: 'Reflexní vesta se zmuchlá.', shout: 'Ochranka svěsí obušky.',
         win: 'Ochranka si sedne na schody buňky. „Za tohle nás neplatí. Za nic nás neplatí.“', yield: 'Ochranka si sedne na schody buňky a zapálí si. „Dělejte si, co chcete. My máme přesčas od loňska.“', flee: 'Ustoupíte. Ochranka se vrátí ke dveřím.' },
 };
 // Souboj: tlačítka s obrázkem vlastnosti a nápovědou, kolik to dává (počítá src/scenes/battle.js).
@@ -619,12 +645,14 @@ export const BATTLE = {
     attack: 'Udeřit', defend: 'Uhnout', flee: 'Utéct', bag: 'Taška',
     bagHint: (name, n, heal) => `${name} ×${n}, +${hearts(heal)}`, bagEmpty: 'žádné zásoby', bagUsed: (name, n) => `${name}: +${hearts(n)}.`,
     attackHint: (p, lo, hi) => `zásah ${p} %, zranění ${lo}–${hi}`,
-    talkHint: (lo, hi) => `vůle −${lo}–${hi}`,
-    defendHint: (p) => `uhnete na ${p} %, pak vrátíte ránu`,
-    fleeHint: 'vždy, ale jednou to schytáte',
+    talkHint: (p, lo, hi) => `zabere na ${p} %, vůle −${lo}–${hi}`,
+    defendHint: (p) => `uhnete na ${p} %, jinak bolí půlka`,
+    // co nepřítel v tomto tahu chystá (pod věty heavy a waver z BATTLES)
+    intent: { utok: (p, lo, hi, twice) => `Útočí${twice ? ' dvakrát' : ''}: zásah ${p} %, −${lo === hi ? lo : `${lo}–${hi}`}.`, rana: (p, lo, hi) => `Chystá těžkou ránu: zásah ${p} %, −${lo}–${hi}. Uhněte.`, vaha: 'Váhá a neútočí. Ústa teď zaberou jistě.' },
+    fleeHint: (n) => (n > 1 ? 'vždy, ale dvakrát to schytáte' : 'vždy, ale jednou to schytáte'),
     you: 'Vy', nerve: 'VŮLE',
-    help: 'Ruka bere srdce, Ústa vůli. Komu dojde jedno, nebo druhé, prohrál. Oko pomáhá trefit se a uhnout. Taška: obvaz nebo jídlo místo tahu.',
-    hit: 'Trefa za', miss: 'Vedle.', guard: 'Čekáte na útok.', counter: 'Uhnete a vrátíte to za', dodged: 'Uhnete.',
+    help: 'Ruka bere srdce, Ústa vůli. Komu dojde jedno, nebo druhé, prohrál. Nepřítel napřed ukáže, co chystá: před těžkou ranou uhněte, když váhá, mluvte.',
+    hit: 'Trefa za', miss: 'Vedle.', guard: 'Čekáte na útok.', deaf: 'Nezabralo.', blocked: 'Kryjete se.', counter: 'Uhnete a vrátíte to za', dodged: 'Uhnete.',
     shout: 'Vůle', fleeing: 'Otočíte se k útěku.', dead: 'Padáte do prachu.',
 };
 
@@ -729,7 +757,7 @@ export const DIALOGS = {
                 { id: 'tajemstvi', label: 'Víš, co Fanta prodává?', if: { flag: 'psi_ok', noFlag: 'robin_tajemstvi' }, else: 'Robin to řekne jen té, která prošla kolem psů.', do: { flag: 'robin_tajemstvi', xp: 1 }, reply: ['Kdo prošel kolem mejch psů, zaslouží si pravdu. Fanta prodal tu krabičku dvakrát. Hradu a Admirálovi na Staromáku. Jeden z nich bude zklamanej.'] },
             ] },
         } },
-    psi: { stats: { ruka: 2, usta: 1, oko: 3 }, about: 'Tři zdivočelí psi na pěšině. Vůdce má na krku Fantovu stužku.', name: 'Smečka', face: null,
+    psi: { stats: BATTLES.psi.stats, about: 'Tři zdivočelí psi na pěšině. Vůdce má na krku Fantovu stužku.', name: 'Smečka', face: null,
         entry: [{ if: { flag: 'psi_ok' }, node: 'klid' }, { node: 'stoji' }],
         nodes: {
             klid: { say: ['Tři psi leží u Robinova ohně. Vůdce zvedne hlavu, pozná vás a zase ji položí. Nejmenší pes vrtí ocasem.'], choices: [] },
@@ -1083,14 +1111,14 @@ export const DIALOGS = {
                 { id: 'proc', label: 'Proč tu zůstal jen Nepomucký?', once: true, reply: ['Je přišroubovanej. Loďkaři na něj vytáhli pilu a pila přišla o zub. Svatej Jan drží. Do Vltavy ho už jednou hodili, podruhý nechce.'] },
             ] },
         } },
-    kanci: { stats: { ruka: 3, usta: 1, oko: 1 }, about: 'Tlupa divočáků z Petřína na dvoře mlýna. Vůdce má kly jako bodáky.', name: 'Kanci z Kampy', face: null,
+    kanci: { stats: BATTLES.kanci.stats, about: 'Tlupa divočáků z Petřína na dvoře mlýna. Vůdce má kly jako bodáky.', name: 'Kanci z Kampy', face: null,
         entry: [{ if: { flag: 'kanci_ok' }, node: 'klid' }, { node: 'ryji' }],
         nodes: {
             klid: { say: ['Kanci ryjí pod platany na Kampě a vás si nevšímají. Vůdce funí, jako by si stěžoval na počasí.'], choices: [] },
             pryc: { say: ['Kanci táhnou přes lávku pod platany. Dvůr mlýna je volný.'] },
             ryji: { flee: true, say: ['Na dvoře mlýna ryjí kanci z Petřína, přesně mezi vámi a kolem. Vůdce zvedne rypák a dívá se na vás jako na lanýž.'], choices: [
                 { id: 'boj', label: 'Prorazit si cestu.', do: { fight: 'kanci' }, win: { flag: 'kanci_ok', xp: 3 }, next: 'pryc' },
-                { id: 'srot', label: 'Odlákat je šrotem pod platany.', if: { attr: { oko: 2 } }, else: 'Prasklý pytel šrotu u dveří mlýna uvidí jen Oko 2.', do: { flag: ['kanci_ok', 'kanci_srot'], xp: 2 }, reply: ['U dveří mlýna stojí prasklý pytel šrotu. Nasypete z něj cestičku přes lávku až pod platany na Kampě.', 'Vůdce zvedne rypák, zafuní a celá tlupa jde po šrotu za ním. Dvůr je volný.'], end: true },
+                { id: 'srot', label: 'Odlákat je šrotem pod platany.', if: { attr: { oko: 3 } }, else: 'Prasklý pytel šrotu u dveří mlýna uvidí jen Oko 3.', do: { flag: ['kanci_ok', 'kanci_srot'], xp: 2 }, reply: ['U dveří mlýna stojí prasklý pytel šrotu. Nasypete z něj cestičku přes lávku až pod platany na Kampě.', 'Vůdce zvedne rypák, zafuní a celá tlupa jde po šrotu za ním. Dvůr je volný.'], end: true },
             ] },
         } },
     mlynar: { stats: { ruka: 3, usta: 1, oko: 2 }, about: 'Roztočil mlýnské kolo na Čertovce a rozsvítil jedinou žárovku v Praze, která nesvítí Hradu.', name: 'Mlynář z Kampy', face: 'face_mlynar',
@@ -1128,14 +1156,14 @@ export const DIALOGS = {
             ] },
         } },
     // —— Malá Strana ——
-    vymahaci: { stats: { ruka: 3, usta: 2, oko: 1 }, about: 'Fantovi kluci na Malé Straně. Řetěz, baseballka a seznam jmen.', faction: 'trziste', name: 'Tržištní vymahači', face: 'face_vymahac',
+    vymahaci: { stats: BATTLES.vymahaci.stats, about: 'Fantovi kluci na Malé Straně. Řetěz, baseballka a seznam jmen.', faction: 'trziste', name: 'Tržištní vymahači', face: 'face_vymahac',
         entry: [{ if: { flag: 'vymahaci_pryc' }, node: 'sedi' }, { node: 'cekaji' }],
         nodes: {
             sedi: { say: ['Vymahači sedí na obrubníku u Mostecké. Větší si zapaluje, menší počítá dlaždice.'], choices: [] },
             cekaji: { flee: true, do: { flag: 'met_vymahaci' }, say: ['Sotva vyjdete z Mostecké, postaví se vám do cesty dva chlapi v teplákovkách. Jinudy to nejde, ulice je jejich.', '„Pošťačka. Pan Fanta vzkazuje, že nespolupracujete. Tak jdeme spolupracovat my.“'], choices: [
                 { id: 'boj', end: true, label: 'Tak pojďte.', do: { fight: 'vymahaci' }, win: { flag: 'vymahaci_pryc', xp: 3 } },
-                { id: 'zaplatit', label: 'Kolik stojí, abyste mě neviděli? (10 jízdenek)', check: 'usta', if: { tickets: 10 }, else: 'Usmlouvat to chce Ústa 2 a deset jízdenek.', do: { tickets: -10, flag: 'vymahaci_pryc', xp: 1 }, reply: ['Deset. Menší je přepočítá dvakrát. „Projděte. A Mosteckou se chvíli nevracejte.“'] },
-                { id: 'odstrcit', label: 'Odstrčit je a projít.', check: 'ruka', else: 'Odstrčit vymahače chce Ruku 3.', do: { flag: 'vymahaci_pryc', xp: 2 }, failReply: ['Větší z nich se ani nehne. Menší vás strčí zpátky na dlažbu.'], reply: ['Menšího odstrčíte do zdi, větší couvne. „Dobře, dobře. Běžte. Řekneme, že jste šla jinudy.“'] },
+                { id: 'zaplatit', label: 'Kolik stojí, abyste mě neviděli? (10 jízdenek)', check: 'usta', if: { tickets: 10 }, else: 'Usmlouvat to chce Ústa 3 a deset jízdenek.', do: { tickets: -10, flag: 'vymahaci_pryc', xp: 1 }, reply: ['Deset. Menší je přepočítá dvakrát. „Projděte. A Mosteckou se chvíli nevracejte.“'] },
+                { id: 'odstrcit', label: 'Odstrčit je a projít.', check: 'ruka', else: 'Odstrčit vymahače chce Ruku 4.', do: { flag: 'vymahaci_pryc', xp: 2 }, failReply: ['Větší z nich se ani nehne. Menší vás strčí zpátky na dlažbu.'], reply: ['Menšího odstrčíte do zdi, větší couvne. „Dobře, dobře. Běžte. Řekneme, že jste šla jinudy.“'] },
                 { id: 'fanta', label: 'Pan Fanta mi věří. Zeptejte se ho.', if: { trust: { trziste: 3 } }, else: 'Jen když vám tržiště věří (3).', do: { flag: 'vymahaci_pryc' }, reply: ['…Věří? Vám? To nám neřekl. Dobře, my jsme vás neviděli, vy jste neviděla nás.'] },
             ] },
         } },
@@ -1199,8 +1227,8 @@ export const DIALOGS = {
         nodes: {
             holubi: { flee: true, say: ['Na schodech sedí holubi. Vypasení, pražští, sebevědomí. Nejtlustší kulhá a neuhne ani o krok.'], choices: [
                 { id: 'boj', label: 'Rozehnat je.', do: { fight: 'holubi' }, win: { flag: 'holubi_pryc', xp: 2 }, next: 'nahore' },
-                { id: 'zed', label: 'Vyšplhat po zídce kolem hejna.', if: { attr: { ruka: 2 } }, else: 'Vyšplhat po zídce chce Ruku 2.', do: { flag: 'holubi_pryc', xp: 1 }, next: 'nahore' },
-                { id: 'proklouznout', label: 'Proklouznout, když se dívají jinam.', if: { attr: { oko: 2 } }, else: 'Proklouznout mezi holuby chce Oko 2.', do: { flag: 'holubi_pryc', xp: 1 }, next: 'nahore' },
+                { id: 'zed', label: 'Vyšplhat po zídce kolem hejna.', if: { attr: { ruka: 3 } }, else: 'Vyšplhat po zídce chce Ruku 3.', do: { flag: 'holubi_pryc', xp: 1 }, next: 'nahore' },
+                { id: 'proklouznout', label: 'Proklouznout, když se dívají jinam.', if: { attr: { oko: 3 } }, else: 'Proklouznout mezi holuby chce Oko 3.', do: { flag: 'holubi_pryc', xp: 1 }, next: 'nahore' },
             ] },
             nahore: { say: ['Nahoře na schodech je zídka a za ní Hradčanské náměstí. Stráž stojí u brány, bokem k vám.'], choices: [
                 { id: 'poledne', label: 'Počkat na poledne a přelézt.', if: { flag: 'cesta_schody' }, else: 'Kdy se nikdo nedívá, ví hlídač Nepomuckého nebo stráž sama.', do: { flag: 'schody_cesta', xp: 2, travel: 'hrad' }, reply: ['Poledne. Stráž si mění místa a na minutu se nikdo nedívá. Přes zídku, přes náměstí a Matyášovou bránou dovnitř.'] },
@@ -1243,15 +1271,15 @@ export const DIALOGS = {
                 { id: 'jit', label: 'Sejít na Malou Stranu.', do: { travel: 'malastrana' } },
             ] },
         } },
-    ochranka: { stats: { ruka: 3, usta: 2, oko: 1 }, about: 'Dva chlapi v reflexních vestách Kanceláře kanálu. Hlídají buňku a čekají na výplatu.', faction: 'hrad', name: 'Ochranka kanálu', face: 'face_ochranka',
+    ochranka: { stats: BATTLES.ochranka.stats, about: 'Dva chlapi v reflexních vestách Kanceláře kanálu. Hlídají buňku a čekají na výplatu.', faction: 'hrad', name: 'Ochranka kanálu', face: 'face_ochranka',
         entry: [{ if: { flag: 'ochranka_pryc' }, node: 'pauza' }, { node: 'stuj' }],
         nodes: {
             pauza: { say: ['Ochranka sedí na schodech buňky a kouří. „My tu nejsme. Máme pauzu.“'], choices: [] },
             stuj: { do: { flag: 'met_ochranka' }, say: ['Dva chlapi v reflexních vestách Kanceláře kanálu se postaví před buňku. „Sem ne. Stavba. Rozkaz pana ředitele.“'], choices: [
                 { id: 'kastelan', label: 'Jdu s Kastelánem. Jsem zásilka.', if: { flag: 'kastelanem' }, else: 'Jen když vás nahoru vedl Kastelán.', do: { flag: 'ochranka_pryc' }, reply: ['Zásilka pro pana ředitele. Jasně. Projděte.'], end: true },
-                { id: 'vyplata', label: 'Kdy jste naposled dostali výplatu?', check: 'usta', else: 'Rozmluvit ochranku chce Ústa 2.', do: { flag: 'ochranka_pryc', trust: { metro: 1 }, xp: 2 }, reply: ['…Před rokem. Od té doby nás platí jízdenkami, které si pan ředitel tiskne sám. Metro je neuzná.', 'Víte co? Máme pauzu. Dlouhou. Klidně až do konce.'], end: true },
+                { id: 'vyplata', label: 'Kdy jste naposled dostali výplatu?', check: 'usta', else: 'Rozmluvit ochranku chce Ústa 3.', do: { flag: 'ochranka_pryc', trust: { metro: 1 }, xp: 2 }, reply: ['…Před rokem. Od té doby nás platí jízdenkami, které si pan ředitel tiskne sám. Metro je neuzná.', 'Víte co? Máme pauzu. Dlouhou. Klidně až do konce.'], end: true },
                 { id: 'zaplatit', label: 'Tady máte výplatu. (20 jízdenek)', if: { tickets: 20 }, else: 'Výplata pro dva stojí dvacet jízdenek.', do: { tickets: -20, flag: 'ochranka_pryc', xp: 1 }, reply: ['Pravé jízdenky z metra! Neoznačené! Jdeme na oběd. Buňka je vaše, klíč je ve dveřích.'], end: true },
-                { id: 'protlacit', label: 'Protlačit se mezi nimi ke dveřím.', check: 'ruka', else: 'Protlačit se mezi ochrankou chce Ruku 3.', do: { flag: 'ochranka_pryc', xp: 2 }, failReply: ['Narazíte do reflexní vesty jako do zdi. Odrazíte se zpátky na dlažbu.'], reply: ['Prosmýknete se ramenem mezi nimi. Než se otočí, držíte kliku. Jeden pokrčí rameny, druhý si sundá vestu.'] },
+                { id: 'protlacit', label: 'Protlačit se mezi nimi ke dveřím.', check: 'ruka', else: 'Protlačit se mezi ochrankou chce Ruku 5.', do: { flag: 'ochranka_pryc', xp: 2 }, failReply: ['Narazíte do reflexní vesty jako do zdi. Odrazíte se zpátky na dlažbu.'], reply: ['Prosmýknete se ramenem mezi nimi. Než se otočí, držíte kliku. Jeden pokrčí rameny, druhý si sundá vestu.'] },
                 { id: 'boj', end: true, label: 'Projít silou.', do: { fight: 'ochranka' }, win: { flag: 'ochranka_pryc', xp: 3 } },
             ] },
         } },

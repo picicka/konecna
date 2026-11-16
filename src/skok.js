@@ -12,6 +12,7 @@ export const jumpState = (place) => {
     const state = skoky[place] ? structuredClone(skoky[place]) : { ...createState(), flags: { created: true } };
     state.place = place;
     state.flags.created = true;
+    state.difficulty = DEBUG.difficulty === 'tezka' ? 'tezka' : (state.difficulty ?? 'lehka');
     state.tickets += DEBUG.tickets;
     return state;
 };

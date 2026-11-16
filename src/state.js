@@ -1,4 +1,4 @@
-import { ITEMS } from './script';
+import { ITEMS } from './script.js';
 // Stav jedné hry: hrdinka (životy, tři atributy, úroveň), jízdenky, inventář, úkoly, vlajky a místo. Ukládá se dvakrát:
 // checkpoint při příchodu na místo (SAVE_KEY; po smrti nabídne hra návrat na něj) a průběžně s přesnou dlaždicí hrdinky
 // (POS_KEY, state.pos = { place, a, b, L }; z něj pokračuje titulní obrazovka).
@@ -36,6 +36,8 @@ export const createState = () => ({
     visited: {},
     // Komu hrdinka věřila: body za rozhodnutí, konec vybere nejvyšší (trziste, metro, lodkari).
     trust: { trziste: 0, metro: 0, lodkari: 0 },
+    // Obtížnost (DIFFICULTY): vybírá se před tvorbou postavy a platí celou hru; uložení bez ní je lehká.
+    difficulty: null,
     // Semínko boje: boj je deterministický (Playwright jím projde), každá hra má jiné.
     seed: Math.floor(Math.random() * 1e9),
 });
@@ -69,6 +71,12 @@ export const useSupply = (state, key) => {
     addSupply(state, key, -1);
     return state.hp - before;
 };
+
+// Obtížnost: foe násobí výdrž nepřátel (srdce a vůli), tie říká, co je remíza kostek při zkoušce vlastnosti ('znovu' se
+// hází znovu, 'prohra' prohrává; src/story.js), flee je počet ran, které stojí útěk z boje. Lehká jsou čísla vyladěná simulátorem (npm run boje), těžká je táž hra o polovinu tužší.
+// Třetí volba ve hře (Nemožná) není obtížnost, ale konec s meteoritem (ENDINGS.meteorit), do stavu se nezapisuje.
+export const DIFFICULTY = { lehka: { foe: 1, tie: 'znovu', flee: 1 }, tezka: { foe: 1.5, tie: 'prohra', flee: 2 } };
+export const difficultyOf = (state) => DIFFICULTY[state?.difficulty] ?? DIFFICULTY.lehka;
 
 // Zkušenosti: bod do atributu za quest i boj, 4–6 úrovní za celou hru (šest míst). Hranice jsou v jednom místě kvůli balancu.
 export const XP_LEVELS = [0, 5, 12, 20, 30, 42, 56];

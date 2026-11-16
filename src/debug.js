@@ -7,6 +7,7 @@
 //   &a=43&b=19            na konkrétní dlaždici
 //   &jizdenky=99          přidá jízdenky
 //   &buh                  nesmrtelnost v boji a zkoušky vlastností vždy vyjdou
+//   &obtiznost=tezka      skok s těžkou obtížností (jinak lehká)
 //   ?rychle / ?rychle=8   čas hry běží rychleji (bez čísla pětkrát): chůze, animace, časovače; logika se nemění.
 //                         Používá ho průchod npm test, jde i samostatně bez ?misto.
 //   ?ladeni               zapne panel skoků na klávese L, jen dokud je v adrese (nepamatuje se, s ?misto se nezapíná sám)
@@ -21,6 +22,7 @@ export const DEBUG = {
     // panel skoků na L jen s ?ladeni v adrese: L je snadná klávesa a hráčka by si jím skočila omylem
     on: params.has('ladeni') && params.get('ladeni') !== '0',
     place: params.get('misto'),
+    difficulty: params.get('obtiznost'),
     tile: num('a') !== null && num('b') !== null ? { a: num('a'), b: num('b'), L: num('L') ?? 0 } : null,
     tickets: num('jizdenky') ?? 0,
     god: params.has('buh'),
