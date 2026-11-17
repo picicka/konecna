@@ -128,11 +128,6 @@ const rollDice = (state, key, value, diff, loses) => {
     }
     return { rounds, win: false };
 };
-// Výpis hodu pro hráčku: řádek za každé kolo a jak to dopadlo (texty CHECK.dice).
-const diceLines = (roll, mine, theirs, who, loses) => [
-    ...roll.rounds.map(([x, y], i) => `${CHECK.dice.row(mine, x, who, theirs, y)}${mine + x === theirs + y ? ` ${i < roll.rounds.length - 1 || !loses ? CHECK.dice.tie : CHECK.dice.tieLost}` : ''}`),
-    roll.win ? CHECK.dice.won : CHECK.dice.lost,
-].join('\n');
 const failKey = (id, choice) => `${id}.${choice.id}`;
 
 // Volby uzlu, které se mají ukázat: platí podmínka (vlastnosti se zkouškou stačí o bod méně), nejsou vyčerpané (once)
@@ -252,8 +247,7 @@ async function converse(world, id, dialog, speaker, face) {
         if (rolled) {
             const mine = attrOf(state, check.a), loses = tieLoses(state);
             const roll = rollDice(state, failKey(id, choice), mine, mine - check.n, loses);
-            world.registry.get('sound')?.[roll.win ? 'pass' : 'wrong']();
-            await hud.say(CHECK.dice.title(ATTRIBUTE_NAMES[check.a]), diceLines(roll, mine, check.n, choice.check ? dialog.name : CHECK.dice.task, loses), null);
+            await hud.dice({ title: CHECK.dice.title(ATTRIBUTE_NAMES[check.a]), icon: ATTRIBUTE_ICONS[check.a], mine, theirs: check.n, who: choice.check ? dialog.name : CHECK.dice.task, rounds: roll.rounds, win: roll.win, loses });
             if (!roll.win) {
                 state.failed = { ...state.failed, [failKey(id, choice)]: mine };
                 const cost = choice.fail ?? (check.a === 'usta' && dialog.faction && FACTIONS.list[dialog.faction]?.perks ? { trust: { [dialog.faction]: -1 } } : CHECK.cost[check.a]);

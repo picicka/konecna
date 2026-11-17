@@ -107,7 +107,7 @@ o tom, co hra je a co ne. Texty pro čtenáře píšeme česky s českou typogra
   úroveň vpravo na tlačítku). Každá překážka má mít cestu přes Ruku, Ústa i Oko, nebo přes věc či úkol.
 - Zkoušky vlastností (`checkOf`/`chanceOf`/`diceChance` v `src/story.js`, texty `CHECK`): volba s `if.attr`, nebo `check: 'usta'`
   proti vlastnosti postavy z její karty (`stats` u DIALOGS). Hází se kostkami: hrdinka má vlastnost + 1k4, protistrana požadavek
-  + 1k4, vyšší součet vyhrává a hod obou stran se hráčce ukáže. Remíza se na lehkou obtížnost hází znovu (o bod méně 23 %,
+  + 1k4, vyšší součet vyhrává a hod se hráčce přehraje (`HudScene.dice`: dvě čtyřstěnné kostky `kostka_0–4` z `art/veci.px.js` se kutálejí, dopadnou a ukážou součty; Dál nebo Enter animaci dokončí). Remíza se na lehkou obtížnost hází znovu (o bod méně 23 %,
   na požadavek 50 %, o bod víc 77 %, o dva 93 %, o tři jistě), na těžkou prohrává (19, 38, 63, 81, 94 %). Volba o dva a víc bodů
   pod požadavkem se neukáže (`CHECK.hide`), na tlačítku je šance. Hod je ze `state.seed`. Nepovedená zkouška stojí
   (Ruka 2 životy, Oko 1, Ústa bod důvěry skupiny postavy, nebo `fail` u volby) a znovu jde až s vyšší vlastností (`state.failed`).

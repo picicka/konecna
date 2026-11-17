@@ -96,9 +96,8 @@ export const CHECK = {
     hide: 0.1,
     // výpis hodu: okno se jménem vlastnosti, řádek za každé kolo, pak výsledek
     dice: {
-        title: (name) => `Zkouška: ${name}`, task: 'Překážka',
-        row: (mine, x, who, theirs, y) => `Vy ${mine} + kostka ${x} = ${mine + x}, ${who} ${theirs} + kostka ${y} = ${theirs + y}.`,
-        tie: 'Remíza, hází se znovu.', tieLost: 'Remíza. Na těžkou obtížnost prohrává.', won: 'Vyšlo to.', lost: 'Nevyšlo to.',
+        title: (name) => `Zkouška: ${name}`, task: 'Překážka', you: 'Vy',
+        tie: 'Remíza, hází se znovu.', tieLost: 'Remíza. Na těžkou prohrává.', won: 'Vyšlo to.', lost: 'Nevyšlo to.',
     },
     cost: { ruka: { hurt: 2 }, oko: { hurt: 1 }, usta: {} },
     fail: {

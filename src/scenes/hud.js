@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { ABOUT, LADENI, HUD, QUEST, BAG, CARD, CREATE, OBTIZNOST, DIALOGS, ITEMS, ATTRIBUTE_NAMES, ATTRIBUTE_ICONS, ATTRIBUTE_INFO, FACTIONS, tickets } from '../script';
+import { CHECK, ABOUT, LADENI, HUD, QUEST, BAG, CARD, CREATE, OBTIZNOST, DIALOGS, ITEMS, ATTRIBUTE_NAMES, ATTRIBUTE_ICONS, ATTRIBUTE_INFO, FACTIONS, tickets } from '../script';
 import { journal, factions, trustLevel, itemStats, diceChance, tieLoses } from '../story';
 import { ATTRIBUTES, XP_LEVELS, attr, maxHp, equipItem, useSupply } from '../state';
 import { DEBUG } from '../debug';
@@ -245,6 +245,79 @@ export class HudScene extends Phaser.Scene {
         return [].concat(lines).reduce((chain, line) => chain.then(() => new Promise((resolve) => {
             this.renderPanel({ speaker, face, body: line, buttons: [{ label: HUD.next, primary: true, onPress: () => { this.closePanel(); resolve(); } }] });
         })), Promise.resolve());
+    }
+
+    // Zkouška vlastnosti kostkami (story.js rollDice): vlevo hrdinka, vpravo protistrana, u každé ikona vlastnosti,
+    // hodnota, čtyřstěnná kostka (kostka_0–4, protistrana přibarvená) a součet. Kostky se kutálejí a dopadnou po sobě,
+    // při přehazované remíze znovu; nakonec uprostřed výsledek. Tlačítko Dál (i Enter) napřed animaci dokončí, pak zavře.
+    dice({ title, icon, mine, theirs, who, rounds, win, loses }) {
+        return new Promise((resolve) => {
+            this.closePanel();
+            const sound = this.registry.get('sound');
+            const x = 24, width = WIDTH - 48 - SIDE - (this.card && !MOBILE ? CARD_W + 8 : 0), height = 250;
+            const container = this.add.container(0, HEIGHT - 16 - height).setDepth(20);
+            const parts = [panel(this, x, 0, width, height), head(this, x + 28, 20, title.toUpperCase(), { color: CRT.amber })];
+            const big = (px, py, value, style = {}) => { const t = body(this, px, py, value, { fontSize: '44px', ...style }).setOrigin(0.5); parts.push(t); return t; };
+            const side = (cx, name, value, tint) => {
+                parts.push(head(this, cx, 62, name.toUpperCase(), { fontSize: '14px', color: CRT.dim }).setOrigin(0.5, 0));
+                parts.push(this.add.image(cx - 120, 130, 'atlas', icon).setScale(3));
+                big(cx - 78, 130, String(value));
+                big(cx - 44, 130, '+', { color: CRT.dim });
+                const die = this.add.image(cx + 22, 130, 'atlas', 'kostka_0').setScale(4);
+                if (tint) die.setTint(tint);
+                parts.push(die);
+                const eq = big(cx + 88, 130, '=', { color: CRT.dim }).setVisible(false);
+                const sum = big(cx + 128, 130, '').setVisible(false);
+                return { die, eq, sum, value, group: parts.slice(-6) };
+            };
+            const half = width / 4;
+            const me = side(x + half, CHECK.dice.you, mine, null), foe = side(x + width - half, who, theirs, 0xd9a05b);
+            const verdict = body(this, x + width / 2, 62, '', { fontSize: '30px', color: CRT.amber }).setOrigin(0.5, 0);
+            parts.push(verdict);
+            let done = false, skip = false, wake = null;
+            const close = () => { this.closePanel(); resolve(); };
+            const next = button(this, x + width / 2, height - 36, width - 32, 46, HUD.next, () => { if (done) close(); else { skip = true; wake?.(); } }, { primary: true, center: true, fontSize: MOBILE ? 34 : 28 });
+            this.buttons = [next];
+            container.add([...parts, next]);
+            this.panel = container;
+            this.focus = -1;
+            const alive = () => this.panel === container;
+            const wait = (ms) => (skip ? Promise.resolve() : new Promise((r) => { const t = this.time.delayedCall(ms, r); wake = () => { t.remove(); r(); }; }));
+            // kutálení: prázdná stěna poskakuje a otáčí se po čtvrtotáčkách, pak dopadne číslem nahoru
+            const tumble = async (s, n, ms) => {
+                s.eq.setVisible(false); s.sum.setVisible(false).setColor(CRT.text);
+                s.die.setFrame('kostka_0');
+                for (let t = 0; t < ms && !skip && alive(); t += 70) {
+                    s.die.setAngle(90 * Math.floor(Math.random() * 4)).setY(130 - 4 - Math.random() * 10);
+                    if (t % 140 === 0) sound?.tick();
+                    await wait(70);
+                }
+                if (!alive()) return;
+                s.die.setFrame(`kostka_${n}`).setAngle(0).setY(130);
+                s.eq.setVisible(true); s.sum.setText(String(s.value + n)).setVisible(true);
+                if (!skip) { sound?.drop(); this.tweens.add({ targets: s.die, scaleY: 3.4, duration: 60, yoyo: true }); }
+            };
+            (async () => {
+                for (let i = 0; i < rounds.length && alive(); i++) {
+                    const [a, b] = rounds[i];
+                    verdict.setText('');
+                    await Promise.all([tumble(me, a, 420), tumble(foe, b, 700)]);
+                    if (!alive()) return;
+                    if (i < rounds.length - 1) { verdict.setText(CHECK.dice.tie); await wait(900); }
+                }
+                if (!alive()) return;
+                await wait(250);
+                if (!alive()) return;
+                const [a, b] = rounds.at(-1);
+                const tie = mine + a === theirs + b;
+                verdict.setText(tie && loses ? CHECK.dice.tieLost : win ? CHECK.dice.won : CHECK.dice.lost).setColor(win ? CRT.amber : CRT.red);
+                (win ? me : foe).sum.setColor(CRT.amber);
+                (win ? foe : me).sum.setColor(CRT.dim);
+                sound?.[win ? 'pass' : 'wrong']();
+                if (!win) this.tweens.add({ targets: me.group, x: '+=6', duration: 45, yoyo: true, repeat: 3 });
+                done = true;
+            })();
+        });
     }
 
     // Nedostupné volby (podmínka na stav nebo atribut) se nezobrazí vůbec; volajícímu se vrací index v původním poli.

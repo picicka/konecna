@@ -149,3 +149,17 @@ obt("nemozna", (c) => {
   c.circ(8, 14, 6, "F"); c.circ(7, 15, 4, "f"); c.poly([5, 14, 8, 12, 10, 15, 7, 18], "K"); c.px(6, 14, "x")
   c.px(15, 17, "f"); c.px(17, 14, "F"); c.px(3, 8, "f")
 })
+
+// Čtyřstěnná kostka pro zkoušky vlastností (HudScene.dice): jehlan zepředu jako trojúhelník s číslem na stěně, aby
+// nešla splést s šestistěnkou. kostka_0 je prázdná stěna pro kutálení (scéna ji otáčí po čtvrtotáčkách).
+const CISLA = {
+  1: ["..k..", ".kk..", "..k..", "..k..", "..k..", "..k..", ".kkk."],
+  2: [".kkk.", "k...k", "....k", "...k.", "..k..", ".k...", "kkkkk"],
+  3: ["kkkk.", "....k", "....k", ".kkk.", "....k", "....k", "kkkk."],
+  4: ["...k.", "..kk.", ".k.k.", "k..k.", "kkkkk", "...k.", "...k."],
+}
+for (let n = 0; n <= 4; n++) sprite("kostka_" + n, { w: 24, h: 24, outline: "k" }, (c) => {
+  c.poly([11, 0, 21, 20, 0, 20], "W"); c.poly([11, 0, 21, 20, 17, 20], "v"); c.poly([11, 0, 12, 0, 21, 20, 20, 20], "x")
+  c.hline(1, 20, 20, "v"); c.px(10, 3, "c"); c.px(4, 18, "c"); c.px(5, 19, "c")
+  if (n) CISLA[n].forEach((row, y) => [...row].forEach((ch, x) => { if (ch === "k") { c.px(7 + x, 11 + y, "k"); c.px(8 + x, 11 + y, "k") } }))
+})
