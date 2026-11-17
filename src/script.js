@@ -293,6 +293,22 @@ export const ODDITY_LINES = {
         'Na pilíři je sprejem: „Policajti máčí koťátkům ocásky do Sava.“ Psáno z loďky, poslední řádek je nakřivo.',
         'Kdo to psal, měl dost barvy a dost času. Policajty v množném čísle už asi dlouho neviděl.',
     ] },
+    // klub otužilců u severního mola Nuseláku (rekvizita otuzilci) a jeho plavci v červených čepičkách (swimmers)
+    otuzilci: { lines: [
+        'Klub otužilců Nusle. Dřív jezdili za studenou vodou přes půl Prahy. Teď ji mají pod okny a příspěvky zůstaly stejné.',
+        '„Dvanáct stupňů! To je na nás skoro teplo!“ Pán v plavkách se klepe jen trochu.',
+        '„Pojď taky! Brašnu ti pohlídáme, čepičku půjčíme. Červenou, jinou nemáme.“',
+        'Paní v ručníku drží hrnek oběma rukama. Podle vůně to čaj není.',
+        '„Červená je kvůli lachtanům. Aby věděli, kdo je tu člen.“',
+    ] },
+    plavec: { lines: [
+        '„Od břehu k břehu a zpátky! Dál ne, tam už je to loďkařů.“',
+        '„Nemluv na mě, ztratím tempo!“ Neztratí.',
+        'Plavec zabere, nadechne se a zabere. Lachtan plave vedle něj a nedá mu to žádnou práci.',
+        '„Pode mnou je hospoda, kam jsme chodili po plavání. Teď plavu nad ní. Je to skoro stejný.“',
+        '„Voda je letos teplejší. Nikomu to neříkej, nahrnuli by se sem.“',
+        '„Čepičku nesundávám. Kormidelník mě bez ní jednou vzal pádlem. Myslel, že jsem lachtan.“',
+    ] },
     tatra_vb: { lines: [
         'Tatra 613 Veřejné bezpečnosti, exponát. Jediné auto široko daleko, které nikdo nevykradl.',
         'Na kapotě je sprejem ACAB. Pod tím propiskou, úhledně: All Cats Are Beautiful. Opraveno služebně.',
@@ -439,6 +455,12 @@ export const CUTSCENES = {
         { image: 'cs_nusle', lines: [
             'Flotila vyplouvá ze Starého Města. Pilař vede, Admirál na přídi drží proslov ke břehům.',
             'Kolem Vyšehradu do zatopených Nuslí. Pod zlomeným mostem flotila zakotví. Kormidelník mává od jižního mola.',
+        ] },
+    ],
+    cesta_staromak_nuselak: [
+        { image: 'cs_nusle', lines: [
+            'Kormidelník bere loďku proti proudu, kolem skály Vyšehradu a údolím nahoru do Nuslí.',
+            'Pod zlomeným mostem přirazí k jižnímu molu. Lachtani se přijdou podívat, kdo přijel.',
         ] },
     ],
     cesta_staromak_vaclavak: [
@@ -626,7 +648,7 @@ export const BATTLES = {
         intro: 'Vůdce tlupy zafuní a sklopí kly. Za ním další dva, menší a stejně naštvaní.',
         heavy: 'Vůdce hrabe kopytem a bere rozběh.', waver: 'Kanci funí a přešlapují na místě.', hit: 'Kanec vás nabere.', miss: 'Kanec proletí kolem.', hurt: 'Kanec zakvičí.', shout: 'Kanec zaváhá.',
         win: 'Vůdce zafuní a odvede tlupu přes lávku pod platany. Dvůr je volný.', yield: 'Kanci couvnou a táhnou přes lávku pod platany. Cesta ke kolu je volná.', flee: 'Utečete za roh mlýna. Kanci ryjí dál.' },
-    vymahaci: { name: 'Tržištní vymahači', sprite: 'vymahac', scale: 4, hp: 18, nerve: 15, stats: { ruka: 4, usta: 3, oko: 2 }, pack: true, loot: { give: 'baseballka' }, talk: 'Domluvit jim',
+    vymahaci: { name: 'Tržištní vymahači', sprite: 'vymahac', sprite2: 'vymahac_maly', scale: 4, hp: 18, nerve: 15, stats: { ruka: 4, usta: 3, oko: 2 }, pack: true, loot: { give: 'baseballka' }, talk: 'Domluvit jim',
         intro: 'Jeden vytáhne řetěz, druhý baseballku s Fantovou cenovkou. „Nic osobního.“',
         heavy: 'Větší se rozpřáhne baseballkou přes hlavu.', waver: 'Menší hledá v seznamu, jestli tam opravdu jste.', hit: 'Baseballka dopadne.', twice: 'Řetěz švihne.', miss: 'Vymahač se netrefí.', hurt: 'Vymahač zakleje.', shout: 'Vymahač se ohlédne po kolegovi.',
         win: 'Vymahači si sednou na obrubník u Mostecké a počítají zuby. „Panu Fantovi řekneme, že jste byla rychlá.“', yield: '„Nic osobního,“ řekne ten větší a schová řetěz. Sednou si na obrubník a dál se nedívají.', flee: 'Utečete zpátky na most. Vymahači zůstávají v ústí Mostecké.' },
@@ -766,7 +788,7 @@ export const DIALOGS = {
                 { id: 'plot_pes', label: 'Zatarasit díru v plotě, kterou prozradil voříšek.', if: { flag: 'pes_dira' }, else: 'Kde díra je, by musel někdo prozradit.', do: { flag: 'psi_ok', quest: { psi: 'done' }, xp: 2 }, reply: ['Za keřem je v plotě díra a za ní šachta do tunelu, přesně jak říkal. Zatarasíte ji plechem z boudy. Psi čuchají, nechápou a nakonec se odloudají k Robinovu ohni.'], end: true },
                 { id: 'plot', label: 'Najít díru, kudy lezou do tunelu, a zatarasit ji.', if: { attr: { oko: 2 } }, else: 'Díru v plotě najde jen Oko 2.', do: { flag: 'psi_ok', quest: { psi: 'done' }, xp: 2 }, reply: ['Za keřem je v plotě díra a za ní šachta do tunelu. Zatarasíte ji plechem z boudy. Psi čuchají, nechápou a nakonec se odloudají k Robinovu ohni.'], end: true },
                 { id: 'obojek', label: 'Chytit vůdce za stužku na krku a odtáhnout ho k Robinovi.', check: 'ruka', else: 'Udržet vůdce smečky chce Ruku 2.', do: { flag: 'psi_ok', quest: { psi: 'done' }, xp: 2 }, failReply: ['Vůdce se vysmekne a chňapne vás po ruce. Smečka štěká.'], reply: ['Vůdce se vzpírá, ale stužka drží. Ostatní dva jdou za ním. Robin je uváže u ohně a tvrdí, že to byl jeho nápad.'], end: true },
-                { id: 'zarvat', label: 'Zařvat na ně jako pošťačka na psa.', if: { attr: { usta: 2 } }, else: 'Zahnat psy hlasem chce Ústa 2.', do: { flag: 'psi_ok', quest: { psi: 'done' }, xp: 2 }, reply: ['Každý pes na světě zná pošťačku, která už toho má dost. Psi stáhnou ocasy, odplíží se k Robinovu ohni a lehnou si k němu.'], end: true },
+                { id: 'zarvat', label: 'Zařvat na ně jako pošťačka na psa.', check: 'usta', else: 'Zahnat psy hlasem chce Ústa 1.', do: { flag: 'psi_ok', quest: { psi: 'done' }, xp: 2 }, reply: ['Každý pes na světě zná pošťačku, která už toho má dost. Psi stáhnou ocasy, odplíží se k Robinovu ohni a lehnou si k němu.'], end: true },
             ] },
         } },
     // —— Václavák ——
@@ -965,6 +987,7 @@ export const DIALOGS = {
             prijezd: { say: ['Jste tu. Já jela rovnou stavidlem, mě tam znaj. Kormidelník vozí pomalu, ale vozí.', 'Admirál sedí na Husovi. Kdo chce po vodě dál, musí za ním. Kdo nechce nic, musí taky, jen to ještě neví.'], do: { flag: 'staromak_prijezd', quest: { lodka: 'done', admiral: 'nest' } }, next: 'hub' },
             hub: { say: ['Kam to bude?'], choices: [
                 { id: 'zpet', label: 'Zpátky na Václavák.', if: { trust: { lodkari: 0 } }, else: 'Kdo naštval loďkaře, toho Kuřačka nesveze.', reply: ['Nasedněte. Cigaretu vám cestou nenabídnu, mám poslední.'], do: { travel: 'vaclavak' } },
+                { id: 'nusle', label: 'Do Nuslí.', if: { trust: { lodkari: 0 } }, else: 'Kdo naštval loďkaře, toho do Nuslí nikdo nesveze.', reply: ['Pod most nejedu. Ale kormidelník se vrací prázdnej. Hodím vás k němu. Seďte uprostřed.'], do: { travel: 'nuselak' } },
                 { id: 'admiral', label: 'Co je ten Admirál zač?', once: true, reply: ['Býval kapitánem výletní lodi. Pak přišla voda, sehnal pět loděk a byl z něj admirál. Cituje prezidenty z paměti, většinou špatně, a kanál má za div světa.', 'Na pomník vedou lávky přes náměstí. Klepejte, než vstoupíte. Na co, to je jedno.'] },
             ] },
         } },

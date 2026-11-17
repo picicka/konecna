@@ -65,6 +65,8 @@ export class WorldScene extends Phaser.Scene {
         this.stops = {};
         this.problems = [];
         this.upper = new Map(); // klíč a,b → výška horní úrovně
+        this.ringSpots = []; // loďky, od kterých jdou po vodě kruhy
+        this.wet = undefined; // živá voda (updateWater) se chystá znovu pro každé místo
         this.upperBlocked = new Set();
         this.links = new Map();
         this.towers = new Map(); // klíč dlaždice věže → { sprite, top }
@@ -109,6 +111,7 @@ export class WorldScene extends Phaser.Scene {
         this.drawShadows();
         this.placeLights();
         this.placeLife();
+        this.placeSwimmers();
         // hudba místa: zatopená místa mají kapky, Hrad temný dron, ostatní ulice
         this.registry.get('sound')?.music({ hrad: 'hrad', staromak: 'voda', nuselak: 'voda', vaclavak: 'voda' }[this.state.place] ?? 'ambient');
         // zvuky místa (vítr, oheň, voda) jedou z update; s koncem scény utichnou
@@ -307,6 +310,13 @@ export class WorldScene extends Phaser.Scene {
             else if (low(a, b1 + 1)) put(ns.piers.includes(a) ? 'ns_pilir' : `ns_predni${ISO.hash(a, b1, 63) < 0.5 ? '' : '2'}`, ISO.toScreen(a - 0.5, b1 + 0.5), ISO.depthOf(a, b1, 1), 16, 64);
             if (low(a, b0 - 1)) put(`ns_zadni${ISO.hash(a, b0, 64) < 0.5 ? '' : '2'}`, ISO.toScreen(a - 0.5, b0 - 0.5), ISO.depthOf(a, b0 - 1), 8, 44);
         }
+        // křídlo opěry: dvě dlaždice před první dlaždicí trouby na severním břehu, ať trouba nezačíná uříznutá ve vzduchu
+        const first = Array.from({ length: ns.a1 - ns.a0 + 1 }, (_, i) => ns.a0 + i).find((a) => low(a, b1 + 1));
+        if (first > ns.a0 + 1 && this.textures.getFrame(SHEET, 'ns_kridlo')) {
+            put('ns_kridlo', ISO.toScreen(first - 2.5, b1 + 0.5), ISO.depthOf(first - 1, b1, 1), 16, 128);
+            // dlaždice, přes které křídlo visí, jsou bočnice mostu, ne zem: nedá se na ně vstoupit
+            this.blocked.add(ISO.key(first - 2, b1 + 1)); this.blocked.add(ISO.key(first - 1, b1 + 1));
+        }
         put('ns_konec_sever', ISO.toScreen(g0 - 0.5, b1 + 0.5), ISO.depthOf(g0 - 1, b1, 2), 290, 200);
         this.lookAt(put('ns_konec_jih', ISO.toScreen(g1 + 0.5, b1 + 0.5), ISO.depthOf(g1 + 1, b0) - 1, 340, 170), 'ns_souprava', { a: g1, b: b1 });
         // Stanice Vyšehrad pod silnicí (ns.station): silnice je o patro výš než terén u mola. Od její hrany (řada edge)
@@ -435,7 +445,7 @@ export class WorldScene extends Phaser.Scene {
         // malá věc (kuriozita, rekvizita) má přednost před stavbou za ní, ze staveb ta nejvíc vpředu
         const hits = (this.talkingOddities ?? []).filter((o) => o.sprite.active && (o.exact
             ? this.solidAt(o.sprite, x, y) && !(o.sprite.mask && this.inHole(x, y, o.sprite.mask)) && !cover().some((c) => c.depth > o.sprite.depth && c.alpha > 0.9 && this.solidAt(c, x, y))
-            : o.sprite.getBounds().contains(x, y)));
+            : (o.pad ? Phaser.Geom.Rectangle.Inflate(o.sprite.getBounds(), o.pad, o.pad) : o.sprite.getBounds()).contains(x, y)));
         return hits.find((o) => !o.exact) ?? hits.sort((p, q) => q.sprite.depth - p.sprite.depth)[0];
     }
 
@@ -462,7 +472,15 @@ export class WorldScene extends Phaser.Scene {
         const view = this.cameras.main.worldView;
         const bx = Phaser.Math.Clamp(at ? at.x : top.centerX, view.x + w / 2 + 8, view.right - w / 2 - 8);
         const by = Math.max(at ? at.y - 24 : top.top - 18, view.y + 64 + h);
-        this.bubble = this.add.container(Math.round(bx), Math.round(by), [back, tail, label]).setDepth(1e7);
+        // otevřená minimapa je nad světem: bublina, která by pod ni zajela, se odsune vlevo od ní
+        let mx = bx;
+        const mini = this.hud?.minimap?.visible && this.hud.minimapBox, zoom = this.cameras.main.zoom;
+        if (mini) {
+            const left = view.x + (mini.x - 16) / zoom, bottom = view.y + (mini.y + mini.h + 16) / zoom;
+            if (bx + w / 2 > left && by - h < bottom) mx = Math.max(view.x + w / 2 + 8, left - w / 2);
+        }
+        tail.setX(Phaser.Math.Clamp(bx - mx, -w / 2 + 12, w / 2 - 12));
+        this.bubble = this.add.container(Math.round(mx), Math.round(by), [back, tail, label]).setDepth(1e7);
         this.registry.get('sound')?.tick?.();
         this.time.delayedCall(4500, () => { if (this.bubble && this.bubble.list.includes(label)) { this.bubble.destroy(); this.bubble = null; } });
     }
@@ -857,6 +875,100 @@ export class WorldScene extends Phaser.Scene {
         });
     }
 
+    // Živá voda (art/voda.px.js): hladina je zapečená v dílech země, hýbou se na ní malé animace. Několikrát za vteřinu
+    // se zkusí pár náhodných bodů ve výřezu kamery; kde je voda, rozsvítí se vlnka, odlesk nebo kruh, těsně u břehu,
+    // mola a lávky pěna. Sprite se přehraje jednou a vrátí se do zásoby, takže jich je naráz jen pár desítek, ať je vody
+    // na mapě sebevíc. Leží hned nad zemí pod drobnostmi, stíny a vším ostatním; okraje spritu musí být taky nad vodou,
+    // aby vlnka nelezla na prkna mola.
+    updateWater(delta) {
+        if (this.wet === undefined) {
+            this.wet = this.map.ground.some((row) => [...row].includes('w')) && Boolean(this.textures.getFrame('atlas', 'vlnka_0'));
+            this.waterPool = [];
+            this.waterT = 0;
+            if (this.wet) for (const key of ['vlnka', 'vlnka_b', 'odlesk', 'kruh', 'pena']) {
+                const frames = this.textures.get('atlas').getFrameNames().filter((n) => n.startsWith(`${key}_`) && /^\d+$/.test(n.slice(key.length + 1))).sort((p, q) => Number(p.split('_').pop()) - Number(q.split('_').pop()));
+                if (!this.anims.exists(`${key}_voda`)) this.anims.create({ key: `${key}_voda`, frames: frames.map((frame) => ({ key: 'atlas', frame })), frameRate: key === 'odlesk' ? 8 : 6 });
+            }
+        }
+        if (!this.wet || (this.waterT -= delta) > 0) return;
+        this.waterT = 45;
+        const view = this.cameras.main.worldView;
+        const water = (x, y) => { const t = ISO.toGrid(x, y); return this.inside(t.a, t.b) && this.map.ground[t.a][t.b] === 'w' && !this.upper.has(ISO.key(t.a, t.b)); };
+        for (let i = 0; i < 10; i++) {
+            const x = Math.round(view.x + Math.random() * view.width), y = Math.round(view.y + Math.random() * view.height);
+            // místo pro celý sprite: střed i oba konce podél osy a nad vodou
+            if (!water(x, y) || !water(x - 18, y + 9) || !water(x + 18, y - 9)) continue;
+            // břeh: kousek dál v některém směru dlaždic už voda není
+            const shore = [[36, 18], [-36, -18], [36, -18], [-36, 18]].some(([dx, dy]) => !water(x + dx, y + dy));
+            const r = Math.random();
+            const key = shore ? (r < 0.7 ? 'pena' : 'vlnka_b') : r < 0.5 ? 'vlnka' : r < 0.8 ? 'vlnka_b' : r < 0.93 ? 'odlesk' : 'kruh';
+            this.ripple(key, x, y);
+        }
+        // neonová obálka Na Můstku se zrcadlí: odlesky v její barvě na vodě pod ní
+        if (this.humSpot) {
+            const x = Math.round(this.humSpot.x + (Math.random() - 0.5) * 420), y = Math.round(this.humSpot.y + Math.random() * 240);
+            if (water(x, y)) this.ripple('odlesk', x, y, 0x39ff9a);
+        }
+        // kruhy od loděk a za plavci
+        if ((this.ringT = (this.ringT ?? 0) - 45) <= 0) {
+            this.ringT = 1500;
+            for (const spot of this.ringSpots ?? []) {
+                const x = Math.round(spot.x + (Math.random() - 0.5) * 30), y = Math.round(spot.y + 2 + Math.random() * 8);
+                if (view.contains(x, y) && water(x, y)) this.ripple('kruh', x, y);
+            }
+            for (const w of this.swimmers ?? []) if (!w.rest && view.contains(w.sprite.x, w.sprite.y)) this.ripple('kruh', Math.round(w.sprite.x - w.dir * 30), Math.round(w.sprite.y + w.dir * 15));
+        }
+    }
+
+    // Jedna animace na hladině ze zásoby (vlnka, odlesk, kruh, pena); tint přibarví odlesk neonu.
+    ripple(key, x, y, tint = null) {
+        const s = this.waterPool.pop() ?? this.add.sprite(0, 0, 'atlas', 'vlnka_0').setFlipX(true).setDepth(-99000).on('animationcomplete', () => { s.setVisible(false); this.waterPool.push(s); });
+        s.setPosition(x, y).setVisible(true).play(`${key}_voda`);
+        if (tint) s.setTint(tint); else s.clearTint();
+        s.anims.timeScale = 0.7 + Math.random() * 0.6;
+    }
+
+    // Plavci (swimmers v src/places/<místo>.js, sprite plavec): každý plave ve své dráze podél osy a tam a zpátky,
+    // na obrátce si chvíli odpočine. Klepnutí ukáže hlášku (ODDITY_LINES podle say), za plavcem zůstávají kruhy.
+    placeSwimmers() {
+        const cfg = this.def?.swimmers;
+        this.swimmers = [];
+        if (!cfg || !this.textures.getFrame('atlas', 'plavec_0')) return;
+        this.idleAnim('plavec');
+        const said = ODDITY_LINES[cfg.say];
+        cfg.lanes.forEach((lane, i) => {
+            const a = lane.a[0] + ISO.hash(i, 7, 91) * (lane.a[1] - lane.a[0]);
+            const sprite = this.add.sprite(0, 0, 'atlas', 'plavec_0').setOrigin(0.5, 0.7).play({ key: 'plavec_idle', startFrame: i % 4 });
+            sprite.anims.timeScale = 0.6;
+            const w = { sprite, lane, a, dir: i % 2 ? -1 : 1, rest: 0, speed: 0.5 + ISO.hash(i, 3, 92) * 0.2, tile: { a: Math.round(a), b: Math.round(lane.b) } };
+            this.swimmers.push(w);
+            if (said) this.talkingOddities.push({ sprite, lines: said.lines, next: i * 2, tile: w.tile, pad: 14 });
+        });
+        this.updateSwimmers(0);
+    }
+
+    updateSwimmers(delta) {
+        for (const w of this.swimmers ?? []) {
+            if (w.rest > 0) {
+                w.rest -= delta;
+                if (w.rest <= 0) { w.dir = -w.dir; w.sprite.anims.resume(); }
+            } else {
+                w.a += w.dir * w.speed * delta / 1000;
+                if ((w.dir > 0 && w.a >= w.lane.a[1]) || (w.dir < 0 && w.a <= w.lane.a[0])) { w.a = Phaser.Math.Clamp(w.a, w.lane.a[0], w.lane.a[1]); w.rest = 1800; w.sprite.anims.pause(); }
+            }
+            const p = ISO.toScreen(w.a, w.lane.b);
+            // tempo je slyšet, když plavec míjí hrdinku (do zhruba šesti dlaždic)
+            if (!w.rest && delta && (w.strokeT = (w.strokeT ?? 600) - delta) <= 0) {
+                w.strokeT = 850 + Math.random() * 200;
+                const near = 1 - Math.hypot(p.x - this.player.x, (p.y - this.player.y) * 2) / 520;
+                if (near > 0) this.registry.get('sound')?.splash(near);
+            }
+            w.tile.a = Math.round(w.a);
+            // sprite kouká doleva; k +a (doprava nahoru) se zrcadlí
+            w.sprite.setPosition(Math.round(p.x), Math.round(p.y)).setFlipX(w.dir > 0).setDepth(ISO.depthOf(w.a, w.lane.b));
+        }
+    }
+
     updateAmbience(delta) {
         if ((this.ambT = (this.ambT ?? 0) - delta) > 0) return;
         this.ambT = 300;
@@ -1054,6 +1166,8 @@ export class WorldScene extends Phaser.Scene {
             const thing = this.placeThing(p.key, p.a, p.b, p);
             // under: rekvizita leží pod postavou zastavení (loďka, ve které převozník stojí), hloubku má těsně pod ní
             if (p.under) thing.setDepth(this.depthAt(lay.npc.a, lay.npc.b, lay.npc.L ?? 0) - 0.5);
+            // loďka na vodě dělá kruhy (WorldScene.updateWater)
+            if (/lodka/.test(p.key)) (this.ringSpots ??= []).push({ x: thing.x, y: thing.y - 6 });
             // rekvizita s hláškami (say: klíč v ODDITY_LINES) se nebere jako zastavení, klepnutí ukáže bublinu (nutrie na břehu)
             const said = p.say && ODDITY_LINES[p.say];
             if (said) this.talkingOddities.push({ sprite: thing, lines: [...said.lines, ...(ODDITY_GROUPS[said.group] ?? [])], next: 0, tile: { a: p.a, b: p.b } });
@@ -1160,7 +1274,7 @@ export class WorldScene extends Phaser.Scene {
         };
         // Strom ani keř nesmí zakrýt postavu zastavení: co stojí před ní (větší hloubka) a obrázkem by ji překrylo,
         // se nevysadí. Postavy jsou i podoby zastavení po vyřešení (after).
-        const figures = Object.values(this.def?.stops ?? {}).flatMap((st) => [st.npc, st.after?.npc, ...(st.stages ?? []).map((g) => g.npc)]).filter(Boolean).map((n) => ({ ...ISO.foot(n.a, n.b), depth: ISO.depthOf(n.a, n.b) }));
+        const figures = Object.values(this.def?.stops ?? {}).flatMap((st) => [st.npc, st.after?.npc, ...(st.stages ?? []).map((g) => g.npc), ...(st.props ?? []).filter((q) => q.say)]).filter(Boolean).map((n) => ({ ...ISO.foot(n.a, n.b), depth: ISO.depthOf(n.a, n.b) }));
         const hides = (key, a, b) => {
             const frame = this.textures.getFrame('atlas', key);
             if (!frame) return false;
@@ -1190,7 +1304,7 @@ export class WorldScene extends Phaser.Scene {
             if (lamp) { this.props.push(this.placeAt('lamp', lamp.a, lamp.b)); return; }
             if (this.def?.bridge && (this.def.bridge.bed ?? ['h']).includes(at(ta, tb))) return;
             // na mostovce Nuseláku nic z OSM (stromy a lavičky jsou z parku pod mostem)
-            if (this.def?.nusle && band && ta >= band.a0 && ta <= band.a1 && tb >= band.b0 - 1 && tb <= band.b1 + 1) return;
+            if (this.def?.nusle && band && ta >= band.a0 && ta <= band.a1 && tb >= band.b0 - 1 && tb <= band.b1 + 3) return;
             // na suti svahu zůstanou jen stromy
             if (at(ta, tb) === 'k' && p.k !== 'tree') return;
             if (this.reserved.has(ISO.key(ta, tb)) || nearStart(ta, tb) || this.blocked.has(ISO.key(ta, tb))) return;
@@ -1733,6 +1847,8 @@ export class WorldScene extends Phaser.Scene {
         if (!this.player) return;
         this.updateLife(delta);
         this.updateAmbience(delta);
+        this.updateWater(delta);
+        this.updateSwimmers(delta);
         this.drawHoles();
         // Výhledy (views v src/places): na vyjmenovaných dlaždicích kamera plynule popojede (dy v bodech), aby byla vidět
         // vysoká stavba nad hrdinkou (nárožní věž paláce Koruna z mola u bufetu).

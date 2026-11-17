@@ -147,6 +147,42 @@ anim("lachtan", { w: 44, h: 26, fps: 3, frames: 3 }, (c) => {
   c.hline(14, Y + 1, 3, "J"); c.hline(34, Y + 1, 3, "J")
 })
 
+// —— Lachtan, který skáče z vody: vynoří se vpravo, obloukem přeletí doleva a zajede pod hladinu, po něm zůstanou kruhy
+// a chvíli klid. 14 snímků (pět skok, tři kruhy, zbytek hladina). Počátek dole uprostřed, hladina na řádku Y. ——
+anim("lachtan_skok", { w: 64, h: 44, fps: 8, frames: 14 }, (c) => {
+  const f = c.frame ?? 0, Y = 36
+  // póza: střed těla a směr čenichu
+  const POSE = [[46, 33, -0.55, -0.83], [39, 22, -0.87, -0.5], [31, 17, -1, 0], [23, 22, -0.87, 0.5], [16, 33, -0.55, 0.83]]
+  if (f < 5) {
+    const [cx, cy, hx, hy] = POSE[f]
+    for (let y = 0; y < Y; y++) for (let x = 0; x < 64; x++) {
+      const dx = x - cx, dy = y - cy, al = dx * hx + dy * hy, pe = -dx * hy + dy * hx
+      const ry = al < 0 ? 4.6 * (1 + al / 26) : 4.6
+      const body = (al / 13) ** 2 + (pe / ry) ** 2 < 1
+      const head = (al - 11) ** 2 + pe ** 2 < 10
+      const tail = al < -12 && al > -17 && Math.abs(Math.abs(pe) - (-al - 11) * 0.6) < 1.2
+      if (!body && !head && !tail) continue
+      // hřbet nahoře světlejší, břicho tmavé, mokrý lesk
+      c.px(x, y, pe > 1.2 && body ? "H" : "K")
+      if (body && pe > 2.6 && al > -6 && al < 6) c.px(x, y, "h")
+    }
+    c.px(Math.round(cx + hx * 13 - hy * -1), Math.round(cy + hy * 13), "v"); c.px(Math.round(cx + hx * 10 + hy * 2), Math.round(cy + hy * 10 - hx * 2), "k")
+    // kapky za tělem a pěna tam, kde protíná hladinu
+    if (f === 0) { c.rect(42, Y - 2, 10, 2, "W"); c.px(52, Y - 6, "w"); c.px(40, Y - 5, "w"); c.px(49, Y - 9, "J") }
+    if (f === 1) { c.hline(44, Y - 1, 8, "w"); c.px(47, Y - 7, "w"); c.px(50, Y - 11, "J"); c.px(44, Y - 12, "w") }
+    if (f === 2) c.px(44, Y - 12, "J")
+    if (f === 4) { c.rect(9, Y - 2, 11, 2, "W"); c.px(7, Y - 6, "w"); c.px(20, Y - 7, "w"); c.px(12, Y - 10, "w") }
+  }
+  // šplíchnutí a kruhy po dopadu
+  if (f === 5) { c.rect(10, Y - 4, 8, 4, "W"); c.px(8, Y - 8, "w"); c.px(19, Y - 9, "w"); c.px(13, Y - 12, "w"); c.px(16, Y - 6, "J") }
+  const ring = (cx, rx, col) => { for (let t = 0; t < 40; t++) { const a = t / 40 * Math.PI * 2; c.px(Math.round(cx + Math.cos(a) * rx), Math.round(Y + 2 + Math.sin(a) * rx / 2.4), col) } }
+  if (f === 5) ring(14, 7, "w")
+  if (f === 6) { ring(14, 10, "J"); ring(46, 6, "Z") }
+  if (f === 7) ring(14, 13, "Z")
+  // hladina: pár vlnek, ať je vidět, kde skáče
+  c.hline(4, Y + 1, 9, "Z"); c.hline(24 + (f % 3), Y + 3, 12, "J"); c.hline(46, Y + 1, 10, "Z"); c.hline(36 - (f % 2), Y + 5, 8, "Z")
+})
+
 // —— Lachtan na kusu betonu, který plave po hladině: leží, ploutve, hlava nahoře a dole (2 snímky). ——
 anim("lachtan_lezi", { w: 60, h: 36, fps: 2, frames: 2 }, (c) => {
   const f = c.frame ?? 0
@@ -206,4 +242,59 @@ sprite("tatra_vb", { w: 90 + 34 + 24, h: (90 + 34) / 2 + 15 + 13 + 20 + 6 }, (c)
   c.rect(bx - 3, by - 4, 6, 4, "b"); c.px(bx - 2, by - 4, "l"); c.px(bx + 1, by - 3, "k"); c.px(bx + 4, by - 1, "b")
   // rozbitá světla vpředu
   const [lx, ly] = G(-L / 2, Wd / 2 - 6, 8); c.px(lx, ly, "k"); c.px(lx + 1, ly, "x")
+})
+
+// —— Klub otužilců u severního mola a jeho plavci (WorldScene.placeSwimmers). Červené čepičky jsou jediná sytá barva
+// na jezeře, proto mají vlastní odstín mimo paletu. ——
+const CEP = "#b63a2e", CEP_D = "#7c2a24"
+// Plavec kraulem, kouká doleva: čepička, ramena a záda nad hladinou, paže v záběru, za ním bílá pěna od kopání a brázda
+// do stran. Je větší a světlejší než zbytek jezera, aby byl z mola vidět. 4 snímky. Počátek dole uprostřed = hladina.
+anim("plavec", { w: 64, h: 28, fps: 5, frames: 4 }, (c) => {
+  const f = c.frame ?? 0, Y = 19, bob = f % 2
+  // stín těla pod hladinou, záda a rameno nad ní
+  c.hline(20, Y + 2, 28, "X"); c.hline(22, Y + 3, 22, "X")
+  c.rect(20, Y - 2 + bob, 20, 2, "i"); c.hline(21, Y + bob, 20, "4"); c.hline(22, Y - 3 + bob, 8, "i"); c.rect(36, Y - 1 + bob, 8, 2, "b")
+  // hlava s čepičkou, obličej napůl ve vodě (při nádechu ve 3. snímku pootočený)
+  c.ellipse(15, Y - 3 + bob, 5, 4, "i"); c.poly([10, Y - 4 + bob, 11, Y - 8 + bob, 14, Y - 9 + bob, 18, Y - 9 + bob, 21, Y - 4 + bob], CEP)
+  c.hline(13, Y - 9 + bob, 5, CEP_D); c.vline(20, Y - 6 + bob, 3, CEP_D); c.hline(12, Y - 5 + bob, 8, "#d2594a")
+  c.px(12, Y - 2 + bob, "k"); if (f === 2) c.rect(10, Y - 1 + bob, 2, 1, "K")
+  // paže: natažená vpřed, nahoře nad hlavou, vzadu, pod vodou
+  if (f === 0) { c.line(22, Y - 3, 5, Y - 1, "i", 2); c.rect(2, Y - 1, 3, 2, "W") }
+  if (f === 1) { c.line(23, Y - 3, 19, Y - 13, "i", 2); c.line(19, Y - 13, 11, Y - 14, "i", 2); c.rect(8, Y - 13, 3, 2, "W") }
+  if (f === 2) { c.line(25, Y - 3, 33, Y - 10, "i", 2); c.rect(34, Y - 12, 2, 2, "W"); c.px(31, Y - 13, "w") }
+  if (f === 3) { c.rect(7, Y - 1, 3, 2, "W"); c.px(5, Y - 3, "w"); c.px(9, Y + 1, "w"); c.px(6, Y, "J") }
+  // pěna od kopání
+  for (const [x, y] of [[46, -3], [49, -1], [51, -4], [53, -2], [48, -5]]) c.rect(x + (f % 2), Y + y + ((x + f) % 2), 2, 2, "W")
+  c.px(55, Y - 5 + (f % 2), "w"); c.px(57, Y - 2, "w"); c.hline(45, Y, 12, "w")
+  // brázda: příď u hlavy a dvě čáry do stran dozadu
+  c.hline(6, Y + 1, 12, "w"); c.hline(4, Y + 2, 6, "J")
+  c.line(10, Y + 2, 40 + f, Y + 6, "J"); c.line(40 + f, Y + 6, 60, Y + 7, "Z"); c.hline(24 + f * 2, Y + 4, 10, "w")
+  c.hline(58, Y + 1, 5, "J"); c.hline(50 - f, Y + 3, 9, "Z")
+})
+// Klub na břehu: cedule s plavcem a teploměrem, pán v plavkách se založenýma rukama, paní v ručníku na lavičce
+// s hrnkem, hromádka šatů. 2 snímky: pára z hrnku a pán se klepe.
+anim("otuzilci", { w: 104, h: 64, outline: "k", fps: 3, frames: 2 }, (c) => {
+  const f = c.frame ?? 0
+  // cedule na kůlu: prkno, na něm čepička nad vlnkami, na kůlu teploměr
+  c.rect(11, 12, 2, 50, "h"); c.vline(12, 12, 50, "H"); c.rect(2, 8, 22, 14, "c"); c.hline(2, 21, 22, "e"); c.vline(23, 8, 14, "e"); c.hline(2, 14, 22, "C")
+  c.rect(10, 10, 5, 3, CEP); c.hline(11, 13, 3, "i"); c.hline(5, 16, 5, "L"); c.hline(13, 16, 6, "L"); c.hline(8, 18, 7, "L"); c.px(3, 9, "U"); c.px(22, 9, "U")
+  c.rect(14, 30, 2, 12, "W"); c.rect(14, 38, 2, 4, CEP); c.px(14, 42, CEP_D); c.px(15, 42, CEP_D)
+  // pán: nohy, plavky, břicho, založené ruce, hlava s čepičkou; ve 2. snímku se klepe (o bod vedle)
+  const mx = 36 + f
+  c.rect(mx, 46, 3, 16, "i"); c.rect(mx + 5, 46, 3, 16, "4"); c.rect(mx - 1, 61, 4, 2, "i"); c.rect(mx + 4, 61, 4, 2, "4")
+  c.rect(mx - 1, 39, 10, 8, "b"); c.hline(mx - 1, 39, 10, "L")
+  c.ellipse(mx + 4, 31, 6, 9, "i"); c.vline(mx + 9, 25, 13, "4"); c.vline(mx + 8, 33, 6, "4")
+  c.hline(mx - 2, 29, 12, "4"); c.hline(mx - 2, 30, 12, "i"); c.hline(mx - 2, 31, 11, "4"); c.px(mx - 3, 30, "i")
+  c.ellipse(mx + 3, 17, 4, 4, "i"); c.poly([mx - 1, 16, mx, 12, mx + 6, 12, mx + 8, 16], CEP); c.hline(mx + 1, 12, 4, CEP_D); c.px(mx + 7, 16, CEP_D)
+  c.px(mx + 1, 18, "k"); c.hline(mx, 20, 2, "K")
+  // lavička
+  c.rect(56, 46, 40, 3, "h"); c.hline(56, 48, 40, "H"); c.rect(58, 49, 2, 13, "H"); c.rect(92, 49, 2, 13, "H")
+  // paní v ručníku: nohy, ručník s pruhem, hlava s čepičkou, hrnek a pára
+  c.rect(63, 47, 3, 14, "i"); c.rect(68, 47, 3, 14, "4"); c.rect(62, 60, 4, 2, "i"); c.rect(67, 60, 4, 2, "4")
+  c.ellipse(70, 37, 8, 10, "W"); c.rect(63, 40, 15, 7, "W"); c.hline(63, 36, 15, "l"); c.hline(63, 43, 15, "l"); c.vline(77, 30, 17, "v"); c.vline(76, 34, 13, "v")
+  c.ellipse(69, 23, 4, 4, "i"); c.poly([65, 22, 66, 18, 72, 18, 74, 22], CEP); c.hline(67, 18, 4, CEP_D); c.px(73, 22, CEP_D); c.px(67, 24, "k")
+  c.rect(60, 37, 4, 4, "y"); c.px(59, 38, "Y"); c.hline(62, 39, 3, "i")
+  c.px(61 + f, 34, "W"); c.px(62 - f, 32, "w"); c.px(61 + f, 30, "v")
+  // šaty na lavičce a boty pod ní
+  c.rect(82, 41, 11, 5, "b"); c.rect(83, 39, 9, 2, "V"); c.hline(82, 45, 11, "N"); c.rect(84, 59, 4, 3, "H"); c.rect(89, 59, 4, 3, "H")
 })

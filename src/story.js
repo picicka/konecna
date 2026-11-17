@@ -165,7 +165,7 @@ const shop = async (world, id, speaker, face) => {
         const options = [...list.map((w) => {
             const item = ITEMS[w.item];
             const short = state.tickets < w.price;
-            return { label: SHOP.ware(item.name, BAG.slots[item.slot], itemStats(item)), icon: 'ico_ticket', badge: short ? SHOP.missing(w.price - state.tickets) : w.price, disabled: short };
+            return { label: SHOP.ware(item.name, BAG.slots[item.slot], itemStats(item)), image: `vec_${w.item}`, icon: 'ico_ticket', badge: short ? SHOP.missing(w.price - state.tickets) : w.price, disabled: short };
         }), { label: SHOP.leave }];
         const pick = await hud.choose(speaker, SHOP.prompt(state.tickets), options, face, { keepDisabled: true });
         if (pick >= list.length) return;

@@ -58,7 +58,7 @@ export const PLACES = {
         bridges: [{ name: 'Nuselský most', surface: 'asphalt', deck: { a0: 15, a1: 79, b0: 17, b1: 20 }, gap: { a0: 44, a1: 49 } }],
         // údolí Botiče: pod 212 m jezero, do 224 m svah; mola na obou březích (k loďce Kuřačky a kormidelníka)
         slope: { below: 224, step: 6, from: [{ a: 2, b: 19 }, { a: 100, b: 18 }], lake: { level: 212, sink: 13 },
-            landings: [{ a0: 12, a1: 21, b0: 25, b1: 25 }, { a0: 68, a1: 78, b0: 24, b1: 24 }] },
+            landings: [{ a0: 12, a1: 21, b0: 25, b1: 25 }, { a0: 70, a1: 78, b0: 24, b1: 24 }] },
         // landmarky (ručně kreslené, art/lm-nusle.px.js): Muzeum Policie u Karlova, Palác kultury, hotel Forum
         skip: ['Kongresové centrum Praha', 'Grand Hotel Prague Towers'],
         // plácek před vchodem do Muzea Policie (průčelí k +b), jinak ho obestaví domy z OSM

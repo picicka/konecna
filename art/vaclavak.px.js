@@ -115,13 +115,25 @@ anim("reproduktor", { w: 56, h: 180, fps: 3 }, (c) => {
   c.rect(24, 40, 3, 3, "3"); c.rect(32, 40, 3, 3, "3")
 }, frame(), frame((c) => c.px(13, 32, "k")))
 
-// Motorový člun loďkařů u mola: dřevěný trup s rezavým plechem, přívěsný motor, pneumatika jako blatník.
+// Motorový člun loďkařů u mola: dřevěný trup s rezavým plechem, přívěsný motor, pneumatika jako blatník. Trup má boky
+// (světlejší k divákovi vlevo, tmavší vpravo) a pod nimi čáru ponoru s pěnou a tmavým odrazem, aby člun seděl ve vodě
+// a nevypadal jako prkno ve vzduchu.
 sprite("lodka", { w: 120, h: 64, outline: "k" }, (c) => {
+  // odraz trupu na hladině
+  c.poly([4, 42, 50, 63, 114, 33, 112, 30, 50, 60, 6, 38], "X")
+  // boky trupu pod palubou: prkna, rezavý pás u ponoru
+  c.poly([6, 34, 50, 56, 50, 62, 6, 40], "3"); c.poly([50, 56, 112, 26, 112, 32, 50, 62], "K")
+  c.line(6, 37, 50, 59, "H"); c.line(50, 59, 112, 29, "k"); c.line(6, 40, 50, 62, "U"); c.line(50, 62, 112, 32, "U")
+  for (const x of [16, 28, 40]) c.vline(x, 40 + Math.round((x - 6) / 2), 4, "H")
+  // paluba
   c.poly([6, 34, 70, 6, 112, 26, 50, 56], "H"); c.poly([10, 34, 70, 10, 106, 27, 50, 52], "h")
   c.poly([18, 34, 70, 14, 98, 28, 50, 46], "3")
   for (let i = 0; i < 4; i++) c.line(26 + i * 16, 32 - i * 7, 54 + i * 12, 44 - i * 4, "H")
   c.rect(98, 18, 12, 14, "k"); c.rect(100, 20, 8, 8, "S"); c.line(104, 32, 108, 46, "M", 2)
-  c.ellipse(46, 50, 8, 4, "k"); c.poly([20, 30, 40, 20, 46, 26, 26, 36], "U")
+  c.ellipse(46, 53, 8, 4, "k"); c.ellipse(46, 53, 5, 2, "A"); c.poly([20, 30, 40, 20, 46, 26, 26, 36], "U")
+  // pěna u ponoru
+  for (const [x, y] of [[10, 43], [22, 49], [36, 56], [60, 58], [78, 49], [96, 40]]) c.hline(x, y, 4, "J")
+  c.hline(46, 63, 6, "w"); c.px(8, 42, "w"); c.px(110, 34, "w")
 })
 
 // Nouzový výlez ze stanice: betonový kvádr s plechovými dveřmi a malým znakem metra.

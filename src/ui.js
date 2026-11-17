@@ -75,6 +75,14 @@ export const button = (scene, x, y, width, height, label, onPress, options = {})
     }).setOrigin(0, 0.5);
     if (options.center) caption.setX(0).setOrigin(0.5, 0.5).setAlign('center');
     container.add([box, caption]);
+    // Obrázek věci vlevo na tlačítku (zboží v obchodě): text se odsune za něj.
+    if (options.image) {
+        const image = scene.add.image(-width / 2 + 10, 0, 'atlas', options.image).setOrigin(0, 0.5).setScale(options.imageScale ?? 2);
+        if (options.disabled) image.setAlpha(0.45);
+        container.add(image);
+        caption.setX(-width / 2 + 20 + image.displayWidth).setWordWrapWidth(width - 34 - image.displayWidth);
+        container.imageW = image.displayWidth + 6;
+    }
     // Ikona vlastnosti (Ruka, Ústa, Oko) vpravo na tlačítku, vedle ní požadovaná úroveň: volba, která na vlastnosti stojí.
     if (options.icon) {
         // iconScale: větší obrázek na vysokém tlačítku (výběr obtížnosti)
@@ -88,7 +96,7 @@ export const button = (scene, x, y, width, height, label, onPress, options = {})
             container.add(badge);
             badgeW = badge.width + 12;
         }
-        caption.setWordWrapWidth(width - 28 - Math.max(44, icon.displayWidth + 12) - Math.max(badgeW, options.badge !== undefined ? 36 : 0));
+        caption.setWordWrapWidth(width - 28 - (container.imageW ?? 0) - Math.max(44, icon.displayWidth + 12) - Math.max(badgeW, options.badge !== undefined ? 36 : 0));
     }
     container.setSize(width, height);
     container.box = box;

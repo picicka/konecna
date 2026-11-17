@@ -222,6 +222,8 @@ export const createSound = () => {
         level() { [440, 554, 659, 880].forEach((f, i) => setTimeout(() => tone('triangle', f, f, 0.01, 0.35, 0.32, true), i * 110)); },
         pass() { tone('triangle', 660, 660, 0.005, 0.12, 0.3, true); setTimeout(() => tone('triangle', 880, 880, 0.005, 0.2, 0.3, true), 90); },
         // Šplouchání vody u břehu a u lávek: hlasitost podle blízkosti (0 = daleko, 1 = u vody), vlny přicházejí a odcházejí.
+        // tempo plavce (WorldScene.updateSwimmers): krátké šplouchnutí, level podle vzdálenosti
+        splash(level = 1) { burst('bandpass', 900 + Math.random() * 500, 0.16, 0.32 * level, 0.9); burst('lowpass', 420, 0.22, 0.2 * level, 0.7); },
         water(level) {
             if (level <= 0) { if (loops.water) loops.water.level = 0; if (loops.water) loops.water.gain.gain.setTargetAtTime(0, audio()?.context.currentTime ?? 0, 0.5); return; }
             const loop = noiseLoop('water', 'lowpass', 700, 0.4, 0);

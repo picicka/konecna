@@ -79,6 +79,26 @@ licIdle("vymahac", LIC_VYMAHAC, (c, g) => {
   // cenovka na provázku
   c.px(x - 1, y + 6, "w"); c.px(x - 2, y + 7, "w"); c.rect(x - 4, y + 8, 3, 3, "W"); c.px(x - 3, y + 9, "V")
 })
+// Druhý vymahač: menší a obtloustlý, celý v teplákovce, řetěz na krku, v ruce seznam jmen. Břicho mu přetéká přes gumu.
+const LIC_VYMAHAC_MALY = {
+  build: "stout", height: 39, skin: "normal",
+  hair: { style: "short", col: "dark" },
+  top: { kind: "jacket", col: LIC_TEPLAKY }, shirtCol: { d: "v", m: "w", l: "W" },
+  legs: { kind: "trousers", col: LIC_TEPLAKY },
+  shoes: { kind: "shoes", col: "white" },
+  items: ["chain"],
+}
+licIdle("vymahac_maly", LIC_VYMAHAC_MALY, (c, g) => {
+  // břicho: bunda se přes něj nedopne, vykukuje tílko; bílé pruhy na rukávu a nohavici
+  c.ellipse(g.cx - 4, g.hipY - 3, 6, 4, "j"); c.vline(g.cx - 10, g.hipY - 4, 3, "1"); c.hline(g.cx - 8, g.hipY + 1, 9, "Q"); c.vline(g.cx - 3, g.hipY - 6, 6, "M")
+  c.hline(g.cx - 9, g.hipY + 2, 9, "w"); c.hline(g.cx - 8, g.hipY + 3, 7, "v")
+  for (let y = g.hipY + 2; y < 61; y++) c.px(g.cx - 1 - g.D.lw, y, "W")
+  for (let y = g.sy + 2; y < g.hipY - 1; y += 1) c.px(g.cx + g.D.sw, y, "W")
+  // seznam jmen v přední ruce: list s řádky, dva škrtnuté
+  const [x, y] = g.hand
+  c.rect(x - 5, y - 4, 6, 8, "W"); c.vline(x, y - 4, 8, "w"); c.hline(x - 4, y - 2, 4, "x"); c.hline(x - 4, y, 3, "V"); c.hline(x - 4, y + 2, 4, "x")
+  c.rect(x, y, 2, 2, "i")
+})
 licFace("vymahac", LIC_VYMAHAC, (c) => {
   // límec teplákovky se zipem a bílými pruhy pod bundou, lesk koženky
   c.poly([22, 40, 31, 40, 29, 50, 24, 50], "j"); c.vline(26, 41, 9, "M"); c.line(22, 40, 23, 48, "W")

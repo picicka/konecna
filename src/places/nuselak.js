@@ -14,15 +14,17 @@ export const NUSELAK = {
     ],
     // most: mostovka, zlom, pilíře (po 15,5 dlaždice jako skutečná pole 115 m), lano v řádku b 19
     nusle: { a0: 15, a1: 79, deck: [17, 20], gap: [44, 49], piers: [23, 38, 55, 70], rope: 19,
-        // pilíř u severního mola nese nápis o policajtech a koťátkách (klepnutím ho přečte bublina)
-        tagPier: 23,
+        // nápis o policajtech a koťátkách nese první pilíř, který stojí ve vodě (klepnutím ho přečte bublina)
+        tagPier: 38,
         // stanice Vyšehrad pod silnicí za koncem mostu: silnice (b 17–20) je o patro výš než terén u mola. Od hrany
         // edge visí stěna: holý beton (plain), schody dolů k molu (stairs, dvě dlaždice), prosklené čelo haly (glass)
         // a za ním tři díly klínu do terénu; hole je díra ve vozovce, kterou je vidět kolej a nástupiště
         station: { edge: 20, plain: [78, 79], stairs: 80, glass: [82, 88], hole: { a0: 83, b0: 18, w: 5, dpt: 2 } } },
     stops: {
         // Kuřačka stojí v loďce u severního mola (loďka leží pod ní: under)
-        kuracka_nusle: { npc: { key: 'kuracka', a: 22, b: 25 }, approach: { a: 21, b: 25 }, props: [{ key: 'lodka', a: 21.55, b: 25.45, block: false, under: true }] },
+        kuracka_nusle: { npc: { key: 'kuracka', a: 22, b: 25 }, approach: { a: 21, b: 25 }, props: [{ key: 'lodka', a: 21.55, b: 25.45, block: false, under: true },
+            // klub otužilců na břehu vedle mola (cedule, pán v plavkách, paní v ručníku), hlášky po klepnutí
+            { key: 'otuzilci', a: 21, b: 27, anim: true, say: 'otuzilci' }] },
         // policista bez pravomocí u vchodu do Muzea Policie, před muzeem vrak Tatry VB
         policista: { npc: { key: 'policista', a: 3, b: 43 }, approach: { a: 4, b: 43 }, props: [{ key: 'tatra_vb', a: 10, b: 38, say: 'tatra_vb' }],
             after: { if: { quest: { kote: 'done' } }, npc: { key: 'policista_kote', a: 3, b: 43 } } },
@@ -32,16 +34,21 @@ export const NUSELAK = {
         kladka: { npc: { key: 'racek', a: 50, b: 19 }, approach: { a: 51, b: 19 }, props: [] },
         souprava: { npc: { key: 'bedny', a: 52, b: 17 }, approach: { a: 52, b: 18 }, props: [] },
         kote: { npc: { key: 'kote', a: 50, b: 17 }, approach: { a: 51, b: 17 }, props: [], hideIf: { flag: 'kote_mam' } },
-        // kormidelník loďkařů v loďce u jižního mola (na Staromák, a s flotilou na Vyšehrad)
-        kormidelnik: { npc: { key: 'kormidelnik', a: 67, b: 24 }, approach: { a: 68, b: 24 }, props: [{ key: 'lodka', a: 66.55, b: 24.45, block: false, under: true }] },
+        // kormidelník loďkařů stojí v loďce přiražené bokem k jižnímu molu, směrem k divákovi (na Staromák, a s flotilou na Vyšehrad)
+        kormidelnik: { npc: { key: 'kormidelnik', a: 69, b: 25 }, approach: { a: 70, b: 24 }, props: [{ key: 'lodka', a: 68.55, b: 25.6, block: false, under: true }] },
         // stanice Vyšehrad: sloupek s céčkem na silnici u díry nad halou (nusle.station)
         vysehrad: { npc: { key: 'metro_totem_c', a: 82, b: 20, flip: false }, approach: { a: 82, b: 19 }, props: [] },
     },
+    // plavci klubu otužilců: dráhy podél osy a mezi severním a jižním břehem (WorldScene.placeSwimmers), hlášky plavec
+    swimmers: { say: 'plavec', lanes: [{ b: 26.4, a: [24, 66] }, { b: 27.7, a: [24.6, 62] }, { b: 29.3, a: [25, 57] }, { b: 31, a: [24.6, 65] }, { b: 26.9, a: [40, 67] }] },
     // vozovka nad halou stanice Vyšehrad duní: kroky s ozvěnou (WorldScene.stepSound)
     echo: [{ a: [81, 89], b: [17, 20] }],
     // lachtani a racci v zatopeném údolí, racci na mostovce, zatopené střechy (art/kuriozity.px.js, nusle-postavy)
     oddities: [
-        { on: 'w', keys: ['lachtan', 'lachtan_lezi', 'lachtan', 'lachtan_lezi', 'lachtan', 'racek_let', 'lachtan', 'racek_let', 'mlok_maly_1'] },
+        { on: 'w', keys: ['lachtan', 'lachtan_skok', 'lachtan', 'lachtan_lezi', 'lachtan_skok', 'racek_let', 'lachtan', 'racek_let', 'mlok_maly_1'] },
+        // lachtani na dohled od mol a mostu, mimo dráhy plavců (b 26–31); většina skáče z vody (lachtan_skok), na kře leží jen jeden
+        { on: 'w', area: { a0: 24, a1: 66, b0: 22, b1: 24 }, keys: ['lachtan_skok', 'lachtan', 'lachtan_skok', 'lachtan_lezi', 'lachtan_skok'] },
+        { on: 'w', area: { a0: 24, a1: 72, b0: 33, b1: 37 }, keys: ['lachtan_skok', 'lachtan', 'lachtan_skok', 'lachtan'] },
         { on: 'p', area: { a0: 16, a1: 78, b0: 17, b1: 20 }, block: false, keys: ['racek', 'racek', 'racek', 'racek'] },
     ],
     props: { wreck: 0.01, trees: ['tree_a', 'tree_bare', 'tree_c', 'tree_topol_a', 'tree_briza_a', 'tree_bare_b', 'tree_kastan_b', 'tree_bare_d', 'tree_briza_b', 'tree_pahyl_a', 'tree_mlady_a', 'tree_topol_b', 'tree_platan_b'], bush: 0.04, bushes: ['bush_a', 'bush_b', 'bush_c', 'bush_rakos_a', 'bush_trni_a', 'bush_trava_b', 'bush_rez_b', 'bush_velky_b', 'bush_trni_b', 'bush_trava_a'], fire: 0.01, junk: 0.02, junkKeys: ['rubble_pile', 'barrel', 'tires'], shack: 0 },

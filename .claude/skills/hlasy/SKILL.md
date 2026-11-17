@@ -66,6 +66,7 @@ a pár postavám, kterým patří.
 | Kočka Šklíba (strom na Václaváku a podruhé na Hradě, kde komentuje rozhodnutí hrdinky; bublina po klepnutí) | tyká, klidně a pobaveně, hádankou; vždycky měří lidi psem | klid toho, kdo může kdykoli zmizet | ano, jedna na hlášku |
 | Trabant | řve z výfuku, nadává | vztek | ano |
 | Voříšek (ruch, bublina po klepnutí) | obecná čeština, tyká, mluví jako člověk, který má odehrát psa a nejde mu to | strach z bouřky | ano, on je gag; po každé větě odběhne |
+| Otužilci (klub u mola na Nuseláku a plavci v červených čepičkách; bublina po klepnutí) | bodře a nahlas, tykají, krátké věty s vykřičníkem, všechno měří vodou | nadšení ze zimy | ano, jedna na hlášku |
 | Vypravěč (popisy, filmečky, věci) | suchý, věcný, krátké věty | – | ano, tady je doma |
 
 Nová postava dostane řádek v tabulce dřív, než dostane první repliku. Když se její hlas dá zaměnit s jiným

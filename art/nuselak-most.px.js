@@ -66,7 +66,7 @@ function nsFront(name, pier, seed, tag = null) {
       c.line(...p(L(bot) - 6, -4, bot), ...p(R(bot) + 6, -4, bot), "J"); c.line(...p(L(bot) - 3, -8, bot), ...p(R(bot) + 2, -8, bot), "Z")
       // nápis sprejem na líci pilíře (řádky pod sebou, písmo 5 × 7 v rovině stěny, úzké I, tmavý obrys, stékance)
       if (tag) tag.forEach((text, li) => {
-        const h = top - 16 - li * 13, wide = [...text].reduce((n, ch) => n + (ch === "I" || ch === "Í" ? 4 : ch === " " ? 4 : 6), 0) - 1
+        const h = top - 70 - li * 13, wide = [...text].reduce((n, ch) => n + (ch === "I" || ch === "Í" ? 4 : ch === " " ? 4 : 6), 0) - 1
         let u = Math.round((L(h) + R(h) - wide) / 2)
         const cells = []
         for (const ch of text) {
@@ -226,9 +226,28 @@ sprite("ns_lano", { w: (NS_GAP + 1) * 64 + 60, h: (NS_GAP + 1) * 32 + 170 }, (c)
 
 nsFront("ns_predni", false, 1); nsFront("ns_predni2", false, 2)
 nsFront("ns_pilir", true, 3)
-// pilíř u severního mola s nápisem, na který se odvolává strážmistr Kulhánek (nusle.tagPier, hláška pilir_tag)
+// první pilíř ve vodě (a 38) s nápisem, na který se odvolává strážmistr Kulhánek (nusle.tagPier, hláška pilir_tag)
 nsFront("ns_pilir_tag", true, 3, ["POLICAJTI", "MÁČÍ", "KOŤÁTKŮM", "OCÁSKY", "DO SAVA"])
 nsFar("ns_zadni", 4); nsFar("ns_zadni2", 5)
+
+// Křídlo opěry na severním břehu: kde mostovka opouští břeh a pod ní začíná trouba, uzavírá její čelo betonový klín
+// přes dvě dlaždice (u břehu nic, u první dlaždice trouby celá její výška), nad ním římsa a zábradlí. Bez něj trouba
+// začínala uříznutá ve vzduchu. Počátek v levém rohu první dlaždice (u = 0), o 64 bodů níž než u dílů nsFront.
+sprite("ns_kridlo", { w: 176, h: NS_T + 64 + NS_G + 16 }, (c) => {
+  const rng = c.rng(9)
+  const K = mstKit(c, 16, NS_T + 64, rng)
+  const { p } = K
+  const F = (u, v) => p(u, 0, v)
+  c.clip([...F(0, 0), ...F(128, 0), ...F(128, -NS_G - 1), ...F(0, -1)], () => {
+    nsConcrete(c, F, 0, 128, -NS_G, -10, rng, "P", "x", "A")
+    c.poly([...F(0, -10), ...F(128, -10), ...F(128, 0), ...F(0, 0)], "q")
+    c.line(...F(0, -10), ...F(128, -10), "A")
+  })
+  // spodní hrana klínu ve stínu, u paty hlína a plevel
+  c.line(...F(0, -1), ...F(128, -NS_G), "k"); c.line(...F(0, -2), ...F(128, -NS_G - 1), "A")
+  for (let i = 0; i < 7; i++) { const u = 4 + rng() * 60; c.vline(...F(u, -u * NS_G / 128 - 2).map(Math.round), 3, rng() < 0.5 ? "g" : "G") }
+  nsRailing(c, F, 0, 128, rng)
+})
 
 // —— Stanice Vyšehrad pod silnicí u jižního konce mostu (src/places/nuselak.js nusle.station) ——
 // Silnice je o patro (NS_ST) výš než terén u mola: od její hrany k +b visí stěna po dílech na dlaždici. Počátek dílu

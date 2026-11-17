@@ -37,6 +37,7 @@ include("nuselak-most.px.js")
 include("lm-nusle.px.js")
 include("nusle-postavy.px.js")
 include("ruch.px.js")
+include("voda.px.js")
 include("lm-kostely.px.js")
 include("scenes2.px.js")
 include("scenes3.px.js")
@@ -50,13 +51,13 @@ include("ground-malastrana.px.js")
 include("ground-hrad.px.js")
 include("ground-nuselak.px.js")
 
-sheet("atlas", ["t_*", "hero", "fanta", "vypravci", "robin", "strojvedouci", "trafikantka", "face_*", "ico_*", "vec_*", "obt_*", "kostka_*", "kurzor_*", "smeti_*", "kour_*", "skvrna_*", "tree_*", "lamp", "bench", "barrel_fire", "metro_entrance", "kiosk", "dog", "dog_lie", "hero_go", "hero_up", "hero_back", "station_clock", "car_wreck_*", "bus_wreck*", "loco_*", "coach_*", "wagon_*", "canopy", "catenary", "trolej", "trolej_utrzena", "metro_totem_*", "door_fanta", "rubble_pile", "barrel", "tires", "shack", "bush_*", "decal_*", "tram_*", "vaclav", "dispecerka", "revizor", "kuracka", "reproduktor", "reproduktor_prazdny", "nutrie_breh", "obalka_neon", "lodka", "vylez", "muzeum_pokladna", "chodec_*", "holoubek", "holoubek_let", "krysa", "voricek", "voricek_sed", "nutrie",
+sheet("atlas", ["t_*", "hero", "fanta", "vypravci", "robin", "strojvedouci", "trafikantka", "face_*", "ico_*", "vec_*", "obt_*", "kostka_*", "vlnka", "vlnka_b", "odlesk", "kruh", "pena", "kurzor_*", "smeti_*", "kour_*", "skvrna_*", "tree_*", "lamp", "bench", "barrel_fire", "metro_entrance", "kiosk", "dog", "dog_lie", "hero_go", "hero_up", "hero_back", "station_clock", "car_wreck_*", "bus_wreck*", "loco_*", "coach_*", "wagon_*", "canopy", "catenary", "trolej", "trolej_utrzena", "metro_totem_*", "door_fanta", "rubble_pile", "barrel", "tires", "shack", "bush_*", "decal_*", "tram_*", "vaclav", "dispecerka", "revizor", "kuracka", "reproduktor", "reproduktor_prazdny", "nutrie_breh", "obalka_neon", "lodka", "vylez", "muzeum_pokladna", "chodec_*", "holoubek", "holoubek_let", "krysa", "voricek", "voricek_sed", "nutrie",
     // Staromák až Hrad: postavy (art/postavy.px.js), rekvizity a zvířata do boje (art/staromak.px.js, art/hrad.px.js)
-    "admiral", "orlojnik", "potapecka", "lovec", "pilar", "netere", "hlidac", "mlynar", "bufetarka", "pult_chlebicky", "vymahac", "pani", "velvyslanec", "straz", "kastelan", "pruvodkyne", "ochranka", "reditel",
+    "admiral", "orlojnik", "potapecka", "lovec", "pilar", "netere", "hlidac", "mlynar", "bufetarka", "pult_chlebicky", "vymahac", "vymahac_maly", "pani", "velvyslanec", "straz", "kastelan", "pruvodkyne", "ochranka", "reditel",
     "lovec_s_hakem", "vyloha", "vyloha_bez", "vyloha_hak", "vyloha_spi", "ostrov_lodka", "podstavec_*", "bedny", "cedule_galerie", "cedule_mostecka", "cedule_nerudova", "cedule_kampa", "cedule_schody", "kun_vaclav", "zed_lennon_*", "mlynske_kolo", "zarovka", "zarovka_zhasla", "kanec",
     "trabant", "budka_straz", "razitko_stul", "holub", "holubi_hejno", "bunka", "generator", "obelisk", "ctecka", "reflektor", "ochranka_cedule", "plot_*",
     // Nuselák (art/nusle-postavy.px.js): postavy, hrdinka na laně, lachtani, racci, kotě, vrak Tatry VB
-    "policista", "policista_kote", "lanar", "kormidelnik", "hero_lano", "lachtan", "lachtan_lezi", "racek", "racek_let", "kote", "tatra_vb"], { pad: 1 })
+    "policista", "policista_kote", "lanar", "kormidelnik", "hero_lano", "lachtan", "lachtan_lezi", "lachtan_skok", "racek", "racek_let", "kote", "tatra_vb", "plavec", "otuzilci"], { pad: 1 })
 // Velké kusy (oblouky haly, Fantova budova) mají vlastní list.
 // Fantova budova a oblouky; hala pod magistrálou s rampami a věžemi má vlastní list (je dlouhá).
 sheet("landmarks", ["rib_*", "lm_fanta_*"], { pad: 1 })

@@ -14,9 +14,9 @@ export const MALASTRANA = {
     stops: {
         // cesta zpátky na most: červená uliční cedule Mostecká se směrovkou k mostu
         mostecka_zpet: { npc: { key: 'cedule_kampa', a: 4, b: 15, flip: false }, approach: { a: 3, b: 15 }, props: [] },
-        // vymahači čekají, jen když pošťačka odmítla Fantovu neteř. Stojí hned u ústí Mostecké a přepadnou ji při
+        // vymahači jsou dva (větší s baseballkou, menší obtloustlý se seznamem jmen) a čekají, jen když pošťačka odmítla Fantovu neteř. Stojí hned u ústí Mostecké a přepadnou ji při
         // příchodu (ambush): rozhovor začne sám a dokud neplatí until, vrátí ji každý odchod zpátky na most
-        vymahaci: { npc: { key: 'vymahac', a: 5, b: 16 }, approach: { a: 4, b: 16 }, props: [], hideIf: { noFlag: 'odmitla_netere' },
+        vymahaci: { npc: { key: 'vymahac', a: 5, b: 16 }, approach: { a: 4, b: 16 }, props: [{ key: 'vymahac_maly', a: 5, b: 17, anim: true, flip: true }], hideIf: { noFlag: 'odmitla_netere' },
             ambush: { until: { flag: 'vymahaci_pryc' }, back: 'most' } },
         pani: { npc: { key: 'pani', a: 56, b: 33 }, approach: { a: 57, b: 33 }, props: [] },
         velvyslanec: { npc: { key: 'velvyslanec', a: 55, b: 6 }, approach: { a: 55, b: 5 }, props: [{ key: 'razitko_stul', a: 54, b: 6 }] },

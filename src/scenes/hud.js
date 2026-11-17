@@ -206,7 +206,8 @@ export class HudScene extends Phaser.Scene {
         const x = 24;
         // telefon: rozhovor se vyhne sloupci tlačítek, karta ho nezužuje (otevírá se přes něj), písmo a tlačítka jsou větší
         const width = WIDTH - 48 - SIDE - (this.card && !MOBILE ? CARD_W + 8 : 0);
-        const bh = MOBILE ? (buttons.length > 6 ? 56 : 64) : 46, bstep = bh + 6, bfont = MOBILE ? 34 : 28;
+        // tlačítka s obrázkem věci (obchod) jsou vyšší, aby se obrázek vešel dvojnásobný
+        const bh = MOBILE ? (buttons.length > 6 ? 56 : 64) : buttons.some((b) => b.image) ? 58 : 46, bstep = bh + 6, bfont = MOBILE ? 34 : 28;
         const container = this.add.container(0, 0).setDepth(20);
         const parts = [];
         const textX = face ? 160 : 28;
@@ -223,7 +224,7 @@ export class HudScene extends Phaser.Scene {
         }
         y = Math.max(y + bodyText.height, face ? 140 : 0) + 14;
         this.buttons = buttons.map((item, index) => {
-            const control = button(this, width / 2 + x, y + bh / 2 + 1, width - 32, bh, item.label, () => item.onPress(index), { primary: item.primary, disabled: item.disabled, index: buttons.length > 1 ? index + 1 : null, center: buttons.length === 1, fontSize: bfont, icon: item.icon, badge: item.badge });
+            const control = button(this, width / 2 + x, y + bh / 2 + 1, width - 32, bh, item.label, () => item.onPress(index), { primary: item.primary, disabled: item.disabled, index: buttons.length > 1 ? index + 1 : null, center: buttons.length === 1, fontSize: bfont, icon: item.icon, badge: item.badge, image: item.image });
             y += bstep;
             return control;
         });
@@ -298,18 +299,18 @@ export class HudScene extends Phaser.Scene {
                 if (!skip) { sound?.drop(); this.tweens.add({ targets: s.die, scaleY: 3.4, duration: 60, yoyo: true }); }
             };
             (async () => {
-                for (let i = 0; i < rounds.length && alive(); i++) {
+                for (let i = 0; i < rounds.length && alive(); i++) {
                     const [a, b] = rounds[i];
                     verdict.setText('');
                     await Promise.all([tumble(me, a, 420), tumble(foe, b, 700)]);
                     if (!alive()) return;
-                    if (i < rounds.length - 1) { verdict.setText(CHECK.dice.tie); await wait(900); }
+                    if (i < rounds.length - 1) { verdict.setText(CHECK.dice.tie); await wait(900); }
                 }
                 if (!alive()) return;
                 await wait(250);
                 if (!alive()) return;
                 const [a, b] = rounds.at(-1);
-                const tie = mine + a === theirs + b;
+                const tie = mine + a === theirs + b;
                 verdict.setText(tie && loses ? CHECK.dice.tieLost : win ? CHECK.dice.won : CHECK.dice.lost).setColor(win ? CRT.amber : CRT.red);
                 (win ? me : foe).sum.setColor(CRT.amber);
                 (win ? foe : me).sum.setColor(CRT.dim);
@@ -329,7 +330,7 @@ export class HudScene extends Phaser.Scene {
                 speaker,
                 face,
                 body: prompt,
-                buttons: visible.map(({ option, index }) => ({ label: option.label, icon: option.icon, badge: option.badge, disabled: option.disabled, onPress: () => { this.closePanel(); resolve(index); } })),
+                buttons: visible.map(({ option, index }) => ({ label: option.label, icon: option.icon, badge: option.badge, image: option.image, disabled: option.disabled, onPress: () => { this.closePanel(); resolve(index); } })),
             });
         });
     }

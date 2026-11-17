@@ -37,6 +37,8 @@ export class BattleScene extends Phaser.Scene {
         // nepřítel vpravo, hrdinka vlevo, obojí zvětšené (pixel art bez vyhlazení)
         const frames = this.textures.get('atlas').getFrameNames().filter((n) => n.startsWith(`${this.def.sprite}_`));
         const enemyFrame = frames.length ? frames.sort()[0] : this.def.sprite;
+        // druhý nepřítel dvojice (BATTLES.sprite2: menší vymahač) stojí o kus vedle a za prvním
+        if (this.def.sprite2) this.add.image(WIDTH - 232, 314, 'atlas', `${this.def.sprite2}_0`).setOrigin(0.5, 1).setScale(this.def.scale ?? 3);
         this.enemy = this.add.image(WIDTH - 340, 320, 'atlas', enemyFrame).setOrigin(0.5, 1).setScale(this.def.scale ?? 3);
         this.hero = this.add.image(320, 330, 'atlas', 'hero_0').setOrigin(0.5, 1).setScale(4);
         this.add.image(160, 356, 'atlas', 'ico_heart').setScale(2).setOrigin(0, 0.5);
